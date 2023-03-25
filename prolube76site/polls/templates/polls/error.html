@@ -1,0 +1,23 @@
+{% extends "polls/base.html" %}
+{% block title %} New Repair Order DashBoard {% endblock %}
+
+{%block content2%}
+<body>
+   
+
+            <legend>
+                <h1>{{error_message}}</h1> 
+            </legend>
+            {% if error_message %}
+                <p><strong>{{ error_message }}</strong></p>
+            {% endif %}
+
+
+        </fieldset>
+
+      <!--   <input type ="submit" value ="Vote"-->
+           </div>
+    </form>
+
+</body>
+{% endblock %}

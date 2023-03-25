@@ -1,0 +1,14 @@
+{% include 'apis/base.html'%}
+<!-- # repair order creation  -->
+{% block content1 %}
+<h1> </h1>
+<form class='form-group' id ='repairoder-list'>
+{% for repairorder in object_list %}
+    {{repairorder.as_form}}
+    {% endfor %}
+{% endfor %}
+</form>
+{%  endblock %}
+{% block content2 %}
+
+{%  endblock %}

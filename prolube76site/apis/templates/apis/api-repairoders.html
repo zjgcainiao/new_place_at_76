@@ -1,0 +1,13 @@
+{% include 'apis/base.html' %}
+
+{% block content1 %}
+<form id ='apis'>
+    {% csrf_token %}
+    {{form.as_form}}
+</form>
+{%  endbock %}
+
+
+{% block content2 %}
+
+{%  endblock %}

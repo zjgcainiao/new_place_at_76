@@ -1,0 +1,51 @@
+{% extends "polls/base.html" %}
+
+<body>
+{% block content1 %}
+    
+            <div class="container ">
+                {% for aa in repairorder %}
+                <h1 class="display-4"> Repair order Detail Page-{{aa.repair_order_id}}</h1>
+                <p class="lead"> Time-In: {{aa.repair_order_time_in}}</p>
+                <p class="lead"> Time-Out: {{aa.repair_order_time_out}}</p>
+                <p class="lead"> RPosted Date: {{aa.repair_order_posted_date}}</p>
+                <p class="lead"> RO total Amt: {{aa.repair_order_total_amount}}</p>
+                <p class="lead"> RO Labor Sale Amt: {{aa.repair_order_parts_sale}}</p>
+                <p class="lead"> RO Parts Sale Amt: {{aa.repair_order_labor_sale}}</p>
+                <p class="lead"> RO Discounted Amt: {{aa.repair_order_discount_amt}}</p> 
+                <p class="lead"> RO HazardWaste Amount: {{aa.repair_order_hazwaste_amt}}</p>                
+                <hr class="my-2">
+                <h2 class="display-4"> Customer Info-</h2>
+                <p > Customer Name: {{aa.customer_name}}</p>
+                <p > Active Status: {{aa.customer_active_status}}</p>
+                <p > Address Type: {{aa.customer_address_priority}}</p>
+                <p > Full address: {{aa.customer_address_street}}<br>{{aa.customer_address_city}}
+                    &nbsp{{aa.customer_address_state}}&nbsp{{aa.customer_address_zip}}
+                </p>
+
+                <hr class="my-2">
+                <h2 class="display-4"> Vehicle info </h2>
+                <p> Vehicle ID: {{aa.vehicle_id}}</p>
+                <p> VIN: {{aa.vehicle_vin}}</p>
+                <p> Last Odometer: {{aa.vehicle_odometer_in}}</p>
+                <p> Year: {{aa.vehicle_year}}</p>
+                <p> Make: {{aa.vehicle_make}}</p>
+                <p> Make: {{aa.vehicle_body_style}}</p>                
+                <p> Engine Head: {{aa.vehicle_engine_head_type}}</p>
+                <p> Transmission: {{aa.vehicle_transmission_type}}</p>
+                {% endfor %}
+                <p><a class="btn btn-primary btn-lg" href="#" role="button">Edit</a></p>
+                
+                here is the old id: {{ old_id }}
+                {% if error_message %}
+                    <p><strong>error message: {{ error_message }}</strong></p>
+                {% endif %}
+            </div>
+  
+
+        
+
+{% endblock %}
+
+
+</body>

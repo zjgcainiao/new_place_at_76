@@ -1,0 +1,43 @@
+{% extends "polls/base.html" %}
+
+{% block title %} New Repair Order DashBoard{% endblock %}
+{% block content1 %}
+<div class="section">
+<h1> New Repair Order DashBoard</h1>
+</div>
+{% endblock %}
+
+{% block content2 %}
+<table class="table table-bordered table-striped table-dark table-hover">
+<thread class="thread-light">
+    <tr>
+        <th scope="col">Repair ID</th>
+        <th scope="col">Repair Status</th>
+        <th scope="col">Time Out</th>
+        <th scope="col">repair_total_amount</th>
+        <th scope="col">CustomerName</th>
+        <th scope="col">make</th>
+        <th scope="col">year</th>
+        <th scope="col">VIN</th>
+        <th scope="col">Last Visit Date</th>
+    </tr>
+</thread>
+<tbody>
+{% for repair in all_repair_orders %}
+<tr>
+<th>{{repair.repair_id}}</th>
+<th>{{repair.repair_status}}</th>
+<th>{{repair.time_out}}</th>
+<th>{{repair.repair_total_amount}}</th>
+<th>{{repair.customer_name}}</th>
+<th>{{repair.make}}</th>
+<th>{{repair.vehicle_year}}</th>
+<th>{{repair.vin}}</th>
+<th>{{repair.time_out}}</th>
+<th>{{repair.last_vist_date}}</th>
+</tr>
+{% endfor %}
+</tbody>
+
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% include 'apis/api-base.html' %}
+<!-- # repair order creation  -->
+{% block content1 %}
+<form class='form-group' id ='create_repairoder' method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Save">
+</form>
+{%  endblock %}
+{% block content2 %}
+
+{%  endblock %}

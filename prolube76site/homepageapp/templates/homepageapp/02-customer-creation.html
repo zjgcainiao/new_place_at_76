@@ -1,0 +1,11 @@
+{% extends 'homepageapp/base.html' %}
+
+{% block content1-main %}
+<form class = 'form-group' method="POST">
+    {% csrf_token %}   
+    
+     {{form.as_p}}
+
+    <button type="submit">SUBMIT</button>
+</form>
+{% endblock %}
