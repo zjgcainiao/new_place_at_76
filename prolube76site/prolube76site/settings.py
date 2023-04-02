@@ -55,8 +55,12 @@ INSTALLED_APPS = [
     'polls',
     'homepageapp',
     'appointments',
+    'apis',  # adding the aps. 
+    'internal_users',
 
 ]
+
+
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.
 if os.environ.get('DJANGO._USE_DEBUG_TOOLBAR'):
     INSTALLED_APPS +=('debug_toolbar',)
@@ -94,7 +98,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'prolube76site.wsgi.application'
 
-
+# -- 2023-04-01 add
+AUTH_USER_MODEL = 'internal_users.InternalUser'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 

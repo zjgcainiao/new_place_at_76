@@ -6,8 +6,11 @@ urlpatterns = [
     path('', views.GetHomepageView, name='homepage'),
     path('customers/', views.CustomerListView.as_view(), name='customers-list'),
     path('customersv2/', views.customer_list, name='customers-list-v2'),
-
+    path('customersv3/', views.active_customer_list, name='customers-list-v3'),
     path('customers/create', views.CustomerCreateView.as_view(), name='create-new-customer'),
+    path('customers/<uuid:pk>/', views.CustomerDetailView.as_view(), name='customer-detail'),
+    path('customers/<uuid:pk>/update/', views.CustomerUpdateView.as_view(), name='customer-update'),
+    path('repairorders/', views.RepairOrderListView.as_view(), name='repairorders-list'),
     # path('api/', views.apiIndexView.as_view(), name='about-us'),
     # path('api/vehicles', views.VehicleModelForm.as_view(), name='api-vehicles'),
     # path('api/customers', views.CustomerModelForm.As_View(), name='api-customers'),

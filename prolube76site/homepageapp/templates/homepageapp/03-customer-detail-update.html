@@ -1,0 +1,40 @@
+{% extends 'homepageapp/base.html' %}
+
+{% block content1-main %}
+<h1>Customer Details</h1>
+<table>
+    <tr>
+        <th>ID:</th>
+        <td>{{ object.customer_id }}</td>
+    </tr>
+    <tr>
+        <th>First Name:</th>
+        <td>{{ object.customer_first_name }}</td>
+    </tr>
+    <tr>
+        <th>Last Name:</th>
+        <td>{{ object.customer_last_name }}</td>
+    </tr>
+    <tr>
+        <th>Email:</th>
+        <td>{{ object.customer_does_allow_SMS}}</td>
+    </tr>
+    <tr>
+        <th>Phone:</th>
+        <td>{{ object.customer_created_at}}</td>
+    </tr>
+</table>
+<br>
+{% if form %}
+<h2>Update Customer Info</h2>
+<form method="post">
+    
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+{% else %}
+<a href="{% url 'customer-update' object.customer_new_uid_v01 %}" class="button">Update</a>
+{% endif %}
+
+{% endblock %}

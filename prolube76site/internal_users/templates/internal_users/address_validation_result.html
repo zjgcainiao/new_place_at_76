@@ -1,0 +1,14 @@
+{% extends 'internal_users/base.html' %}
+
+{% block content %}
+  {% if is_validated %}
+    <h1>Address Validated</h1>
+    <p>Street Address: {{ street_address }}</p>
+    <p>City: {{ city }}</p>
+    <p>State: {{ state }}</p>
+    <p>Zip Code: {{ zip_code }}</p>
+  {% else %}
+    <h1>Address Not Found</h1>
+    <p>The address you entered could not be validated.</p>
+  {% endif %}
+{% endblock content %}

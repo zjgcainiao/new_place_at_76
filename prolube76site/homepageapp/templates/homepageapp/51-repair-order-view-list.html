@@ -1,0 +1,64 @@
+{% extends 'homepageapp/base.html' %}
+{% load static %}
+{% block content1-main %}
+<h2>Today is {{context.current_time}} </h2>
+{% if object_list %}
+<div class="card mb-4">
+    {% for repairorder in page_obj.object_list %}
+    <div class ='card body'>
+        <li>new UID: {{repairorder.repair_order_new_uid_v01}}</li>
+        <li>old ID: {{repairorder.repair_order_id}}</li>
+        <li>aggr note: {{repairorder.repair_order_aggr_notes}} </li>
+        <li> repair order is printed: {{repairorder.repair_order_is_printed}} </li>
+        <li> odometer in: {{repairorder.repair_order_serviced_vehicle_odometer_in}} </li>
+        <li> repair order created at: {{repairorder.repair_order_created_at}} </li>
+        <li>{{context}}</li>
+    </div>
+    {% endfor %} 
+</div>
+<div class ='row'>
+    <div class = 'col-12'>
+      
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    {% if page_obj.has_previous %}
+                        <a class="page-link" href="?page=1">
+                            <span class= 'step-links' aria-hidden="True">&laquo; First (1) </span>
+                        </a>
+                </li>
+                <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}"  tabindex="-1" >
+                            <span class= 'step-links' >Previous ({{ page_obj.previous_page_number }})</span>
+                        </a>
+                    {% endif %}
+                </li>
+                <li class ="page-item active">
+                    <a class="page-link" href="?page={{ page_obj.number }}">
+                        <span>
+                            Current ({{ page_obj.number }})
+                        </span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    {% if page_obj.has_next %}
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                            <span>Next ({{ page_obj.next_page_number }})</span>
+                        </a>
+                </li>
+                <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                            <span aria-hidden="true" >Last ({{ page_obj.paginator.num_pages }}) &raquo;</span>
+                        </a>
+                    {% endif %}
+        
+                </li>
+            </ul>
+  
+    </div>
+</div>
+
+    {% else %}
+    <p>There are no matched repair orders found here.</p>
+    {% endif %}
+        
+{% endblock %}

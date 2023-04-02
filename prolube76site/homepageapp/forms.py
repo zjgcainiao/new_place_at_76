@@ -1,5 +1,5 @@
 from django import forms
-from homepageapp.models import CustomersNewSQL01Model, VehiclesNewSQL01Model #, RepairOrdersNewSQL01Model
+from homepageapp.models import CustomersNewSQL01Model, VehiclesNewSQL01Model , RepairOrdersNewSQL01Model
 
 class CustomerModelForm(forms.ModelForm):
     class Meta:
@@ -13,7 +13,7 @@ class VehicleModelForm(forms.ModelForm):
         # exclude = ('created_at', 'updated_at',)
 
 # Create your views here.
-# class RepairOrderModelForm(forms.ModelForm):
-#     class Meta:
-#         model = RepairOrdersNewSQL01Model
-#         fields = ['repair_order_id','repair_order_created_as_estimate','repair_order_snapshot_order_total_amount']
+class RepairOrderModelForm(forms.ModelForm):
+    class Meta:
+        model = RepairOrdersNewSQL01Model
+        fields = ['repair_order_id','repair_order_created_as_estimate','repair_order_snapshot_order_total_amount']
