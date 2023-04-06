@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 # 
 try:
-    SECRET_KEY = "django-insecure-_81(*-@1rq38$cdg&e!=+9hhjhl+mjhzx)_1a$75o8l-s+_)av"
+    SECRET_KEY = os.getenv("DJANO_SECRET_KEY")
 except KeyError as e:
     raise RuntimeError("Could not find a Django SECRET_KEY in the environment variables") from e
 
@@ -57,7 +57,8 @@ INSTALLED_APPS = [
     'appointments',
     'apis',  # adding the aps. 
     'internal_users',
-
+    'dashboard',
+    # 'firebase_auth', # google firebase-auth
 ]
 
 
@@ -98,8 +99,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'prolube76site.wsgi.application'
 
-# -- 2023-04-01 add
+# -- 2023-04-01 add a custom internal_users app to manage the future employees.
 AUTH_USER_MODEL = 'internal_users.InternalUser'
+
+# added so that when a user login from 127.0.0.1/users/login, he will be re-directed to 'dashboard/'.
+# controlled by dashboard app. the main core app that do the lineitems and etc.
+LOGIN_REDIRECT_URL = "/dashboard/"
+
+
+# ----2023-04-03 add firebase auth package for external_users (customers) to use ---
+
+## ENABLE this following script when firebase_admin is used across the site; especially when the external_users app (for customers)
+# is created. 
+
+import firebase_admin
+from firebase_admin import credentials
+
+cred = credentials.Certificate("/Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/2023-04-01-firebase-auth-private-key/fresh-start-9fdb6-firebase-adminsdk-yjbn6-92fef6fee6.json")
+firebase_admin.initialize_app(cred)
+
+
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 

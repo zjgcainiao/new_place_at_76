@@ -1,0 +1,38 @@
+{% extends 'dashboard/00-base.html' %}
+
+{% block content-main %}
+  <h1>WIP Dashboard V2 -- via ListView</h1>
+
+  <form method="post" class="center">
+    {% csrf_token %}
+    <table>
+      <thead>
+        <tr>
+          <th>Select</th>
+          <th>Repair Order ID</th>
+          <th>Customer ID</th>
+          <th>Customer First Name</th>
+          <th>Customer Last Name</th>
+          <th>Customer Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for repair_order in repair_orders %}
+        <tr>
+          <td><input type="checkbox" name="selected_records" value="{{ repair_order.repair_order_id }}"></td>
+          <td>{{ repair_order.repair_order_id }}</td>
+          <td>{{ repair_order.repair_order_customer.customer_id }}</td>
+          <td>{{ repair_order.repair_order_customer.customer_first_name }}</td>
+          <td>{{ repair_order.repair_order_customer.customer_last_name }}</td>
+          <td>
+            {% for address in repair_order.repair_order_customer.addresses.all %}
+            {{ address.addres_line_01 }}, {{ address.address_city }}, {{ address.address_state }} {{ address.address_zip_code }}<br>
+            {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button type="submit">Save Selected Records</button>
+  </form>
+{% endblock %}
