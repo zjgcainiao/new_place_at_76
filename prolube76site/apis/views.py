@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from homepageapp.models import CustomersNewSQL01Model, VehiclesNewSQL01Model, RepairOrdersNewSQL01Model
+from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model
 from .serializers import CustomerSerializer, RepairOrderSerializer
 from django.core.paginator import Paginator
 from django.http import JsonResponse
@@ -18,7 +18,7 @@ from django.http import JsonResponse
 @api_view(['GET'])
 def customer_api(request):
     # try:
-        customers = CustomersNewSQL01Model.objects.all()
+        customers = CustomersNewSQL02Model.objects.all()
         # page = request.GET.get('page', 1)
         # paginator = Paginator(customers, 20)
         serializer = CustomerSerializer(customers, many=True)
@@ -61,7 +61,7 @@ def customer_api(request):
 @api_view(['GET'])
 def repairorders_api(request):
     if request.method == 'GET':
-        repairorders = RepairOrdersNewSQL01Model.objects.all()
+        repairorders = RepairOrdersNewSQL02Model.objects.all()
 
         serializer = RepairOrderSerializer(repairorders, context={'request': request}, many=True)
 

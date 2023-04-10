@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from homepageapp.models import CustomersNewSQL01Model, RepairOrdersNewSQL01Model
+from homepageapp.models import CustomersNewSQL02Model, RepairOrdersNewSQL02Model
 from django.utils import timezone
 
 class RepairOrderSerializer(serializers.ModelSerializer):
         repair_order_created_at = serializers.DateTimeField()
         class Meta:
-            model = RepairOrdersNewSQL01Model
+            model = RepairOrdersNewSQL02Model
             fields = ['repair_order_new_uid_v01',
                       'repair_order_id',
                       'repair_order_created_as_estimate',
@@ -31,7 +31,7 @@ class CustomerSerializer(serializers.ModelSerializer):
     # customer_dob = serializers.DateTimeField()
     customer_created_at = serializers.DateTimeField()
     class Meta:
-        model = CustomersNewSQL01Model
+        model = CustomersNewSQL02Model
         fields = ['customer_new_uid_v01',
 
                   'customer_first_name',

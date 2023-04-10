@@ -22,6 +22,7 @@ urlpatterns = [
     path('users/', include('internal_users.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('polls/', include('polls.urls')),
+    path('appts/', include('appointments.urls')),
     path('admin/', admin.site.urls),
     path('', include('homepageapp.urls')),
 ]

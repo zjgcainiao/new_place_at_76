@@ -1,0 +1,51 @@
+{% extends 'dashboard/00-base.html' %}
+<br>
+{% block content-main %}
+  <h1>Repair Order Detail version 1</h1>
+  <br>
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id='repair-tab' data-toggle="tab" href="#repair">Repair Order</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id='customer-tab' data-toggle="tab" href="#customer">Customer</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id='address-tab' data-xtoggle="tab" href="#address">Address</a>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="repair" role="tabpanel" aria-labelledby="repair-tab">
+        <h3>Repair Order Detail</h3>
+        <!-- Placeholder content for repair order information -->
+        <p>repair order ID:{{repair_order.repair_order_id}}</p>
+        <p>Last Updated Date:{{repair_order.repair_order_last_updated_date}}</p>
+    </div>
+    <div class="tab-pane fade" id="customer" role="tabpanel" aria-labelledby="customer-tab">
+        <h3>Customer Detail</h3>
+        <!-- Placeholder content for customer information -->
+        <p>Name: {{ repair_order.repair_order_customer.customer_first_name }} {{ repair_order.repair_order_customer.customer_last_name }}</p>
+    </div>
+
+    <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+        <h3>Address</h3>
+        <!-- Placeholder content for address information -->
+        <p>Address_Line_01: {{repair_order.repair_order_customer.addresses.get.address_line_01 }} ,</p>
+        <p>Street, City Zip: {{repair_order.repair_order_customer.addresses.get.address_city }}, {{ repair_order.repair_order_customer.addresses.get.address_state }}  {{ repair_order.repair_order_customer.addresses.get.address_zip_code }}
+        </p>
+    </div>
+  </div>
+
+<br>
+  
+  
+  <script>
+    $(document).ready(function(){
+        $('.nav-tabs a').click(function(){
+            $(this).tab('show');
+        });
+        });
+
+  </script>
+{% endblock %}

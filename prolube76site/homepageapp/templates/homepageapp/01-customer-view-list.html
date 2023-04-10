@@ -6,10 +6,8 @@
 <div class="card mb-4">
     {% for customer in page_obj.object_list %}
     <div class ='card body'>
-        <li>customer new UID: {{customer.customer_new_uid_v01}}</li>
-        <li>customer old ID: {{customer.customer_id}}</li>
-        <li>{{ customer.customer_first_name }} </li>
-        <li> {{customer.customer_last_name}} </li>
+        <li>Customer ID: {{customer.customer_id}}</li>
+        <li>Name: {{ customer.customer_first_name}} {{customer.customer_last_name}}</li>
         <li> Customer allow SMS: {{customer.customer_does_allow_SMS}} </li>
         <li> Created At: {{customer.customer_created_at}} </li>
         <li>{{context}}</li>
@@ -17,7 +15,7 @@
     {% endfor %} 
 </div>
 <div class ='row'>
-    <div class = 'col-12'>
+    <div class = 'col-md-12'>
       
             <ul class="pagination justify-content-center">
                 <li class="page-item">

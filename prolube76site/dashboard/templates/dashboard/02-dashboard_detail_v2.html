@@ -1,0 +1,15 @@
+{% extends 'dashboard/00-base.html' %}
+
+{% block content-main %}
+  <h1>Repair Order Detail v2 -- using forms method</h1>
+<!-- repair_order_detail.html -->
+<form method="POST">
+  {% csrf_token %}
+  {{ repair_order_form.as_p }}
+  {{ customer_form.as_p }}
+  {{ address_form.as_p }}
+  <button type="submit">Save changes</button>
+</form>
+
+
+{% endblock %}

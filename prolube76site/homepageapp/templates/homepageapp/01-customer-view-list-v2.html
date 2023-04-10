@@ -2,6 +2,8 @@
 {% load static %}
 {% block content1-main %}
 <h2>Today is {{current_time}} </h2>
+
+<h5>Total number of active customers: {{number_of_actives}}</h5>
 {% if customers %}
 <div class="card mb-4">
     {% for customer in customers %}

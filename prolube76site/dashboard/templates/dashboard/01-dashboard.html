@@ -15,14 +15,14 @@
       </tr>
     </thead>
     <tbody>
-      {% for repair_order in all_in_one_set %}
+      {% for repair_order in repair_orders %}
           <tr>
             <td>{{ repair_order.repair_order_id }}</td>
             <td>{{ repair_order.repair_order_customer.customer_first_name }} {{ repair_order.repair_order_customer_id.customer_last_name }}</td>
-            <td>{{ repair_order.repair_order_customer.addresses.address_line_01 }}</td>
-            <td>{{ repair_order.repair_order_customer.addresses.address_city }}</td>
-            <td>{{ repair_order.repair_order_customer.addresses.address_state }}</td>
-            <td>{{ crepair_order.repair_order_customer.addresses.address_zip }}</td>
+            <td>{{ repair_order.repair_order_customer.addresses.get.address_line_01 }}</td>
+            <td>{{ repair_order.repair_order_customer.addresses.get.address_city }}</td>
+            <td>{{ repair_order.repair_order_customer.addresses.get.address_state }}</td>
+            <td>{{ crepair_order.repair_order_customer.addresses.get.address_zip_code }}</td>
           </tr>
 
       {% endfor %}

@@ -20,3 +20,16 @@ import tabulate
 def fetch_master_calendar_view(request):
     return render(request, 'appointments/index.html')
     
+from django.shortcuts import render, redirect
+from .forms import AppointmentRequestForm
+
+def appointment_create_view(request):
+    if request.method == 'POST':
+        form = AppointmentRequestForm(request.POST)
+        if form.is_valid():
+            service_request = form.save()
+            # TODO: Send email to customer about service request status
+            return redirect('service_request_success')
+    else:
+        form = AppointmentRequestForm()
+    return render(request, 'appointments/01-appointment-creation.html', {'form': form})
