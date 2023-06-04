@@ -1,0 +1,51 @@
+{% extends 'talent_management/00_base.html' %}
+
+{% block content-main %}
+<div class ='container container-fluid'>
+    <a href ="{% url  'talent_management:talent_list' %}">Go Back</a>
+</div>
+<div class ='container container-fluid'>
+    <h2>{{ talent.talent_first_name }} {{ talent.talent_last_name }}</h2>
+    <div class ='row'>
+        <div class="card card-hover">
+            <p>Full Name: {{talent.talent_full_name}}</p>
+            <p>Employee ID: {{ talent.talent_employee_id }}</p>
+            <p>full address: {{talent.talent_full_address}}</p>
+            <p>Phone Number: {{ talent.talent_phone_number_primary }}</p>
+            <p>Email: {{ talent.talent_email }}</p>
+        </div>
+    </div>
+    <hr>
+    <h3>Payroll Information</h3>
+    <p>Pay Type: {{talent.talent_pay_type}}</p>
+    <p>Pay Rate: {{ talent.talent_pay_rate}}</p>
+    <hr>
+    <div class ='row'>
+        <p class="text-end"><a href="{% url 'talent_management:talent_document_list' pk=talent.talent_id %}">view uploaded docs </a></p>
+        <div class="card card-hover">    
+            <h3>Upload Payroll Forms</h3>
+            <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Upload</button>
+            </form>
+        </div>
+    </div>
+    <div class ='row my-1'>  
+        <div class="col-md-12">
+          {% if messages %}
+            {% for message in messages %}
+          
+            <li{% if message.tags %} class="alert alert-dismissible alert-{{ message.tags }}"{% endif %}>
+              {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+              {{ message }}
+            </li>
+            
+            {% endfor %}
+          {% endif %}
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

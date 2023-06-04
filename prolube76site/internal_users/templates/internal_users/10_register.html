@@ -1,0 +1,71 @@
+{% extends 'internal_users/00_base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load static %}
+
+{% block content-main %}
+<div class="authentication-bg">
+    <div class="account-pages pt-2 pt-sm-5 pb-4 pb-sm-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xxl-5 col-lg-6">
+                    <div class="card card-hover h-100">
+                        <!-- Logo-->
+                        <div class="card-header py-4 text-center bg-light">
+                            <a href="{% url 'homepageapp:homepage' %}">
+                                <span><img src="{% static 'internal_users/images/logo-174x150.png' %}" alt="logo" style ="width:120px"></span>
+                            </a>
+                        </div>
+
+                        <div class="card-body p-4">
+                            <div class="text-center w-75 m-auto">
+                                <h4 class="text-dark-50 text-center mt-0 fw-bold">Create New Account - Employee User Only</h4>
+                                <p class="text-muted mb-4">Use the same email address as in your employee contact information. </p>
+                            </div>
+                            <form method="POST" >
+                                {% csrf_token %}
+                                {{form |crispy}}
+                                {% comment %}
+                                {% for field in form %}
+                                    <div class="my-3">
+                                        <label class="form-label">{{field.label_tag}}</label>
+                                        {{field}}
+                                    </div>
+                                    {% endfor %}
+
+                                    <div class="my-3">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="checkbox-signup">
+                                            <label class="form-check-label" for="checkbox-signup">I accept <a href="#" class="text-muted">Terms and Conditions</a></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 text-center">
+                                        <button class="btn btn-primary" type="submit"> Register </button>
+                                    </div>
+                                {% endcomment %}
+                            </form>
+                        </div> <!-- end card-body -->
+                    </div>
+                    <!-- end card -->
+
+                    <div class="row my-3">
+                        <div class="col-12 text-center">
+                            <p class="text-muted">Exsiting Users Click Here to<a href="{% url 'internal_users:internal_user_login' %}" class="text-muted ms-1"><b>Log In</b></a></p>
+                        </div> <!-- end col-->
+                    </div>
+                    <!-- end row -->
+
+                </div> <!-- end col -->
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end page -->
+
+</div>
+
+{% endblock %}
+
+

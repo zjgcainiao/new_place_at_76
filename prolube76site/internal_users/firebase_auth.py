@@ -13,8 +13,6 @@ cred = credentials.Certificate(prviate_key_json)
 default_firebase_app = firebase_admin.initialize_app(cred)
 
 def firebase_new_user_by_email():
-    if request.post=
-
 
 # class FirebaseAuthentication(authentication.BaseAuthentication):
 #     def authenticate(self, request):

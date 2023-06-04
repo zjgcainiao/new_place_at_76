@@ -1,5 +1,6 @@
 {% extends 'homepageapp/base.html' %}
 {% load static %}
+
 {% block content1-main %}
 <h2>Today is {{context.current_time}} </h2>
 {% if object_list %}
@@ -15,18 +16,18 @@
     </div>
     {% endfor %} 
 </div>
-
+{% endif %}
 <h2>Repair Order Detail with LineItems </h2>
-<form method="post">
-  {% csrf_token %}
-  <label for="repair_order_id">Repair Order ID:</label>
-  <input type="text" name="repair_order_id" value="{{ repair_order.repair_order_id }}" readonly>
-  <label for="customer_name">Customer Name:</label>
-  <input type="text" name="customer_name" value="{{ repair_order.repair_order_customer.first_customer_name }}" readonly>
-  <label for="customer_address">Customer Address:</label>
-  <input type="text" name="customer_address" value="{{ repair_order.repair_order_customer.address_line_01 }}" readonly>
-  <!-- other fields as needed -->
-</form>
+  <form method="post">
+    {% csrf_token %}
+    <label for="repair_order_id">Repair Order ID:</label>
+    <input type="text" name="repair_order_id" value="{{ repair_order.repair_order_id }}" readonly>
+    <label for="customer_name">Customer Name:</label>
+    <input type="text" name="customer_name" value="{{ repair_order.repair_order_customer.first_customer_name }}" readonly>
+    <label for="customer_address">Customer Address:</label>
+    <input type="text" name="customer_address" value="{{ repair_order.repair_order_customer.address_line_01 }}" readonly>
+    <!-- other fields as needed -->
+  </form>
 
 <h2>Line Items</h2>
 <table>

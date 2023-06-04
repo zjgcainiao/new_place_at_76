@@ -1,8 +1,11 @@
 from django.urls import include, path
-from .views import IndexPage, dashboard, DashboardView, dashboard_detail, dashboard_detail_view
-from .views import DashboardDetailView, RepairOrderUpdateView
-from .views import repair_order_update
+from .views import IndexPage, dashboard, dashboard_detail_v1, dashboard_detail_v2
+from .views import DashboardView
+from .views import DashboardDetailView, RepairOrderUpdateView, PartItemUpdateView, LaborItemUpdateView
+from .views import repair_order_update, repair_order_and_line_items_detail, line_item_labor_and_part_item_update_view
+from dashboard.views import chat_sidebar_view
 
+app_name ='dashboard'
 urlpatterns = [
     # other URL patterns
     # path('dash/', include('django.contrib.auth.urls')),
@@ -10,12 +13,20 @@ urlpatterns = [
     # path('', IndexPage, name='dashboard-index'),
 
     # dashboard -- repair order plus customer info and customer information. Phone numbers are not included yet.
-    path('',  dashboard, name='dashboard-testing'),
-    path('v2', DashboardView.as_view(), name='dashboard-v2'),
+    # prefix: dashboard/
+    path('old',  dashboard, name='dashboard-testing-v1'),
+    path('', DashboardView.as_view(), name='dashboard'), # current version is v2
     # the detail apge 
-     path('detail/<int:pk>/', dashboard_detail, name='dashboard-detail'),
-     path('detail_v2/<int:pk>/', dashboard_detail_view, name='dashboard-detail-v2'),
-     path('detail_v3/<int:pk>/', DashboardDetailView.as_view(), name='dashboard-detail-v3'),
-     path('detail_v3/<int:pk>/update-ro', RepairOrderUpdateView.as_view(), name='repair-order-update'),
-     path('detail_v3/<int:pk>/update-ro-v2', repair_order_update, name='repair-order-update-v2'),
+    #  path('v2/detail/<int:pk>/', dashboard_detail_v1, name='dashboard-detail'),
+     path('v2/detail/<int:pk>/', dashboard_detail_v1, name='dashboard-detail'),
+     path('chats/customers/<int:customer_id>/', chat_sidebar_view, name='dashboard-chats'),
+
+     path('v2/detail_v2/<int:pk>/', dashboard_detail_v2, name='dashboard-detail-v2'),
+     path('v2/detail_v3/<int:pk>/', DashboardDetailView.as_view(), name='dashboard-detail-v3'),
+     path('v2/detail_v3/<int:pk>/update-ro', RepairOrderUpdateView.as_view(), name='repair-order-update'),
+     path('v2/detail_v3/<int:pk>/update-ro-v2', repair_order_update, name='repair-order-update-v2'),
+    #  path('ros/<int:repair_order_id>/lineitems/', repair_order_and_line_items_detail, name='workitem-lineitem-detail'),
+
+     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/', PartItemUpdateView.as_view(), name='part-item-update-view'),
+     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/merge/',line_item_labor_and_part_item_update_view, name='part-labor-item-merge-view'),
 ]

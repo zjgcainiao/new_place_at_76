@@ -18,11 +18,15 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
+    path('talents/', include('talent_management.urls')),
     path('apis/', include('apis.urls')),
-    path('users/', include('internal_users.urls')),
+    path('emails/', include('automatic_mails.urls')),
+    path('mochies/', include('internal_users.urls')),
+    path('accounts/', include('customer_users.urls')),  # customer_users
     path('dashboard/', include('dashboard.urls')),
     path('polls/', include('polls.urls')),
     path('appts/', include('appointments.urls')),
     path('admin/', admin.site.urls),
+    path('3dmodels/', include('we_create_3d_models.urls')),  # added on 2023-05-26. 3d model creating app.
     path('', include('homepageapp.urls')),
 ]

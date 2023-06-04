@@ -1,0 +1,45 @@
+{% extends 'customer_users/base.html' %}
+
+{% load static %}
+{% block content %}
+<div class="container pt-5 pb-lg-4 mt-5 mb-sm-2">
+    <!-- Breadcrumb-->
+    <nav class="mb-4 pt-md-3" aria-label="Breadcrumb">
+      <ol class="breadcrumb breadcrumb-dark">
+        <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="car-finder-account-info.html">Account</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Personal Info</li>
+      </ol>
+    </nav>
+    <!-- Page content-->
+    <div class="row">
+      <!-- Sidebar-->
+      <aside class="col-lg-4 col-md-5 pe-xl-4 mb-5">
+        <!-- Account nav-->
+        <div class="card card-body card-dark border-20 shadow-sm pb-1 me-lg-1">
+          <div class="d-flex d-md-block d-lg-flex align-items-start pt-lg-2 mb-4"><img class="rounded-circle" src="{% static 'homepageapp/img/avatars/avatar_new_01.png' %}" width="48" alt="Robert Fox">
+            <div class="pt-md-2 pt-lg-0 ps-3 ps-md-0 ps-lg-3">
+              <h2 class="fs-lg text-dark mb-0">{{customer_user.cust_user_first_name}} {{customer_user.cust_user_last_name}}</h2>
+              <!-- <span class="star-rating"><i class="star-rating-icon fi-star-filled active"></i><i class="star-rating-icon fi-star-filled active"></i><i class="star-rating-icon fi-star-filled active"></i><i class="star-rating-icon fi-star-filled active"></i><i class="star-rating-icon fi-star-filled active"></i></span> -->
+              <ul class="list-unstyled fs-sm mt-3 mb-0">
+                <li><a class="nav-link-dark fw-normal"><i class="fi-phone opacity-60 me-2"></i>{{customer_user.cust_user_phone_number}}</a></li>
+                <li><a class="nav-link-dark fw-normal"><i class="fi-mail opacity-60 me-2"></i>{{customer_user.cust_user_email}}</a></li>
+              </ul>
+            </div>
+          </div><a class="btn btn-primary btn-lg w-100 mb-3" href="car-finder-sell-car.html"><i class="fi-plus me-2"></i>Service Appointment</a><a class="btn btn-outline-dark d-block d-md-none w-100 mb-3" href="#account-nav" data-bs-toggle="collapse"><i class="fi-align-justify me-2"></i>Menu</a>
+          <div class="collapse d-md-block mt-3" id="account-nav">
+            <div class="card-nav">
+              <a class="card-nav-link active" href="car-finder-account-info.html"><i class="fi-user me-2"></i>Personal Info {{customer_user.Meta.model_name}}</a>
+              <a class="card-nav-link" href="car-finder-account-security.html"><i class="fi-lock me-2"></i>Current Service</a>
+              <a class="card-nav-link" href="car-finder-account-wishlist.html"><i class="fi-car me-2"></i>My Vehicles<span class="badge bg-faded-light ms-2">2</span></a>
+              <a class="card-nav-link" href="car-finder-account-cars.html"><i class="fi-users me-2"></i> Linked to 76 Pro Lube Plus </a>
+              <a class="card-nav-link" href="#"><i class="fi-logout me-2"></i>Sign Out</a></div>
+          </div>
+        </div>
+      </aside>
+      <!-- Content-->
+       {% block content-main-1 %}
+       {% endblock %}
+    </div>
+  </div>
+{% endblock %}

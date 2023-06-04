@@ -1,0 +1,22 @@
+{% extends 'talent_management/00_base.html' %}
+{% block content-main %}
+<div class ='container'>
+  <h2>Restricted Access! Sensitive Information.</h2>
+  <p>User: {{user.user_first_name}}. Auth Group: {{user.user_auth_group}}-{{user.get_user_auth_group_display}}</p>
+</div>
+
+<div class ='container my-1'>
+  <div class ='row'>
+    <div class="col-md-12">
+      {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-dismissible alert-danger">
+          <strong>{{message}}</strong>
+        </div>
+      {% endfor %}
+    {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

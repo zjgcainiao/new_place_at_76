@@ -1,0 +1,32 @@
+{% extends 'appointments/00-appointment-base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block content-main %}
+<section class="container pt-5">
+  <aside>
+    <div class='row'>
+
+        <div class="card card-body card-dark border-20 shadow pb-2 me-lg-1">
+          <h2>Make a Service Request</h2>
+            <form class ='form-floating my-1' method="POST">
+              <div class="col col-6">
+                {% csrf_token %}
+                {{form | crispy}}
+              </div>
+              {% comment %}
+                {% for field in form %}
+                {% csrf_token %}
+      
+                      <div class="mb-1">
+                        <label for="text-input" class="form-label">{{ field.label_tag }}</label>
+                        {{ field }}
+                {% endfor %}
+              {% endcomment %}  
+            <button class = 'btn btn-outline-primary' type="submit">Submit</button>
+          </form>
+        </div>  
+      </div>
+    
+  </aside>
+</section>        
+{% endblock %}

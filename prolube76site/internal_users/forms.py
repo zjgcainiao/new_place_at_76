@@ -3,7 +3,14 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import InternalUser
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, PasswordResetForm
+from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
+from talent_management.models import TalentsModel
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div, Field
+from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Invisible,ReCaptchaV2Checkbox
 
 class InternalUserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -11,7 +18,6 @@ class InternalUserCreationForm(forms.ModelForm):
     
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
-
     class Meta:
         model = InternalUser
         fields = ('user_id', 'email', 'user_first_name', 'user_last_name',
@@ -32,6 +38,39 @@ class InternalUserCreationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+    
+# version 2 --- via UserCreationForm, AuthenticationForm
+# 2023-04-26-chat-GPT-enabled
+class InternalUserRegistrationFormV2(UserCreationForm):
+    email = forms.EmailField(required=True, help_text='Required. Enter a valid email address.')
+    first_name = forms.CharField(max_length=50, required=True, help_text='Required.')
+    last_name = forms.CharField(max_length=50, required=True, help_text='Required.')
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
+    # this function will have to expand for employee email verifications.
+    # employee record shall be created first before a user can be added.
+    def email_clean(self):
+        email = self.cleaned_data['email'].lower()
+        new = InternalUser.objects.filter(email=email)
+        if new.count():
+            raise ValidationError(" Email Already Exist.")
+        return email 
+    class Meta:
+        model = InternalUser
+        fields = ['email', 'first_name', 'last_name', ] #'username',
+        widgets = {
+            'email': forms.EmailInput(attrs={'type': 'text', 'class':'form-control',}),
+            'first_name': forms.TextInput(attrs={'type': 'text', 'class':'form-control',}),
+            'last_name': forms.TextInput(attrs={ 'type': 'text','class':'form-control',}),
+            'password1': forms.PasswordInput(attrs={'type': 'text', 'class':'form-control',}),
+            'password2': forms.PasswordInput(attrs={'type': 'text', 'class':'form-control',}),
+        }
+        labels = {
+            'email': 'Email',
+            'first_name': 'First Name',
+            'last_name': 'Last Name',
+            'password1': 'Password',
+            'password2': 'Repeat Password',
+        }
 
 class InternalUserChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
@@ -42,10 +81,9 @@ class InternalUserChangeForm(forms.ModelForm):
 
     class Meta:
         model = InternalUser
-        fields = ('email', 'password', 'user_first_name', 'user_last_name',  'user_permission_level', \
-                  'user_pay_type', 'user_hired_date', 'user_discharge_date', 'physical_address_01', \
-                  'physical_address_02', 'physical_address_city', 'physical_address_state', 'physical_address_zip_code', \
-                  'user_is_active', 'user_is_admin','is_superuser',)
+        fields = ('email', 'user_first_name', 'user_last_name', 'password',
+                  'user_start_date', 'user_discharge_date', 'user_auth_group',
+                  'user_is_active', 'is_superuser', 'user_is_admin', )
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -53,28 +91,88 @@ class InternalUserChangeForm(forms.ModelForm):
         # field does not have access to the initial value
         return self.initial["password"]
 
-# address validting form
 
-class AddressForm(forms.Form):
-    address_line_1 = forms.CharField(max_length=100)
-    address_line_2 = forms.CharField(max_length=100, required=False)
-    city = forms.CharField(max_length=50)
-    state = forms.CharField(max_length=2)
-    zip_code = forms.CharField(max_length=10)
-    country_code = forms.CharField(max_length=10)
-
-    def clean(self):
-        cleaned_data = super().clean()
-        address = f"{cleaned_data['address_line_1']} {cleaned_data['address_line_2']}".strip()
-        city = cleaned_data['city'].strip()
-        state = cleaned_data['state'].strip()
-        zip_code = cleaned_data['zip_code'].strip()
-        country_code = cleaned_data['country_code'].strip()
-
-        if not address or not city or not state or not zip_code:
-            raise forms.ValidationError("All address fields are required.")
-
-        return cleaned_data
 
 # class FireBaseAuthUserCreation(forms.Form):
 #     verification_provider_type = forms.ChoiceField()
+
+# the default login requires a username and a password 
+class InternalUserLoginForm(AuthenticationForm):
+    username = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'type': 'text',
+            'placeholder': 'Enter the same email address as in your employee contact information',
+        }),
+        label='Email',
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'type':'text',
+            'placeholder': 'Enter your password.'
+        }),
+        label='Password',
+    )
+    class Meta:
+        model = InternalUser
+
+
+class InternalUserPasswordResetForm(PasswordResetForm):
+    def __init__(self, *args, **kwargs):
+        super(PasswordResetForm, self).__init__(*args, **kwargs)
+    
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
+    class Meta:
+        model = get_user_model()
+
+# 2023-05-30
+# this form is used to display a internal_user's employment information
+# this detail page displays most but not all information of the talent record that is assocaited with the user.
+# the fields shall be limited and not editable.
+class EmploymentInfoForm(forms.ModelForm):
+    # create a talent_full_name to store data from the property field of TalentsModel
+    talent_full_name = forms.CharField(label="Full Name", required=False)
+    class Meta:
+        model = TalentsModel
+        fields = ['talent_employee_id', 'talent_first_name','talent_last_name', 'talent_middle_name',
+                  'talent_date_of_birth','talent_phone_number_primary', 'talent_mailing_address_is_the_same_physical_address',
+                   'talent_hire_date', 'talent_department', 'talent_supervisor', 
+                   'talent_pay_type', 'talent_pay_rate', 'talent_pay_frequency', 
+                    'talent_previous_department',
+                 ]
+    def set_readonly(self):
+        for field in self.fields.values():
+            field.widget.attrs['readonly'] = True
+
+    def get_pay_type_display(self):
+        return dict(self.PAY_TYPES).get(self.talent_pay_type)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.set_readonly()
+        if self.instance:
+            self.fields['talent_full_name'].initial = self.instance.talent_full_name
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                Field('talent_employee_d', css_class='form-control') ,
+                Field('talent_first_name',css_class='form-control'),
+                css_class='card'
+            ),
+            Div(
+                Field('talent_department'),
+                Field('talent_supervisor'),
+                Field('talent_pay_type'),
+                Field('talent_pay_rate'),
+                Field('talent_pay_frequency'),
+                css_class='card'
+            ),
+            Div(
+                Field('talent_previous_department'),
+                Field('talent_discharge_date'),
+                css_class='card'
+            ),
+            # Add more sections for other groups of fields
+        )

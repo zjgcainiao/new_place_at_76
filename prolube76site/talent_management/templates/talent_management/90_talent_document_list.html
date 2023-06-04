@@ -1,0 +1,41 @@
+
+{% extends 'talent_management/00_base.html' %}
+{% block content-main %}
+<div class ='container container-fluid'>
+<div class="row my-1">
+    <div clas="col">
+        <buttn class="btn btn-outline-primary" href="{% url 'talent_management:talent_detail' pk=talent.talent_id %}">Go back</buttn>
+    </div>
+
+</div>
+
+    <h1>Uploaded Documents for {{talent.talent_id}}-{{talent.talent_full_name}}</h1>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Document Name</th>
+                <th>Uploaded Date</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in documents %}
+            <tr>
+                <td>
+                    <a href="{{ document.talent_employment_docs.url }}" download>{{ document.talent_employment_docs.name }}</a>
+                </td>
+                <td> {{ document.uploaded_date |date}}
+                </td>
+                <td>
+                    <form method="post" action="{% url 'talent_management:talent_document_delete' document_id=document.document_id %}">
+                        {% csrf_token %}
+                        <button type="submit"><i class="ri-delete-bin-fill">Delete</i></button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}   

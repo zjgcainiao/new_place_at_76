@@ -20,7 +20,7 @@
         <tbody>
             {% for customer in page_obj %}
                 <tr>
-                    <td><a href ="{% url 'customer-detail' pk=customer.customer_id %} ">{{customer.customer_id}}</a></td>
+                    <td><a href ="{% url 'homepageapp:customer-detail' pk=customer.customer_id %} ">{{customer.customer_id}}</a></td>
                     <td>{{ customer.customer_first_name}}</td>
                     <td>{{ customer.customer_last_name }}</td>
                     <td>{{ customer.customer_does_allow_SMS }}</td>

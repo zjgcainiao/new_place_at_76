@@ -1,0 +1,78 @@
+{% extends 'dashboard/00_base.html' %}
+{% load humanize %}
+{% block content-main %}
+
+  <div class="container container-fluid my-2">
+    <h2>WIP Dashboard V2 -- via ListView</h2>
+
+    <div class="row">
+      <div class="col-3">
+        <a  href = "{% url 'homepageapp:homepage' %}">go back to Homepage</a>
+      </div>
+    </div>
+  </div>
+  <div class="container container-fluid my-2">
+    <div class = 'row'>
+      <div class="col-12 btn-group my-2">
+        <button type="button" class="btn btn-outline-primary">New Repair Order</button>
+        <button type="button" class="btn btn-outline-primary">Search everything</button>
+        <button type="button" class="btn btn-outline-primary">New Service Appointment</button>
+        <button type="button" class="btn btn-outline-primary">New Messaging</button>
+      </div>
+
+    </div>
+  </div>
+  <div class = 'container container-fluid'>
+    <form method="post">
+      {% csrf_token %}
+      <table class ='table table-light table-hover'>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Order Status</th>
+            <th>Customer Name </th>
+            <th>Phone Nbr </th>
+            <th>Email Addresses</th>
+            <th>Customer Address</th>
+            <th>Updated Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for repair_order in repair_orders %}
+          <tr>
+            <td><a href="{% url 'dashboard:dashboard-detail' pk=repair_order.repair_order_id %}">{{ repair_order.repair_order_id }}</a></td>
+            <td>{{repair_order.repair_order_phase.repair_order_phase_description }}</td>
+            <!-- <td>repair_order.repair_order_customer.customer_id </td> -->
+            <td>{{ repair_order.repair_order_customer.customer_first_name }} {{ repair_order.repair_order_customer.customer_last_name }}</td>
+
+            <td>
+              {% for phone in repair_order.repair_order_customer.phones.all %}
+                <p>{{phone.phone_desc.phone_desc}}   {{phone.phone_number|phone2numeric }}</p>
+              {% endfor %}
+            </td>
+
+            <td>
+              {% for email in repair_order.repair_order_customer.emails.all %}
+                {{email.email_address|truncatechars:30 }}
+              {% endfor %}
+            </td>
+
+            <td>
+              {% for address in repair_order.repair_order_customer.addresses.all %}
+              {{ address.address_line_01 }}, {{ address.address_city }}, {{ address.address_state }} {{ address.address_zip_code }}<br>
+              {% endfor %}
+            </td>
+            <td>
+              {{repair_order.repair_order_last_updated_date |date:"Y-m-d" }}
+            </td>
+          </tr>
+          {% empty %}
+          <p>There are no results found.</p>
+
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </form>
+  </div>
+{% endblock %}

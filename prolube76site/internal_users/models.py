@@ -1,7 +1,7 @@
 # 2023-04-01 created this internal_user model to manage internal employees, contractors and etc.
 # chatGPT 4.0 generated.
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin,BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password
 # from usermanagers import UserManager
@@ -13,7 +13,7 @@ class UserManager(BaseUserManager):
         Creates and saves a User with the given email and password.
         """
         if not email:
-            raise ValueError('The Email field must be set')
+            raise ValueError('The Email field must be set.')
                 # hash the password
         hashed_password = make_password(password)
 
@@ -43,60 +43,69 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
 class InternalUser(AbstractBaseUser, PermissionsMixin):
+    USER_LEVEL_1 = 1
+    USER_LEVEL_2 = 2
+    USER_LEVEL_3 = 3
     USER_PERMISSION_LEVELS = (
-            (1, 'Level 1'),
-            (2, 'Level 2'),
-            (3, 'Level 3'),
+            (USER_LEVEL_1, 'Level 1'),
+            (USER_LEVEL_2, 'Level 2'),
+            (USER_LEVEL_3, 'Level 3'),
         )
-    USER_PAY_TYPES = (
-        (1, 'Hourly'),
-        (2, 'Salary'),
-        (3, 'Commission'),
-    )
+    AUTH_GROUP_LEVEL_0 = 0
+    AUTH_GROUP_LEVEL_1 = 1
+    AUTH_GROUP_LEVEL_2 = 2
+    AUTH_GROUP_LEVEL_3 = 3
+    AUTH_GROUP_LEVEL_4 = 4
+    AUTH_GROUP_LEVEL_5 = 5
+    AUTH_GROUP_LEVEL_6 = 6
+    AUTH_GROUP_LEVEL_7 = 7
+    AUTH_GROUP_LEVEL_88 = 88
+
+    USER_AUTH_GROUP = (
+        (AUTH_GROUP_LEVEL_0, 'visitor: ready-only'),
+        (AUTH_GROUP_LEVEL_0, 'customer-group'),
+        (AUTH_GROUP_LEVEL_2, 'internal-user-group'),
+        (AUTH_GROUP_LEVEL_3, 'talent-management-group'),
+        (AUTH_GROUP_LEVEL_4, 'accounting-group'),
+        (AUTH_GROUP_LEVEL_5, 'it-group'),
+        (AUTH_GROUP_LEVEL_6, 'manager-group'),
+        (AUTH_GROUP_LEVEL_7, 'boardmember-group'),
+        (AUTH_GROUP_LEVEL_88, 'master-shi-fu-group'),
+        )
     user_id = models.AutoField(primary_key=True)
     user_first_name = models.CharField(_('first name'), max_length=50)
     user_last_name = models.CharField(_('last name'), max_length=50)
-    email = models.EmailField(verbose_name= 'email address', unique=True)
+    email = models.EmailField(verbose_name='email address', unique=True)
     password = models.CharField(max_length=128, blank=False, null=False)
-    date_of_birth = models.DateField(verbose_name='date of birth')
-    physical_address_01 = models.CharField(verbose_name='your street address', max_length=100)
-    physical_address_02 = models.CharField(max_length=100, blank=True)
-    physical_address_city = models.CharField(max_length=50)
-    physical_address_state = models.CharField(max_length=2)
-    physical_address_zip_code = models.CharField(max_length=10)
-    physical_address_country = models.CharField(max_length=50)
-    mailing_address_is_the_same_physical_address = models.BooleanField(default=False)
-    mailing_address_01 = models.CharField(verbose_name='your street address', max_length=100)
-    mailing_address_02 = models.CharField(max_length=100, blank=True)
-    mailing_address_city = models.CharField(max_length=50)
-    mailing_address_state = models.CharField(max_length=2)
-    mailing_address_zip_code = models.CharField(max_length=10)
-    mailing_address_country = models.CharField(max_length=50)
 
-    user_permission_level = models.IntegerField(default=0)
-    user_pay_type = models.CharField(max_length=50)
-    user_hired_date = models.DateField()
-    user_discharge_date = models.DateField(null=True, blank=True)
-    user_is_active = models.BooleanField(_('active'), default=True, \
-                                        help_text=_('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'))
+    # 2023-05-31 An existing conflict that talent_created_by_user is linked a user profile (InternalUser model); it is
+    # impossible to link a internal_user back to TalentsModel
+    # however, the model uses the following three fields to find the correct talent profile.
+    # hence we skip the database foreign key linkage. I believe this provides additional isolation to protect employee information
+    # that resides in the TalentsModel
+    
+    user_talent_id = models.IntegerField(null=True)
+    user_talent_profile_linkage_is_confirmed = models.BooleanField(default=False)
+    user_talent_profile_last_linked_date =  models.DateTimeField(null=True, blank=True)
+
+    user_start_date = models.DateTimeField(null=True)
+    user_discharge_date = models.DateTimeField(null=True, blank=True)
+
+    user_is_active = models.BooleanField(_('active'), default=True, 
+        help_text=_('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'))
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     user_is_admin = models.BooleanField(default=False)
-
+    user_auth_group = models.PositiveSmallIntegerField(choices=USER_AUTH_GROUP,
+                                                       default=AUTH_GROUP_LEVEL_0,
+                                                       )
     user_created_at = models.DateTimeField(auto_now_add=True)
-    last_updated_at = models.DateTimeField(auto_now=True)
-    
+    user_last_updated_at = models.DateTimeField(auto_now=True)
+
+    # define the username for this internal_user module is email.
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['password',]
-                    #    'date_of_birth','user_first_name','user_last_name',
-                    #    'physical_address_01',
-                    #    'physical_address_02',
-                    #    'physical_address_city',
-                    #    'physical_address_state',
-                    #    'physical_address_zip_code',
-                    #    'physical_address_country',]
 
     objects = UserManager()
 
@@ -104,7 +113,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
         return f'{self.user_first_name} {self.user_last_name}'
 
     class Meta:
-        db_table = 'internalusers'
+        db_table = 'internalusers_new_03'
         verbose_name = 'internaluser'
         verbose_name_plural = 'internalusers'
 

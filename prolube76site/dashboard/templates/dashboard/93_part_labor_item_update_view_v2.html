@@ -1,0 +1,57 @@
+{% extends 'dashboard/00_base.html' %}
+{% block content-main %}
+
+<div class="container my-2">
+    <a class = 'btn btn-secondary' href = "{% url 'dashboard:dashboard-detail' pk=repair_order_id %}"><i class="fa-solid fa-arrow-left"></i> Go Back</a>
+    <h2>
+      this is the part and labor item update view v2
+    </h2>
+  </div>
+    <div class = 'container my-2'>
+        <!-- fields related to only lineitems; excluding partitem or laboritems 
+        2023-05-15 -->
+
+        <form method="post" >
+          {% csrf_token %}
+          <div class="row my-1 ">
+            <div class ='col-3 my-1'>
+                <label class="form-label">Item ID: </label>{{ line_item_id}}
+            </div>
+            <div class ='col-9 my-1'>
+              {{ line_item.line_item_description.label_tag }}    
+              <textarea class="form-control"  id='line_item_description_input' rows="3" on="trimTextarea()">
+                {{ line_item.line_item_description }}
+              </textarea> 
+              
+            </div>
+          </div>    
+        {{ selected_formset.management_form }}
+          {% for selected_form in selected_formset %}
+            <div class="row my-1" >
+              {% for field in selected_form %}
+                <div class ='col-3 my-1'>
+                    <label class="form-label">{{ field.label_tag }}</label>
+
+                </div>
+                <div class ='col-3 my-1'>    
+                  {{ field }}
+                  <span class="text-danger">{{ field.errors }}</span>
+                  
+                </div>
+              {% endfor %}
+            </div>  
+            
+          {% endfor %}
+
+          </form>
+          <button type="submit" class="btn btn-outline-primary" value="Save">Save Changes</button>
+      </div>
+  
+
+      <script>
+        function trimTextarea() {
+            var textarea = document.getElementById("myTextarea");
+            textarea.value = textarea.value.trim();
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'internal_users/60_internal_user_dashboard.html' %}
+{% load crispy_forms_tags %}
+
+{% block content-submain %}
+<div class ='container '>
+  
+    <div class="card card-hover px-2 my-1">
+      <div class = 'row my-1'>
+        <h3 calss="card-title">Personal Information</h3>
+        <h5 class ='col col-12 my-1'>
+          <p class ='card-text'>Your registered Email: {{ talent.talent_email }}</p>
+        </h5>
+        <div class ='col col-4 my-1'>
+          <p class ='card-text'>Name: {{ talent.talent_full_name }}</p>
+        </div>
+        <div class ='col col-4 my-1'>
+          <p class ='card-text'>Phone Number: {{ talent.talent_phone_number_primary }}</p>
+        </div>
+        <div class ='col col-8 my-1'>
+          <p class ='card-text'>Physical Address: {{talent.talent_full_physical_address}}</p>
+        </div>
+        <div class ='col col-8 my-1'>
+          {% if talent_mailing_address_is_the_same_physical_address %}
+          <input type="checkbox" value ='talent_mailing_address_is_the_same_physical_address' disabled> is mailing address the same?
+          <p class ='card-text my-1'>Mailing: {{talent.talent_full_mailing_address}}</p>
+          {% endif %}
+        </div> 
+        <div class ='col col-8 my-1'>
+          <p class ='card-text'>Education {{talent.talent_education_level}}</p>
+        </div>
+        <div class ='col col-8 my-1'>
+          <p class ='card-text'>Certifications {{talent.talent_talent_certifications}}</p>
+        </div>
+        
+      </div>
+
+      <!-- Add more personal information fields -->
+    </div>
+    <!-- end of first card - personal info -->
+
+    <div class="card card-hover px-2 my-2">
+      <h3 class ='card-title'>Employment Information</h3>
+      <div class = 'row my-2'>
+        <div class ='col col-12 my-1'><p>Employee ID: {{ talent.talent_employee_id }}</p></div>
+        <div class ='col col-4 my-1'><p>Pay Type: {{ talent.talent_pay_type}}-{{ talent.get_talent_pay_type_display}}</p></div>
+        <div class ='col col-4 my-1'><p>Pay Rate: {{ talent.talent_pay_rate}}</p></div>
+        <div class ='col col-4 my-1'><p>Pay Frequency: {{ talent.talent_pay_frequency}}-{{ talent.get_talent_pay_frequency_display}}</p></div>
+
+        <div class ='col col-4 my-1'><p>Department: {{ talent.talent_department}}</p></div>
+        <div class ='col col-4 my-1'><p>Supervisor: {{ talent.talent_supervisor}}</p></div>
+        <div class ='col col-4 my-1'><p>Hire Date: {{ talent.talent_hire_date|date}}</p></p></div>
+        <div class ='col col-4 my-1'><p>Last Updated at: {{ talent.talent_last_udpated_date|date}}</p></p></div>
+        
+        
+      </div>  
+      <!-- end-of-card -->
+    </div>
+
+    <div class="card card-hover px-2 my-1">
+      <h3 class ='card-title'>Comments</h3>
+      <div class = 'row my-2'>
+        <div class ='col col-12 my-1'><p>Remarks from HR: {{ talent.talent_HR_remarks_json }}</p></div>
+
+        <div class ='col col-4 my-1'><p>Incident Record: {{talent.talent_incident_record_json}}</p></div>
+
+        
+      </div>  
+      <!-- end-of-card -->
+    </div>
+  
+</div>
+
+
+{% endblock %}

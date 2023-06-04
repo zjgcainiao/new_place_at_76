@@ -1,20 +1,70 @@
 # this seralizers.py is to import data in json
-
 import json
 import os
 from decimal import Decimal, ROUND_HALF_UP
 from homepageapp.models import EmailsNewSQL02Model as Email, CustomersNewSQL02Model as Customer
 from homepageapp.models import AddressesNewSQL02Model as Address, PhonesNewSQL02Model as Phone, VehiclesNewSQL02Model as Vehicle
-from homepageapp.models import CustomerAddressesNewSQL02Model as CustomerAddress
-from homepageapp.models import CannedJobsNewSQL02Model as CannedJob, LineItemsNewSQL02Model as LineItem
-from homepageapp.models import lineItemTaxesNewSQL02Model as LineItemTax, NoteItemsNewSQL02Model as NoteItem
+from homepageapp.models import CustomerAddressesNewSQL02Model as CustomerAddress, CustomerEmailsNewSQL02Model as CustomerEmails
+from homepageapp.models import CustomerPhonesNewSQL02Model as CustomerPhones, PhonesNewSQL02Model as Phones
+from homepageapp.models import EmailsNewSQL02Model as Emails, TaxesModel as Taxes
+from homepageapp.models import PhoneDescModel as PhoneDesc,CategoryModel as Category, TextMessagesModel as TextMessage
+from homepageapp.models import AccountClassModel as AccountClass, InvoiceStatusModel as InvoiceStatus
+
+from homepageapp.models import MakesNewSQL02Model as Make, ModelsNewSQL02Model as Model, BrakesModel as Brake, BodyStylesModel as BodyStyle
+from homepageapp.models import EnginesModel as Engine, TransmissionsModel as Transmission, GVWsModel as GVW, DrivesModel as Drive, SubmodelsModel as SubModel
+from homepageapp.models import MyShopVehicleConfigsModel as MyShopVehicleConfig, VehicleConfigMyShopConfigsModel as VehicleConfigMyShopConfig
+from homepageapp.models import TextMessagesModel as TextMessage
+
 from homepageapp.models import RepairOrderPhasesNewSQL02Model as RepairOrderPhase, RepairOrdersNewSQL02Model as RepairOrder
 from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model as RepairOrderLineItem
-from homepageapp.models import MakesNewSQL02Model as Make, ModelsNewSQL02Model as Model
+from homepageapp.models import CannedJobsNewSQL02Model as CannedJob, LineItemsNewSQL02Model as LineItem
+from homepageapp.models import PartItemModel as PartItem, PartsModel as Part, LaborItemModel as LaborItem
+from homepageapp.models import lineItemTaxesNewSQL02Model as LineItemTax, NoteItemsNewSQL02Model as NoteItem
 from homepageapp.models import AccountClassModel as AccountClass, PaymentsModel as Payment, PaymentTransactionsModel as PaymentTransaction
+
+from talent_management.models import TalentsModel as Talent
+
+from datetime import datetime
+from django.core.exceptions import ObjectDoesNotExist
+import pandas as pd
 
 module_dir = '/Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/New_site_database-data-migration-python-scripts/old_db_jsons'
 suffix_pattern = '_20230115.json'
+
+# Load all foreign key objects into a dictionary for quick lookup. RepairOrderPhase, Customer and Vehicle models.
+# pre-load phases, customers, vehicles, phones and emails and etc
+phase_dict = {phase_obj.repair_order_phase_id: phase_obj for phase_obj in RepairOrderPhase.objects.all()}
+customer_dict = {customer_obj.customer_id:customer_obj for customer_obj in Customer.objects.all()}
+vehicle_dict = {vehicle_obj.vehicle_id:vehicle_obj for vehicle_obj in Vehicle.objects.all()}
+repairorder_dict = {repairorder_obj.repair_order_id:repairorder_obj for repairorder_obj in RepairOrder.objects.all()}
+phone_dict = {phone.phone_id:phone for phone in Phones.objects.all()}
+email_dict = {email.email_id:email for email in Emails.objects.all()}
+taxes_dict = {tax.tax_id:tax for tax in Taxes.objects.all()}
+phonedesc_dict = {phonedesc.phone_desc_id:phonedesc for phonedesc in PhoneDesc.objects.all()}
+lineitem_dict = {lineitem.line_item_id:lineitem for lineitem in LineItem.objects.all()}
+model_dict ={ model.model_id:model for model in Model.objects.all()}
+make_dict = { make.make_id:make for make in Make.objects.all()}
+engine_dict = { engine.engine_id:engine for engine in Engine.objects.all() }
+submodel_dict = {submodel.submodel_id:submodel for submodel in SubModel.objects.all()}
+bodystyle_dict = {bodystyle.body_style_id:bodystyle for bodystyle in BodyStyle.objects.all() }
+drive_dict = { drive.drive_id:drive for drive in Drive.objects.all()}
+gvw_dict = {gvw.gvw_id:gvw for gvw in GVW.objects.all()}
+transmission_dict = {trans.transmission_id:trans for trans in Transmission.objects.all()}
+brake_dict = {brake.brake_id:brake for brake in Brake.objects.all()}
+engine_dict = {engine.engine_id:engine for engine in Engine.objects.all()}
+myshopvehicleconfig_dict = {myshopvehicleconfig.myshop_vehicle_config_id:myshopvehicleconfig for myshopvehicleconfig in MyShopVehicleConfig.objects.all()}
+# repairorder into repairorders_new_03 sql Table
+
+
+def parse_time(datetime_string):
+    if not datetime_string:
+        # If time_str is None or empty, return None
+        return None
+    try:
+        formatted_datetime = datetime.strptime(datetime_string, '%Y-%m-%dT%H:%M:%S')
+    except ValueError:
+        formatted_datetime = datetime.strptime(datetime_string, '%Y-%m-%dT%H:%M:%S.%f')  
+    return formatted_datetime
 
 # def testing(request):
 # Addresses into Addressess_new_03 sql Table
@@ -80,69 +130,93 @@ with open(file_path, 'r') as f:
         )
         aa_instance.save()
 
-# phone model into Phones_new_03 sql table
+# phonedesc model into phonedescs_new_03 sql table
+model_name = 'PhoneDesc'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        aa_instance = PhoneDesc(
+        phone_desc_id = aa['PhoneDescId'],
+        phone_desc = aa['Description'],
+        phone_order = aa['PhoneOrder'],
+        phone_desc_default_type = aa['DefaultType'],
+        phone_desc_last_updated_date = aa['LastChangeDate'],
+        )
+        aa_instance.save()
+
+model_name = 'Category'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    # when the file becomes big, break down into 1000 records per piece
+    # added on 2023-04-10
+    # while True:
+    #     chunk = f.read(1000)
+    #     if not chunk:
+    #         break
+    data_list=[]
+    data = json.load(f)
+    for aa in data:
+        aa_instance = Category(
+            category_id  = aa['CategoryId'],
+            category_description  = aa['Description'],
+            category_display  = aa['Display'],
+            category_last_updated_date  = aa['LastChangeDate'],
+        )
+        aa_instance.save()
+
+# phone model into phones_new_03 sql table
 file_path = os.path.join(module_dir, 'PhoneNum' + suffix_pattern)
 with open(file_path, 'r') as f:
     data = json.load(f)
     for aa in data:
+        phone_desc_id  = aa['PhoneDescId']
+        if phone_desc_id is not None:
+            try:
+                phone_desc_obj = phonedesc_dict.get(phone_desc_id)
+            except ObjectDoesNotExist:
+                phone_desc_obj = None
+        else:
+            phone_desc_obj = None
+
         aa_instance = Phone(
             phone_id = aa['PhoneId'],
-            phone_desc_id = aa['PhoneDescId'],
+            phone_desc_id = phone_desc_obj,
             phone_number = aa['PhoneNum'],
             phone_number_ext = aa['Ext'],
             phone_displayed_name = aa['Display'],
             phone_memo_01 = aa['Note'],
             phone_last_updated_date = aa['LastChangeDate'],
-
         )
         aa_instance.save()
 
-
-# vehicle into Vehicles_new_03 sql Table
-model_name = 'Vehicle'
+# customerphone model into customerphones_new_03 sql table
+model_name = 'CustomerPhones'
 file_path = os.path.join(module_dir, model_name + suffix_pattern)
 with open(file_path, 'r') as f:
     data = json.load(f)
     for aa in data:
-        aa_instance = Vehicle(
-            vehicle_id = aa['VehicleId'],
-            vehicle_cust_id = aa['CustId'],
-            vehicle_year = aa['Year'],
-            vehicle_make_id = aa['MakeId'],
-            vehicle_sub_model_id = aa['SubModelId'],
-            vehicle_body_style_id = aa['BodyId'],
-            vehicle_engine_id = aa['EngineId'],
-            vehicle_transmission_id = aa['TransmissionId'],
-            vehicle_brake_id = aa['BrakeId'],
-            vehicle_drive_type_id = aa['DriveTypeId'],
-            vehicle_GVW_id = aa['GVWId'],
-            vehicle_odometer_1 = aa['Odometer1'],
-            vehicle_odometer_2 = aa['Odometer2'],
-            VIN_number = aa['Vin'],
-            vehicle_inspection_datetime = aa['InspDate'],
-            vehicle_last_in_date = aa['LastInDate'],
-            vehicle_license_plate_nbr = aa['License'],
-            vehicle_license_state = aa['LicenseState'],
-            vehicle_part_level = aa['PartLevel'],
-            vehicle_labor_level = aa['LaborLevel'],
-            vehicle_used_level = aa['UseVehicleLevels'],
-            vehicle_memo_01 = aa['VehicleMemo'],
-            vehicle_memo_does_print_on_order = aa['VehicleMemoPrintOnOrder'],
-            vehicle_is_included_in_CRM_compaign = aa['IncludeInCRMCampaign'],
-            vehicle_color = aa['Color'],
-            vehicle_record_is_activate = aa['Deleted'],
-            vehicle_class_id = aa['VehicleClass'],
-            vehicle_phone_id = aa['DriverPhoneId'],
-            vehicle_engine_hour_in = aa['EngineHoursIn'],
-            vehicle_engine_hour_out = aa['EngineHoursOut'],
-            vehicle_active_recall_counts = aa['ActiveRecallCount'],
-            vehicle_recall_last_checked_datetime = aa['ActiveRecallLastChecked'],
-            vehicle_last_updated_datetime = aa['LastChangeDate'],
-
+        aa_instance = CustomerPhones(
+            phone_id = aa['PhoneId'],
+            customer_id = aa['CustId'],
+            customerphone_last_updated_date = aa['LastChangeDate'],
         )
         aa_instance.save()
 
-
+# import intial data into customeremails_new_03 sql table for 'customeremail' model 
+model_name = 'CustomerEmail'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        aa_instance = CustomerEmails(
+        customeremail_id = aa['Id'],
+        customer_id = aa['CustId'],
+        email_id = aa['EmailId'],
+        customeremail_is_selected  = aa['IsSelected'],
+        customeremail_last_updated_date = aa['LastChangeDate'],
+        )
+        aa_instance.save()
 
 # CustomerAddresses into CustomerAddressess_new_03 sql Table
 model_name = 'CustomerAddresses'
@@ -157,6 +231,487 @@ with open(file_path, 'r') as f:
 
         )
         aa_instance.save()
+
+
+# Engine model into engines_new_03 sql table
+model_name = 'Engine'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        aa_instance = Engine(
+            engine_id = aa['EngineId'],
+            engine_displacement_CID = aa['DisplacementCID'],
+            engine_displacement_liter = aa['DisplacementLiters'],
+            engine_number_of_cylinder = aa['NumberOfCylinders'],
+            engine_valve_per_cyclinder = aa['ValvesPerCylinder'],
+            engine_head_configuration_type = aa['HeadConfigurationType'],
+            engine_boost_type = aa['BoostType'],
+            engine_ignition_system = aa['IgnitionSystem'],
+            engine_vin_code = aa['VinCode'],
+            engine_fuel_system = aa['FuelSystem'],
+            engine_fuel_delivery_method_type = aa['FuelDeliveryMethodType'],
+            engine_fuel_type = aa['FuelType'],
+            engine_fuel_control_type = aa['FuelControlType'],
+            engine_block_configuration = aa['BlockConfiguration'],
+            engine_fuel_system_configuration = aa['FuelSystemConfiguration'],
+        )
+        aa_instance.save()
+
+# transmission model into transmission_new_03 sql table
+model_name = 'Transmission'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        aa_instance = Transmission(
+            transmission_id = aa['TransmissionId'],
+            transmission_type = aa['TransmissionType'],
+            tranmission_manufacturer_code = aa['ManufacturerCode'],
+            transmission_control_type = aa['ControlType'],
+            tranmission_is_electronic_controlled = aa['ElectronicControlled'],
+            transmission_number_of_speed = aa['NumberOfSpeeds'],
+        )
+        aa_instance.save()
+
+# GWV model into gvws_new_03 sql table
+model_name = 'GVW'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        aa_instance = GVW(
+            gvw_id = aa['GVWId'],
+            gvw_text = aa['GVWText'],
+        )
+        aa_instance.save()
+
+# brake model into brakes_new_03 sql table
+model_name = 'Brake'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        aa_instance = Brake(
+            brake_id = aa['BrakeId'],
+            brake_system_type = aa['BrakeSystemType'],
+        )
+        aa_instance.save()
+
+# drive model into drives_new_03 sql table
+model_name = 'Drive'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        aa_instance = Drive(
+            drive_id = aa['DriveId'],
+            drive_type = aa['DriveType'],
+        )
+        aa_instance.save()
+
+
+# submodel model into submodel_new_03 sql table
+model_name = 'SubModel'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        submodel_model_id  = aa['ModelId']
+        if submodel_model_id is not None:
+            try:
+                submodel_model_obj = model_dict.get(submodel_model_id)
+            except ObjectDoesNotExist:
+                submodel_model_obj = None
+        else:
+            submodel_model_obj = None
+
+        aa_instance = SubModel(
+            submodel_id = aa['SubModelId'],
+            submodel_model = submodel_model_obj,
+            submodel_name = aa['Name'],
+            submodel_DMV_id = aa['DMVId'],
+        )
+        aa_instance.save()
+
+# bodystyle model into bodystyles_new_03 sql table
+model_name = 'BodyStyle'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        aa_instance = BodyStyle(
+            body_style_id = aa['BodyStyleId'],
+            body_style_name = aa['Name'].strip(),
+        )
+        aa_instance.save()
+
+
+# myshopvehicleconfig model into myshopvehicleconfigs_new_03 sql table
+model_name = 'ShopMgtVehicleConfig'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        myshop_make_id = aa['MakeId']
+        if myshop_make_id is not None:
+            try:
+                myshop_make_obj = make_dict.get(myshop_make_id)
+            except ObjectDoesNotExist:
+                myshop_make_obj = None
+        else:
+            myshop_make_obj = None
+
+        myshop_model_id = aa['ModelId']
+        if myshop_model_id is not None:
+            try:
+                myshop_model_obj = model_dict.get(myshop_model_id)
+            except ObjectDoesNotExist:
+                myshop_model_obj = None
+        else:
+            myshop_model_obj = None   
+
+        myshop_submodel_id = aa['SubModelId']
+        if myshop_submodel_id is not None:
+            try:
+                myshop_submodel_obj = submodel_dict.get(myshop_submodel_id)
+            except ObjectDoesNotExist:
+                myshop_submodel_obj = None
+        else:
+            myshop_submodel_obj = None   
+
+        myshop_bodystyle_id = aa['BodyStyleId']
+        if myshop_bodystyle_id is not None:
+            try:
+                myshop_bodystyle_obj = bodystyle_dict.get(myshop_bodystyle_id)
+            except ObjectDoesNotExist:
+                myshop_bodystyle_obj = None
+        else:
+            myshop_bodystyle_obj = None
+        
+        myshop_engine_id = aa['EngineId']
+        if myshop_engine_id is not None:
+            try:
+                myshop_engine_obj = engine_dict.get(myshop_engine_id)
+            except ObjectDoesNotExist:
+                myshop_engine_obj = None
+        else:
+            myshop_engine_obj = None
+        
+        myshop_brake_id = aa['BrakeId']
+        if myshop_brake_id is not None:
+            try:
+                myshop_brake_obj = brake_dict.get(myshop_brake_id)
+            except ObjectDoesNotExist:
+                myshop_brake_obj = None
+        else:
+            myshop_brake_obj = None
+
+        myshop_transmission_id = aa['TransmissionId']
+        if myshop_transmission_id is not None:
+            try:
+                myshop_transmission_obj = transmission_dict.get(myshop_transmission_id)
+            except ObjectDoesNotExist:
+                myshop_transmission_obj = None
+        else:
+            myshop_transmission_obj = None
+
+        myshop_GVW_id = aa['GVWId']
+        if myshop_GVW_id is not None:
+            try:
+                myshop_GVW_obj = gvw_dict.get(myshop_GVW_id)
+            except ObjectDoesNotExist:
+                myshop_GVW_obj = None
+        else:
+            myshop_GVW_obj = None
+
+        myshop_drive_id = aa['DriveId'],
+        if myshop_drive_id is not None:
+            try:
+                myshop_drive_obj = drive_dict.get(myshop_drive_id)
+            except ObjectDoesNotExist:
+                myshop_drive_obj = None
+        else:
+            myshop_drive_obj = None
+        # when the MyShopVehicleConfig instance can be found via myshop_vehicle_config_id, rewrite the following fields
+        if  MyShopVehicleConfig.objects.get(pk=aa['ShopMgtVehicleConfigId']) is not None:
+            aa_instance = MyShopVehicleConfig()
+            if myshop_make_obj is not None:
+                aa_instance.myshop_make = myshop_make_obj
+            if myshop_bodystyle_obj is not None:
+                aa_instance.myshop_bodystyle = myshop_bodystyle_obj
+            if myshop_model_obj is not None:
+                aa_instance.myshop_model = myshop_model_obj
+            if myshop_submodel_obj is not None:
+                aa_instance.myshop_submodel = myshop_submodel_obj
+            if myshop_drive_obj is not None:         
+                aa_instance.myshop_drive = myshop_drive_obj
+            if myshop_transmission_obj is not None:                   
+                aa_instance.myshop_transmission = myshop_transmission_obj
+            if myshop_brake_obj is not None:                             
+                aa_instance.myshop_brake = myshop_brake_obj
+            if myshop_GVW_obj is not None:    
+                aa_instance.myshop_GVW = myshop_GVW_obj
+            if myshop_engine_obj is not None:    
+                aa_instance.myshop_engine = myshop_engine_obj
+        else: 
+            aa_instance = MyShopVehicleConfig(
+                myshop_vehicle_config_id = aa['ShopMgtVehicleConfigId'],
+                myshop_year_id = aa['Year'],
+                myshop_make_id =  myshop_make_id, #myshop_make_obj,
+                myshop_model_id =  myshop_model_id, #myshop_model_obj,
+                myshop_submodel_id =  myshop_submodel_id, # myshop_submodel_obj,
+                myshop_bodystyle_id =  myshop_bodystyle_id, # myshop_bodystyle_obj,
+                myshop_engine_id = myshop_engine_id, # myshop_engine_obj ,
+                myshop_brake_id = myshop_brake_id, # myshop_brake_obj,
+                myshop_transmission = myshop_transmission_obj,# myshop_transmission_id,
+                myshop_GVW = myshop_GVW_obj, # myshop_GVW_id, 
+                myshop_drives =  myshop_drive_obj, #myshop_drive_id,
+            )
+        aa_instance.save()
+
+
+# VehicleConfigMyshopConfig model into vehicleconfigmyshopconfig_new_03 sql table
+
+# encounter an problem that myshop_vehicle_config_id becomes NULL
+model_name = 'VehicleConfigurationMapping'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        myshop_vehicle_config_id = aa['ShopMgtVehicleConfigId']
+        if myshop_vehicle_config_id is not None:
+            try:
+                myshop_vehicle_config_obj = MyShopVehicleConfig.objects.get(pk=myshop_vehicle_config_id)
+            except ObjectDoesNotExist:
+                myshop_vehicle_config_obj = None
+        myshop_vehicle_config_obj = None
+        aa_instance = VehicleConfigMyShopConfig(
+            vehicle_config_id = aa['VehicleConfigurationId'],
+            myshop_vehicle_config =  myshop_vehicle_config_obj, #myshop_vehicle_config_id
+
+        )
+        aa_instance.save()
+
+
+
+
+# vehicle into Vehicles_new_03 sql Table
+# 2023-04-18 added a new section that allows to re-insert vehicle_make, vehicle_sub_model and etc. when a record is found.
+model_name = 'Vehicle'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        vehicle_make_id = aa['MakeId']
+        if vehicle_make_id is not None:
+            try:
+                vehicle_make_obj = make_dict.get(vehicle_make_id)
+            except ObjectDoesNotExist:
+                vehicle_make_obj = Make.objects.get(pk=vehicle_make_id)
+        else:
+            vehicle_make_obj = None
+
+        vehicle_model_id = aa['ModelId']
+        if vehicle_model_id is not None:
+            try:
+                vehicle_model_obj = model_dict.get(vehicle_model_id)
+            except ObjectDoesNotExist:
+                vehicle_model_obj = None
+        else:
+            vehicle_model_obj = None   
+
+        vehicle_submodel_id = aa['SubModelId']
+        if vehicle_submodel_id is not None:
+            try:
+                vehicle_submodel_obj = submodel_dict.get(vehicle_submodel_id)
+            except ObjectDoesNotExist:
+                vehicle_submodel_obj = None
+        else:
+            vehicle_submodel_obj = None   
+
+        vehicle_bodystyle_id = aa['BodyId']
+        if vehicle_bodystyle_id is not None:
+            try:
+                vehicle_bodystyle_obj = bodystyle_dict.get(vehicle_bodystyle_id)
+            except ObjectDoesNotExist:
+                vehicle_bodystyle_obj = None
+        else:
+            vehicle_bodystyle_obj = None
+        
+        vehicle_engine_id = aa['EngineId']
+        if vehicle_engine_id is not None:
+            try:
+                vehicle_engine_obj = engine_dict.get(vehicle_engine_id)
+            except ObjectDoesNotExist:
+                vehicle_engine_obj = None
+        else:
+            vehicle_engine_obj = None
+        
+        vehicle_brake_id = aa['BrakeId']
+        if vehicle_brake_id is not None:
+            try:
+                vehicle_brake_obj = brake_dict.get(vehicle_brake_id)
+            except ObjectDoesNotExist:
+                vehicle_brake_obj = None
+        else:
+            vehicle_engine_obj = None
+
+        vehicle_transmission_id = aa['TransmissionId']
+        if vehicle_transmission_id is not None:
+            try:
+                vehicle_transmission_obj = transmission_dict.get(vehicle_transmission_id)
+            except ObjectDoesNotExist:
+                vehicle_transmission_obj = None
+        else:
+            vehicle_transmission_obj = None
+
+        vehicle_GVW_id = aa['GVWId']
+        if vehicle_GVW_id is not None:
+            try:
+                vehicle_GVW_obj = gvw_dict.get(vehicle_GVW_id)
+            except ObjectDoesNotExist:
+                vehicle_GVW_obj = None
+        else:
+            vehicle_GVW_obj = None
+
+        vehicle_drive_id = aa['DriveTypeId'],
+        if vehicle_drive_id is not None:
+            try:
+                vehicle_drive_obj = drive_dict.get(vehicle_drive_id)
+            except ObjectDoesNotExist:
+                vehicle_drive_obj = None
+        else:
+            vehicle_drive_obj = None
+
+        vehicle_phone_id = aa['DriverPhoneId'],
+        if vehicle_phone_id is not None:
+            try:
+                vehicle_phone_obj = phone_dict.get(vehicle_phone_id)
+            except ObjectDoesNotExist:
+                vehicle_phone_obj = None
+        else:
+            vehicle_phone_obj = None
+
+        vehicle_cust_id = aa['CustId'],
+        if vehicle_cust_id is not None:
+            try:
+                vehicle_cust_obj = customer_dict.get(vehicle_cust_id)
+            except ObjectDoesNotExist:
+                vehicle_cust_obj = None
+        else:
+            vehicle_cust_obj = None
+        # when the vehicle instance can be found via vehicle_id, rewrite the following fields
+        if Vehicle.objects.get(vehicle_id=aa['VehicleId']) is not None:
+            aa_instance = Vehicle.objects.get(vehicle_id=aa['VehicleId'])
+            if vehicle_cust_obj is not None:
+                aa_instance.vehicle_cust = vehicle_cust_obj
+            if vehicle_make_obj is not None:    
+                aa_instance.vehicle_make = vehicle_make_obj
+            # aa_instance.vehicle_model = vehicle_model_obj
+            if vehicle_submodel_obj is not None:
+                aa_instance.vehicle_sub_model = vehicle_submodel_obj
+            if vehicle_bodystyle_obj is not None:
+                aa_instance.vehicle_body_style = vehicle_bodystyle_obj
+            if vehicle_brake_obj is not None:
+                aa_instance.vehicle_brake = vehicle_brake_obj
+            if vehicle_transmission_obj is not None:
+                aa_instance.vehicle_transmission = vehicle_transmission_obj
+            if vehicle_engine_obj is not None:
+                aa_instance.vehicle_engine = vehicle_engine_obj
+            if vehicle_GVW_obj is not None:
+                aa_instance.vehicle_GVW = vehicle_GVW_obj
+            if vehicle_drive_obj is not None:
+                aa_instance.vehicle_drive_type = vehicle_drive_obj
+            if vehicle_phone_obj is not None:
+                aa_instance.vehicle_phone = vehicle_phone_obj
+        else: 
+            aa_instance = Vehicle(
+                vehicle_id = aa['VehicleId'],
+                vehicle_cust_id = aa['CustId'],
+                vehicle_year = aa['Year'],
+                vehicle_make_id = aa['MakeId'],
+                vehicle_sub_model_id = aa['SubModelId'],
+                vehicle_body_style_id = aa['BodyId'],
+                vehicle_engine_id = aa['EngineId'],
+                vehicle_transmission_id = aa['TransmissionId'],
+                vehicle_brake_id = aa['BrakeId'],
+                vehicle_drive_type_id = aa['DriveTypeId'],
+                vehicle_GVW_id = aa['GVWId'],
+                vehicle_odometer_1 = aa['Odometer1'],
+                vehicle_odometer_2 = aa['Odometer2'],
+                VIN_number = aa['Vin'],
+                vehicle_inspection_datetime = aa['InspDate'],
+                vehicle_last_in_date = aa['LastInDate'],
+                vehicle_license_plate_nbr = aa['License'],
+                vehicle_license_state = aa['LicenseState'],
+                vehicle_part_level = aa['PartLevel'],
+                vehicle_labor_level = aa['LaborLevel'],
+                vehicle_used_level = aa['UseVehicleLevels'],
+                vehicle_memo_01 = aa['VehicleMemo'],
+                vehicle_memo_does_print_on_order = aa['VehicleMemoPrintOnOrder'],
+                vehicle_is_included_in_CRM_compaign = aa['IncludeInCRMCampaign'],
+                vehicle_color = aa['Color'],
+                vehicle_record_is_activate = aa['Deleted'],
+                vehicle_class_id = aa['VehicleClass'],
+                vehicle_phone_id = aa['DriverPhoneId'],
+                vehicle_engine_hour_in = aa['EngineHoursIn'],
+                vehicle_engine_hour_out = aa['EngineHoursOut'],
+                vehicle_active_recall_counts = aa['ActiveRecallCount'],
+                vehicle_recall_last_checked_datetime = aa['ActiveRecallLastChecked'],
+                vehicle_last_updated_datetime = aa['LastChangeDate'],
+
+            )
+        aa_instance.save()
+
+# AccountClass model into the accountclassess_new_03 table.
+model_name = 'AccountClass'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    # when the file becomes big, break down into 1000 records per piece
+    # added on 2023-04-10
+    # while True:
+    #     chunk = f.read(1000)
+    #     if not chunk:
+    #         break
+    data_list=[]
+    data = json.load(f)
+    for aa in data:
+        
+        aa_instance = AccountClass(
+            account_class_id = aa['AccountClassId'],
+            account_type = aa['AccountType'],
+            account_last_updated_date = aa['LastChangeDate'],
+        )
+        # data_list.append(aa_instance)
+        # Bulk create the repairorderLineItemSequence objects in the database
+        # RepairOrderLineItem.objects.bulk_create(data_list)
+        aa_instance.save()
+
+# 
+model_name = 'InvoiceStatus'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    # when the file becomes big, break down into 1000 records per piece
+    # added on 2023-04-10
+    # while True:
+    #     chunk = f.read(1000)
+    #     if not chunk:
+    #         break
+    data_list=[]
+    data = json.load(f)
+    for aa in data:
+        
+        aa_instance = InvoiceStatus(
+            invoice_status_id = aa['InvoiceStatusId'],
+            invoice_status_description = aa['Description'],
+        )
+        # data_list.append(aa_instance)
+        # Bulk create the repairorderLineItemSequence objects in the database
+        # RepairOrderLineItem.objects.bulk_create(data_list)
+        aa_instance.save()
+
+
 
 # CannedJobs into cannedjobs_new_03 sql Table
 model_name = 'CannedJob'
@@ -208,8 +763,6 @@ with open(file_path, 'r') as f:
         )
         aa_instance.save()
 
-
-
 # LineItemTax into lineitemtaxes_new_03 sql Table
 model_name = 'LineItemTaxes'
 file_path = os.path.join(module_dir, model_name + suffix_pattern)
@@ -234,15 +787,132 @@ with open(file_path, 'r') as f:
     data = json.load(f)
     for aa in data:
         aa_instance = NoteItem(
-            note_item_id = aa['noteItemId'],
+            note_item_id = aa['NoteItemId'],
             line_item_id = aa['LineItemId'],
             note_text = (aa['NoteText']).strip(),
             is_printed_on_order = aa['PrintOnOrder'],
             tech_observation = aa['TechObservation'],
-            note_item_last_updated_date = aa['LastChangeDate'],
-            
+            note_item_last_updated_date = aa['LastChangeDate'],        
             )
         aa_instance.save()
+
+
+# part model into parts_new_03 sql Table
+model_name = 'Part'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        aa_instance = Part(
+            part_id = aa['PartId'],
+            part_description = aa['Description'],
+            part_cost = aa['Cost'],
+            part_price = aa['Price'],
+            part_is_tax_exempt = aa['TaxExempt'],
+            part_category_id = aa['CategoryId'],
+            part_account_class_id = aa['AccountClassId'],
+            part_comments = aa['Comment'],
+            part_manufacturer_id = aa['ManufacturerId'],
+            part_list_price = aa['ListPrice'],
+            part_is_user_entered_price = aa['UserEnteredPrice'],
+            part_kit_id = aa['KitId'],
+            part_is_MPLG_item = aa['IsMPLGItem'],
+            part_is_changed_MPLG_item = aa['IsChangedMPLGItem'],
+            part_is_core = aa['IsCore'],
+            part_core_cost = aa['CoreCost'],
+            part_core_list_price = aa['CoreListPrice'],
+            part_fee_id = aa['PartFeeId'],
+            part_is_deleted = aa['IsDeleted'],
+            part_size = aa['Size'],
+            part_is_tire = aa['IsTire'],
+            part_last_updated_date = aa['LastChangeDate'],
+            )
+        aa_instance.save()
+
+
+# partitem model into partitems_new_03 sql Table
+model_name = 'PartItem'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        aa_instance = PartItem(
+            part_item_id = aa['PartItemId'],
+            line_item_id = aa['LineItemId'],
+            part_discount_description_id = aa['PartDiscountDescriptionId'],
+            part_item_is_user_entered_unit_sale = aa['IsUserEnteredUnitSale'],
+            part_item_is_user_entered_unit_cost = aa['IsUserEnteredUnitCost'],
+            part_item_quantity = aa['Quantity'],
+            part_item_unit_price = aa['UnitPrice'],
+            part_item_unit_list = aa['UnitList'],
+            part_item_unit_sale = aa['UnitSale'],
+            part_item_unit_cost = aa['UnitCost'],
+            part_item_part_no = aa['PartNo'],
+            part_item_part_id = aa['PartId'],
+            part_item_is_confirmed = aa['IsConfirmed'],
+            part_item_vendor_code = aa['VendorCode'],
+            part_item_vendor_id = aa['VendorId'],
+            part_item_manufacture_id = aa['ManufacturerId'],
+            part_item_invoice_number = aa['InvoiceNumber'],
+            part_item_commission_amount = aa['CommissionAmount'],
+            part_item_is_committed = aa['IsCommitted'],
+            part_item_is_quantity_confirmed = aa['IsQuantityConfirmed'],
+            part_item_confirmed_quantity = aa['ConfirmedQuantity'],
+            part_item_is_part_ordered = aa['IsPartOrdered'],
+            part_item_is_core = aa['IsCore'],
+            part_item_is_bundled_kit = aa['IsBundledKit'],
+            part_item_is_MPlg_item = aa['IsMPlgItem'],
+            part_item_is_changed_MPlg_item = aa['IsChangedMPlgItem'],
+            part_item_part_type = aa['PartType'],
+            part_item_size = aa['Size'],
+            part_item_is_tire = aa['IsTire'],
+            part_item_last_updated_date = aa['LastChangeDate'],
+            part_item_meta = aa['Metadata'],
+            part_item_added_from_supplier = aa['AddedFromSupplier'],
+            part_item_purchased_from_vendor = aa['PurchasedFromVendor'],
+            part_item_purchased_from_supplier = aa['PurchasedFromSupplier'],
+            part_item_shipping_description = aa['ShippingDescription'],
+            part_item_shipping_cost = aa['ShippingCost'],
+            )
+        aa_instance.save()
+
+lineitem_dict = {lineitem.line_item_id:lineitem for lineitem in LineItem.objects.all()}
+# LaborItem model to laboritems_new_03 sql table
+model_name = 'LaborItem'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        line_item_id = aa['LineItemId']
+        if line_item_id is not None:
+            try:
+                lineitem_obj = lineitem_dict.get(line_item_id)
+            except ObjectDoesNotExist:
+                lineitem_obj = LineItem.objects.get(pk=line_item_id)
+        else:
+            lineitem_obj = None
+        
+        # if LaborItem.objects.get(pk=aa['LaborItemId']) is not None:
+        #     aa_instance = LaborItem.objects.get(pk=aa['LaborItemId'])
+        #     if lineitem_obj is not None:
+        #         aa_instance.line_item = lineitem_obj
+        # else:
+        aa_instance = LaborItem(
+            labor_item_id = aa['LaborItemId'],
+            line_item = lineitem_obj,
+            labor_rate_description_id = aa['LaborRateDescriptionId'],
+            labor_item_is_user_entered_labor_rate = aa['IsUserEnteredLaborRate'],
+            labor_item_work_performed = aa['WorkPerformed'],
+            labor_item_hours_charged = aa['HoursCharged'],
+            labor_item_symptom = aa['Symptom'],
+            labor_item_is_come_back_invoice = aa['ComeBackInvoice'],
+            labor_item_parts_estimate = aa['PartsEstimate'],
+            labor_item_is_MPlg_item = aa['IsMPlgItem'],
+            labor_item_is_Changed_MPlg_item = aa['IsChangedMPlgItem'],
+            labor_item_last_updated_date = aa['LastChangeDate'],
+            )
+        aa_instance.save()
+
 
 
 # Make into makes_new_03 sql Table
@@ -252,7 +922,6 @@ with open(file_path, 'r') as f:
     data = json.load(f)
     for aa in data:
         aa_instance = Make(
-
             make_id = aa['MakeId'],
             make_name = aa['Name'],
 
@@ -265,59 +934,121 @@ file_path = os.path.join(module_dir, model_name + suffix_pattern)
 with open(file_path, 'r') as f:
     data = json.load(f)
     for aa in data:
-        aa_instance = Make(
-
-        model_id = aa['ModelId:'],
-        make_id = aa['MakeId:'],
-        model_name = aa['Name:'],
-
+        aa_instance = Model(
+            model_id = aa['ModelId'],
+            make_id = aa['MakeId'],
+            model_name = aa['Name'],
         )
         aa_instance.save()
 
-# repairorder into repairorders_new_03 sql Table
+# models into models_new_03 sql Table
+model_name = 'RepairOrderPhase'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    for aa in data:
+        aa_instance = RepairOrderPhase(
+            repair_order_phase_id = aa['RepairOrderPhaseId'],
+            repair_order_phase_description = aa['Phase'],
+        )
+        aa_instance.save()
+
+# insert repairorder into repairorders_new_03 sql table
+# every time i add a new foreign key values into the original database, i need to reimport every time. 
+# it is time consuming given the 45-minute running time.
+
 model_name = 'RepairOrder'
 file_path = os.path.join(module_dir, model_name + suffix_pattern)
 with open(file_path, 'r') as f:
     data = json.load(f)
     for aa in data:
+        # repair_order_phase, repair_order_customer and repair_order_vehicle are foreign keyf fields. 
+        phase_id = aa['RepairOrderPhaseId']
+        customer_id = aa['CustId']
+        vehicle_id = aa['VehicleId']
+        if phase_id is not None:
+            try:
+                phase_obj = phase_dict.get(phase_id)
+            except ObjectDoesNotExist:
+                phase_obj = RepairOrderPhase.objects.get(pk=phase_id)
+        else:
+            phase_obj = None
+
+        if customer_id is not None:
+            try:
+                customer_obj = customer_dict.get(customer_id)
+            except ObjectDoesNotExist:
+                customer_obj = Customer.objects.get(pk=customer_id)
+        else:
+            customer_obj = None
+
+        if vehicle_id is not None:
+            try:
+                vehicle_obj = vehicle_dict.get(vehicle_id)
+            except ObjectDoesNotExist:
+                vehicle_obj = Vehicle.objects.get(pk=vehicle_id)
+        else:
+            vehicle_obj = None
+
         aa_instance = RepairOrder(
-            repair_order_serviced_vehicle_out_datetime  = aa['TimeOut'],
+            repair_order_id  = aa['RepairOrderId'],
+            repair_order_phase = phase_obj,
+            repair_order_customer = customer_obj,
+            repair_order_vehicle = vehicle_obj,
+            repair_order_serviced_vehicle_location = aa['Location'],
+            repair_order_service_status  = aa['StatusDescription'],
+            repair_order_scheduled_start_datetime = parse_time(aa['ScheduleDate']),
+            repair_order_billed_hours  = Decimal(aa['ScheduledHours']),
+            repair_order_promise_datetime  = parse_time(aa['PromiseDate']),
+            repair_order_is_printed  = aa['RoPrinted'],
+            repair_order_invoice_is_printed  = aa['InvoicePrinted'],
+            repair_order_serviced_vehicle_in_datetime  = parse_time(aa['TimeIn']),
+            repair_order_serviced_vehicle_out_datetime  = parse_time(aa['TimeOut']),
             repair_order_serviced_vehicle_hat  = aa['Hat'],
-            repair_order_posted_datetime = aa['DatePosted'],
-            repair_order_serviced_vehicle_odometer_in = aa['OdometerIn '],
+            repair_order_posted_datetime = parse_time(aa['DatePosted']),
+            repair_order_serviced_vehicle_odometer_in = aa['OdometerIn'],
             repair_order_serviced_vehicle_odometer_out = aa['OdometerOut'],
             repair_order_reference_number = aa['ReferenceNumber'],
-            repair_order_receipt_printed_datetime = aa['PrintedDate '],
+            repair_order_receipt_printed_datetime = parse_time(aa['PrintedDate']),  #  aa['PrintedDate'],
             repair_order_snapshot_is_tax_exempt = aa['TaxExempt'],
             repair_order_aggr_notes = aa['Notes'],
             repair_order_observation_text_area = aa['Observations'],
             repair_order_created_as_estimate = aa['CreatedAsEstimate'],
             repair_order_snapshot_margin_pct = aa['MarginPct'],
-            repair_order_snapshot_haz_waste_amount = aa['HazWasteAmt'],
-            repair_order_snapshot_labor_sale_amount  = aa['LaborSale'],
-            repair_order_snapshot_parts_sale_amount  = aa['PartsSale'],
-            repair_order_snapshot_supply_from_shop_amount  = aa['ShopSuppliesAmt'],
-            repair_order_snapshot_tax_haz_material_amount  = aa['TaxAmtHazMat'],
+            repair_order_snapshot_haz_waste_amount = Decimal(aa['HazWasteAmt']),
+            repair_order_snapshot_labor_sale_amount  = Decimal(aa['LaborSale']),
+            repair_order_snapshot_parts_sale_amount  = Decimal(aa['PartsSale']),
+            repair_order_snapshot_supply_from_shop_amount  = Decimal(aa['ShopSuppliesAmt']),
+            repair_order_snapshot_tax_haz_material_amount  = Decimal(aa['TaxAmtHazMat']),
             repair_order_snapshot_tax_supply_from_shop_amount  = aa['TaxAmtShopSupplies'],
-            repair_order_snapshot_total_tax_amount  = aa['TotalTaxAmt'],
-            repair_order_snapshot_balance_due_adjusted = aa['BalanceDueAdjustment'],
-            repair_order_snapshot_discounted_amount = aa['DiscountAmt'],
+            repair_order_snapshot_total_tax_amount  = Decimal(aa['TotalTaxAmt']),
+            repair_order_snapshot_balance_due_adjusted = Decimal(aa['BalanceDueAdjustment']),
+            repair_order_snapshot_discounted_amount = Decimal(aa['DiscountAmt']),
             repair_order_snapshot_part_discounted_desc_id = aa['PartDiscountDescriptionId'],
             repair_order_snapshot_labor_discounted_desc_id  = aa['LaborRateDescriptionId'],
-            repair_order_snapshot_order_total_amount  = aa['OrderTotal'],
+            repair_order_snapshot_order_total_amount  = Decimal(aa['OrderTotal']),
             repair_order_snapshot_calc_haz_waste_cost  = aa['CalculateHazWasteCost'],
-            repair_order_snapshot_calc_shop_supply_cost  = aa['CalculateShopSuppliesCost'],
-            repair_order_serviced_vehcle_engine_hours_in = aa['EngineHoursIn'],
-            repair_order_serviced_vehcle_engine_hours_out  = aa['EngineHoursOut'],
-            repair_order_last_updated_date = aa['LastChangeDate'],
+            repair_order_snapshot_calc_shop_supply_cost  = Decimal(aa['CalculateShopSuppliesCost']),
+            repair_order_serviced_vehcle_engine_hours_in = Decimal(aa['EngineHoursIn']),
+            repair_order_serviced_vehcle_engine_hours_out  = Decimal(aa['EngineHoursOut']),
+            repair_order_last_updated_date = parse_time(aa['LastChangeDate']),
             repair_order_appointment_request_uid = aa['AppointmentRequestUid'],
         )
         aa_instance.save()
 
 # repairorderlineitem into repairorderlineitemsequences_new_03 sql Table
+
+# manually way
 model_name = 'RepairOrderLineItemSequence'
 file_path = os.path.join(module_dir, model_name + suffix_pattern)
 with open(file_path, 'r') as f:
+    # when the file becomes big, break down into 1000 records per piece
+    # added on 2023-04-10
+    # while True:
+    #     chunk = f.read(1000)
+    #     if not chunk:
+    #         break
+    data_list=[]
     data = json.load(f)
     for aa in data:
         aa_instance = RepairOrderLineItem(
@@ -327,5 +1058,248 @@ with open(file_path, 'r') as f:
             sequence = aa['Sequence'],
             ro_line_item_sequence_last_updated_date = aa['LastChangeDate'],
         )
+        # data_list.append(aa_instance)
+        # Bulk create the repairorderLineItemSequence objects in the database
+        # RepairOrderLineItem.objects.bulk_create(data_list)
         aa_instance.save()
 
+
+# paymenttransactions into the paymenttransactions_new_03 table.
+model_name = 'PaymentTransaction'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    # when the file becomes big, break down into 1000 records per piece
+    # added on 2023-04-10
+    # while True:
+    #     chunk = f.read(1000)
+    #     if not chunk:
+    #         break
+    data_list=[]
+    data = json.load(f)
+    for aa in data:
+        aa_instance = PaymentTransaction(
+            payment_transaction_id = aa['PaymentTransactionId'],
+            payment_last_updated_date = aa['LastChangeDate'],
+        )
+        # data_list.append(aa_instance)
+        # Bulk create the repairorderLineItemSequence objects in the database
+        # RepairOrderLineItem.objects.bulk_create(data_list)
+        aa_instance.save()
+
+customer_dict = {customer_obj.customer_id:customer_obj for customer_obj in Customer.objects.all()}
+repairorder_dict = {repairorder_obj.repair_order_id:repairorder_obj for repairorder_obj in RepairOrder.objects.all()}
+paymenttransaction_dict = {paymenttransaction_obj.payment_transaction_id:paymenttransaction_obj for paymenttransaction_obj in PaymentTransaction.objects.all()}
+invoice_status_dict = {invoice_status_obj.invoice_status_id:invoice_status_obj for invoice_status_obj in InvoiceStatus.objects.all()}
+account_class_dict = {account_class_obj.account_class_id:account_class_obj for account_class_obj in AccountClass.objects.all()}
+
+# payment into the payments_new_03 table.
+model_name = 'Payment'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    # when the file becomes big, break down into 1000 records per piece
+    # added on 2023-04-10
+    # while True:
+    #     chunk = f.read(1000)
+    #     if not chunk:
+    #         break
+    data_list=[]
+    data = json.load(f)
+    for aa in data:
+        repair_order_id = aa['RepairOrderId']
+        if repair_order_id is not None:
+            try:
+                repair_order_obj = repairorder_dict.get(repair_order_id)
+            except ObjectDoesNotExist:
+                repair_order_obj = RepairOrder.objects.get(pk=repair_order_id)
+        else:
+                repair_order_obj = None
+        customer_id = aa['CustomerId']
+        if customer_id  is not None:
+            try:
+                customer_obj = customer_dict.get(customer_id)
+            except ObjectDoesNotExist:
+                customer_obj = Customer.objects.get(pk=customer_id)
+        else:
+                customer_obj = None
+        payment_transction_id = aa['PaymentTransactionId']
+        if payment_transction_id is not None:
+            try:
+                payment_transction_obj = paymenttransaction_dict.get(payment_transction_id)
+            except ObjectDoesNotExist:
+                payment_transction_obj = PaymentTransaction.objects.get(pk=payment_transction_id)
+        else:
+                payment_transction_obj = None
+        invoice_status_id = aa['InvoiceStatusId']
+        if invoice_status_id is not None:
+            try:
+                invoice_status_obj = invoice_status_dict.get(invoice_status_id)
+            except ObjectDoesNotExist:
+                invoice_status_obj = InvoiceStatus.objects.get(pk=invoice_status_id)
+        else:
+                invoice_status_obj = None
+
+        account_class_id = aa['AccountClassId']
+        if account_class_id is not None:
+            try:
+                account_class_obj = account_class_dict.get(account_class_id)
+            except ObjectDoesNotExist:
+                account_class_obj = AccountClass.objects.get(pk=account_class_id)
+        else:
+                account_class_obj = None
+
+        aa_instance = Payment(
+            payment_id = aa['PaymentId'],
+            payment_repair_order = repair_order_obj,
+            payment_record_number = aa['RecordNumber'],
+            payment_customer = customer_obj,
+            payment_date = aa['PaymentDate'],
+            payment_check_data = aa['CheckData'],
+            payment_auth_data = aa['AuthData'],
+            payment_amount = aa['Amount'],
+            payment_invoice_status = invoice_status_obj,
+            payment_is_NSF = aa['IsNSF'],
+            payment_is_NSF_reversal = aa['IsNSFReversal'],
+            payment_is_fee_payment = aa['IsFeePayment'],
+            payment_total_payment = aa['TotalPayment'],
+            payment_deletion_date = aa['DeletionDate'],
+            payment_transcation = payment_transction_obj,
+            payment_account_class = account_class_obj,
+            payment_verification_data = aa['VerificationData'],
+            payment_receipt_one = aa['ReceiptOne'],
+            payment_receipt_two = aa['ReceiptTwo'],
+            payment_receipt_three = aa['ReceiptThree'],
+            payment_last_updated_date = aa['LastChangeDate'],
+        )
+        # data_list.append(aa_instance)
+        # Bulk create the repairorderLineItemSequence objects in the database
+        # RepairOrderLineItem.objects.bulk_create(data_list)
+        aa_instance.save()
+
+
+# TextMessage model into the taxmessages_new_03 table.
+model_name = 'TextMessage'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    # when the file becomes big, break down into 1000 records per piece
+    # added on 2023-04-10
+    # while True:
+    #     chunk = f.read(1000)
+    #     if not chunk:
+    #         break
+    data_list=[]
+    data = json.load(f)
+    for aa in data:
+        text_customer_id =aa['CustID']
+        if text_customer_id is not None:
+            text_customer_obj = customer_dict.get(text_customer_id)
+        else:
+            text_customer_obj = None
+        
+        aa_instance = TextMessage(
+            text_message_id = aa['TextMessageId'],
+            text_customer = text_customer_obj,
+            text_body = aa['Body'],
+            text_external_id = aa['ExternalId'],
+            text_type = aa['Type'],
+            text_to_phonenumber = aa['PhoneNumber'],
+            text_direction = aa['Direction'],
+            text_status = aa['Status'],
+            text_error_message = aa['ErrorMessage'],
+            text_error_code = aa['ErrorCode'],
+            text_datetime = aa['Date'],
+            text_body_size = aa['BodySize'],
+            text_last_updated_date = aa['LastChangeDate'],
+        )
+        # data_list.append(aa_instance)
+        # Bulk create the repairorderLineItemSequence objects in the database
+        # RepairOrderLineItem.objects.bulk_create(data_list)
+        aa_instance.save()
+
+### --- read initial talent_management data
+
+import csv
+import json
+import os
+from talent_management.models import TalentsModel as Talent
+from datetime import datetime
+initial_data_filename = "2023-05-01-talent_management_init.csv"
+initial_data_filepath = "/Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/New_site_database-data-migration-python-scripts"
+file_path = os.path.join( initial_data_filepath,initial_data_filename)
+
+def csv_to_json(csv_full_path):
+    with open(csv_full_path, 'r') as file:
+        csv_data = csv.DictReader(file)
+        json_data = json.dumps([row for row in csv_data])
+    return json_data
+
+# read the 
+json_data = csv_to_json(file_path)
+print(json_data)
+
+# with open(file_path, 'r') as f:
+    # when the file becomes big, break down into 1000 records per piece
+    # added on 2023-04-10
+    # while True:
+    #     chunk = f.read(1000)
+    #     if not chunk:
+    #         break
+
+def convert_date_format(date_string):
+    if date_string:
+        # Convert the date string to a datetime object
+        date_object = datetime.strptime(date_string, '%Y-%m-%d')
+
+        # Convert the datetime object to the desired format
+        converted_date = date_object.strftime('%Y-%m-%d')
+
+        return converted_date
+    else:    
+        converted_date = None
+        return converted_date
+
+
+data = json.loads(json_data)
+for aa in data:
+    
+    aa_instance = Talent(
+        talent_id = aa['talent_id'],
+        talent_first_name = aa['talent_first_name'],
+        talent_last_name = aa['talent_last_name'],
+        talent_middle_name = aa['talent_middle_name'],
+        talent_preferred_name = aa['talent_preferred_name'],
+        talent_email = aa['talent_email'],
+        talent_phone_number_primary = aa['talent_phone_number_primary'],
+        talent_emergency_contact = aa['talent_emergency_contact'],
+        talent_date_of_birth = aa['talent_date_of_birth'],
+        talent_physical_address_01 = aa['talent_physical_address_01'],
+        talent_physical_address_02 = aa['talent_physical_address_02'],
+        talent_physical_address_city = aa['talent_physical_address_city'],
+        talent_physical_address_state = aa['talent_physical_address_state'],
+        talent_physical_address_zip_code = aa['talent_physical_address_zip_code'],
+        talent_physical_address_country = aa['talent_physical_address_country'],
+        talent_mailing_address_is_the_same_physical_address = aa['talent_mailing_address_is_the_same_physical_address'],
+        talent_mailing_address_01 = aa['talent_mailing_address_01'],
+        talent_mailing_address_02 = aa['talent_mailing_address_02'],
+        talent_mailing_address_city = aa['talent_mailing_address_city'],
+        talent_mailing_address_state = aa['talent_mailing_address_state'],
+        talent_mailing_address_zip_code = aa['talent_mailing_address_zip_code'],
+        talent_mailing_address_country = aa['talent_mailing_address_country'],
+        talent_education_level = aa['talent_education_level'],
+        talent_certifications = aa['talent_certifications'],
+        talent_hire_date = convert_date_format(aa['talent_hire_date']),
+        talent_department = aa['talent_department'],
+        talent_HR_remarks_json = aa['talent_HR_remarks_json'],
+        talent_incident_record_json = aa['talent_incident_record_json'],
+        talent_is_active = aa['talent_is_active'],
+        talent_pay_type = aa['talent_pay_type'],
+        talent_pay_rate = aa['talent_pay_rate'],
+        talent_pay_frequency = aa['talent_pay_frequency'],
+        talent_previous_department = aa['talent_previous_department'],
+        talent_discharge_date = convert_date_format(aa['talent_discharge_date']),
+        talent_years_of_work = aa['talent_years_of_work'],
+        talent_supervisor_id = aa['talent_supervisor_id'],
+    )
+    # data_list.append(aa_instance)
+    # Bulk create the repairorderLineItemSequence objects in the database
+    # RepairOrderLineItem.objects.bulk_create(data_list)
+    aa_instance.save()

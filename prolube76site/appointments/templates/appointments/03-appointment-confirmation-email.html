@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your appointment request has been successfully submitted</title>
+</head>
+<body>
+    <p>Dear {{ appointment.appointment_first_name }},</p>
+    <p>Your appointment request on {{ appointment.appointment_requested_datetime }} has been confirmed.</p>
+    <p>Reason for visit: {{ appointment.appointment_reason_for_visit }}</p>
+    <p>Vehicle details: {{ appointment.appointment_vehicle_detail }}</p>
+    <p>Concern description: {{ appointment.appointment_concern_description }}</p>
+    <p>Appointment date: {{ appointment.appointment_requested_datetime }}</p>
+    <p>Thank you for choosing us.</p>
+    <p>76 Pro Lube Plus.</p>
+</body>
+</html>

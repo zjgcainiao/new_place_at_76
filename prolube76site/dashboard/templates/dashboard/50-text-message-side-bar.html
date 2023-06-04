@@ -1,0 +1,30 @@
+<div class='container my-3' id="chat-sidebar">
+    Texting with Customer {{customer_id}}
+    <div class="header">
+        Customer Name: xxxx.
+        <p>last text: pending </p>
+    </div>
+    {% for text in text_messages %}
+    <div class="row justify-content-start my-1">   
+
+        <div class="col-4 my-1">
+            {{ text.text_datetime|date:'m/d/y' }}    :<u>{{text.text_to_phonenumber}}</u>
+        </div>
+        <div class="col-8 my-1">
+                Body: {{ text.text_body }}
+        </div>
+
+    </div>        
+        {% endfor %}
+</div>
+<div class='container my-3'>  
+    <form id="send-message-form" method="post" action="#">
+        {% csrf_token %}
+
+        <label for="phone-number">Phone number:</label>
+        <input type="text" name="phone-number" id="phone-number" class="form-control">
+        <label for="message">Message:</label>
+        <input type="text" name="message" id="message" class="form-control">
+        <input type="submit" value="Send">
+    </form>
+</div>

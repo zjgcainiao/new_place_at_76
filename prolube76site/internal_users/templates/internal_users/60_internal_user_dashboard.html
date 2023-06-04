@@ -1,0 +1,118 @@
+{% extends 'internal_users/00_base.html' %}
+{% load static %}
+{% block content-main %}
+
+
+    <!-- ========== Left Sidebar Start ========== -->
+  
+        <div class="leftside-menu">
+            <!-- Sidebar Hover Menu Toggle Button -->
+            <div class="button-sm-hover" data-bs-toggle="tooltip" data-bs-placement="right" title="">
+                <i class="ri-checkbox-blank-circle-line align-middle"></i>
+            </div>
+
+            <!-- Full Sidebar Menu Close Button -->
+            <div class="button-close-fullsidebar">
+                <i class="ri-close-fill align-middle"></i>
+            </div>
+            <div class="h-100" id="leftside-menu-container" data-simplebar>
+
+                <!--- Sidemenu -->
+                <ul class="side-nav">
+                    <!-- Leftbar User -->
+                    <div class ='container'>
+                        <div class="row my-2">
+                            <img src="{% static 'homepageapp/img/avatars/avatar_new_02.png' %}" alt="internal-user-image" >
+                        </div>
+                        <div class="row my-3">
+                            <h3> {{internal_user.user_first_name}} {{internal_user.user_last_name}}, {{internal_user.user_middle_name}}</h3>
+                        </div>
+                        
+                    </div>    
+
+                    <li class="side-nav-title">Personal & Employment</li>
+
+                    <li class="side-nav-item">
+                        <a  href="#sidebarPages" class="side-nav-link">
+                            <i class="uil-copy-alt"></i>
+                            <span> Personal </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <a href="{% url 'internal_users:employement_info' %}"  class="side-nav-link">
+                            <i class="uil-copy-alt"></i>
+                            <span> Employment </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        
+                    </li>
+
+                    <li class="side-nav-title">Settings</li>
+
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarSettings" aria-expanded="false" aria-controls="sidebarSettings" class="side-nav-link">
+                            <i class="uil-folder-plus"></i>
+                            <span> Multi Level </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarSettings">
+                            <ul class="side-nav-second-level">
+                                <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" href="#sidebarSecondLevel" aria-expanded="false" aria-controls="sidebarSecondLevel">
+                                        <span> Second Level </span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <div class="collapse" id="sidebarSecondLevel">
+                                        <ul class="side-nav-third-level">
+                                            <li>
+                                                <a href="javascript: void(0);">Item 1</a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript: void(0);">Item 2</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </li>
+                    <!-- end of one side-nav-item -->
+                    <li class="side-nav-title my-1">
+                        <a href="{% url 'dashboard:dashboard' %}" class="side-nav-link">
+                            
+                            <button class="btn btn-lg btn-primary"  href="{% url 'dashboard:dashboard' %}" > Go to Work Station</button>
+                        </a>
+                    </li>
+                </ul>
+                <!--- End Sidemenu -->
+
+                <div class="clearfix"></div>
+            </div>
+            
+        </div>
+
+    <!-- ========== Left Sidebar End ========== -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="container">
+        <div class ='card card-body'>
+            <div class="content-page">
+                <div class="content">
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        {% block content-submain %}
+                        {% endblock %}
+                    </div>
+                    <!-- container -->
+
+                </div>
+                <!-- content -->
+            </div>
+        </div>
+    </div>
+        <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->    
+{% endblock %}

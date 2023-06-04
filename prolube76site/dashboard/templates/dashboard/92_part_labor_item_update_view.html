@@ -1,0 +1,66 @@
+{% extends 'dashboard/00_base.html' %}
+{% block content-main %}
+
+<div class="container mb-2">
+    <a class = 'btn btn-secondary  my-2' href = "{% url 'dashboard:dashboard-detail' pk=repair_order_id %}"><i class="fa-solid fa-arrow-left"></i> Go Back</a>
+    <p class ='lead'>Description: {{line_item.line_item_description}}</p>
+    <p class ='lead'>Line_Item_id {{line_item_id}}</p>
+</div>
+{% if part_item_formset.empty %}
+  nothing to see here.
+{% else %}
+
+    <div class = 'container my-1'>
+        <!-- PartItem formset -->
+        <form method="post">
+          {% csrf_token %}
+        {{ part_item_formset.management_form }}
+          {% for part_item_form in part_item_formset.forms %}
+              {% for field in part_item_form %}
+            <div class="row">
+              <div class ='col-4 my-1'>
+                  <label class="form-label">{{ field.label_tag }}</label>
+              </div>
+              <div class ='col-6 my-1'>    
+                  {{ field }}
+                <span class="text-danger">{{ field.errors }}</span>
+              </div>
+            </div>  
+            {% endfor %}
+          {% endfor %}
+
+          </form>
+          <button type="submit" class="btn btn-outline-primary" value="Update">Update-PartItem</button>
+      </div>
+  
+{%endif %}
+
+
+<div class = 'container my-1'>
+      <!-- LaborItem formset -->
+      {% if labor_item_formset.empty %}
+        nothing to see here.
+      {% else %}
+        <form method="post">
+          {% csrf_token %}
+          {{ labor_item_formset.management_form }}
+          {% for labor_item_form in labor_item_formset %}
+            {% for field in labor_item_form %}
+              <div class="row">
+                <div class ='col-4 my-1'>
+                    <label class="form-label">{{ field.label_tag }}</label>
+                    
+                </div>
+                <div class ='col-4 my-1'>
+                  {{ field }}
+                  <span class="text-danger">{{ field.errors }}</span>
+                </div>
+              </div> 
+            {% endfor %}
+          {% endfor %}
+          
+        </form>
+        <button type="submit" class="btn btn-outline-primary">Update</button>
+    {% endif %}   
+  </div>
+{% endblock %}

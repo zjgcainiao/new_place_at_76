@@ -1,0 +1,138 @@
+{% extends 'homepageapp/10_homepageapp_base.html' %}
+{% load static %}
+
+{% block content1-main %}
+
+
+ <!-- <section class="bg-top-center bg-repeat-0 pt-5" style=" background-image: url({% static 'homepageapp/img/car-finder/home/hero-bg.png' %}); background-size: 1920px 630px;">
+ </section> -->
+  <!-- Page header-->
+<!-- <section class="container mb-5 pb-lg-5">
+  <div class="row align-items-center justify-content-lg-start justify-content-center flex-lg-nowrap gy-4">
+    <div class="col-lg-9"><img class="rounded-3" src="img/car-finder/about/hero-img.jpg" alt="Hero image"></div>
+    <div class="col-lg-4 ms-lg-n5 col-sm-9 text-lg-start text-center">
+      <div class="ms-lg-n5 pe-xl-5">
+        <h1 class="mb-lg-4 text-light">About us</h1>
+        <p class="mb-4 pb-lg-3 fs-lg text-light opacity-70">We believe that car buying and selling should be straight-forward and enjoyable, not time-consuming, complicated or stressful.</p><a class="btn btn-lg btn-primary w-sm-auto w-100" href="car-finder-catalog-list.html"><i class="fi-search me-2"></i>Search car</a>
+      </div>
+    </div>
+  </div>
+</section> -->
+<!-- Page header-->
+<section class="bg-top-center bg-repeat-0 pt-5" style="background-image: url({% static 'homepageapp/img/car-finder/home/hero-bg.png' %}); background-size: 1920px 630px;">
+  <div class="container pt-5">
+    <div class="row pt-lg-4 pt-xl-5">
+      <div class="col-lg-5 col-md-5 pt-3 pt-md-4 pt-lg-5">
+        <h2 class="text-dark pb-2 mb-4 me-md-n5">An AI-driven automotive repair shop that you can trust.</h2>
+        <p class="fs-lg text-dark opacity-80"> Our shop thrives to make your service visit at our shop as smooth and transparent as we can. Offer you the 21st-century treatment of automotive servicing.</p>
+          
+        <p class="fs-lg text-dark opacity-80"> Unlike most dealerships, We aim to provide you information you will need before we start to work on your car.</p>
+        <p class="fs-lg text-dark opacity-80">Our unique advantages include:</p>
+        <ul class="fs-lg text-dark opacity-70">
+
+          <li>System Vertical Integration: gives you one-stop-shop experience </li>
+          <li>Automations: rid of repetitive works and improve feedback accuracy. </li>
+          <li>AI-driven approaches: work smarter with the helper of AI. </li>
+        </ul>
+        <p class="fs-lg text-dark opacity-80">Make a service appointment (oil changes, A/C issues, etc) with us online.</p>
+        <a  class="btn btn-sm btn-outline-primary w-sm-auto w-100" href="{% url 'appointments:appointment-create-view' %}">Service Appointment</a>
+
+      </div>
+      <div class="col-lg-7 col-md-7 pt-md-5"><img class="d-block mt-4 ms-auto" src="{% static 'homepageapp/img/2023-05-27-tesla-roadster-sports-car-tesla-motors-car.png' %}" width="800" alt="Car"></div>
+    </div>
+  </div>
+</section>
+<!-- Services We provide selection-->
+<section class="container pt-5">
+  <div class="d-sm-flex align-items-center justify-content-between mb-3 mb-sm-4 pb-sm-2">
+    <h2 class="h3 text-dark my-2 mb-sm-0">Popular Services</h2><a class="btn btn-link btn-dark fw-normal px-0" href="{% url 'homepageapp:services' %}">View all<i class="fi-arrow-long-right fs-sm mt-0 ps-1 ms-2"></i></a>
+  </div>
+  <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-2 g-md-4">
+    <!-- Item-->
+    <div class="col col-3">
+      <div class="card card-body card-dark card-hover bg-transparent border-0 px-0 pt-0 text-center"><img class="d-block mx-auto mb-3" src="{% static 'homepageapp/img/svgs/car-maintenance-icon.svg' %}" width="160" alt="car car-maintenance-oil-change"><p class="stretched-link fw-bold" >Oil Changes </p></div>
+    </div>
+    <!-- Item-->
+    <div class="col col-3">
+      <div class="card card-body card-dark card-hover bg-transparent border-0 px-0 pt-0 text-center"><img class="d-block mx-auto mb-3" src="{% static 'homepageapp/img/svgs/air-conditioning-icon.svg' %}" width="160" alt="a/c-system-diagnosis-and-repair"><p class=" stretched-link fw-bold">Air Conditioning Not Cooling & Heating</p></div>
+    </div>
+    <!-- Item-->
+    <div class="col col-3">
+      <div class="card card-body card-dark card-hover bg-transparent border-0 px-0 pt-0 text-center"><img class="d-block mx-auto mb-3" src="{% static 'homepageapp/img/svgs/engine-icon.svg' %}" width="160" alt="engine"><p class="stretched-link fw-bold" >Engine Repair (w/ service lights on, overheating, etc)</p></div>
+    </div>
+    <!-- Item-->
+    <div class="col col-3">
+      <div class="card card-body card-dark card-hover bg-transparent border-0 px-0 pt-0 text-center"><img class="d-block mx-auto mb-3" src="{% static 'homepageapp/img/svgs/battery-svgrepo-com-icon.svg' %}" width="160" alt="Family MPV"><p class=" fw-bold">Car Battery Service</p></div>
+    </div>
+    <!-- Item-->
+    <div class="col col-3">
+      <div class="card card-body card-dark card-hover bg-transparent border-0 px-0 pt-0 text-center"><img class="d-block mx-auto mb-3" src="{% static 'homepageapp/img/svgs/electrical-service-icon.svg' %}" width="160" alt="Compact"><p class=" stretched-link fw-bold" >Electric Diangosis </p></div>
+    </div>
+    <!-- Item-->
+    <div class="col col-3">
+      <div class="card card-body card-dark card-hover bg-transparent border-0 px-0 pt-0 text-center"><img class="d-block mx-auto mb-3" src="{% static 'homepageapp/img/svgs/brake-icon.svg' %}" width="160" alt="Convertible"><p class=" fw-bold" href="car-finder-catalog-list.html">Brake Replacements </p></div>
+    </div>
+    <!-- Item-->
+    <div class="col col-3">
+      <div class="card card-body card-dark card-hover bg-transparent border-0 px-0 pt-0 text-center"><img class="d-block mx-auto mb-3" src="{% static 'homepageapp/img/svgs/spark-spark-plug-svgrepo-com-icon.svg' %}" width="160" alt="spark-plug"><p class=" stretched-link fw-bold" >Spark Plugs</p></div>
+    </div>
+    <!-- Item-->
+    <div class="col col-3">
+      <div class="card card-body card-dark card-hover bg-transparent border-0 px-0 pt-0 text-center"><img class="d-block mx-auto mb-3" src="{% static 'homepageapp/img/svgs/gear-shift-stick-svgrepo-com-icon.svg' %}" width="160" alt="transmission"><p class=" stretched-link fw-bold">Transmission Service</p></div>
+    </div>
+    <!-- Item-->
+    <div class="col col-3">
+      <div class="card card-body card-dark card-hover bg-transparent border-0 px-0 pt-0 text-center"><img class="d-block mx-auto mb-3" src="{% static 'homepageapp/img/svgs/windshield-icon.svg' %}" width="160" alt="Windshield-Wipers"><p class=" stretched-link fw-bold" >Windshield Wiper</p></div>
+    </div>
+    <!-- Item-->
+    <div class="col col-3">
+      <div class="card card-body card-dark card-hover bg-transparent border-0 px-0 pt-0 text-center"><img class="d-block mx-auto mb-3" src="{% static 'homepageapp/img/svgs/suspension-icon.svg' %}" width="160" alt="suspension"><p class="stretched-link fw-bold" >Suspension Service</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="container pt-5">
+  <div class="d-sm-flex align-items-center justify-content-between mb-3 mb-sm-4 pb-sm-2">
+    <h2 class="h3 text-dark my-2 mb-sm-0">Our Team</h2>
+  </div>
+  
+  <!-- <div class="container">
+    <div class="card card-light card-hover h-100">
+      <div class="card-body icon-box text-center">
+        <div class="bg-dark text-light mx-auto mb-3 d-inline-flex align-items-center justify-content-center">
+          <img src="{% static 'homepageapp/img/svgs/electrical-service-icon.svg' %}" alt="Car icon"></div>
+        <h4 class="card-title">~ 1 mln cars</h4>
+        <p class="card-text fs-sm opacity-70">Fringilla vivamus arcu faucibus malesuada. Dui aenean suspendisse a aliquet id gravida ut. Lorem lacinia sed mauris erat at nisl.</p>
+      </div>
+    </div>
+  </div> -->
+  <!-- Member 01  -->
+  <div class ="container">
+    <div class = 'row gy-2 '>
+      <div class="col col-5">
+        <div class="card card-hover border-50 px-200 pt-20 text-center h-100">
+          <img src="{% static 'homepageapp/img/founders/stephen_profile_small_02.png' %}" class="card-img-top" alt="Card image" style ="width: 514px; height: 567px">
+          <div class="card-body">
+            <h5 class="card-title">Stephen Wang</h5>
+            <p class="card-text fs-sm">Founder. Believe in a better auto repair service can be achieved by integrating technical advancements into company operations. We combine our system into one-stop-shop model for maximizing efficiency improvements. Ex banking analyst. </p>
+          </div>
+        </div>
+      </div>
+      <div class="col col-2">
+
+      </div>
+      <div class="col col-5">
+        <div class="card card-dark card-hover border-50 px-20 pt-20 text-center h-100">
+          <img src="{% static 'homepageapp/img/founders/max_small_profile_514x567.png' %}" class="card-img-top" alt="Card image" style ="width: 514px; height: 567px">
+          <div class="card-body">
+            <h5 class="card-title">Max Gonzalez</h5>
+            <p class="card-text fs-sm">Founder. Chief Mechanic. The firm believer of the motto " I have become an mechanic because engineers need an hero." 20+ year mechanic experience. Proficiency in major car brands, inlcuding Tesla, March-E and etc. Father of lovely two.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+    

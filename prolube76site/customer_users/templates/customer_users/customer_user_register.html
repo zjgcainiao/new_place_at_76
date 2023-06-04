@@ -1,0 +1,29 @@
+{% extends 'customer_users/base.html' %}
+
+{% block content %}
+
+<section class="container pt-5">
+  <aside>
+    <div class='row'>
+      <div class="col col-8">
+        <div class="card card-body card-dark border-20 shadow pb-1 me-lg-1">
+          <h2  class="text-dark">Register a new account with us. </h2>
+          {% for field in form %}
+          <form class = 'form-floating mb-1' method="POST">
+            {% csrf_token %}
+                
+                  <div class="mb-1">
+                    <label for="text-input" class="form-label">{{ field.label_tag }}</label>
+                    {{ field }}
+                  </div>
+              
+              
+            <button class = 'btn btn-outline-primary' type="submit">Register</button>
+          </form>
+          {% endfor %}
+        </div>  
+      </div>
+    </div>
+  </aside>
+</section>  
+{% endblock %}

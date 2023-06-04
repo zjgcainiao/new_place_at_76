@@ -1,0 +1,70 @@
+{% extends 'talent_management/00_base.html' %}
+{% block content-main %}
+<div class ='container'>
+  <h2>Talents Search List</h2>
+  <h5>This version 02 is to test the search function </h5>
+  <p>User: {{user.user_first_name}}. Auth Group: {{user.user_auth_group}}-{{user.get_user_auth_group_display}}</p>
+  <p>user has_perm {{user.has_perm}}</p>
+  <div class="app-search dropdown d-none d-sm-block">
+    <form method="GET" action="{% url 'talent_management:talent_search_list' %}">
+        <div class="input-group">
+            <input type="search" class="form-control dropdown-toggle" name='talent-search-query' placeholder="Search by names, email or phone numbers" id="talent-search" value="{{ request.GET}}">
+            <span class="mdi mdi-magnify search-icon"></span>
+            <button class="input-group-text btn btn-primary" type="submit">Search</button>
+        </div>
+    </form>
+  </div>
+</div>
+<div class ='container'>
+  <div class ='row'>
+    <div class="col-md-12">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th> Talent ID (not employee ID)</th>
+            <th>Full Name</th>
+            <th>Full Address</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th>Last Updated at</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for talent in talent_list %}
+            <tr>
+              <td><a href="{% url 'talent_management:talent_detail' pk=talent.talent_id  %}">{{ talent.talent_id }}</a></td>
+              <td>{{ talent.talent_full_name }}</td>
+              <td>{{ talent.talent_full_address }}</td>
+              <td>{{ talent.talent_phone_number_primary }}</td>
+              <td>{{ talent.talent_email }}</td>
+              <td>{{talent.talent_last_udpated_date}}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5">No talents found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+  <!-- Add pagination links if required -->
+  {% if is_paginated %}
+      <div class="pagination">
+          <span class="step-links">
+              {% if page_obj.has_previous %}
+                  <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+              {% endif %}
+
+              <span class="current-page">{{ page_obj.number }}</span>
+
+              {% if page_obj.has_next %}
+                  <a href="?page={{ page_obj.next_page_number }}">next</a>
+              {% endif %}
+          </span>
+      </div>
+  {% endif %}
+{% endblock %}

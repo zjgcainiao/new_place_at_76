@@ -1,0 +1,13 @@
+{% extends 'internal_users/60_internal_user_dashboard.html' %}
+{% load crispy_forms_tags %}
+
+{% block content-submain %}
+
+<form >
+
+  {{ form.as_p |safe }}
+
+</form>
+
+
+{% endblock %}

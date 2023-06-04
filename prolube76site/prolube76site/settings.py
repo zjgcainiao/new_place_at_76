@@ -13,6 +13,7 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 
+
 load_dotenv()  # take environment variables from .env.
 
 #from .config.dev import *
@@ -29,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 try:
     SECRET_KEY = os.getenv("DJANO_SECRET_KEY")
 except KeyError as e:
-    raise RuntimeError("Could not find a Django SECRET_KEY in the environment variables") from e
+    raise RuntimeError("Could not find a Django SECRET_KEY in the environment variables.") from e
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -38,26 +39,39 @@ DEBUG = True
 # ADMINS=[]
 
 # ALLOWED_HOSTS=[]
-ALLOWED_HOSTS = ["www.theironmanhouse.com","127.0.0.1","localhost",]
+ALLOWED_HOSTS = ["www.theironmanhouse.com","127.0.0.1","localhost","192.168.1.83"]
 
 # Application definition
-
 INSTALLED_APPS = [
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+    'django.contrib.humanize',  # humanize lib. so i can use to format phone numbers
+
     # 'polls.apps.PollsConfig',
     'polls',
     'homepageapp',
     'appointments',
-    'apis',  # adding the aps. 
+    'apis',  # adding the apis.
     'internal_users',
+    'customer_users',
     'dashboard',
+    'talent_management',
+    'we_create_3d_models',
+    'automatic_mails',
+    'core_operations',
+
+    'celery',
+    'django_celery_results',
+    'django_celery_beat',
+    'rest_framework',
+    'captcha', # google reCAPTCHA connection
+    'formtools',
+    'crispy_forms', # add django-cripsy-form
+    'crispy_bootstrap4',
     # 'firebase_auth', # google firebase-auth
 ]
 
@@ -99,6 +113,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'prolube76site.wsgi.application'
 
+
+AUTHENTICATION_BACKENDS =["django.contrib.auth.backends.ModelBackend",
+                          "customer_users.customer_auth_backend.CustomerUserBackend",
+                          ]
+
+# 2023-05-30
+# Celery Configuration Options
+# https://docs.celeryq.dev/en/stable/django/first-steps-with-django.html
+
+CELERY_TIMEZONE = "America/Los_Angeles"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+# Celery broker settings
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
 # -- 2023-04-01 add a custom internal_users app to manage the future employees.
 AUTH_USER_MODEL = 'internal_users.InternalUser'
 
@@ -106,6 +136,51 @@ AUTH_USER_MODEL = 'internal_users.InternalUser'
 # controlled by dashboard app. the main core app that do the lineitems and etc.
 LOGIN_REDIRECT_URL = "/dashboard/"
 
+# added on 2023-04-12 ---email 
+if os.environ.get("EMAIL_SENDER"):
+    email_sender = os.environ.get('EMAIL_SENDER')
+    email_pwd = os.environ.get('EMAIL_SENDER_PWD')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com' # replace with your SMTP host
+EMAIL_PORT = 587 # replace with your SMTP port. or 465
+EMAIL_USE_TLS = True # replace with your SMTP security settings
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = email_sender # replace with your email
+EMAIL_HOST_PASSWORD = email_pwd # replace with your email password
+DEFAULT_FROM_EMAIL = email_sender # replace with your email
+
+# added on 2023-06-02 storage 
+
+DEFAULT_FILE_STORAGE = 'myapp.custom_storage.NASStorage'
+NAS_STORAGE_LOCATION = '192.168.1.30'  # NAS server IP or hostname
+
+
+
+# # django < 4.2
+# DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+# # django >= 4.2
+# STORAGES = {"default": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"}}
+
+# GS_BUCKET_NAME = 'YOUR_BUCKET_NAME_GOES_HERE'
+
+# Configure Google Cloud Storage settings
+
+# Import the required packages
+# from storages.backends.gcloud import GoogleCloudStorage
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+from google.oauth2 import service_account
+
+google_credential_path = os.environ.get("GOOGLE_CREDENTIAL_PATH")
+
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(google_credential_path)
+GS_BUCKET_NAME = '2023_new_prolube76site'  # Replace with your Google Cloud Storage bucket name #2023_new_prolube76site/2023_talent_employment_docs
+GS_PROJECT_ID = 'fresh-start-9fdb6'  # Replace with your Google Cloud project ID
+GS_DEFAULT_ACL = 'publicRead'
+GS_BUCKET_ACL = 'publicRead'
+GS_AUTO_CREATE_BUCKET = True
 
 # ----2023-04-03 add firebase auth package for external_users (customers) to use ---
 
@@ -115,37 +190,22 @@ LOGIN_REDIRECT_URL = "/dashboard/"
 import firebase_admin
 from firebase_admin import credentials
 
-cred = credentials.Certificate("/Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/2023-04-01-firebase-auth-private-key/fresh-start-9fdb6-firebase-adminsdk-yjbn6-92fef6fee6.json")
+cred = credentials.Certificate(google_credential_path)
 firebase_admin.initialize_app(cred)
 
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# Add Google ReCAPTCHA keys
+RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY")
+RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY")
+# ADD the following line for testing and local development
+SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 
 ### use the django-mssql-backend 
-
-# DATABASES = {
-#      'default': {
-#          'ENGINE': 'mssql',
-#          'NAME': 'ShopMgt',
-#          'USER': 'SA',
-#          'PASSWORD': '8189180941sS@',
-#          'HOST': 'localhost',
-#          'PORT': '1433',
-
-#          'OPTIONS': {
-#              'driver': 'ODBC Driver 18 for SQL Server',
-#          },
-#      },
-#  } 
-
-# DATABASES = {
-#       'default': {
-#           'ENGINE': 'django.db.backends.sqlite3',
-#           'NAME': BASE_DIR / 'db.sqlite3',
-#       }
-#   }
 
  # 2022-07-04- hide sensitivie environemnt variables such as the database url and login info. 
 
@@ -205,12 +265,6 @@ else:
 # DATABASE_CONNECTION_POOLING = False
 
 
-
-# 'django.db.backends.postgresql'
-# 'django.db.backends.mysql'
-# 'django.db.backends.sqlite3'
-# 'django.db.backends.oracle'
-    
 # You can use a database backend that doesn’t ship with Django by setting ENGINE to a fully-qualified path (i.e. mypackage.backends.whatever).
 
 # Password validation

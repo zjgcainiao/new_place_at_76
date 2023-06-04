@@ -1,0 +1,20 @@
+<!-- talent_preview.html -->
+{% extends 'talent_management/00_base.html' %}
+
+{% block content-main %}
+    <h1>Preview before Submission</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+
+        {% block wizard_content %}
+        <table>
+            {{ wizard.form.as_table }}
+        </table>
+        {% endblock %}
+
+        <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.prev }}">Previous</button>
+        <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.current }}">Submit</button>
+    </form>
+{% endblock %}

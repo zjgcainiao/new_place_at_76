@@ -1,0 +1,92 @@
+{% extends 'customer_users/dashboard_base.html' %}
+{%load static %}
+
+{% block content-main-1 %}
+<div class="col-lg-8 col-md-7 mb-5">
+    <!-- content-nav -->
+    <div class="card card-body card-dark border-20 shadow pb-1 me-lg-1">
+        <h1 class="h2 text-dark">Personal Info</h1>
+        <div class="row">
+            <div class="col-lg-9 col-md-12 col-sm-8 mb-2 mb-m-4">
+                <div class="border border-dark rounded-3 p-3 mb-4" id="personal-info">
+                    <!-- First Name-->
+                    <div class="border-bottom border-dark pb-3 mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                        <div class="pe-1 opacity-70">
+                            <label class="form-label fw-bold text-dark">First name</label>
+                            <div class="text-dark" id="name-value">{{customer_user.cust_user_first_name}} </div>
+                        </div>
+                        <div class="me-n3" data-bs-toggle="tooltip" title="Edit"><a class="nav-link nav-link-dark py-0" href="#first-name-collapse" data-bs-toggle="collapse"><i class="fi-edit"></i></a></div>
+                        </div>
+                        <div class="collapse" id="first-name-collapse" data-bs-parent="#personal-info">
+                        <input class="form-control form-control-dark mt-3" type="text" data-bs-binded-element="#name-value" data-bs-unset-value="Not specified" value="{{customer_user.cust_user_first_name}}">
+                        </div>
+                    </div>
+                    <!-- Last Name-->
+                    <div class="border-bottom border-dark pb-3 mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                        <div class="pe-1 opacity-70">
+                            <label class="form-label fw-bold text-dark">Last name</label>
+                            <div class="text-dark" id="name-value">{{customer_user.cust_user_last_name}}</div>
+                        </div>
+                        <div class="me-n3" data-bs-toggle="tooltip" title="Edit"><a class="nav-link nav-link-dark py-0" href="#last-name-collapse" data-bs-toggle="collapse"><i class="fi-edit"></i></a></div>
+                        </div>
+                        <div class="collapse" id="last-name-collapse" data-bs-parent="#personal-info">
+                        <input class="form-control form-control-dark mt-3" type="text" data-bs-binded-element="#name-value" data-bs-unset-value="Not specified" value="{{customer_user.cust_user_last_name}}">
+                        </div>
+                    </div>
+                    <!-- Phone number-->
+                    <div class="border-bottom border-dark pb-3 mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                        <div class="pe-1 opacity-70">
+                            <label class="form-label fw-bold text-dark">Phone number</label>
+                            <div class="text-dark" id="phone-value">{{customer_user.cust_user_phone_number}}</div>
+                        </div>
+                        <div class="me-n3" data-bs-toggle="tooltip" title="Edit"><a class="nav-link nav-link-dark py-0" href="#phone-collapse" data-bs-toggle="collapse"><i class="fi-edit"></i></a></div>
+                        </div>
+                        <div class="collapse" id="phone-collapse" data-bs-parent="#personal-info">
+                        <input class="form-control form-control-dark mt-3" type="text" data-bs-binded-element="#phone-value" data-bs-unset-value="Not specified" value="{{customer_user.cust_user_phone_number}}">
+                        </div>
+                    </div>
+                    <!-- Email-->
+                    <div class="border-bottom border-dark pb-3 mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                        <div class="pe-1 opacity-70">
+                            <label class="form-label fw-bold text-dark">Email</label>
+                            <div class="text-dark" id="email-value">{{customer_user.cust_user_email}}</div>
+                        </div>
+                        <div class="me-n3" data-bs-toggle="tooltip" title="Edit"><a class="nav-link nav-link-dark py-0" href="#email-collapse" data-bs-toggle="collapse"><i class="fi-edit"></i></a></div>
+                        </div>
+                        <div class="collapse" id="email-collapse" data-bs-parent="#personal-info">
+                        <input class="form-control form-control-dark mt-3" type="email" data-bs-binded-element="#email-value" data-bs-unset-value="Not specified" value="{{customer_user.customer_user_email}}">
+                        </div>
+                    </div>
+
+                    <!-- Address-->
+                    <div>
+                        <div class="d-flex align-items-center justify-content-between">
+                        <div class="pe-1 opacity-70">
+                            <label class="form-label fw-bold text-dark">Address</label>
+                            <div class="text-dark" id="address-value">Not specified</div>
+                        </div>
+                        <div class="me-n3" data-bs-toggle="tooltip" title="Edit"><a class="nav-link nav-link-dark py-0" href="#address-collapse" data-bs-toggle="collapse"><i class="fi-edit"></i></a></div>
+                        </div>
+                        <div class="collapse" id="address-collapse" data-bs-parent="#personal-info">
+                        <input class="form-control form-control-dark mt-3" type="text" data-bs-binded-element="#address-value" data-bs-unset-value="Not specified" placeholder="Enter address">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end-of-content-nav -->
+    <!-- <div class="col-lg-3 col-md-12 col-sm-4 mb-4">
+        <input class="file-uploader border-dark bg-faded-dark" type="file" accept="image/png, image/jpeg" data-label-idle="&lt;i class=&quot;d-inline-block fi-camera-plus fs-2 text-dark text-muted mb-2&quot;&gt;&lt;/i&gt;&lt;br&gt;&lt;span class=&quot;fw-bold text-dark opacity-70&quot;&gt;Change picture&lt;/span&gt;" data-style-panel-layout="compact" data-image-preview-height="160" data-image-crop-aspect-ratio="1:1" data-image-resize-target-width="200" data-image-resize-target-height="200">
+        <div class="pt-4 pb-2 py-lg-5">
+        <h6 class="text-dark mb-2">Who can see my profile?</h6>
+        <p class="fs-sm text-dark opacity-70 mb-0">Your profile is private. No one else will see it untill a reservation is confirmed.</p>
+        </div>
+    </div>
+    </div> -->
+</div>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends 'homepageapp/10_homepageapp_base.html' %}
+{% load static %}
+
+{% block content1-main %}
+
+
+<section class="bg-top-center bg-repeat-0 pt-5" style="background-image: url({% static 'homepageapp/img/car-finder/home/hero-bg.png' %}); background-size: 1920px 630px;">
+    <div class="container mt-5 pt-5">
+        <!-- <div class ='row'> -->
+            <!-- Breadcrumb-->
+            <nav class="mb-1 pt-md-1" aria-label="Breadcrumb">
+                <ol class="breadcrumb breadcrumb-dark">
+                <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Services</li>
+                </ol>
+            </nav>
+        <!-- </div> -->
+        <div class="row ">
+            <div class="col col-12 pt-2 ">
+                <!-- Accordion basic -->
+                <div class="accordion" id="accordionExample">
+                    <!-- Accordion item -->
+                    <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Oil Changes</button>
+                    </h2>
+                    <div class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" id="collapseOne">
+                        <div class="accordion-body">
+                            <p>
+                                At our shop, we offer professional Oil Change Service to ensure your vehicle's engine performs optimally and remains well-lubricated. Our skilled technicians are trained to provide efficient and reliable oil changes for various types of vehicles.
+                            </p>
+                            <p>
+                                Regular oil changes are essential for maintaining the health of your vehicle's engine. Fresh oil helps lubricate the engine's components, reduce friction, and prevent excessive wear and tear. Our team follows industry best practices to perform oil changes with precision and attention to detail.
+                            </p>
+                            <p>
+                                We use high-quality oils and filters that meet or exceed manufacturer recommendations for your specific vehicle. During an oil change, we also inspect other vital components, such as the air filter and fluid levels, to ensure everything is in proper working order.
+                            </p>
+                            <p>
+                                Our commitment is to provide dependable and professional oil change service, helping you extend the life of your vehicle's engine and ensuring optimal performance on the road.
+                            </p>
+                              
+                              
+                        </div>
+                    </div>
+                    </div>
+                
+                    <!-- Accordion item -->
+                    <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">A/C Service</button>
+                    </h2>
+                    <div class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" id="collapseTwo">
+                        <div class="accordion-body">
+                            <p>
+                                Our shop provides professional Air Conditioning Service for automotive vehicles. Our skilled technicians are equipped to diagnose and address various air conditioning issues efficiently.
+                            </p>
+                            <p>
+                                The air conditioning system in your vehicle can experience common problems such as inadequate cooling, strange noises, or unpleasant odors. Our team is experienced in identifying these issues and implementing effective solutions to restore your air conditioning system's optimal performance.
+                            </p>
+                            <p>
+                                We take pride in our commitment to delivering quality service and ensuring your comfort on the road. Our technicians follow industry best practices to perform air conditioning service with attention to detail and precision.
+                            </p>                              
+                              
+                        </div>
+                    </div>
+                    </div>
+                
+                    <!-- Accordion item -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">Brakes</button>
+                        </h2>
+                        <div class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample" id="collapseThree">
+                            <div class="accordion-body">
+                                <p>
+                                    At our shop, we offer professional Brake Replacement Service to ensure your vehicle's braking system operates safely and efficiently. Our experienced technicians are skilled in diagnosing and addressing various brake-related issues.
+                                </p>
+                                <p>
+                                    Your vehicle's braking system plays a critical role in your safety on the road. We understand the importance of maintaining properly functioning brakes and adhere to industry standards when it comes to brake replacement.
+                                </p>
+                                <p>
+                                    Our team utilizes quality brake components and follows manufacturer guidelines to perform reliable brake replacements. We aim to provide a smooth and responsive braking experience for your vehicle, giving you peace of mind while driving.
+                                </p>                                  
+                                
+                            </div>
+                        </div>
+                    </div>    
+
+                    <!-- Accordion item -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Electrical Diagnostics</button>
+                        </h2>
+                        <div class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample" id="collapseFour">
+                            <div class="accordion-body">
+                                <p>
+                                    Our shop specializes in Electrical Issue Diagnostics to identify and resolve electrical problems in vehicles. Our skilled technicians have the expertise to diagnose complex electrical issues and provide effective solutions.
+                                </p>
+                                <p>
+                                    Electrical problems in your vehicle can manifest in various ways, such as battery issues, malfunctioning electronics, or wiring problems. Our team utilizes advanced diagnostic tools and techniques to accurately pinpoint the root cause of these issues.
+                                </p>
+                                <p>
+                                    We take a meticulous approach to diagnose electrical problems, ensuring we provide accurate assessments and recommend the most appropriate solutions. Our technicians are experienced in working with the intricate electrical systems found in modern vehicles.
+                                </p>
+                                <p>
+                                    Our goal is to provide reliable and efficient Electrical Issue Diagnostics, allowing us to address any electrical problems affecting your vehicle. You can trust our team to deliver exceptional service and restore the proper functionality of your vehicle's electrical system.
+                                </p>
+                                  
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Accordion item -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">Transmission</button>
+                        </h2>
+                        <div class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample" id="collapseFive">
+                            <div class="accordion-body">
+                                <p>
+                                    Our shop offers reliable Transmission Service to ensure the smooth operation of your vehicle's transmission system. Our experienced technicians are well-versed in diagnosing and addressing various transmission issues to keep your vehicle running efficiently.
+                                </p>
+                                <p>
+                                    The transmission plays a crucial role in transferring power from the engine to the wheels, and regular maintenance is key to its longevity. Our team follows industry standards and utilizes advanced diagnostic tools to identify any potential problems with your transmission.
+                                </p>
+                                <p>
+                                    Whether it's a fluid change, filter replacement, or more complex repairs, we provide professional transmission services tailored to your vehicle's needs. We use high-quality fluids and parts to ensure optimal performance and minimize the risk of future issues.
+                                </p>
+                                <p>
+                                    Rest assured that our dedicated technicians will handle your transmission service with care and precision, aiming to provide reliable and efficient solutions to keep your vehicle shifting smoothly on the road.
+                                </p>
+                                  
+                            </div>
+                        </div>
+                    </div>                    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row align-items-center justify-content-lg-start justify-content-center flex-lg-nowrap gy-4">
+            <!-- <div class="col-lg-9"><img class="rounded-3" src="{% static 'homepageapp/img/car-finder/about/hero-img.jpg' %}" alt="Hero image"></div> -->
+            <div class="col-lg-4 ms-lg-n5 col-sm-9 text-lg-start text-center">
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Page header-->
+<!-- <section class="container mb-5 pb-lg-5">
+This is ome of the information i will need. 
+</section> -->
+
+        
+
+
+{% endblock %}
