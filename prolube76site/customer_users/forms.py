@@ -9,62 +9,10 @@ from django.core.validators import RegexValidator
 # import common functions from common_functions.py
 # testing to combine common functions into one centralized location.
 from core_operations.common_functions import is_valid_us_phone_number
+from core_operations.models import LIST_OF_STATES_IN_US
 
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox
-
-STATE_CHOICES = (
-    ('AL', 'Alabama'),
-    ('AK', 'Alaska'),
-    ('AZ', 'Arizona'),
-    ('AR', 'Arkansas'),
-    ('CA', 'California'),
-    ('CO', 'Colorado'),
-    ('CT', 'Connecticut'),
-    ('DE', 'Delaware'),
-    ('FL', 'Florida'),
-    ('GA', 'Georgia'),
-    ('HI', 'Hawaii'),
-    ('ID', 'Idaho'),
-    ('IL', 'Illinois'),
-    ('IN', 'Indiana'),
-    ('IA', 'Iowa'),
-    ('KS', 'Kansas'),
-    ('KY', 'Kentucky'),
-    ('LA', 'Louisiana'),
-    ('ME', 'Maine'),
-    ('MD', 'Maryland'),
-    ('MA', 'Massachusetts'),
-    ('MI', 'Michigan'),
-    ('MN', 'Minnesota'),
-    ('MS', 'Mississippi'),
-    ('MO', 'Missouri'),
-    ('MT', 'Montana'),
-    ('NE', 'Nebraska'),
-    ('NV', 'Nevada'),
-    ('NH', 'New Hampshire'),
-    ('NJ', 'New Jersey'),
-    ('NM', 'New Mexico'),
-    ('NY', 'New York'),
-    ('NC', 'North Carolina'),
-    ('ND', 'North Dakota'),
-    ('OH', 'Ohio'),
-    ('OK', 'Oklahoma'),
-    ('OR', 'Oregon'),
-    ('PA', 'Pennsylvania'),
-    ('RI', 'Rhode Island'),
-    ('SC', 'South Carolina'),
-    ('SD', 'South Dakota'),
-    ('TN', 'Tennessee'),
-    ('TX', 'Texas'),
-    ('UT', 'Utah'),
-    ('VT', 'Vermont'),
-    ('VA', 'Virginia'),
-    ('WA', 'Washington'),
-    ('WV', 'West Virginia'),
-    ('WI', 'Wisconsin'),
-    ('WY', 'Wyoming'),
-)
 
 class CustomerUserRegistrationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
@@ -83,26 +31,35 @@ class CustomerUserRegistrationForm(UserCreationForm):
     ZIP_CODE_REGEX = r'^\d{5}(?:[-\s]\d{4})?$'
     zip_code_validator = RegexValidator(regex=ZIP_CODE_REGEX, message='Enter a valid ZIP code.')
 
-     # Validate and format first name   
+    # format customer_user_first_name  
     def clean_cust_user_first_name(self):
-        first_name = self.cleaned_data.get('cust_user_first_name')
+        first_name = self.cleaned_data.get('cust_user_first_name').strip()
         if first_name:
             first_name = first_name.capitalize()
         return first_name
 
-    # Validate and format last name
+    # format customer_user_last_name  
     def clean_cust_user_last_name(self):
         last_name = self.cleaned_data.get('cust_user_last_name')
         if last_name:
             last_name = last_name.capitalize()
         return last_name
     
+    def clean_cust_user_phone_number(self):
+        phone_number = self.cleaned_data.get('cust_user_phone_number')
+        # remove any non-digit input
+        phone_number = re.sub(r'\D', '', phone_number)
+
+        if not is_valid_us_phone_number(phone_number):
+            raise forms.ValidationError('Please enter a valid US phone number.')
+        return phone_number
+
     # Validate state abbreviation
     def clean_cust_user_address_state(self):
         state = self.cleaned_data.get('cust_user_address_state')
         state = state.upper() if state else None
 
-        if state not in [abbr for abbr, _ in self.STATE_CHOICES]:
+        if state not in [abbr for abbr, _ in LIST_OF_STATES_IN_US]:
             raise forms.ValidationError('Enter a valid state abbreviation. For example, enter CA for California, TX for Texas. ')
         return state
 
@@ -114,16 +71,14 @@ class CustomerUserRegistrationForm(UserCreationForm):
         return zip_code
 
 
-    def clean_cust_user_phone_number(self):
-        phone_number = self.cleaned_data.get('cust_user_phone_number')
-        # remove any 
-        phone_number = re.sub(r'\D', '', phone_number)
-        # Add your phone number validation logic here
-        # For example, you can use a third-party library like phonenumbers
-        # to validate the phone number format
-        if not is_valid_us_phone_number(phone_number):
-            raise forms.ValidationError('Please enter a valid US phone number.')
-        return phone_number
+    def clean_customer_user_email(self):
+        email = self.cleaned_data['cust_user_email']
+        email = email.strip()
+        email = email.lower()
+        if email:
+            return email
+        else:
+            raise ValidationError('email cannot be empty')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -154,10 +109,10 @@ class CustomerUserRegistrationForm(UserCreationForm):
     
     class Meta:
         model = CustomerUser
-        fields = ['cust_user_phone_number','cust_user_email', 'cust_user_first_name', 'cust_user_last_name', 'password1', 'password2'] #'username',
+        fields = ['cust_user_email','cust_user_phone_number', 'cust_user_first_name', 'cust_user_last_name', 'password1', 'password2'] #'username',
         # required = ['cust_user_phone_number', 'cust_user_first_name', 'password1', 'password2']
         widgets = {
-            'cust_user_phone_number': forms.TextInput(attrs={'type': 'text',  'class':'form-control',}),
+            'cust_user_phone_number': forms.TextInput(attrs={'type': 'text', 'class':'form-control','placeholder:':'ex. 213-445-9990 or 2134459990.',}),
             'cust_user_email': forms.EmailInput(attrs={'type': 'text', 'class':'form-control',}),
             'cust_user_first_name': forms.TextInput(attrs={'type': 'text', 'class':'form-control',}),
             'cust_user_last_name': forms.TextInput(attrs={'type': 'text', 'class':'form-control',}),
@@ -165,7 +120,7 @@ class CustomerUserRegistrationForm(UserCreationForm):
             'password2': forms.PasswordInput(attrs={'type': 'text', 'class':'form-control',}),
         }
         labels = {
-            'cust_user_phone_number': 'Enter a US valid phone number (example: 2223334444)',
+            'cust_user_phone_number': 'Enter a US valid phone number.',
             'cust_user_email': 'Enter your email',
             'cust_user_first_name': 'First Name',
             'cust_user_last_name': 'Last Name',
@@ -176,24 +131,24 @@ class CustomerUserRegistrationForm(UserCreationForm):
     
 
 
-# the default login requires a username and a password 
+# the default login requires a phone number and a password 
 class CustomerUserLoginForm(AuthenticationForm):
-    phone_number = forms.CharField(
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'type': 'text',
-            'placeholder': 'your phone number',
-        }),
-        label='Phone Number',
-    )
-    # username = forms.EmailField(
-    #     widget=forms.EmailInput(attrs={
+    # phone_number = forms.CharField(
+    #     widget=forms.TextInput(attrs={
     #         'class': 'form-control',
     #         'type': 'text',
-    #         'placeholder': 'Enter the same email address as in your employee contact information',
+    #         'placeholder': 'your phone number',
     #     }),
-    #     label='Email',
+    #     label='Phone Number',
     # )
+    username = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'type': 'text',
+            'placeholder': 'Enter the same email address as in your employee contact information',
+        }),
+        label='Email',
+    )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
@@ -204,6 +159,7 @@ class CustomerUserLoginForm(AuthenticationForm):
     )
     class Meta:
         model = CustomerUser
+
 
 class CustomerUserChangeForm(forms.Form):
     field_name = forms.CharField(widget=forms.HiddenInput())

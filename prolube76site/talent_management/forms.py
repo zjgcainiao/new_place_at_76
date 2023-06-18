@@ -5,7 +5,7 @@ from django.db.models import Q
 # version 1 - talent creation form
 class TalentsCreationForm(forms.ModelForm):
     
-    def clean_email(self):
+    def clean_talent_email(self):
         talent_email = self.cleaned_data.get('talent_email').lower()
         
         talent = TalentsModel.objects.filter(talent_is_active=True).get(talent_email=talent_email)
@@ -13,6 +13,15 @@ class TalentsCreationForm(forms.ModelForm):
             return talent_email
         else:
             raise ValueError('this email has been associated with an exisitng active employee')
+        
+    def clean_talent_first_name(self):
+        talent_first_name = self.cleaned_data.get('talent_first_name').strip()
+        talent_first_name = talent_first_name.lower().capitalize() if talent_first_name is not None else None
+
+        if not talent_first_name:
+            return talent_first_name
+        else:
+            raise ValueError("talent's first name cannot be emtpy.")
 
     class Meta:
         model = TalentsModel
@@ -35,6 +44,24 @@ class PersonalContactInfoForm(forms.ModelForm):
 
         return talent_email
     
+    def clean_talent_first_name(self):
+        talent_first_name = self.cleaned_data.get('talent_first_name').strip()
+        talent_first_name = talent_first_name.lower().capitalize() if talent_first_name is not None else None
+
+        if not talent_first_name:
+            return talent_first_name
+        else:
+            raise ValueError("talent's first name cannot be emtpy.")    
+    
+    def clean_talent_last_name(self):
+        talent_last_name = self.cleaned_data.get('talent_last_name').strip()
+        talent_last_name = talent_last_name.lower().capitalize() if talent_last_name is not None else None
+
+        if not talent_last_name:
+            return talent_last_name
+        else:
+            raise ValueError("talent's last name cannot be emtpy.")    
+    
     # check date of birth to ensure the new person is 17 years or older.
     def clean_talent_date_of_birth(self):
         talent_date_of_birth = self.cleaned_data['talent_date_of_birth']
@@ -45,6 +72,7 @@ class PersonalContactInfoForm(forms.ModelForm):
             raise forms.ValidationError("The age must be larger than 17 years old.")
 
         return talent_date_of_birth
+    
     class Meta:
         model = TalentsModel
         fields = ['talent_first_name', 'talent_last_name', 'talent_middle_name', 'talent_preferred_name',

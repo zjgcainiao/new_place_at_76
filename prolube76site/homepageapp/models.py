@@ -54,6 +54,26 @@ class AddressesNewSQL02Model(models.Model):
     address_zip_code = models.CharField(max_length=30, blank=True)
     address_created_at = models.DateTimeField(auto_now_add=True)
     address_last_updated_date = models.DateTimeField(auto_now=True, null=True)
+
+    @property
+    def get_full_address(self):
+        addr_fields = [self.address_line_01, self.address_city, self.address_state.upper(),
+                       self.address_zip_code]
+
+        full_address = " ".join([field for field in addr_fields if field is not None]).strip()
+
+        return full_address
+
+    @property
+    def get_full_address_with_ATTN(self):
+        addr_fields = [self.address_company_or_ATTN, self.address_line_01, self.address_city, self.address_state.upper(),
+                       self.address_zip_code]
+
+        full_address = " ".join([field for field in addr_fields if field is not None]).strip()
+
+        return full_address
+
+
     class Meta:
         db_table = 'addresses_new_03'
         ordering = ["-address_id"]
@@ -92,6 +112,7 @@ class PhonesNewSQL02Model(models.Model):
     phone_id = models.AutoField(primary_key=True)
     phone_desc = models.ForeignKey(PhoneDescModel, on_delete=models.SET_NULL, null=True,related_name='phone_descs')
     phone_number = models.CharField(max_length=20)
+    phone_number_digits_only = models.CharField(max_length=20, null=True, blank=True)
     phone_number_ext = models.CharField(max_length=10, blank=True, null=True)
     phone_displayed_name = models.CharField(max_length=100)
     phone_memo_01 = models.TextField(blank=True, null=True)
@@ -144,7 +165,7 @@ class CustomersNewSQL02Model(models.Model):
     customer_email_address_in_json = models.CharField(max_length=200, null=True)
     customer_last_updated_date = models.DateTimeField(auto_now=True)
     customer_is_created_from_appointments = models.BooleanField(default=False)
-    customer_fleet_vendor_id = models.CharField(max_length=20, null=True)
+    customer_fleet_vendor_id = models.CharField(max_length=100, null=True)
     customer_created_at = models.DateTimeField(auto_now_add=True)
     # add a new many-to-many-relationship field
     addresses = models.ManyToManyField(AddressesNewSQL02Model, through='CustomerAddressesNewSQL02Model',related_name='addresses')
@@ -155,11 +176,24 @@ class CustomersNewSQL02Model(models.Model):
     # many to many fields to Taxes
     taxes = models.ManyToManyField(TaxesModel, through='CustomerTaxesModel', related_name='taxes')
 
+    @property
+    def customer_full_name(self):
+        first_name = self.customer_first_name.capitalize()  if self.customer_first_name else None
+        middle_name = self.customer_middle_name.capitalize() if self.customer_middle_name else None
+        last_name = self.customer_last_name.capitalize() if self.customer_last_name else None
+        name_fields = [first_name, middle_name, last_name]
+        full_name = ' '.join([field for field in name_fields if field is not None])
+        return f"{full_name}" if full_name.strip() else "No Data"
+
+
     class Meta:
         db_table = 'customers_new_03'   # prolube76DBSTG01.dbo.customers_new_01
         ordering = ["-customer_id"]
         verbose_name = 'customer'
         verbose_name_plural = 'customers'
+
+
+
 
 class CustomerAddressesNewSQL02Model(models.Model):
     address = models.ForeignKey(AddressesNewSQL02Model, on_delete=models.CASCADE)
@@ -190,7 +224,7 @@ class CustomerEmailsNewSQL02Model(models.Model):
 
 class CustomerPhonesNewSQL02Model(models.Model):
     phone = models.ForeignKey(PhonesNewSQL02Model, on_delete=models.CASCADE)
-    customer  = models.ForeignKey(CustomersNewSQL02Model, on_delete=models.CASCADE)
+    customer = models.ForeignKey(CustomersNewSQL02Model, on_delete=models.CASCADE)
     customerphone_created_at = models.DateTimeField(auto_now_add=True)
     customerphone_last_updated_date = models.DateTimeField(auto_now=True)
 
@@ -206,6 +240,8 @@ class CustomerPhonesNewSQL02Model(models.Model):
 class RepairOrderPhasesNewSQL02Model(models.Model):
     repair_order_phase_id = models.AutoField(primary_key=True)
     repair_order_phase_description = models.CharField(max_length=50)
+    repair_order_phase_created_at = models.DateTimeField(auto_now_add=True)
+    repair_order_phase_last_updated_date = models.DateTimeField(auto_now=True)
     class Meta:
         db_table = 'repairorderphases_new_03'
         ordering = ["repair_order_phase_id"]
@@ -264,7 +300,7 @@ class TransmissionsModel(models.Model):
     transmission_type = models.CharField(max_length=100,blank=True, null=True)
     tranmission_manufacturer_code = models.CharField(max_length=100,blank=True, null=True)
     transmission_control_type = models.CharField(max_length=100,blank=True, null=True)
-    tranmission_is_electronic_controlled = models.BooleanField(default=0)
+    tranmission_is_electronic_controlled = models.BooleanField(default=False)
     transmission_number_of_speed = models.IntegerField(null=True)
     transmission_created_at  = models.DateTimeField(auto_now_add=True)
     class Meta:
@@ -432,13 +468,14 @@ class CannedJobsNewSQL02Model(models.Model):
     canned_job_applied_submodel_id = models.IntegerField(blank=True, null=True)
     canned_job_vehicle_class = models.CharField(max_length=50, null=True)
     canned_job_last_updated_date = models.DateTimeField(auto_now=True, null=True)
+    canned_job_created_at = models.DateTimeField(auto_now_add=True, null=True)
     class Meta:
         db_table = 'cannedjobs_new_03'
         ordering = ["-canned_job_id"]
 
 class LineItemsNewSQL02Model(models.Model):
     line_item_id = models.AutoField(primary_key=True)
-    line_item_account_class_id = models.IntegerField(null=True)
+    line_item_account_class = models.ForeignKey(AccountClassModel, on_delete=models.SET_NULL, null=True,related_name='lineitem_accountclasses')
     line_item_category = models.ForeignKey(CategoryModel, on_delete=models.SET_NULL, null=True)
     line_item_description = models.CharField(max_length=2000)
     line_item_cost = models.DecimalField(max_digits=9, decimal_places=2)
@@ -468,9 +505,9 @@ class LineItemsNewSQL02Model(models.Model):
 class NoteItemsNewSQL02Model(models.Model):
     note_item_id = models.AutoField(primary_key=True)
     line_item = models.ForeignKey(LineItemsNewSQL02Model, on_delete=models.CASCADE, related_name='noteitems') # when it is a foreign key,"_id" is added at the end of the field name 
-    note_text = models.TextField(null=True)
-    is_printed_on_order = models.BooleanField(default=True)
-    tech_observation = models.TextField(null=True)
+    note_item_text = models.TextField(null=True)
+    note_item_is_printed_on_order = models.BooleanField(default=True)
+    note_item_tech_observation = models.TextField(null=True)
     note_item_created_at = models.DateTimeField(auto_now_add=True)
     note_item_last_updated_date = models.DateTimeField(null=True, auto_now=True)
     class Meta:
@@ -527,7 +564,7 @@ class PartsModel(models.Model):
     part_price = models.DecimalField(max_digits=12, decimal_places=2)
     part_is_tax_exempt = models.BooleanField(default=False)
     part_category_id = models.IntegerField(null=True)
-    part_account_class_id = models.IntegerField(null=True)
+    part_account_class = models.ForeignKey(AccountClassModel, on_delete=models.SET_NULL, null=True,related_name='parts_accountclasses')
     part_comments = models.CharField(max_length=4000, null=True, blank=True)
     part_manufacturer_id = models.IntegerField(null=True)
     part_list_price = models.DecimalField(max_digits=12, decimal_places=2)
@@ -671,8 +708,8 @@ class RepairOrdersNewSQL02Model(models.Model):
     repair_order_snapshot_order_total_amount = models.DecimalField(max_digits=15, decimal_places=2,null=True)
     repair_order_snapshot_calc_haz_waste_cost = models.DecimalField(max_digits=15, decimal_places=2,null=True)
     repair_order_snapshot_calc_shop_supply_cost = models.DecimalField(max_digits=15, decimal_places=2, null=True)
-    repair_order_serviced_vehcle_engine_hours_in = models.DecimalField(max_digits=10, decimal_places=1, null=True)
-    repair_order_serviced_vehcle_engine_hours_out = models.DecimalField(max_digits=10, decimal_places=1, null=True)
+    repair_order_serviced_vehicle_engine_hours_in = models.DecimalField(max_digits=10, decimal_places=1, null=True)
+    repair_order_serviced_vehicle_engine_hours_out = models.DecimalField(max_digits=10, decimal_places=1, null=True)
     repair_order_appointment_request_uid = models.CharField(max_length=50, null=True)
     repair_order_last_updated_date = models.DateTimeField(null=True, auto_now=True)
     repair_order_created_at = models.DateTimeField(auto_now_add=True)
@@ -691,11 +728,11 @@ class RepairOrdersNewSQL02Model(models.Model):
 
 class OrderRevisionNewSQL02Model(models.Model):
     order_revision_id = models.AutoField(primary_key=True)
-    order_revision_repair_order_id = models.ForeignKey(RepairOrdersNewSQL02Model, models.SET_NULL, blank=True, null=True)
+    order_revision_repair_order = models.ForeignKey(RepairOrdersNewSQL02Model, models.SET_NULL, blank=True, null=True, related_name='orderrevisions')
     order_revision_sub_estimate_number = models.IntegerField(blank=True, null=True)
     order_revision_date = models.DateTimeField(null=True)
     time_of_call = models.DateTimeField(null=True)
-    order_revision_initiated_by = models.CharField(max_length=20,null=True)
+    order_revision_initiated_by = models.CharField(max_length=20, null=True)
     order_revision_by_service_writer_id = models.IntegerField(null=True)
     order_revision_authorizaton_by_name = models.CharField(max_length=50, null=True, blank=True)
     order_revision_number_called = models.CharField(max_length=50, null=True)

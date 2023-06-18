@@ -1,0 +1,51 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+
+{% block content-main %}
+{% if messages %}
+
+<div class="container">
+    {% for message in messages %}
+    <li{% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show justify-content-center justify-content-between"{% endif %} role="alert">
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </li>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="container container-fluid pt-1 mt-1" id ='customer-detail-container'>
+    <!-- Breadcrumb-->
+    <nav class="pt-1" aria-label="Breadcrumb">
+        <ol class="breadcrumb breadcrumb-dark">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:dashboard-v2' %}">Dashboard</a></li>
+            <li class="breadcrumb-item "><a href="{% url 'dashboard:customers-list' %}">Customers</a></li>
+            <li class="breadcrumb-item active"><a href="{% url 'dashboard:customer-detail' pk=customer.customer_id %}">Cust Detail</a></li>
+        </ol>
+    </nav>
+    <h4>Detail - ID:{{customer.customer_id}}</h4>
+    <div class = 'row'>
+        <div class ='col col-12'>
+            <div class="card card-hover border border-light" >
+                <div class ='card-header text-dark'>Customer ID:{{customer.customer_id}}. customer since {{customer.customer_first_visit_date|date:'Y-m-d'}}  </div>
+                <div class = 'card-body text-dark'>
+                <p class="card-text"> Name: {{customer.customer_first_name}} {{customer.customer_last_name}} </p>
+                <p class="card-text"> Spouse Name: {{customer.customer_spouse_name}} </p>
+                    <p class ='card-text'> Memo: {{customer.customer_memo_1}} </p>
+                    <p class ='card-text'> Okay to Charge: {{customer.customer_is_okay_to_charge}} </p>                  
+                    <p class ='card-text'>Charge status: {{customer.customer_is_in_social_crm}}</p>
+                    <p class ='card-text'>Last visit on: {{customer.customer_last_visit_date}} </p>
+                    <p class ='card-text'> Updated on: {{customer.customer_last_updated_date}}</p>
+                    <a href="{% url 'dashboard:customer-update' object.customer_id %}" class="btn btn-outline-info">Update</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<br>
+
+{% endblock %}

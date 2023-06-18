@@ -111,7 +111,7 @@ class CustomerCreateView(CreateView):
  
 class CustomerDetailView(DetailView):
     model = CustomersNewSQL02Model
-    success_url = reverse_lazy('customer-list')
+    success_url = reverse_lazy('customers-list-v3')
     context_object_name = 'customer'
     template_name = 'homepageapp/03-customer-detail.html'
 
@@ -123,23 +123,6 @@ class CustomerDetailView(DetailView):
             context['form'] = CustomerModelForm(instance=self.object)
         return context
     
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     form = CustomerModelForm(request.POST, instance=self.object)
-    #     if form.is_valid():
-    #         form.save()
-    #         return HttpResponseRedirect(self.get_success_url())
-    #     else:
-    #         return self.render_to_response(self.get_context_data(form=form))
-
-
-class CustomerUpdateView(UpdateView):
-    model = CustomersNewSQL02Model
-    success_url = reverse_lazy('customers-list-v3')
-    form_class = CustomerModelForm
-    template_name = 'homepageapp/03-customer-update.html'
-
-
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = CustomerModelForm(request.POST, instance=self.object)
@@ -150,45 +133,30 @@ class CustomerUpdateView(UpdateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
+
+class CustomerUpdateView(UpdateView):
+    model = CustomersNewSQL02Model
+    success_url = reverse_lazy('homepageapp:customer-detail')
+    form_class = CustomerModelForm
+    template_name = 'homepageapp/03-customer-update.html'
+
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = CustomerModelForm(request.POST, instance=self.object)
+        if form.is_valid():
+            self.object.customer_last_updated_date = timezone.now()
+            form.save()
+            messages.success(request, 'Update success.')
+            return redirect('homepageapp:customer-detail', pk=self.object.customer_id)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
 class CustomerDeleteView(DeleteView):
     model = CustomersNewSQL02Model
     # success_url = reverse_lazy('/')
 
 
-# @api_view(['GET', 'POST'])
-# def repairorders_list(request):
-#     if request.method == 'GET':
-#         data = RepairOrdersNewSQL01Model.objects.all()
-
-#         serializer = StudentSerializer(data, context={'request': request}, many=True)
-
-#         return Response(serializer.data)
-
-#     elif request.method == 'POST':
-#         serializer = RepairOrderSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(status=status.HTTP_201_CREATED)
-
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# @api_view(['PUT', 'DELETE'])
-# def repairorders_detail(request, pk):
-#     try:
-#         student = Student.objects.get(pk=pk)
-#     except Student.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-
-#     if request.method == 'PUT':
-#         serializer = RepairOrderSerializer(student, data=request.data,context={'request': request})
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(status=status.HTTP_204_NO_CONTENT)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#     elif request.method == 'DELETE':
-#         student.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # 
 class RepairOrderListView(ListView):
@@ -225,9 +193,4 @@ class EmailDataView(APIView):
             serializer.save()
         return Response({'status': 'success'})
     
-
-# def get_appointment_view(request):
-#     # ...
-#     appt_creation_url = reverse('appointments:appointment-create-view')
-
 

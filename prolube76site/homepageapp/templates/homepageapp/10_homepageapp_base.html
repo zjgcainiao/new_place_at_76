@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <title>76 Pro Lube Plus</title>
     <!-- SEO Meta Tags-->
-    <meta name="description" content="Tesla &amp; general automotive repair &amp; oil change">
-    <meta name="keywords" content="oil change, modern auto repair shop">
+    <meta name="description" content="Tesla &amp; general automotive repair &amp; oil change. AI-driven modern auto repair shop.">
+    <meta name="keywords" content="oil changes, a/c services, service lights on; radiator problems;">
     <meta name="author" content="Automan001@76prolubeplus.com">
     <!-- Viewport-->
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,8 +14,10 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'homepageapp/apple-touch-icon.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static '/homepageapp/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static '/homepageapp/logo-2022.svg' %}">
-    <meta name="msapplication-TileColor" content="#766df4">
+    <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
+    <!-- import jQuery js first -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <!-- Page loading styles-->
     <style>
       .page-loading {
@@ -86,15 +88,24 @@
     </style>
     <!-- Page loading scripts-->
     <script>
-      (function () {
-        window.onload = function () {
-          var preloader = document.querySelector('.page-loading');
-          preloader.classList.remove('active');
-          setTimeout(function () {
+      // (function () {
+      //   window.onload = function () {
+      //     var preloader = document.querySelector('.page-loading');
+      //     preloader.classList.remove('active');
+      //     setTimeout(function () {
+      //       preloader.remove();
+      //     }, 2000);
+      //   };
+      // })();
+
+      $(function(){
+        var preloader = $('.page-loading');
+        preloader.removeClass('active');
+        setTimeout(function() {
             preloader.remove();
-          }, 2000);
-        };
-      })();
+    }, 2000);
+
+      });
     </script>
 
     <!-- Vendor Styles-->
@@ -113,34 +124,36 @@
     </div>
     <main class="page-wrapper">
      {% include 'homepageapp/12_sign_in_and_sign_up_modal.html' %}
-     <header class="navbar navbar-expand-md navbar-light fixed-top" data-scroll-header>
-      <div class="container"><a class="navbar-brand me-2 me-xl-4" href="#"><img class="d-block" src="{% static '/homepageapp/2022-Logo-Transparent-small.png' %}" width="103" alt="Automan"></a>
-      
-        <div class="collapse navbar-collapse order-md-2" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Services</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href=""><i class="fi-building fs-base opacity-50 me-2"></i>Service List</a></li>
+     <header class="navbar navbar-expand-lg navbar-light fixed-top" data-scroll-header>
+      <div class="container">
+        <a class="navbar-brand me-2 me-xl-4" href="{% url 'homepageapp:homepage' %}">
+        <img class="d-block" src="{% static '/homepageapp/2022-Logo-Transparent-small.png' %}" width="80" alt="New 76 Pro Lube Plus"></a>
+        <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span></button>
+          <a class="btn btn-link btn-dark btn-sm d-none d-lg-block order-lg-3" href="{% url 'dashboard:dashboard-v2' %}" ><i class="fi-login me-2"></i>Employee </a>
+          <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_login' %}"><i class="fi-users me-2"></i>Create an Account</a>
+        <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
+          <ul class="navbar-nav navbar-nav-scroll" style="max-height: 35rem;">
+            <!-- Services -->
+            <li class="nav-item dropdown py-2 me-lg-2">
+              <a class="nav-link dropdown-toggle align-items-center border-end-lg border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fi-layers me-2"></i>Services</a>
+              <ul class="dropdown-menu dropdown-menu-light">
+                <li><a class="dropdown-item" href="{% url 'homepageapp:services' %}"><i class="fi-car me-2"></i>Service List</a></li>
                 <li class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href=""><i class="fi-car fs-base opacity-50 me-2"></i>About us</a></li>
-                <li class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href=""><i class="fi-briefcase fs-base opacity-50 me-2"></i>Education</a></li>
-                <li class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href=""><i class="fi-map-pin fs-base opacity-50 me-2"></i>More</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fi-friends fs-base me-2"></i>About Us</a></li>
               </ul>
             </li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'customer_users:login' %}">Customer Sign Up | Sign In</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'we_create_3d_models:sample' %}">3D automotive Models </a></li>
-   
-            <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:dashboard' %}">Work Dashboard</a></li>
-   
-            <li class="nav-item"><a class="nav-link" href="{% url 'talent_management:talent_list' %}">Employee Portal</a></li>
-            <button class="navbar-toggler ms-auto" type="button"></button><a class="btn btn-primary btn-sm ms-2 order-md-3" href="{% url 'appointments:appointment-create-view' %}">Service Appointment</a>
+            <!-- Menu items-->
+            <li class="nav-item active"><a class="nav-link" href="{% url 'appointments:appointment-create-view' %}">Service Appointment</a></li>
+            <li class="nav-item "><a class="nav-link" href="{% url 'appointments:appointment-create-view' %}">3D automotive Models</a></li>
+            
+            <!-- <li class="nav-item"><a class="nav-link" href="#" role="button">Careers</a></li> -->
+
           </ul>
         </div>
       </div>
-   
     </header>
+
      {% block content1-main %}
       This is the main block.
      {% endblock %}
@@ -152,14 +165,17 @@
   </body>
 
   <!-- Back to top button-->
-  <a class="btn-scroll-top" href="#top" data-scroll><span class="btn-scroll-top-tooltip text-muted fs-sm me-2">Top</span><i class="btn-scroll-top-icon fi-chevron-up">   </i></a>
+  <a class="btn-scroll-top" href="#top" data-scroll><span class="btn-scroll-top-tooltip text-muted fs-sm me-2">Top</span><i class="btn-scroll-top-icon fi-chevron-up"> </i></a>
   <!-- Vendor scrits: js libraries and plugins-->
-  <script src="{% static 'homepageapp/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha512-3dZ9wIrMMij8rOH7X3kLfXAzwtcHpuYpEgQg1OA4QAob1e81H8ntUQmQm3pBudqIoySO5j0tHN4ENzA6+n2r4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="{% static 'homepageapp/vendor/simplebar/dist/simplebar.min.js' %}"></script>
   <script src="{% static 'homepageapp/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js' %}"></script>
   <script src="{% static 'homepageapp/vendor/tiny-slider/dist/min/tiny-slider.js' %}"></script>
   <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax.min.js' %}"></script>
   <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script>
+  
   <!-- Main theme script-->
   <script src="{% static 'homepageapp/js/theme.min.js' %}"></script>
 </html>

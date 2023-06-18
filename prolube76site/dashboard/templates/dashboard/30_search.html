@@ -1,0 +1,86 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content-main %}
+<div class ='container'>
+    <h3 >Creating a new work order. Step 01</h3>
+    <!-- This is the step by step guide for our employees. -->
+    <div class ='p-1'>Steps:                                       
+        <ol>
+            <li>
+                The first step is to search any existing appointment that the customer has booked before this in-person visit.
+            </li>
+            <li>
+                Use the search button below to search. Enter phone number,email address. Examples: 2234445555,  info@gmail.com.
+            </li>
+            <li>
+                If there are any existing appointments, confirm with the customer and select the right one if there is more than one. Click the "new repair order with appointment" button
+            </li>
+            <li>
+                If there is no result found, click "new appointment" button. Even a customer shows up in person, it is required to create a new appointment.
+            </li>
+        </ol>
+        
+        
+    </div>
+        <form method="post" action="{% url 'dashboard:search' %}">
+            {% csrf_token %}
+            <div class ='row '> 
+                <!-- justify-content-center -->
+                <div class="col col-9">
+                    {{form.search_query }}
+                    
+                </div>
+                <div class="col col-3">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+                
+            </div>
+        </form>
+
+    <!-- Search Form -->
+    <!-- <div class="app-search d-lg-block">
+        <form method="post" action="{% url 'dashboard:search' %}">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="search" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
+                <span class="mdi mdi-magnify search-icon"></span>
+                <button class="input-group-text btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+    </div> -->
+    <!-- end of search form -->
+</div>
+    
+
+    {% if appointments %}
+        <hr>
+        <div class ='container'>
+            
+            <h3>Search Results: </h3>
+            <small>first step before creating a repair order</small>
+            
+            {% for appointment in appointments %}
+            <div class="card border-secondary border">
+                <div class="row p-1">
+                    <div class="col col-3">Appointment Time: {{ appointment.appointment_requested_datetime}}</div>
+                    <div class="col col-3">Name:{{ appointment.appointment_full_name }}</div>
+                    <div class="col col-3">Tel: {{ appointment.appointment_phone_number }}</div>
+                    <div class="col col-3">Email: {{ appointment.appointment_email }}</div>
+                    <div class="col col-12">Vehicle: {{ appointment.appointment_vehicle_year}} {{ appointment.appointment_vehicle_make}} {{appointment.appointment_vehicle_model}}</div>
+                    <div class="col col-12">Concern Description: {{appointment.appointment_concern_description}}</div>
+                </div>
+            </div>
+
+                
+            {% endfor %}
+            
+            {% elif no_match %}
+            <p>No match found.</p>
+
+            <button href="{% url 'appointments:appointment-create-view' %}">Create New Appointment</button>
+
+        </div>
+    {% endif %}
+
+{% endblock %}

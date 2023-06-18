@@ -1,0 +1,52 @@
+{% extends 'customer_users/00_customer_user_base.html' %}
+{% load static %}
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<section class="container pt-5 m-5">
+  <h3>Customer Login with Firebase Authentication </h3>
+    <div class="container">
+      <ul class="nav nav-tabs" role="tablist">
+          <li class="nav-item">
+              <a class="nav-link active" id="email-tab" data-bs-toggle="tab" data-bs-target="#emailtab" role="tab">Email</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" id="phone-tab" data-bs-toggle="tab" data-bs-target="#phonetab" role="tab">Phone</a>
+          </li>
+      </ul>
+
+        <div class="tab-content">
+            <div id="emailtab" class="tab-pane fade show active" role="tabpanel">
+            <h3>Login Form (Email)</h3>
+            <form id="email-login-form">
+                {% csrf_token %}
+                <label for="email">Email:</label><br>
+                <input type="text" id="email" name="email"><br>
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password"><br><br>
+                <button id="email-login-button">Sign in with Email</button>
+                <p id="email-error"></p>
+            </form>
+          </div>
+          <div id="phonetab" class="tab-pane fade" role="tabpanel">
+            <h3>Login Form (Phone)</h3>
+            <form id="phone-login-form">
+                {% csrf_token %}
+                <label for="phone">Phone Number:</label><br>
+                <input type="text" id="phone" name="phone"><br><br>
+                <button id="sign-in-button">Sign in with phone number</button>
+                <div id="recaptcha-container"></div>
+                <p id="phone-error"></p>
+            </form>
+          </div>
+        </div>
+
+    </div>
+    <!-- end of container  -->
+</section>
+<!-- firebase authentication functions in javascript -->
+<script type="module" src="{% static 'customer_users/js/firebase_auth_register_and_sign_in_with_django.js' %}">
+
+
+
+{% endblock %}

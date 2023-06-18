@@ -14,12 +14,13 @@ class UserManager(BaseUserManager):
         """
         if not email:
             raise ValueError('The Email field must be set.')
-                # hash the password
-        hashed_password = make_password(password)
+        # hash the password
+        # hashed_password = make_password(password)
 
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.set_password(hashed_password)
+        # the hashed_password was unncessary.
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
@@ -27,6 +28,15 @@ class UserManager(BaseUserManager):
         """
         Creates and saves a superuser with the given email and password.
         """
+        if password is None:
+            raise TypeError('Superusers must have a password.')
+
+        # option 1
+        # return self.create_user(email, password, **extra_fields)
+        # option 2
+        # create a user with the hashed password
+        user = self.create_user(email, password=password, **extra_fields)
+
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('user_is_admin', True)
@@ -35,11 +45,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
-        # option 1
-        # return self.create_user(email, password, **extra_fields)
-        # option 2
-        # create a user with the hashed password
-        user = self.create_user(email, password=password, **extra_fields)
+            
         user.save(using=self._db)
         return user
 
@@ -84,7 +90,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     # however, the model uses the following three fields to find the correct talent profile.
     # hence we skip the database foreign key linkage. I believe this provides additional isolation to protect employee information
     # that resides in the TalentsModel
-    
+
     user_talent_id = models.IntegerField(null=True)
     user_talent_profile_linkage_is_confirmed = models.BooleanField(default=False)
     user_talent_profile_last_linked_date =  models.DateTimeField(null=True, blank=True)

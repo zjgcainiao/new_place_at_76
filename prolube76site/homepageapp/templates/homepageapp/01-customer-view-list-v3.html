@@ -1,12 +1,12 @@
-{% extends 'homepageapp/base-data.html' %}
+{% extends 'homepageapp/10_homepageapp_base.html' %}
 {% load static %}
 {% block content1-main %}
-<h2 class="title">Today is {{current_time}} </h2>
+<h2 class="title pt-5 m-5">Today is {{current_time}} </h2>
 {% if page_obj %}
-<div class="navbar" style="background-color: orange;">
+<div class="navbar " style="background-color: rgb(212, 219, 220);">
 <h1>Active Customers -- version 3 of customer list view </h1>
 </div>
-    <table class="table table-dark">
+    <table class="table table-light">
         <thead>
             <tr>
                 <th>Old ID</th>

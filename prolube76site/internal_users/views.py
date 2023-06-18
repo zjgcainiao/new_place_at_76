@@ -16,6 +16,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
 from crispy_forms.utils import render_crispy_form
 from internal_users.forms import EmploymentInfoForm
+from internal_users.internal_user_auth_backend import InternalUserBackend
 # from internal_users.internal_user_auth_backend import authenticate
 
 ## this is the register function to register a new user.
@@ -40,7 +41,7 @@ def register(request):
             password = form.cleaned_data.get('password1')
 
             # raw_password = form.cleaned_data.get('password1')
-            user = authenticate(request, email=email, password=password)
+            user = InternalUserBackend().authenticate(request, email=email, password=password)
             # Log the user in
             # modified on 2023-05-30 added custom InternalUserBackend.
             login(request, user, backend='internal_users.intenral_user_auth_backend.InternalUserBackend')
@@ -51,19 +52,18 @@ def register(request):
             for error in list(form.errors.values()):
                 messages.error(request, error)
     else:
-        form =  InternalUserRegistrationFormV2()
+        form = InternalUserRegistrationFormV2()
     return render(request, 'internal_users/10_register.html', {'form': form})
 
+
 class InternalUserLoginView(LoginView):
-    # def get_success_url(self):
-    #     return reverse_lazy('dashboard-index')
-    # referring to the customized loginv2.html
+
     # template_name = 'internal_users/loginv2.html'
     template_name = 'internal_users/20_login.html'
     success_url = reverse_lazy('dashboard:dashboard-v2')
     authentication_form = InternalUserLoginForm
 
-    #adding this line will allow users to skip login when the user has been logged in before.
+    # adding this line will allow users to skip login when the user has been logged in before.
     # it does add complexity on my debugging; use private mode in a browser.
     redirect_authenticated_user = True
     
@@ -80,8 +80,32 @@ class InternalUserLoginView(LoginView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Amazing Automan Employee Login'
+        context['title'] = 'Employee Login'
         return context
+
+def internal_user_login(request):
+    if request.method == 'POST':
+        # phone_number = request.POST['phone_number']
+        email = request.POST['username']
+        password = request.POST['password']
+        form = InternalUserLoginForm(request.POST)
+        # two ways to authenticate, use the default authenticate or use the custom one in CustomerUserBackend()
+        # if phone_number is None or len(phone_number)==0:
+        # user = InternalUserLoginForm().authenticate_via_email(request, email=email, password=password)
+        # authenticate via email
+        user = InternalUserBackend().authenticate(request, email=email, password=password)
+        if user is not None:
+            login(request, user, backend='internal_users.internal_user_auth_backend.InternalUserBackend')
+            return redirect('internal_users:internal_user_dashboard')
+        else:
+            # Invalid credentials, handle error
+            pass
+    else:
+        form = InternalUserLoginForm()
+        # if isinstance(request.user, CustomerUser):
+        #     redirect('customer_users:customer_user_dashboard')
+    return render(request, 'customer_users/20_customer_user_login.html', {'form': form})
+
 
 class InternalUserLogoutView(LogoutView):
     template_name = 'internal_users/21_logout.html'
@@ -92,17 +116,17 @@ class InternalUserLogoutView(LogoutView):
 
 
 class UserPasswordChangeView(PasswordChangeView):
-    template_name = 'internal_users/password_change.html'
+    template_name = 'internal_users/40_password_change.html'
     success_url = reverse_lazy('password_change_done')
 
 
 class UserPasswordChangeDoneView(PasswordChangeDoneView):
-    template_name='internal_users/password_change_done.html'
+    template_name='internal_users/33_password_change_done.html'
 
 
 # 'PasswordResetView" class Allows a user to reset their password by generating a one-time use link that 
 # can be used to reset the password, and sending that link to the user’s registered email address.
-class UserPasswordResetView(PasswordResetView):
+class InternalUserPasswordResetView(PasswordResetView):
     template_name = 'internal_users/30_password_reset.html'
 
     success_url = reverse_lazy('password_reset_confirm')  #'/password_reset/done/'
@@ -170,9 +194,9 @@ def internal_user_view_employement(request):
         # grab the talent record based on email
         # next step is allow user to enter the birthday so that he can confirm the real employee information before displaying it.
         talent = TalentsModel.objects.filter(talent_email="15@gmail.com")
-        # if talent.exists():
-        talent_instance = talent.get()
-        form = EmploymentInfoForm(instance=talent_instance)
+        if talent.exists():
+            talent_instance = talent.get()
+            form = EmploymentInfoForm(instance=talent_instance)
         # crispy_form = render_crispy_form(form)
         # qs = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer').prefetch_related('repair_order_customer__addresses')
         return render(request, 'internal_users/70_employment_information.html', {"talent": talent_instance, "form": form})

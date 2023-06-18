@@ -1,4 +1,4 @@
-{% extends 'dashboard/00_base.html' %}
+{% extends 'dashboard/00_dashboard_base.html' %}
 {% block content-main %}
 
 <div class="container mb-2">
@@ -18,10 +18,10 @@
           {% for part_item_form in part_item_formset.forms %}
               {% for field in part_item_form %}
             <div class="row">
-              <div class ='col-4 my-1'>
+              <div class ='col-4 m-1'>
                   <label class="form-label">{{ field.label_tag }}</label>
               </div>
-              <div class ='col-6 my-1'>    
+              <div class ='col-6 m-1'>    
                   {{ field }}
                 <span class="text-danger">{{ field.errors }}</span>
               </div>

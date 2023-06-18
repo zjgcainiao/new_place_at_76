@@ -1,6 +1,7 @@
-{% extends 'dashboard/00_base.html' %}
+{% extends 'dashboard/00_dashboard_base.html' %}
 
 {% block content-main %}
+<div class="container">
   <h1>WIP Dashboard V1 </h1>
   <p>User is : {{user.user_first_name}}  {{user.email}}</p>
   <a class =' btn btn-primary' href = "{% url 'homepageapp:homepage' %}">go back to Homepage</a>
@@ -31,4 +32,5 @@
       {% endfor %}
     </tbody>
   </table>
+</div>
 {% endblock %}

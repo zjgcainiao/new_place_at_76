@@ -1,0 +1,29 @@
+{% extends 'customer_users/00_customer_user_base.html' %}
+
+
+{% block content %}
+
+<section class="container pt-5">
+    <div class = 'row pb-4 my-5'>
+  <h2>Registration Preview</h2>
+  <h3>Review your information before submitting:</h3>
+  <div class = 'row pb-4 my-5'>
+    <table>
+      {% for field in form %}
+        {% if field.value %}
+          <tr>
+            <td>{{ field.label }}</td>
+            <td>{{ field.value }}</td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </table>
+    <form method="get" action="{% url 'customer_users:customer_user_registration_submit' %}">
+      {% csrf_token %}
+      {{ form.as_hidden }}
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+  
+</section>>
+{% endblock %}

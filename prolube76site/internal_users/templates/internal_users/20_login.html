@@ -19,22 +19,21 @@
                   </div>
                   <div class="card-body py-4">
                       <div class="text-center w-75 m-auto">
-                          <h4 class="text-dark-50 text-center pb-0 fw-bold">Amazing Automan Employee Login</h4>
-                          <p class="text-muted mb-4"> Enter your email address and password. First Time employee will register first</p>
+                          <h4 class="text-dark-50 text-center pb-0 fw-bold">Employee Login</h4>
+                          <p class="text-muted mb-4"> Enter your email address and password. First Time employee will have to register first.</p>
                       </div>
                       <form method="post">
                         {% csrf_token %} 
                         <div class="my-3">
                             <label class="form-label">{{ form.username.label_tag }}</label>                        
-                            {{ form.username }}
+                            {{ form.username}}
                         </div>
                         <div class="my-3">
                             <label class="form-label">{{ form.password.label_tag }}</label>
                             <a href="{% url 'internal_users:password_reset' %}" class="text-muted float-end"><small>Forgot your password?</small></a>
                             <div class="input-group input-group-merge">
-
                             {{ form.password }}
-                            <div class="input-group-text" data-password="false">
+                            <div class="input-group-text" data-password="true">
                                 <span class="password-eye"></span>
                             </div> 
                             </div>

@@ -1,0 +1,12 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+
+{% block content-main %}
+<h3> Create a new customer record </h3>
+<form class = 'form-group' method="POST">
+    {% csrf_token %}   
+    
+     {{form.as_p}}
+
+    <button type="submit">SUBMIT</button>
+</form>
+{% endblock %}

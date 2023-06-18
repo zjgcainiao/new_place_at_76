@@ -44,6 +44,7 @@ ALLOWED_HOSTS = ["www.theironmanhouse.com","127.0.0.1","localhost","192.168.1.83
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
+    # "prolube76site.apps.MyAdminConfig",
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -63,6 +64,7 @@ INSTALLED_APPS = [
     'we_create_3d_models',
     'automatic_mails',
     'core_operations',
+    'firebase_auth_app',
 
     'celery',
     'django_celery_results',
@@ -71,7 +73,9 @@ INSTALLED_APPS = [
     'captcha', # google reCAPTCHA connection
     'formtools',
     'crispy_forms', # add django-cripsy-form
-    'crispy_bootstrap4',
+    # 'crispy_bootstrap4',
+    'crispy_bootstrap5',
+    # 'social_django',
     # 'firebase_auth', # google firebase-auth
 ]
 
@@ -114,8 +118,19 @@ TEMPLATES = [
 WSGI_APPLICATION = 'prolube76site.wsgi.application'
 
 
-AUTHENTICATION_BACKENDS =["django.contrib.auth.backends.ModelBackend",
-                          "customer_users.customer_auth_backend.CustomerUserBackend",
+# 2023-04-01 add a custom internal_users app to manage the future employees.
+AUTH_USER_MODEL = 'internal_users.InternalUser'
+
+AUTHENTICATION_BACKENDS =[
+                        'social_core.backends.open_id.OpenIdAuth',
+                        'social_core.backends.google.GoogleOpenId',
+                        'social_core.backends.google.GoogleOAuth2',
+                        'social_core.backends.google.GoogleOAuth',
+                        'social_core.backends.twitter.TwitterOAuth',
+                        'social_core.backends.yahoo.YahooOpenId',  
+                        "django.contrib.auth.backends.ModelBackend",
+                        "internal_users.internal_user_auth_backend.InternalUserBackend",
+                        "customer_users.customer_auth_backend.CustomerUserBackend",
                           ]
 
 # 2023-05-30
@@ -129,8 +144,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
-# -- 2023-04-01 add a custom internal_users app to manage the future employees.
-AUTH_USER_MODEL = 'internal_users.InternalUser'
+
 
 # added so that when a user login from 127.0.0.1/users/login, he will be re-directed to 'dashboard/'.
 # controlled by dashboard app. the main core app that do the lineitems and etc.
@@ -154,8 +168,6 @@ DEFAULT_FROM_EMAIL = email_sender # replace with your email
 
 DEFAULT_FILE_STORAGE = 'myapp.custom_storage.NASStorage'
 NAS_STORAGE_LOCATION = '192.168.1.30'  # NAS server IP or hostname
-
-
 
 # # django < 4.2
 # DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
@@ -190,11 +202,12 @@ GS_AUTO_CREATE_BUCKET = True
 import firebase_admin
 from firebase_admin import credentials
 
+# initialize the firebase auth app.
 cred = credentials.Certificate(google_credential_path)
-firebase_admin.initialize_app(cred)
+default_app = firebase_admin.initialize_app(cred)
 
-
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 # Add Google ReCAPTCHA keys
 RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY")

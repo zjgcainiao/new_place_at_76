@@ -1,0 +1,157 @@
+
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load humanize %}
+{% load core_operations.common_filters %}
+{% load crispy_forms_tags %}
+
+
+
+<br>
+{% block content-main %}
+<div class="container container-fluid">
+  <div class ='row justify-content-between'>
+    <div class="col-8">
+      <h3>Repair Order Detail - ID:{{repair_order.repair_order_id}} - Status</h3>
+    </div>
+    <div class ='col-2 '>
+      <h4 class ='text-left'>Today is {{current_time|date}} </h4>
+    </div>
+     
+  </div>
+  
+  <a class='btn btn-outline-dark my-1' href = "{% url 'dashboard:dashboard-v2' %}"> <i class ='fa fa-arrow-circle-left'> </i> go back to dashboard</a>
+</div>
+
+
+
+<div class="container container-fluid my-1">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id='repair-tab' data-bs-toggle="tab" href="#repair">Repair Order Info</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id='customer-tab' data-bs-toggle="tab" href="#messages">Texts with Customer</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id='address-tab' data-bs-toggle="tab" href="#comments">Related Comments</a>
+    </li>
+  </ul>
+</div>
+
+<div class="container container-fluid">
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active my-1" id="repair" role="tabpanel" aria-labelledby="repair-tab">
+        <!-- Placeholder content for repair order information -->
+        <div class="row my-1">
+
+            <div class="col-5">
+              <div class ='card card-hover border border-primary'>
+                <div class="row justify-content-between px-3 mt-1">
+                  <div class="col col-8"><h5 class="card-title text-primary">Repair Order ID: <u>{{repair_order.repair_order_id}}</u> </h5></div>
+                  <div class="col col-4"><small><em>Updated: {{repair_order.repair_order_last_updated_date|date}} </em></small></div>
+                </div>
+                <div class="card-body text-dark">    
+                  <div class="row">               
+                    <p class ='card-text col-4'>Status: {{repair_order.repair_order_phase.repair_order_phase_description}} </p>
+                    <p class ='card-text col-4'>Status: {{repair_order.repair_order_service_status}} </p>
+                    <p class ='card-text col-4'>Service In: {{repair_order.repair_order_serviced_vehicle_in_datetime |date:"Y-m-d g:i A"}} </p>
+                    <p class ='card-text col-4'>Service Out: {{repair_order.repair_order_serviced_vehicle_out_datetime |date:"Y-m-d g:i A"}} </p>
+                    <p class ='card-text col-4'>Promised Datetime: {{repair_order.repair_order_promise_datetime|date:"Y-m-d g:i A"}} </p>
+                    <p class ='card-text col-4'>Posted Datetime: {{repair_order.repair_order_posted_datetime|date:"Y-m-d g:i A"}} </p>
+                    <p class ='card-text col-4'>Posted Datetime: {{repair_order.repair_order_posted_datetime|date:"Y-m-d g:i A"}} </p>
+                    <p class ='card-text col-4'>Vehicle Engine Hours In: {{repair_order.repair_order_serviced_vehicle_engine_hours_in|intcomma }} </p>
+                    <p class ='card-text col-4'>Vehicle Engine Hours Out: {{repair_order.repair_order_serviced_vehicle_engine_hours_out|intcomma }} </p>
+                    <hr>
+                    <p class ='card-text col-4'>Total Amount: {{repair_order.repair_order_snapshot_order_total_amount |intcomma}} </p>
+                    <p class ='card-text col-4'>Labor Amount: {{repair_order.repair_order_snapshot_labor_sale_amount |intcomma}} </p>
+                    <p class ='card-text col-4'>Part Amount: {{repair_order.repair_order_snapshot_labor_part_amount |intcomma}} </p>
+                    <p class ='card-text col-4'>Discounted Amount: {{repair_order.repair_order_snapshot_discounted_amount|intcomma}} </p>
+                    <p class ='card-text col-4'>Hazardous : {{repair_order.repair_order_snapshot_haz_waste_amount|intcomma}} </p>
+                    <p class ='card-text col-4'>Tax Amount: {{repair_order.repair_order_snapshot_total_tax_amount|intcomma}} </p>
+
+                    <p class ='card-text col-12'>Aggr. Notes: {{repair_order.repair_order_aggr_notes}} </p>
+                    <hr>
+                    <p class='card-text col-9'>Customer ID: <u>{{ repair_order.repair_order_customer.customer_id }}</u> <a href="{% url 'dashboard:customer-detail' pk=customer_id %} " class="card-link">view more</a></p>
+                    <p class="card-text col-4">{{ repair_order.repair_order_customer.customer_first_name }} {{ repair_order.repair_order_customer.customer_last_name }} </p>
+                    <p class="card-text col-4">{{ repair_order.repair_order_customer.phones.first.phone_number_digits_only |format_phone_number_to_shop_standard}}</p>
+                    <p class="card-text col-4">{{repair_order.repair_order_customer.addresses.first.get_full_address }}</p>
+                  </div>    
+                </div>
+              </div>
+            </div>
+
+            <div class ='col-7'>
+              <div class = 'card card-hover border border-primary' >
+                <h5 class="card-title text-primary px-3 mt-1">Vehicle ID: {{repair_order.repair_order_vehicle.vehicle_id }}</h5>
+                <div class="card-body text-dark">
+                  <div class ='row'>
+                    <p class="card-text col-4">Year: {{repair_order.repair_order_vehicle.vehicle_year}}</p>
+                    <p class="card-text col-4">Make: {{repair_order.repair_order_vehicle.vehicle_make.make_name}}</p>
+                    <p class="card-text col-4">Model: {{repair_order.repair_order_vehicle.vehicle_model}}</p>
+                    <p class="card-text col-4">Odometer:{{repair_order.repair_order_vehicle.vehicle_odometer_1|intcomma}}</p>
+                    <p class="card-text col-4">GVW: {{repair_order.repair_order_vehicle.vehicle_GVW.gvw_text}}</p>
+                    <p class="card-text col-4">VIN: {{repair_order.repair_order_vehicle.VIN_number}}  <small><em>length:{{repair_order.repair_order_vehicle.VIN_number|length }}</em></small>
+                    </p>
+                    <p class="card-text col-4">License Plate Number: {{repair_order.repair_order_vehicle.vehicle_license_plate_nbr}}</p>
+                    <p class="card-text col-4">License State: {{repair_order.repair_order_vehicle.vehicle_license_state}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        </div>
+        <!-- end of row  -->
+        
+        <hr>
+
+        <div class ='container my-1'>
+          <div class ='row'>
+            <div class="btn-group" role="group">
+              <a class="btn btn-outline-primary">Canned Job List--ModelChoiceField</a>
+              <a class="btn btn-outline-primary"> Clean all </a>
+              <a class="btn btn-outline-primary">Refresh </a>
+              <a class="btn btn-outline-primary">Add a new Line</a>
+            </div>
+          </div>
+        </div>
+        
+
+        <div class="row">
+          <div class ='container my-2'>
+            {% with line_items=line_items %}
+              {% include 'dashboard/51_repair_order_line_items.html' %}
+            {% endwith %}
+          </div>
+        </div>
+      
+    </div>
+    <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+        <h3>Text History</h3>
+        <!-- Placeholder content for customer information -->
+        {% with text_messages=text_messages %}
+            {% include 'dashboard/80_text_message_side_bar.html' %}
+        {% endwith %}
+    </div>
+
+    <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
+        <h3>History of Repair Order related to the same customer</h3>
+        <!-- Placeholder content for address information -->
+        <p>Address_Line_01: {{repair_order.repair_order_customer.addresses.get.address_line_01 }} ,</p>
+        
+        </p>
+    </div>
+  </div>
+</div>
+<br>
+  
+  <script>
+    // $(document).ready(function(){
+    //     $('.nav-tabs a').click(function(){
+    //         $(this).tab('show');
+    //     });
+    //     $('.card-body a').click(function(){
+    //         $('#customer').show()
+    //     });
+    //     });
+  </script>
+{% endblock %}

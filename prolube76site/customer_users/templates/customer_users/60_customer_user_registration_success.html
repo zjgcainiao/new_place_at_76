@@ -1,0 +1,37 @@
+{% extends 'customer_users/00_customer_user_base.html' %}
+
+{% block content %}
+
+<section class="container pt-5">
+    <div class = 'row pb-4 my-5'>
+  <h2>Account Creation Success</h2>
+  <h3>Please verify the email address.</h3>
+
+  <div class="container pt-5">
+    <div class = 'row'>
+        <div class ='col col-6'>
+            <div class="card card-hover">
+                {% if customer_user %}
+                <div class ='card-header'> Name: {{customer_user.cust_user_first_name}} {{customer.cust_user_last_name}} </div>
+                <div class = 'card-body'>
+                <p class="card-text"> your phone number: {{customer_user.cust_user_phone_number}}</p>
+                <p class="card-text"> your listed email: {{customer_user.cust_user_email}} </p>
+                    <p class ='card-text'> Address: {{customer_user.cust_user_address_01}} {{customer_user.cust_user_address_02}} </p>
+                    <p class ='card-text'>Now please verify your email address. We have just sent you a verification email.</p>
+
+                    <a href="{% url 'customer_users:customer_user_dashboard' %}" class="btn btn-outline-info">Close the window</a>
+                </div>
+                {% else %}
+                 there is problem rendering your information. 
+
+                {% endif %}
+            </div>
+        </div>
+        <div class ='col col-sm-6'>
+        </div>
+    </div>
+</div>
+
+  
+</section>>
+{% endblock %}

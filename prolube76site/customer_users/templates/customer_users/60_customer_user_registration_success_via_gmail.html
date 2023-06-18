@@ -1,0 +1,37 @@
+{% extends 'customer_users/00_customer_user_base.html' %}
+
+{% block content %}
+
+<section class="container pt-5">
+    <div class = 'row pb-4 my-5'>
+  <h2>Account Creation Success</h2>
+  <h3>Gmail Account </h3>
+
+  <div class="container pt-5">
+    <div class = 'row'>
+        <div class ='col col-6'>
+            <div class="card card-hover">
+                {% if firebase_user %}
+                <div class ='card-header'>Email: {{firebase_user.email}}  </div>
+                <div class = 'card-body'>
+                <p class="card-text"> Name: {{firebase_user.display_name}}</p>
+                <p class="card-text"> Credential: {{firebase_user.credential}} </p>
+                    <p class ='card-text'> Token {{firebase_user.token}} </p>
+                    <!-- <p class ='card-text'>Now please verify your email address. We have just sent you a verification email.</p> -->
+
+                    <a href="{% url 'customer_users:customer_user_dashboard' %}" class="btn btn-outline-info">customer user dashboard</a>
+                </div>
+                {% else %}
+                 there is problem rendering your information. 
+
+                {% endif %}
+            </div>
+        </div>
+        <div class ='col col-sm-6'>
+        </div>
+    </div>
+</div>
+
+  
+</section>>
+{% endblock %}

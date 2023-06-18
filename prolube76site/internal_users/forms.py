@@ -43,20 +43,20 @@ class InternalUserCreationForm(forms.ModelForm):
 # 2023-04-26-chat-GPT-enabled
 class InternalUserRegistrationFormV2(UserCreationForm):
     email = forms.EmailField(required=True, help_text='Required. Enter a valid email address.')
-    first_name = forms.CharField(max_length=50, required=True, help_text='Required.')
-    last_name = forms.CharField(max_length=50, required=True, help_text='Required.')
+    user_first_name = forms.CharField(max_length=50, required=True, help_text='Required.')
+    user_last_name = forms.CharField(max_length=50, required=True, help_text='Required.')
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
     # this function will have to expand for employee email verifications.
     # employee record shall be created first before a user can be added.
     def email_clean(self):
-        email = self.cleaned_data['email'].lower()
+        email = self.cleaned_data['email'].lower().strip()
         new = InternalUser.objects.filter(email=email)
         if new.count():
             raise ValidationError(" Email Already Exist.")
         return email 
     class Meta:
         model = InternalUser
-        fields = ['email', 'first_name', 'last_name', ] #'username',
+        fields = ['email', 'user_first_name', 'user_last_name', ] #'username',
         widgets = {
             'email': forms.EmailInput(attrs={'type': 'text', 'class':'form-control',}),
             'first_name': forms.TextInput(attrs={'type': 'text', 'class':'form-control',}),
@@ -119,12 +119,13 @@ class InternalUserLoginForm(AuthenticationForm):
 
 
 class InternalUserPasswordResetForm(PasswordResetForm):
+
     def __init__(self, *args, **kwargs):
         super(PasswordResetForm, self).__init__(*args, **kwargs)
     
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
     class Meta:
-        model = get_user_model()
+        model = InternalUser
 
 # 2023-05-30
 # this form is used to display a internal_user's employment information
@@ -176,3 +177,23 @@ class EmploymentInfoForm(forms.ModelForm):
             ),
             # Add more sections for other groups of fields
         )
+
+# a new admin authentication form 
+# 2023-06-06
+class AdminAuthenticationForm(AuthenticationForm):
+    """
+    A custom authentication form used in the admin app.
+    """
+    # username = None
+    email = forms.EmailField(label='Admin Email', max_length=254)
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'type':'text',
+            'placeholder': 'Enter your password.'
+        }),
+        label='Password',
+    )
+    class Meta:
+        model = InternalUser
+        # fields = ('email', 'password',)

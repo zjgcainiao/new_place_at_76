@@ -1,0 +1,14 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+
+{% block content-main %}
+  <h1>Update the Repair Order Information V2</h1>
+
+ 
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update</button>
+  </form>
+
+{% endblock %}
+

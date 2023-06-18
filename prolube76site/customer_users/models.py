@@ -5,26 +5,29 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password
 from homepageapp.models import CustomersNewSQL02Model as Customer
+from django.core.exceptions import ValidationError
+from firebase_auth_app.models import FirebaseUser
 
 # create the customer user to sign up via phone number. 
 # easier for them to sign up and follow up with text messages.
 
 class CustomerUserManager(BaseUserManager):
     use_in_migrations = False
-    def create_user(self,  phone_number, email, password=None, **extra_fields):
+    def create_user(self, email, password=None, **extra_fields):
         """
         Creates and saves a User with the given phone number and password.
         """
-        if  not email and not phone_number:
+        if  not email :
             raise ValueError('At least one of email or phone number must be provided.')
                 # hash the password
         hashed_password = make_password(password)
 
         email = self.normalize_email(email)
-        phone_number = phone_number.strip()
-        customer_user = self.model(phone_number=phone_number,
-                                   email=email,
-                                   **extra_fields)
+        # if phone_number is not None:
+        #     phone_number = phone_number.strip()
+        # else:
+        #     phone_number is None
+        customer_user = self.model(cust_user_email=email, **extra_fields)
         # customer_user.set_password(password)
         customer_user.set_password(hashed_password)
         customer_user.save(using=self._db)
@@ -38,8 +41,10 @@ class CustomerUser(AbstractBaseUser):
     cust_user_id = models.AutoField(primary_key=True)
     cust_user_first_name = models.CharField(_('first name'), max_length=50)
     cust_user_last_name = models.CharField(_('last name'), max_length=50)
-    cust_user_phone_number = models.CharField(max_length=20, unique=True,
-                                              help_text='enter a valid US phone number.')
+    cust_user_middle_name = models.CharField(_('middle name'), max_length=50, null=True)
+    cust_user_preferred_name = models.CharField(_('preferred name'), max_length=50, help_text='The preffered name.', null=True)
+    cust_user_phone_number = models.CharField(max_length=20, # unique=True, still using email as the default
+                                              help_text='enter a valid US phone number.', null=True)
     cust_user_country_code = models.CharField(max_length=10, default='+1')
     cust_user_email = models.EmailField(verbose_name='email address', unique=True)
     password = models.CharField(max_length=128, blank=False, null=False)
@@ -56,10 +61,15 @@ class CustomerUser(AbstractBaseUser):
     cust_user_linked_customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, related_name='users_customers')
     cust_user_linkage_is_confirmed = models.BooleanField(default=False)
     cust_user_last_linked_date = models.DateTimeField(null=True)
+
+    cust_user_linked_firebaseuser = models.ForeignKey(FirebaseUser, on_delete=models.SET_NULL, null=True)
+
+    customer_user_lastest_ip_address = models.GenericIPAddressField(null=True)
+
     cust_user_created_at = models.DateTimeField(auto_now_add=True)
     cust_user_last_updated_at = models.DateTimeField(auto_now=True)
     
-    USERNAME_FIELD = 'cust_user_phone_number'  # or 'email_address'
+    USERNAME_FIELD = 'cust_user_email'  # or 'email_address'
     REQUIRED_FIELDS = ['password'] # 'cust_user_phone_number','cust_user_email',
 
     objects = CustomerUserManager()

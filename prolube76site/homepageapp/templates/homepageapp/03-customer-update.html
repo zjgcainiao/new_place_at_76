@@ -1,11 +1,16 @@
-{% extends 'homepageapp/base.html' %}
-
+{% extends 'homepageapp/10_homepageapp_base.html' %}
+{% load crispy_forms_tags %}
 {% block content1-main %}
-<h2>Update Customer Page</h2>
+<div class="container pt-5 mt-5">
+  <div class="card card-hover border border-50 m-1">
+    <h3 class="card-title m-1">Update Customer Page</h3>
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Update</button>
-</form>
+    <form method="post" class="">
+      {% csrf_token %}
+      
+      {% crispy form form.helper %}
+      <!-- <button class='btn btn-outline-primary' type="submit">Update</button> -->
+    </form>
+  </div>
+</div>
 {% endblock %}

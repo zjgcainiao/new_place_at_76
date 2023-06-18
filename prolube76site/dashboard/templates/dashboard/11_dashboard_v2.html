@@ -1,23 +1,25 @@
-{% extends 'dashboard/00_base.html' %}
+{% extends 'dashboard/00_dashboard_base.html' %}
 {% load humanize %}
+
 {% block content-main %}
 
-  <div class="container container-fluid my-2">
+  <div class="container container-fluid my-1">
     <h2>WIP Dashboard V2 -- via ListView</h2>
 
     <div class="row">
-      <div class="col-3">
-        <a  href = "{% url 'homepageapp:homepage' %}">go back to Homepage</a>
+      <div class="col col-3">
+        <a class="'btn btn-outine-dark my-1" href = "{% url 'homepageapp:homepage' %}"><i class ='uil-backward'></i> go back to Homepage</a>
       </div>
+      
     </div>
   </div>
-  <div class="container container-fluid my-2">
+  <div class="container container-fluid ">
     <div class = 'row'>
-      <div class="col-12 btn-group my-2">
-        <button type="button" class="btn btn-outline-primary">New Repair Order</button>
-        <button type="button" class="btn btn-outline-primary">Search everything</button>
-        <button type="button" class="btn btn-outline-primary">New Service Appointment</button>
-        <button type="button" class="btn btn-outline-primary">New Messaging</button>
+      <div class="col-12 btn-group my-1">
+        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search' %}"> <i class="uil-file-plus-alt"></i> New Repair Order</a>
+        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customers-list' %}"><i class ='uil-users-alt' ></i> Go to Customer Dash</a>
+        <a type="button" class="btn btn-outline-dark" href="{% url 'appointments:appointment_list' %}"> <i class="uil-calendar-alt"></i> Go to Appointment Dash</a>
+        <a type="button" class="btn btn-outline-dark">Go to Vehicle Dash</a>
       </div>
 
     </div>
@@ -47,7 +49,7 @@
 
             <td>
               {% for phone in repair_order.repair_order_customer.phones.all %}
-                <p>{{phone.phone_desc.phone_desc}}   {{phone.phone_number|phone2numeric }}</p>
+                <p>{{phone.phone_desc.phone_desc}}: {{phone.phone_number|phone2numeric }}</p>
               {% endfor %}
             </td>
 

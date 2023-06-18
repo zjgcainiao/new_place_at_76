@@ -1,14 +1,13 @@
-{% extends 'dashboard/00_base.html' %}
+{% extends 'dashboard/00_dashboard_base.html' %}
 {% block content-main %}
 
 <div class="container">
-    <a class = 'btn btn-secondary  my-4' href = "{% url 'dashboard:dashboard-detail' pk=repair_order_id %}"><i class="fa-solid fa-arrow-left"></i> Go Back</a>
+    <a class = 'btn btn-secondary  my-4' href = "{% url 'dashboard:dashboard-detail' pk=repair_order_id %}"><i class="fa-solid fa-arrow-left"></i>Go Back</a>
     <p class ='lead'>Description: {{line_item.line_item_description}}</p>
 </div>
 <div class = 'container container-fluid'>
   <form method="post" class ='row g-3'>
     {% csrf_token %}
-   
             {% for field in form %}
             <div class ='col-md-6'>
                 <label class="form-label">{{ field.label_tag }}</label>{{ field }}

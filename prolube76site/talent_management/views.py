@@ -50,7 +50,7 @@ class TalentListView(LoginRequiredMixin, ListView):
             )
             # Remove non-digit characters from the search query
             search_query_digits = re.sub(r'\D', '', search_query)
-            if len(search_query_digits)==10: # and re.match(r'^\d+$', search_query):
+            if len(search_query_digits) == 10:  # and re.match(r'^\d+$', search_query):
                 # Format the search query as per the phone number pattern
                 search_query_digits = "1" + search_query_digits
                 formatted_search_query = '+{}({}){}-{}'.format(
@@ -60,7 +60,7 @@ class TalentListView(LoginRequiredMixin, ListView):
                     search_query_digits[7:11],
                 )
                 queryset = queryset.filter(talent_phone_number_primary__icontains=formatted_search_query)
-            elif len(search_query_digits)==11:
+            elif len(search_query_digits) == 11:
                 formatted_search_query = '+{}({}){}-{}'.format(
                     search_query_digits[0:1],
                     search_query_digits[1:4],
@@ -71,6 +71,7 @@ class TalentListView(LoginRequiredMixin, ListView):
         return queryset
 
     def dispatch(self, request, *args, **kwargs):
+        # user has to be instance of InternalUser.
         if isinstance(request.user, InternalUser):
             if not (request.user.is_authenticated):
                 return self.handle_no_permission()
@@ -184,7 +185,6 @@ def send_talent_report_task(request):
     messages.add_message(request, messages.SUCCESS, "your talent_report with pay type = 0 has been generated and sent. ")
     # refresh the same page.
     return redirect('talent_management:talent_list')
-
 
 def talent_document_list(request, pk):
     talent = TalentsModel.objects.get(pk=pk)

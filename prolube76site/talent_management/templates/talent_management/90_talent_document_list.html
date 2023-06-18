@@ -4,7 +4,7 @@
 <div class ='container container-fluid'>
 <div class="row my-1">
     <div clas="col">
-        <buttn class="btn btn-outline-primary" href="{% url 'talent_management:talent_detail' pk=talent.talent_id %}">Go back</buttn>
+        <buttn class="btn btn-outline-primary" ><a href="{% url 'talent_management:talent_detail' pk=talent.talent_id %}">Appointment</a></buttn>
     </div>
 
 </div>
@@ -36,6 +36,8 @@
             </tr>
             {% endfor %}
         </tbody>
+
+
     </table>
 </div>
 {% endblock %}   

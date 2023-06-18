@@ -1,0 +1,46 @@
+{% extends 'appointments/00_appointment_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content-main %}
+<section class="container py-2">
+  <aside>
+    <div class='row'>
+          <h2>Make a Service Request</h2>
+            {% comment %}
+            <form >
+              <div class="col col-8">
+                {% csrf_token %}
+                {% crispy form form.helper %}
+                
+              </div>
+            <!-- <button class = 'btn btn-outline-primary' type="submit">Submit</button> -->
+          </form>
+          {% endcomment %}
+
+          <h3>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }} -- special template</h3>
+          <form action="" method="post">
+            {% csrf_token %}
+            <table>
+            {{ wizard.management_form }}
+            {% if wizard.form.forms %}
+                {{ wizard.form.management_form }}
+                {% for form in wizard.form.forms %}
+                {% crispy form form.helper %}
+                {% endfor %}
+            {% else %}
+                {% crispy wizard.form  wizard.form.helper %}
+            {% endif %}
+            </table>
+            {% if wizard.steps.prev %}
+            <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">First</button>
+            <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous</button>
+            {% endif %}
+            
+          <input type="submit" value="Submit"/>
+          </form>      
+
+    </div>
+    
+  </aside>
+</section>        
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load static %}
+{% block content-main %}
+
+{% if page_obj %}
+<div class="navbar" style="background-color: rgb(212, 219, 220);">
+    <h4>Active Customers List </h4>
+    <p class="title">Today is {{current_time}} </p>
+</div>
+    <table class="table table-light table-hover">
+        <thead>
+            <tr>
+                <th>Old ID</th>
+                <th>first Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone Nbr</th>      
+                <th>Updated at</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in page_obj %}
+                <tr>
+                    <td><a href ="{% url 'dashboard:customer-detail' pk=customer.customer_id %} ">{{customer.customer_id}}</a></td>
+                    <td>{{ customer.customer_first_name}}</td>
+                    <td>{{ customer.customer_last_name }}</td>
+                    <td>
+                        {% for email in repair_order.repair_order_customer.emails.all %}
+                        {{email.email_address|truncatechars:30 }}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for phone in repair_order.repair_order_customer.phones.all %}
+                        <p>{{phone.phone_desc.phone_desc}}   {{phone.phone_number|phone2numeric }}</p>
+                        {% endfor %}
+                    </td>
+
+                    <td>{{ customer.customer_last_updated_date }}</td>
+                    
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No active customers found.</td>
+                </tr>
+                {% endfor %} 
+        </tbody>
+    </table>
+
+</div>
+<div class ='row'>
+    <div class = 'col-12'>
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    {% if page_obj.has_previous %}
+                        <a class="page-link" href="?page=1">
+                            <span class= 'step-links' aria-hidden="True">&laquo; First (1) </span>
+                        </a>
+                </li>
+                <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}"  tabindex="-1" >
+                            <span class= 'step-links' >Previous ({{ page_obj.previous_page_number }})</span>
+                        </a>
+                    {% endif %}
+                </li>
+                <li class ="page-item active">
+                    <a class="page-link" href="?page={{ page_obj.number }}">
+                        <span>
+                            Current ({{ page_obj.number }})
+                        </span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    {% if page_obj.has_next %}
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                            <span>Next ({{ page_obj.next_page_number }})</span>
+                        </a>
+                </li>
+                <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                            <span aria-hidden="true" >Last ({{ page_obj.paginator.num_pages }}) &raquo;</span>
+                        </a>
+                    {% endif %}
+        
+                </li>
+            </ul>
+  
+    </div>
+</div>
+
+    {% else %}
+    <p>There are no matched customers found here.</p>
+    {% endif %}
+        
+{% endblock %}

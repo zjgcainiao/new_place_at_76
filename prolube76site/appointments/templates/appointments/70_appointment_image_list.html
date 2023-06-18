@@ -1,0 +1,51 @@
+{% extends 'appointments/00_appointment_base.html' %}
+{% load static %}
+{% block content-main %}
+
+<div class ='container container-fluid'>
+    <div class="row my-1">
+        <div clas="col">
+            <a class="btn btn-outline-primary" href="{% url 'appointments:appointment_detail' pk=appointment.appointment_id %}">Go back</a>
+        </div>
+    
+    </div>
+    
+        <h1>Uploaded images for {{appointment.appointment_id}}-{{appointment.appointment_full_name}}</h1>
+    
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Image Name</th>
+                    <th>Uploaded Date</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for image in images %}
+                <tr>
+                    <td>
+                        <a href="{{ image.appointment_images.url }}" download>{{ image.appointment_images.name }}</a>
+                    </td>
+                    <td> 
+                        {{ image.uploaded_date |date}}
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'appointments:appointment_image_delete' image_id=image.image_id %}">
+                            {% csrf_token %}
+                            <button type="submit"><i class="ri-delete-bin-fill">Delete</i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td> No images found</td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+    
+            
+        </table>
+    </div>
+
+{% endblock %}

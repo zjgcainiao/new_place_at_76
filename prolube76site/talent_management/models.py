@@ -5,88 +5,11 @@ from datetime import datetime
 from internal_users.models import InternalUser
 from django.utils import timezone
 
-# constant value across the whole talent_managment app,
-# 
-NUMBER_OF_DAYS_IN_A_YEAR = 365
-US_COUNTRY_CODE = '1'
+# added on 2023-06-03. common operational models, functions shall be defined in core_operations app.
 
-# custom field. 
-# This field will format the phone number into a standard format "+18182234567"
-class FormattedPhoneNumberField(models.CharField):
-    def __init__(self, *args, **kwargs):
-        kwargs['max_length'] = 15
-        kwargs['null'] = True
-        kwargs['blank'] = True
+from core_operations.models import FormattedPhoneNumberField, YearsOfWorkField
+from core_operations.models import US_COUNTRY_CODE, NUMBER_OF_DAYS_IN_A_YEAR
 
-        super().__init__(*args, **kwargs)
-    def format_phone_number(self, phone_number):
-        # phone_number = getattr(instance, self.attname)
-        # Remove all non-digit characters from the phone number
-        phone_number_digits = re.sub(r'\D', '', phone_number)
-
-        # If the phone number is missing the country code, assume it's a US number
-        if len(phone_number_digits) == 10:
-            full_phone_number_digits = US_COUNTRY_CODE + phone_number_digits
-            # Format the phone number as "+1 (818) 223-4456"
-            return '+{}({}){}-{}'.format(
-                full_phone_number_digits[0:1],
-                full_phone_number_digits[1:4],
-                full_phone_number_digits[4:7],
-                full_phone_number_digits[7:11],
-            )
-        # 2023-05-22 when importing intital data into talent model from 
-        # 2023-05-01-talent_management_init.csv, the 1 is added.
-        elif len(phone_number_digits) == 11:
-            full_phone_number_digits = phone_number_digits
-            return '+{}({}){}-{}'.format(
-                full_phone_number_digits[0:1],
-                full_phone_number_digits[1:4],
-                full_phone_number_digits[4:7],
-                full_phone_number_digits[7:11],
-            )
-        else:
-            raise ValueError('phone number must be 10 digits long. example: 234-456-3444 or (234)456-3444. The phone number entered is ', phone_number_digits)
-
-    
-    def pre_save(self, model_instance, add):
-        phone_number = getattr(model_instance, self.attname)
-        # model_instance.talent_phone_number_primary
-        if phone_number:
-            formatted_phone_number = self.format_phone_number(phone_number)
-            setattr(model_instance, self.attname, formatted_phone_number)
-            return formatted_phone_number
-        return super().pre_save(model_instance, add)
-    
-# custom field 
-class YearsOfWorkField(models.DecimalField):
-    def __init__(self, *args, **kwargs):
-        kwargs['max_digits'] = 5
-        kwargs['decimal_places'] = 1
-        kwargs['null'] = True
-        super().__init__(*args, **kwargs)
-
-    def calculate_years_of_work(self, talent_hire_date):
-        today = date.today()
-        years = (today.days - talent_hire_date.days) / NUMBER_OF_DAYS_IN_A_YEAR
-
-        return round(years, 1)
-
-    def pre_save(self, model_instance, add):
-        talent_hire_date = getattr(model_instance, self.attname)
-
-        # when reading the initial data, the talent_hire_date could be empty string ''.
-        # '%Y-%m-%d'
-        if isinstance(talent_hire_date, str):
-            if talent_hire_date:
-                talent_hire_date = datetime.strptime(talent_hire_date, '%Y-%m-%d')
-            else:
-                years_of_work = None
-                return years_of_work
-        if talent_hire_date:
-            years_of_work = self.calculate_years_of_work(talent_hire_date)
-            setattr(model_instance, self.attname, years_of_work)
-            return years_of_work
-        return super().pre_save(model_instance, add)
 
 # Create your models here.
 class TalentsModel(models.Model):
@@ -156,9 +79,12 @@ class TalentsModel(models.Model):
     talent_middle_name = models.CharField(max_length=50, null=True, blank=True)
     talent_preferred_name = models.CharField(max_length=50, null=True, blank=True)
     talent_email = models.EmailField(max_length=50, blank=True, null=True)
-    talent_phone_number_primary = FormattedPhoneNumberField(null=True) # models.CharField(max_length=15, null=True, blank=True)
-    talent_emergency_contact = models.CharField(max_length=100, null=True, blank=True)
-    talent_date_of_birth = models.DateField(verbose_name='your date of birth')
+    talent_phone_number_primary = FormattedPhoneNumberField() # this custom field works with a glitch as of 2023-06-03.
+    talent_phone_number_primary_digits_only = models.CharField(max_length=20, null=True, blank=True)
+    talent_phone_number_alternates_01 = FormattedPhoneNumberField(null=True)
+    talent_phone_number_alternates_02 = FormattedPhoneNumberField(null=True)
+    talent_emergency_contact = models.CharField(max_length=200, null=True, blank=True)
+    talent_date_of_birth = models.DateField(verbose_name='your date of birth', null=True)
 
     talent_physical_address_01 = models.CharField(verbose_name='street address 01', max_length=100)
     talent_physical_address_02 = models.CharField(verbose_name='street address 02(apt numbers, unit #, etc.)', max_length=100, blank=True, null=True)
@@ -173,7 +99,7 @@ class TalentsModel(models.Model):
     talent_mailing_address_state = models.CharField(max_length=2, null=True)
     talent_mailing_address_zip_code = models.CharField(max_length=10)
     talent_mailing_address_country = models.CharField(max_length=50, default ='US')
-    talent_education_level = models.CharField(max_length=100, default ='UNDEFINED')
+    talent_education_level = models.CharField(max_length=100, default='None')
     talent_certifications = models.CharField(max_length=500, null=True, blank=True)
 
 
@@ -213,15 +139,27 @@ class TalentsModel(models.Model):
     
     @property
     def talent_full_physical_address(self):
-        addr_fields = [self.talent_physical_address_01, self.talent_physical_address_02,self.talent_physical_address_city,self.talent_physical_address_state,
-                       self.talent_physical_address_zip_code, self.talent_physical_address_country]
+        addr_fields = [self.talent_physical_address_01, self.talent_physical_address_02, self.talent_physical_address_city, self.talent_physical_address_state.upper(),
+                       self.talent_physical_address_zip_code]
+
         full_address = " ".join([field for field in addr_fields if field is not None]).strip()
+        if len(full_address) != 0:
+            full_address = full_address + " " +  self.talent_physical_address_country
+        else:
+            full_address = full_address
         return full_address
+    
     @property
     def talent_full_mailing_address(self):
-        addr_fields = [self.talent_mailing_address_01,self.talent_mailing_address_02, self.talent_mailing_address_city,self.talent_mailing_address_state,
-                       self.talent_mailing_address_zip_code, self.talent_mailing_address_country]
+        addr_fields = [self.talent_mailing_address_01, self.talent_mailing_address_02, self.talent_mailing_address_city,self.talent_mailing_address_state,
+                       self.talent_mailing_address_zip_code]
         full_address = " ".join([field for field in addr_fields if field is not None]).strip()
+        
+        # if the first 5 fields are empty; do not add the country in the end, return none instead.
+        if len(full_address) != 0:
+            full_address = full_address + " " + self.talent_mailing_address_country
+        else:
+            full_address = full_address
         return full_address
     
     def __str__(self):

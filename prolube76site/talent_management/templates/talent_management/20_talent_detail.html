@@ -1,24 +1,45 @@
 {% extends 'talent_management/00_base.html' %}
-
+{% load crispy_forms_tags %}
 {% block content-main %}
-<div class ='container container-fluid'>
-    <a href ="{% url  'talent_management:talent_list' %}">Go Back</a>
+<div class ='row m-1 p-1'>
+    <div class="col col-4">
+    <a href="{% url  'talent_management:talent_list' %}" class="btn btn-outline-dark">Go Back</a>
+    </div>
 </div>
 <div class ='container container-fluid'>
-    <h2>{{ talent.talent_first_name }} {{ talent.talent_last_name }}</h2>
-    <div class ='row'>
+
         <div class="card card-hover">
-            <p>Full Name: {{talent.talent_full_name}}</p>
-            <p>Employee ID: {{ talent.talent_employee_id }}</p>
-            <p>full address: {{talent.talent_full_address}}</p>
-            <p>Phone Number: {{ talent.talent_phone_number_primary }}</p>
-            <p>Email: {{ talent.talent_email }}</p>
+            <h3 class="card-header">Personal Information</h3>
+            <div class ='row m-1 p-1'>
+                <div class="col col-12 p-1">Employee ID:{{ talent.talent_employee_id }}</div>
+                <div class="col col-3 p-1">First Name: {{ talent.talent_first_name }}</div>
+                <div class="col col-3 p-1">Last Name:  {{ talent.talent_last_name }}</div>
+                <div class="col col-3 p-1">Middle Name: {{ talent.talent_middle_name }}</div>
+                <div class="col col-3 p-1">Preferred Name: {{ talent.talent_preferred_name }}</div>
+
+
+                <div class="col col-3 p-1">Phone Number: {{ talent.talent_phone_number_primary }}</div>
+                <div class="col col-3 p-1">Email: {{ talent.talent_email }}</div>
+                <div class="col col-12 p-1">Physical address: {{talent.talent_full_physical_address}}</div>
+            </div>
         </div>
-    </div>
+        <!-- end of personal information card  -->
     <hr>
-    <h3>Payroll Information</h3>
-    <p>Pay Type: {{talent.talent_pay_type}}</p>
-    <p>Pay Rate: {{ talent.talent_pay_rate}}</p>
+
+        <div class="card card-hover">
+            <h3 class="card-header">Payroll Information</h3>
+            <div class ='row m-1 p-1'>  
+                <div class="col col-3 p-1">Pay Type: {{talent.talent_pay_type}}</div>
+                <div class="col col-3 p-1">Pay Rate: {{ talent.talent_pay_rate}}</div>
+                <div class="col col-3 p-1">Pay Frequency: {{ talent.get_talent_pay_frequency_display}}</div>
+                <div class="col col-3 p-1">Deparment: {{ talent.talent_department}}</div>
+                <div class="col col-3 p-1">Supervisor: {{ talent.talent_supervisor}}</div>
+
+            </div>
+        </div>
+        <!-- end of payroll information card -->
+
+
     <hr>
     <div class ='row'>
         <p class="text-end"><a href="{% url 'talent_management:talent_document_list' pk=talent.talent_id %}">view uploaded docs </a></p>
@@ -26,7 +47,7 @@
             <h3>Upload Payroll Forms</h3>
             <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form |crispy }}
             <button type="submit">Upload</button>
             </form>
         </div>

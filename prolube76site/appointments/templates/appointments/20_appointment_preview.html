@@ -1,0 +1,61 @@
+{% extends "appointments/00_appointment_base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content-main %}
+<div class="container container-fluid my-1"> 
+  <h3>Appointment Preview</h3>
+  Hello {{appointment.appointment_first_name}} {{apppontment.appointment_last_name}}, here is the appointment you requested.
+  <table class="table table-light">
+    <thead>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Appointment Time Requested</th>
+        <td>{{ appointment.appointment_requested_datetime }}</td>
+      </tr>
+      <tr>
+        <th scope="row"> Vehicle Information</th>
+        <td>{{ appointment.appointment_vehicle_detail }}</td>
+      </tr>
+      <tr>
+        <th scope="row">The description of your concern</th>
+        <td>{{ appointment.appointment_concern_description }}</td>
+      </tr>
+      <tr>
+        <th scope="row">Email you entered</th>
+        <td>{{appointment.appointment_email }}</td>
+      </tr>
+      <tr>
+        <th scope="row">Phone Number</th>
+        <td>{{appointment.appointment_phone_number }}</td>
+      </tr>   
+      <tr>
+        <th scope="row">Status</th>
+        <td>{{appointment.get_appointment_status_display }}</td>
+      </tr>
+    </tbody>
+  </table>
+ 
+    
+  {% if images.all %}
+  <h2>Uploaded Images</h2>
+  <div>
+      {% for image in appointment.appointment_images.all %}
+      <img src="{{ image.appointment_images.url }}" alt="">
+      {% endfor %}
+  </div>
+  {% endif %}
+
+
+
+
+  <p class="small">Click the 'confirm' button below when you finishing review the information below</p>
+  <form class='card' method="post">
+    {% csrf_token %}
+    <input type="hidden" name="appointment_id" value="{{ appointment.appointment_id }}">
+    <button type="submit" class="btn btn-outline-primary">Confirm</button>
+  </form>
+  
+</div> 
+{% endblock %}
