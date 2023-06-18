@@ -504,7 +504,7 @@ class LineItemsNewSQL02Model(models.Model):
 
 class NoteItemsNewSQL02Model(models.Model):
     note_item_id = models.AutoField(primary_key=True)
-    line_item = models.ForeignKey(LineItemsNewSQL02Model, on_delete=models.CASCADE, related_name='noteitems') # when it is a foreign key,"_id" is added at the end of the field name 
+    line_item = models.ForeignKey(LineItemsNewSQL02Model, on_delete=models.CASCADE, related_name='lineitem_noteitem') # when it is a foreign key,"_id" is added at the end of the field name 
     note_item_text = models.TextField(null=True)
     note_item_is_printed_on_order = models.BooleanField(default=True)
     note_item_tech_observation = models.TextField(null=True)
