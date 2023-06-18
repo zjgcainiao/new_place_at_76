@@ -540,7 +540,7 @@ class lineItemTaxesNewSQL02Model(models.Model):
 
 class LaborItemModel(models.Model):
     labor_item_id = models.AutoField(primary_key=True)
-    line_item = models.ForeignKey(LineItemsNewSQL02Model, on_delete=models.SET_NULL, null=True, related_name='labor_lineitems')
+    line_item = models.ForeignKey(LineItemsNewSQL02Model, on_delete=models.SET_NULL, null=True, related_name='lineitem_laboritem')
     labor_rate_description_id = models.IntegerField()
     labor_item_is_user_entered_labor_rate = models.BooleanField()
     labor_item_work_performed = models.TextField( blank=True, null=True)

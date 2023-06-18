@@ -22,6 +22,7 @@ class SearchForm(forms.Form):
 
 
 class CustomerUpdateForm(forms.ModelForm):
+    # customer_first_name = forms.CharField(required=True, label="first name")
     customer_resale_permit_nbr = forms.CharField(required=False, label='Resale permit number')
     customer_memebership_nbr = forms.CharField(required=False,label='Membership nbr' )
     customer_spouse_name = forms.CharField(required=False, label='Spouse Name', widget=forms.TextInput(attrs={'class':'form-control','type':'text', 'placeholder':'enter your spouse name or another trusted person who we can contact.'}))

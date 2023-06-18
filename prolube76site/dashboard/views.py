@@ -16,7 +16,7 @@ from django.http import HttpResponseRedirect
 from homepageapp.models import RepairOrdersNewSQL02Model, CustomerAddressesNewSQL02Model,CustomersNewSQL02Model,AddressesNewSQL02Model
 from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model
 # from homepageapp.forms import RepairOrderModelForm, CustomerModelForm, AddressModelForm, RepairOrderLineItemModelForm, PartItemModelForm, LaborItemModelForm
-from homepageapp.forms import PartItemFormSet, LaborItemFormSet
+from dashboard.forms import PartItemFormSet, LaborItemFormSet
 from django.forms.models import inlineformset_factory, modelformset_factory
 from datetime import datetime, timedelta
 from django.contrib import messages
@@ -86,7 +86,7 @@ def dashboard_detail_v1(request, pk):
         'repair_order_customer__phones',
         'repair_order_customer__emails',
         'repair_order_customer__taxes',
-        'lineitems__noteitems',
+        'lineitems__lineitem_noteitem',
         'repair_order_vehicle'
         ).get(pk=pk)
     # repair_order = RepairOrdersNewSQL02Model.objects.get(id=repair_order_id)
@@ -128,8 +128,11 @@ def dashboard_detail_v1(request, pk):
 # dashboard detail view. Version 2
 def dashboard_detail_v2(request, pk):
     repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
-        Prefetch('repair_order_customer__addresses')).prefetch_related(
-        'repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
+        Prefetch('repair_order_customer__addresses'),
+        'repair_order_customer__phones',
+        'repair_order_customer__emails',
+        ).prefetch_related(
+        ).prefetch_related(
         ).prefetch_related('repair_order_customer__taxes').get(pk=pk)
     # repair_order = RepairOrdersNewSQL02Model.objects.get(id=repair_order_id)
     repair_order_customer = repair_order.repair_order_customer
@@ -227,11 +230,11 @@ def repair_order_and_line_items_detail(request, repair_order_id):
         Prefetch('repair_order_customer__addresses')).prefetch_related(
         'repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
         ).prefetch_related('repair_order_customer__taxes'
-        ).prefetch_related('lineitems__noteitems').prefetch_related('lineitems__parts_lineitems'
-        ).prefetch_related('lineitems__labor_lineitems').get(pk=repair_order_id)
+        ).prefetch_related('lineitems__lineitem_noteitem').prefetch_related('lineitems__parts_lineitems'
+        ).prefetch_related('lineitems__lineitem_laboritem').get(pk=repair_order_id)
     line_items = repair_order.lineitems.all()
     part_items = {lineitem.parts_lineitems.all():lineitem.line_item_id for lineitem in line_items}
-    labor_items = {lineitem.labor_lineitems.all():lineitem.line_item_id for lineitem in line_items} 
+    labor_items = {lineitem.lineitem_laboritem.all():lineitem.line_item_id for lineitem in line_items} 
     formset_dict = {}          
     formsets = []
     for line_item in line_items:
@@ -257,8 +260,14 @@ class RepairOrderLineItemListView(ListView):
 
     def get_queryset(self):
         ## `__` double undestore..more researched are needed.
-        qs = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer').prefetch_related('repair_order_customer__addresses')
-        qs = qs.prefetch_related('repair_order_customer__phones').prefetch_related('repair_order_customer__emails').prefetch_related('repair_order_customer__taxes').prefetch_related('lineitems__parts_lineitems').prefetch_related('lineitems__labor_lineitems')
+        qs = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer').prefetch_related(
+            'repair_order_customer__addresses',
+            'repair_order_customer__phones',
+            'repair_order_customer__emails',
+            'repair_order_customer__taxes',
+            'lineitems__parts_lineitems',
+            'lineitems__lineitem_laboritem',
+            )
         
         # repair order phase defines the WIP (work-in-progress) caegory. 6 means invoice.
         
@@ -289,8 +298,8 @@ class PartItemUpdateView(UpdateView):
         ## `__` double undestore..more researched are needed.
         # qs = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer').prefetch_related('repair_order_customer__addresses')
         # qs = qs.prefetch_related('repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
-        #        ).prefetch_related('repair_order_customer__taxes').prefetch_related('lineitems__parts_lineitems').prefetch_related('lineitems__labor_lineitems')
-        qs = LineItemsNewSQL02Model.objects.prefetch_related('parts_lineitems').prefetch_related('labor_lineitems')
+        #        ).prefetch_related('repair_order_customer__taxes').prefetch_related('lineitems__parts_lineitems').prefetch_related('lineitems__lineitem_laboritem')
+        qs = LineItemsNewSQL02Model.objects.prefetch_related('parts_lineitems').prefetch_related('lineitem_laboritem')
         # repair order phase defines the WIP (work-in-progress) category. 6 means invoice.  7 counter sale. 8 deleted. 9 scheduled.
         # qs = qs.filter(Q(repair_order_phase=1) | Q(repair_order_phase=2) | Q(repair_order_phase=3) | Q(repair_order_phase=4) | Q(repair_order_phase=5))
         return qs
@@ -313,7 +322,7 @@ class PartItemUpdateView(UpdateView):
             #     # part_item = get_object_or_404(PartItemModel,pk=self.kwargs['line_item_id'])
             # except ObjectDoesNotExist:
             #     # return redirect(reverse('dashboard:labor-item-update-view', kwargs=self.kwargs))
-            #     labor_item = line_item.labor_lineitems.first()
+            #     labor_item = line_item.lineitem_laboritem.first()
             #     form = LaborItemModelForm(instance=labor_item)
         
         context['page_title'] = 'Update a Line Item'
@@ -331,7 +340,11 @@ class PartItemUpdateView(UpdateView):
 #
 def line_item_labor_and_part_item_update_view(request, pk, line_item_id):
     repair_order_id = pk
-    line_item = LineItemsNewSQL02Model.objects.prefetch_related('parts_lineitems').prefetch_related('labor_lineitems').filter(line_item_id=line_item_id).get()
+    line_item = LineItemsNewSQL02Model.objects.prefetch_related(
+        'parts_lineitems',
+        'lineitem_laboritem').filter(line_item_id=line_item_id).get()
+    
+    # in one single line item, some data is from lineitem table, some is either from partitem or laboritem table.
     if request.method == 'POST':
         lineitem_form = RepairOrderLineItemUpdateForm(request.POST, instance=line_item)
         formset = PartItemFormSet(request.POST, instance=line_item)
@@ -374,8 +387,8 @@ class LaborItemUpdateView(UpdateView):
         ## `__` double undestore..more researched are needed.
         # qs = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer').prefetch_related('repair_order_customer__addresses')
         # qs = qs.prefetch_related('repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
-        #        ).prefetch_related('repair_order_customer__taxes').prefetch_related('lineitems__parts_lineitems').prefetch_related('lineitems__labor_lineitems')
-        qs = LineItemsNewSQL02Model.objects.prefetch_related('parts_lineitems').prefetch_related('labor_lineitems')
+        #        ).prefetch_related('repair_order_customer__taxes').prefetch_related('lineitems__parts_lineitems').prefetch_related('lineitems__lineitem_laboritem')
+        qs = LineItemsNewSQL02Model.objects.prefetch_related('parts_lineitems').prefetch_related('lineitem_laboritem')
         # repair order phase defines the WIP (work-in-progress) category. 6 means invoice.  7 counter sale. 8 delet
 
     # class AppointmentOfNext7DaysListView(ListView):

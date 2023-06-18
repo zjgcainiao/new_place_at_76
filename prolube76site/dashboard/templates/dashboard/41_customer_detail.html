@@ -1,8 +1,8 @@
 {% extends 'dashboard/00_dashboard_base.html' %}
 
 {% block content-main %}
-{% if messages %}
 
+{% if messages %}
 <div class="container">
     {% for message in messages %}
     <li{% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show justify-content-center justify-content-between"{% endif %} role="alert">
@@ -16,7 +16,7 @@
 </div>
 {% endif %}
 
-<div class="container container-fluid pt-1 mt-1" id ='customer-detail-container'>
+<div class="container container-fluid " id ='customer-detail-container'>
     <!-- Breadcrumb-->
     <nav class="pt-1" aria-label="Breadcrumb">
         <ol class="breadcrumb breadcrumb-dark">
