@@ -800,6 +800,8 @@ class PaymentsModel(models.Model):
     class Meta:
         db_table = 'payments_new_03'
         ordering = ["-payment_id",]
+        verbose_name = 'payment'
+        verbose_name_plural = 'payments'
 
 # class RepairOrder(models.Model):
 #     repair_order_id = models.AutoField(primary_key=True)

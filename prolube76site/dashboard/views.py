@@ -26,7 +26,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from internal_users.models import InternalUser
 from appointments.models import AppointmentRequest
-from dashboard.forms import SearchForm, CustomerUpdateForm, RepairOrderUpdateForm,VehicleUpdateForm, AddressUpdateForm, RepairOrderLineItemUpdateForm, PartItemUpdateForm,LaborItemUpdateForm
+from dashboard.forms import SearchForm, CustomerUpdateForm, RepairOrderUpdateForm,VehicleUpdateForm, AddressUpdateForm, LineItemUpdateForm, PartItemUpdateForm,LaborItemUpdateForm
 from django.core.paginator import Paginator
 from django.db.models import Max
 
@@ -346,20 +346,21 @@ def line_item_labor_and_part_item_update_view(request, pk, line_item_id):
     
     # in one single line item, some data is from lineitem table, some is either from partitem or laboritem table.
     if request.method == 'POST':
-        lineitem_form = RepairOrderLineItemUpdateForm(request.POST, instance=line_item)
-        formset = PartItemFormSet(request.POST, instance=line_item)
+        form = LineItemUpdateForm(request.POST, instance=line_item)
+        formset = PartItemFormSet(request.POST, instance=line_item, prefix='partitems')
         if formset.total_form_count() == 0:
-            formset = LaborItemFormSet(request.POST, instance=line_item)
+            formset = LaborItemFormSet(request.POST, instance=line_item,prefix='laboritems')
         
-        if formset.is_valid() and lineitem_form.is_valid():
+        if form.is_valid() and formset.is_valid() :
             formset.save()
-            lineitem_form.save()
+            form.save()
             messages.success(request, 'Line items have been updated successfully!')
             return redirect('repair_order_detail', pk=pk)
     else:
         if line_item:
                 part_item_formset = PartItemFormSet(instance=line_item)
                 labor_item_formset = LaborItemFormSet(instance=line_item)
+                form = LineItemUpdateForm(instance=line_item)
                 if labor_item_formset.total_form_count()==0:
                     selected_formset = part_item_formset
                     is_labor_item = 0
@@ -368,10 +369,12 @@ def line_item_labor_and_part_item_update_view(request, pk, line_item_id):
                     is_labor_item = 1
                 else:
                     selected_formset = None
+                    form = None
         
 
         context = {
                 'selected_formset':selected_formset,
+                'form':form,
                 'repair_order_id':repair_order_id,
                 'line_item_id':line_item_id,
                 'line_item':line_item,

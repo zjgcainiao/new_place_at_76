@@ -1,4 +1,5 @@
 {% extends 'dashboard/00_dashboard_base.html' %}
+{% load crispy_forms_tags %}
 {% block content-main %}
 
 <div class="container my-2">
@@ -13,6 +14,7 @@
 
         <form method="post" >
           {% csrf_token %}
+          {% comment %}
           <div class="row ">
             <div class ='col-3 p-1 m-1'>
                 <label class="form-label">Item ID: </label>{{ line_item_id}}
@@ -20,21 +22,22 @@
             <div class ='col-9 my-1'>
               {{ line_item.line_item_description.label_tag }}    
               <textarea class="form-control"  id='line_item_description_input' rows="3" on="trimTextarea()">
-                {{ line_item.line_item_description }}
+                {{ line_item.line_item_description  }}
               </textarea> 
               
             </div>
-          </div>    
+          </div> 
+          {% endcomment %}
+          <div class="row">
+            {{form|crispy}}
+          </div>
+          {% comment %}
         {{ selected_formset.management_form }}
           {% for selected_form in selected_formset %}
             <div class="row my-1" >
               {% for field in selected_form %}
-                <div class ='col-3 my-1'>
-                    <label class="form-label">{{ field.label_tag }}</label>
-
-                </div>
-                <div class ='col-3 my-1'>    
-                  {{ field }}
+                <div class ='col-auto my-1'>    
+                  {{ field |as_crispy_field}}
                   <span class="text-danger">{{ field.errors }}</span>
                   
                 </div>
@@ -42,6 +45,10 @@
             </div>  
             
           {% endfor %}
+          {% endcomment %}
+          <div class="row">
+            {% crispy selected_formset %}
+          </div>
 
           </form>
           <button type="submit" class="btn btn-outline-primary" value="Save">Save Changes</button>

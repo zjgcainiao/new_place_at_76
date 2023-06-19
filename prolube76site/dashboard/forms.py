@@ -175,8 +175,10 @@ class VehicleUpdateForm(forms.ModelForm):
      
 class PartItemUpdateForm(forms.ModelForm):
     part_item_quantity = forms.IntegerField(min_value=0,max_value=100)
-    part_item_is_confirmed = forms.BooleanField()
-    part_item_is_quantity_confirmed = forms.BooleanField()
+    part_item_is_confirmed = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class':'form-check'}), label='is item confirmed?')
+    part_item_is_quantity_confirmed = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class':'form-check-input'}), label='is quantity confirmed?')
+    part_item_is_user_entered_unit_sale = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class':'form-check'}), label='is quantity confirmed?')
+    part_item_is_user_entered_unit_cost = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class':'form-check'}), label='is quantity confirmed?')
     class Meta:
         model = PartItemModel
         fields = [
@@ -199,7 +201,7 @@ class PartItemUpdateForm(forms.ModelForm):
             # 'part_item_manufacture_id',
             # 'part_item_invoice_number',
             # 'part_item_commission_amount',
-  
+
             # 'part_item_is_quantity_confirmed',
             # 'part_item_confirmed_quantity',
             # 'part_item_is_part_ordered',
@@ -226,7 +228,6 @@ class PartItemUpdateForm(forms.ModelForm):
             'part_item_unit_cost': forms.NumberInput(attrs={'type': 'text','class': 'form-control',}),
             'part_item_unit_price': forms.NumberInput(attrs={'type': 'text','class': 'form-control',}),
             'part_item_unit_price': forms.NumberInput(attrs={'type': 'text','class': 'form-control',}),
-            'part_item_is_confirmed': forms.CheckboxInput(attrs={'class':'form-check-input'}),
             'part_item_shipping_description': forms.TextInput(attrs={}),
         }
 
@@ -244,35 +245,33 @@ class PartItemUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['part_item_unit_price'].validators.append(self.clean_unit_price)
-
-class RepairOrderLineItemUpdateForm(forms.ModelForm):
-
-    class Meta:
-        model = RepairOrderLineItemSquencesNewSQL02Model
-        exclude = ['line_item_last_updated_date', 'line_item_parent_line_item_id',]
-
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['line_item'].queryset = LineItem.objects.all()
+        for name in self.fields.keys():
+                self.fields[name].widget.attrs.update({
+                    'class': 'form-control',
+            })
 
 
 class LaborItemUpdateForm(forms.ModelForm):
     # part_item_quantity = forms.IntegerField(min_value=0,max_value=100)
     # labor_item_work_performed = forms.CharField(max_length=500, null=True)
-    labor_item_is_user_entered_labor_rate = forms.BooleanField()
-
+    labor_item_is_user_entered_labor_rate = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class':'form-check'}),label='use manual labor rate?')
+    labor_item_hours_charged = forms.FloatField(widget=forms.NumberInput())
+    labor_item_work_performed = forms.CharField(widget=forms.Textarea(), label = 'work performed (labor)')
     class Meta:
         model = LaborItemModel
         fields = [
             'labor_item_id',
             'line_item',
-            'labor_rate_description_id',
-            'labor_item_is_user_entered_labor_rate',
-            'labor_item_work_performed',
-            'labor_item_hours_charged',
             'labor_item_symptom',
+            'labor_item_work_performed',
+
+            'labor_item_hours_charged',
+
             'labor_item_is_come_back_invoice',
             'labor_item_parts_estimate',
+            'labor_rate_description_id',
+            'labor_item_is_user_entered_labor_rate',
+
             # 'labor_item_is_MPlg_item',
             # 'labor_item_is_Changed_MPlg_item',
         ]
@@ -281,7 +280,6 @@ class LaborItemUpdateForm(forms.ModelForm):
             'labor_item_symptom': forms.TextInput(attrs={'class': 'form-control',}),
             'labor_item_parts_estimate': forms.NumberInput(attrs={'class': 'form-control',}),
 
-            'labor_item_is_user_entered_labor_rate': forms.CheckboxInput(attrs={'class':'form-check-input'}),
             'line_item': forms.TextInput(attrs={'class': 'form-control',
                                                 'readonly': 'readonly'}),
             'labor_item_symptom': forms.Textarea(attrs={}),
@@ -292,55 +290,50 @@ class LaborItemUpdateForm(forms.ModelForm):
 
         }
 
+    def __init__(self, *args, **kwargs):
+
+            super().__init__(*args, **kwargs)
+            ## add a "form-control" class to each form input
+            ## for enabling bootstrap
+            for name in self.fields.keys():
+                self.fields[name].widget.attrs.update({
+                    'class': 'form-control',
+            })
+                
+            # self.fields['appointment_vehicle_make'].choices = [(make.pk, make.make_name) for make in MakesNewSQL02Model.objects.all()]
+            
+            # self.helper = FormHelper()
+            # self.helper.form_class = 'form-horizontal'
+            # self.helper.form_method = "post"
+            # self.helper.label_class = 'col-3'
+            # self.helper.field_class = 'col-9'
+
+
 
 PartItemFormSet = inlineformset_factory(LineItemsNewSQL02Model, PartItemModel,
-    fields=(
-        'part_item_part_no',
-        'part_discount_description_id',
-        'part_item_quantity',
-        'part_item_unit_cost',
-        'part_item_unit_price',
-        'part_item_unit_list',
-        'part_item_unit_sale',
-        'part_item_is_user_entered_unit_sale',
-        'part_item_is_user_entered_unit_cost',),
-    extra=0,
-
-    widgets={'part_item_quantity': forms.NumberInput(attrs={'class':'form-control', 'type':'text'}),
-        'part_item_unit_price': forms.NumberInput(attrs={'class': 'form-control','type':'text'}),
-        'part_item_unit_list': forms.NumberInput(attrs={'class': 'form-control','type':'text'}),
-        'part_item_unit_sale': forms.NumberInput(attrs={'class': 'form-control','type':'text'}),
-        'part_item_unit_cost': forms.NumberInput(attrs={'class': 'form-control','type':'text'}),
-        'part_item_unit_plist': forms.NumberInput(attrs={'class': 'form-control','type':'text'}),
-        'part_item_unit_price': forms.NumberInput(attrs={'class': 'form-control',}),
-        'part_item_is_confirmed': forms.CheckboxInput(attrs={'class':'form-check-input'}),
-        'part_item_is_user_entered_unit_sale':forms.CheckboxInput(attrs={'class':'form-check-input',
-                                                            'readonly':True}),
-        # 'line_item': forms.TextInput(attrs={'class': 'form-control',
-        #                                     'readonly': 'readonly'}),
-        'part_item_shipping_description': forms.TextInput(attrs={}),
-
-        },
+    form=PartItemUpdateForm, extra=0,
     )
 LaborItemFormSet = inlineformset_factory(LineItemsNewSQL02Model, LaborItemModel, 
-    fields=('labor_item_id',
-        'labor_item_hours_charged',
-        'labor_item_work_performed',
-        'labor_rate_description_id',
-        'labor_item_is_user_entered_labor_rate',
-        'labor_item_is_come_back_invoice',
-        'labor_item_parts_estimate',),
-    widgets={'labor_item_hours_charged': forms.NumberInput(attrs={'step': '0.01','class': 'form-control',}),
-        'labor_item_symptom': forms.TextInput(attrs={'class': 'form-control',}),
-        'labor_item_parts_estimate': forms.NumberInput(attrs={'step': '0.01','class': 'form-control',}),
-
-        'labor_item_is_user_entered_labor_rate': forms.CheckboxInput(attrs={'readonly':'readonly'}),
-        # 'line_item': forms.TextInput(attrs={'class': 'form-control',
-        #                                     'readonly': 'readonly'}),
-        'labor_item_symptom': forms.Textarea(attrs={'class': 'form-control',}),},
+    form=LaborItemUpdateForm,
     extra=0,
     )        
 
 RepairOrderFormSet = formset_factory(RepairOrderUpdateForm, extra=0)
 CustomerFormSet = formset_factory(CustomerUpdateForm, extra=0)
 AddressFormSet = formset_factory(AddressUpdateForm, extra=0)
+
+
+
+class LineItemUpdateForm(forms.ModelForm):
+# line_item_category = forms.CharField(required=false)
+    class Meta:
+        model = LineItemsNewSQL02Model
+        fields =['line_item_description',
+                #  'line_item_category',
+
+        ]
+        exclude = ['line_item_last_updated_date', 'line_item_parent_line_item_id',]
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['line_item'].queryset = LineItem.objects.all()

@@ -5,6 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div
 from django.core.exceptions import ValidationError
 from django.forms import modelformset_factory
+from django.forms import inlineformset_factory
 from django.utils.translation import gettext_lazy as _
 from appointments.models import APPT_STATUS_PORGRESSING, APPT_STATUS_CONFIRMED, APPT_STATUS_PENDING
 from core_operations.common_functions import get_latest_vehicle_make_list, get_latest_vehicle_model_list
@@ -149,15 +150,18 @@ class AppointmentRequestForm(forms.ModelForm):
 
     def clean_appointment_email(self):
         appointment_email = self.cleaned_data['appointment_email']
+        if appointment_email is not None:
+            appt = AppointmentRequest.objects.filter(Q(appointment_status=APPT_STATUS_PENDING)|Q(appointment_status=APPT_STATUS_CONFIRMED)| Q(appointment_status=APPT_STATUS_PORGRESSING)
+                                                    ).filter(appointment_email=appointment_email)
+            # existing pending/in-progresss/confirmed/
+            if appt.exists():
+                error_message = "There is an existing appointment associated with this email. "
+                error_attrs = {'class': 'alert alert-warning','role':"alert"}
+                raise forms.ValidationError(error_message, params=error_attrs)
 
-        appt = AppointmentRequest.objects.filter( Q(appointment_status=APPT_STATUS_PENDING)|Q(appointment_status=APPT_STATUS_CONFIRMED)| Q(appointment_status=APPT_STATUS_PORGRESSING)).filter(appointment_email=appointment_email)
-        # existing pending/in-progresss/confirmed/
-        if appt.exists():
-            error_message = "There is an existing appointment associated with this email. "
-            error_attrs = {'class': 'alert alert-warning','role':"alert"}
-            raise forms.ValidationError(error_message, params=error_attrs)
-
-        return appointment_email
+            return appointment_email
+        else:
+            raise ValueError('email cannot be empty.')
     
     # check 
     def clean_appointment_vehicle_detail(self):
@@ -350,4 +354,4 @@ class AppointmentImagesForm(forms.ModelForm):
 #     class Meta:
 #         model = TalentDocuments
 #         fields = ['talent_employment_docs']
-AppointmentImageFormSet = modelformset_factory(AppointmentImages, form=AppointmentImagesForm, fields=('appointment_image',), extra=1, max_num=5)
+AppointmentImageFormSet = inlineformset_factory(AppointmentRequest, AppointmentImages, form=AppointmentImagesForm, extra=1, max_num=5)
