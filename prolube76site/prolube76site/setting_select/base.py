@@ -243,7 +243,7 @@ if config("DB_SERVER"):
     
     # azure db server
     az_server = config("AZURE_DB_SERVER")
-    az_user = config("AZURE_DB_USER")
+    az_user = config("AZURE_DB_USER")assets
     az_password = config("AZURE_DB_PASSWORD")
     az_databaseName = config("AZURE_DB_DATABASE")
 # use the Microsoft provided MSSQL DRIVER for Django

@@ -1,0 +1,35 @@
+.vscode
+
+env/
+venv/
+
+aws
+.condatmp
+bin
+conda-meta
+etc
+Finder
+frontend
+lib
+man
+requirements
+sbin/*
+share/*
+ssl
+requirements
+include
+Messenger - 2.1.0
+*.ipynb
+my-development-notes
+.env
+.env copy
+.env*
+node_modules
+.ipynb_checkpoints
+
+*.pyc
+__pycache__/
+migrations/
+.gitignore
+.gcloudignore
+.git

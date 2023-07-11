@@ -284,9 +284,6 @@ else:
        }
     }
 
-
-
-
 # use mysql database
     # DATABASES['default']={
     #      'ENGINE': 'django.db.backends.mysql',
@@ -334,8 +331,8 @@ USE_TZ = False # turned the USE_TZ to False to avoid fetching data error when fe
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
-
+#STATIC_URL = 'assets/'
+STATIC_ROOT = BASE_DIR / 'assets'
 # set up the base folder to host static files in 
 # "76prolubeplus.com/prolube76site/static"
 # static files include javacscript
