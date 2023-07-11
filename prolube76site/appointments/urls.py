@@ -1,5 +1,5 @@
 from django.urls import include, path
-from . import views
+from appointments import views
 from formtools.preview import FormPreview
 from appointments.forms import AppointmentRequestForm
 from appointments.views import AppointmentCreateView, AppointmentPreviewView, AppointmentSuccessView, AppointmentDetailView
@@ -24,6 +24,7 @@ urlpatterns = [
     path('<int:pk>/', AppointmentDetailView.as_view(), name='appointment_detail'),
     path('<int:pk>/images/', appointment_image_list, name='appointment_image_list'),
     path('images/<int:image_id>/delete/', appointment_image_soft_delete, name='appointment_image_delete'),
+
 
     ## the following three urls are using the class views.
     # path('create', appointment_create_view, name='appointment-create-view'),

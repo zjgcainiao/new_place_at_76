@@ -12,11 +12,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from dotenv import load_dotenv
 from pathlib import Path
-
+from decouple import config, Csv
 
 load_dotenv()  # take environment variables from .env.
 
-#from .config.dev import *
+# from .config.dev import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,7 +34,7 @@ except KeyError as e:
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True #True
 
 # ADMINS=[]
 
@@ -65,7 +65,6 @@ INSTALLED_APPS = [
     'automatic_mails',
     'core_operations',
     'firebase_auth_app',
-
     'celery',
     'django_celery_results',
     'django_celery_beat',
@@ -81,8 +80,8 @@ INSTALLED_APPS = [
 
 
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.
-if os.environ.get('DJANGO._USE_DEBUG_TOOLBAR'):
-    INSTALLED_APPS +=('debug_toolbar',)
+# if os.environ.get('DJANGO._USE_DEBUG_TOOLBAR'):
+#     INSTALLED_APPS +=('debug_toolbar',)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -94,8 +93,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if os.environ.get('DJANGO_USE_DEBUG_TOOLBAR'):
-    MIDDLEWARE += ('debug_toolbar.DebugToolMiddleware',)
+# if os.environ.get('DJANGO_USE_DEBUG_TOOLBAR'):
+#     MIDDLEWARE += ('debug_toolbar.DebugToolMiddleware',)
 
 ROOT_URLCONF = 'prolube76site.urls'
 
@@ -151,7 +150,7 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 LOGIN_REDIRECT_URL = "/dashboard/"
 
 # added on 2023-04-12 ---email 
-if os.environ.get("EMAIL_SENDER"):
+if config("EMAIL_SENDER"):
     email_sender = os.environ.get('EMAIL_SENDER')
     email_pwd = os.environ.get('EMAIL_SENDER_PWD')
 
@@ -222,46 +221,68 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
  # 2022-07-04- hide sensitivie environemnt variables such as the database url and login info. 
 
-if os.environ.get("DB_SERVER"):
-    # load the environment variables
-    server = os.getenv("DB_SERVER")
-    user = os.getenv("DB_USER")
-    password = os.getenv("DB_PASSWORD")
-    databaseName = os.getenv("DB_DATABASE1")
-# use the Microsoft provided MSSQL DRIVER for Django 
+if config("DB_SERVER"):
+# load the environment variables
+
+    server = config("DB_SERVER")
+    user = config("DB_USER")
+    password = config("DB_PASSWORD")
+    databaseName = config("DB_DATABASE1")
+
+    # azure db server
+    az_server = config("AZURE_DB_SERVER")
+    az_user = config("AZURE_DB_USER")
+    az_password = config("AZURE_DB_PASSWORD")
+    az_databaseName = config("AZURE_DB_DATABASE")
+    # use the Microsoft provided MSSQL DRIVER for Django 
     DATABASES = {
-          "default": {
-              "ENGINE": "mssql",
-              "NAME": databaseName,
-              "USER": user,
-              "PASSWORD":password,
-              "HOST": server,
-              "PORT": "",
-              "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server', #  "ODBC Driver 18 for SQL Server", 
-              "extra_params": "TrustServerCertificate=yes;Encrypt=yes"
-              },
-          },
-      }
+            #
+            "default": {
+                "ENGINE": "mssql",
+                "NAME": az_databaseName,
+                "USER": az_user,
+                "PASSWORD": az_password,
+                "HOST": az_server,
+                "PORT": "",
+                "OPTIONS": {
+                    "driver": 'ODBC Driver 18 for SQL Server',
+                    "extra_params": "TrustServerCertificate=yes;Encrypt=yes;"
+                },
+            },
+            # az db server is set to the default 2023-07-08
+            "azure_db": {
+                "ENGINE": "mssql",
+                "NAME": az_databaseName,
+                "USER": az_user,
+                "PASSWORD": az_password,
+                "HOST": az_server,
+                "PORT": "",
+                "OPTIONS": {
+                    "driver": 'ODBC Driver 18 for SQL Server', 
+                    "extra_params": "TrustServerCertificate=yes;Encrypt=yes;"
+                },
+            },
+    }
 # use the django-pyodbc package
-    # DATABASES = {
-    # 'default': {
-    #     'ENGINE': "django_pyodbc",
-    #     'HOST':server,
-    #     'USER': user,
-    #     'PASSWORD': password,
-    #     'NAME': databaseName,
-    #     'OPTIONS': {
-    #         'host_is_server': True
-    #     },
-    # }
-    # }
+# DATABASES = {
+# 'default': {
+#     'ENGINE': "django_pyodbc",
+#     'HOST':server,
+#     'USER': user,
+#     'PASSWORD': password,
+#     'NAME': databaseName,
+#     'OPTIONS': {
+#         'host_is_server': True
+#     },
+# }
+# }
 else:
     DATABASES = {
        'default': {
            'ENGINE': 'django.db.backends.sqlite3',
            'NAME': BASE_DIR / 'db.sqlite3',
        }
-   }
+    }
 
 
 
@@ -304,7 +325,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 USE_I18N = True
 LANGUAGE_CODE = 'en-us'
-
 
 TIME_ZONE = 'America/Los_Angeles' #'UTC'
 

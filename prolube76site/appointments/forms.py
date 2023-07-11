@@ -106,8 +106,8 @@ class AppointmentRequestForm(forms.ModelForm):
                                                 label='Year',)
     
     
-    appointment_vehicle_make = forms.ChoiceField(choices=get_latest_vehicle_make_list(), label='Make')
-    appointment_vehicle_model = forms.ChoiceField(choices=get_latest_vehicle_model_list(), label='Model')
+    appointment_vehicle_make = forms.ChoiceField(choices=get_latest_vehicle_make_list, label='Make')
+    appointment_vehicle_model = forms.ChoiceField(choices=get_latest_vehicle_model_list, label='Model')
 
     appointment_phone_number = forms.CharField(validators=[validate_phone_number],
                                                 widget=forms.TextInput(attrs={'type': 'text','placeholder': 'we only use the phone number to contact you.'}), 
