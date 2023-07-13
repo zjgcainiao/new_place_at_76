@@ -1,6 +1,7 @@
 .bootstrap-table.bootstrap3 .fixed-table-pagination > .pagination .page-jump-to {
   display: inline-block;
 }
+
 .bootstrap-table.bootstrap3 .fixed-table-pagination > .pagination .input-group-btn {
   width: auto;
 }
@@ -10,4 +11,4 @@
   margin-left: 5px;
   text-align: center;
   float: left;
-}/*# sourceMappingURL=bootstrap-table-page-jump-to.css.map */
+}
