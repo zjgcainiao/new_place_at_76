@@ -5,7 +5,7 @@ runtime: python39
 #           DJANGO_SETTINGS_MODULE: "myapp.settings"
 
 entrypoint:
-  gunicorn --config ../gunicorn/gunicorn_conf_dev_20230712.py prolube76site.wsgi:application
+  gunicorn --config gunicorn_conf_dev_20230712.py prolube76site.wsgi:application
 handlers:
 # Tel GAE where are Django static assets located
 - url: /static
@@ -13,4 +13,13 @@ handlers:
 # Route everything else to the main app
 - url: /.*
   script: auto
+
+skip_files:
+- ^(.*/)?#.*#$
+- ^(.*/)?.*~$
+- ^(.*/)?.*\.py[co]$
+- ^(.*/)?.*/RCS/.*$
+- ^(.*/)?\..*$
+- ^(.*/)?.*\.bak$
+
 # [END django_app]
