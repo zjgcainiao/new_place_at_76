@@ -1,5 +1,5 @@
 wsgi_app = 'myproject.wsgi:application'
-pythonpath = '../myproject'
+pythonpath = '../prolube76site'
 # command = '/Users/stephenwang/my_venv/bin/gunicorn'
 loglevel ='info'
 bind = '0.0.0.0:8000'
@@ -11,7 +11,7 @@ accesslog = errorlog = 'gunicorn-logfile-dev.log'
 # PID file so you can easily fetch process ID
 pidfile = "gunicorn-dev.pid"
 # Restart workers when code changes (development only!)
-reload = False
+reload = True
 #set to "*" to disable checking of Front-end IPs; useful when you don't know in advance the ip address of front-end, but you still trust the environment
 proxy_protocol = True
 proxy_allow_ips = '*'
