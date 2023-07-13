@@ -1,5 +1,7 @@
 .vscode
 
+myenv/*
+myenv/
 env/
 venv/
 
@@ -33,3 +35,5 @@ migrations/
 .gitignore
 .gcloudignore
 .git
+*.log
+*.pid
