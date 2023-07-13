@@ -330,9 +330,17 @@ USE_TZ = False # turned the USE_TZ to False to avoid fetching data error when fe
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
-#STATIC_URL = 'assets/'
+# STATIC_URL = 'static/'
+
+# using storage bucket to host static files
+# STATIC_URL = 'https://storage.googleapis.com/2023_new_prolube76site/static_files'
+STATIC_URL = 'https://storage.googleapis.com/{}/static_files'.format(GS_BUCKET_NAME)
+
+
 STATIC_ROOT = BASE_DIR / 'assets'
+
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
 # set up the base folder to host static files in 
 # "76prolubeplus.com/prolube76site/static"
 # static files include javacscript
