@@ -26,10 +26,6 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-      
-      - name: 'fix curl-config' issue
-        run: |
-          bash deploy.sh
 
       - name: Install dependencies
         run: pip install -r requirements.txt
