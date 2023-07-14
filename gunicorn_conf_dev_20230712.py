@@ -1,9 +1,9 @@
 wsgi_app = 'prolube76site.wsgi:application'
-pythonpath = '../prolube76site'
+pythonpath = '.'
 # command = '/Users/stephenwang/my_venv/bin/gunicorn'
 loglevel = 'debug'
 # loglevel = 'info'
-bind = '0.0.0.0:8000'
+bind = '0.0.0.0:8081'
 worker = 4
 # work class
 work_class = 'sync'
@@ -18,5 +18,5 @@ proxy_protocol = True
 proxy_allow_ips = '*'
 daemon = True
 # use this feature to allow the terminal to display the fully resolved conf.py file.
-print_config = False  # True
-# print_config = True
+# print_config = False  # True
+print_config = True
