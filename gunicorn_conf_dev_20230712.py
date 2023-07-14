@@ -4,7 +4,7 @@ pythonpath = '.'
 loglevel = 'info'
 # loglevel = 'info'
 bind = '0.0.0.0:8000'
-worker = 4
+worker = 1
 # work class
 work_class = 'sync'
 # Write access and error info to /var/log
