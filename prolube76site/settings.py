@@ -38,7 +38,8 @@ except KeyError as e:
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True #True
+DEBUG = False
+# DEBUG = True
 
 # ADMINS=[]
 
