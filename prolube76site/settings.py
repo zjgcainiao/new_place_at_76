@@ -354,7 +354,8 @@ USE_TZ = False # turned the USE_TZ to False to avoid fetching data error when fe
 
 # STATIC_URL = 'https://storage.googleapis.com/2023_new_prolube76site/static_files'
 
-STATIC_URL = 'https://storage.googleapis.com/{}/'.format("azure-app-service-static-files")
+# STATIC_URL = 'https://storage.googleapis.com/{}/static_files/'.format(GS_BUCKET_NAME)
+STATIC_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
 
 STATIC_ROOT = BASE_DIR / 'assets'
 

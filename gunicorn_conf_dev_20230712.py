@@ -1,9 +1,9 @@
 wsgi_app = 'prolube76site.wsgi:application'
 pythonpath = '.'
 # command = '/Users/stephenwang/my_venv/bin/gunicorn'
-loglevel = 'debug'
+loglevel = 'info'
 # loglevel = 'info'
-bind = '0.0.0.0:8081'
+bind = '0.0.0.0:8000'
 worker = 4
 # work class
 work_class = 'sync'
