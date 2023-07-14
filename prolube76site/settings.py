@@ -150,7 +150,7 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 LOGIN_REDIRECT_URL = "/dashboard/"
 
 # added on 2023-04-12 ---email 
-if config("EMAIL_SENDER"):
+if os.environ.get("EMAIL_SENDER"):
     email_sender = os.environ.get('EMAIL_SENDER')
     email_pwd = os.environ.get('EMAIL_SENDER_PWD')
 
@@ -169,7 +169,7 @@ DEFAULT_FILE_STORAGE = 'myapp.custom_storage.NASStorage'
 NAS_STORAGE_LOCATION = '192.168.1.30'  # NAS server IP or hostname
 
 # # django < 4.2
-# DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 # # django >= 4.2
 # STORAGES = {"default": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"}}
@@ -221,19 +221,19 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
  # 2022-07-04- hide sensitivie environemnt variables such as the database url and login info. 
 
-if config("DB_SERVER"):
+if os.environ.get("DB_SERVER"):
 # load the environment variables
 
-    server = config("DB_SERVER")
-    user = config("DB_USER")
-    password = config("DB_PASSWORD")
-    databaseName = config("DB_DATABASE1")
+    server = os.environ.get("DB_SERVER")
+    user = os.environ.get("DB_USER")
+    password = os.environ.get("DB_PASSWORD")
+    databaseName = os.environ.get("DB_DATABASE1")
 
     # azure db server
-    az_server = config("AZURE_DB_SERVER")
-    az_user = config("AZURE_DB_USER")
-    az_password = config("AZURE_DB_PASSWORD")
-    az_databaseName = config("AZURE_DB_DATABASE")
+    az_server = os.environ.get("AZURE_DB_SERVER")
+    az_user = os.environ.get("AZURE_DB_USER")
+    az_password = os.environ.get("AZURE_DB_PASSWORD")
+    az_databaseName = os.environ.get("AZURE_DB_DATABASE")
     # use the Microsoft provided MSSQL DRIVER for Django 
     DATABASES = {
             #
@@ -330,17 +330,18 @@ USE_TZ = False # turned the USE_TZ to False to avoid fetching data error when fe
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
-#STATIC_URL = 'assets/'
-STATIC_ROOT = BASE_DIR / 'assets'
-# set up the base folder to host static files in 
-# "76prolubeplus.com/prolube76site/static"
-# static files include javacscript
 
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static/bootstrap-5.0.2-dist/css",
-#     BASE_DIR / "static/bootstrap-5.0.2-dist/js",
-# ]
+# STATIC_URL = 'static/'
+
+# STATIC_URL = 'https://storage.googleapis.com/2023_new_prolube76site/static_files'
+
+STATIC_URL = 'https://storage.googleapis.com/{}/static_files/'.format(GS_BUCKET_NAME)
+
+STATIC_ROOT = BASE_DIR / 'assets'
+
+# using storage bucket to host static files
+
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
