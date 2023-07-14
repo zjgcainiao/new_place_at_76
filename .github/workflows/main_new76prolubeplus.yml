@@ -7,7 +7,7 @@ name: Build and deploy Python app to Azure Web App - new76prolubeplus
 on:
   push:
     branches:
-      - deploy_to_azure_branch
+      - main
   workflow_dispatch:
 
 jobs:
@@ -26,11 +26,7 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-         
-      - name: 'fix curl-config' issue
-        run: |
-          bash deploy.sh
-
+      
       - name: Install dependencies
         run: pip install -r requirements.txt
         
@@ -64,4 +60,4 @@ jobs:
         with:
           app-name: 'new76prolubeplus'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7B703D38E6054DADB338CCC4205B749C }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D24551A996B5446DAD20FD4CC5190E13 }}
