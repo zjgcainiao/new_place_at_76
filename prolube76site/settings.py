@@ -150,7 +150,7 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 LOGIN_REDIRECT_URL = "/dashboard/"
 
 # added on 2023-04-12 ---email 
-if config("EMAIL_SENDER"):
+if os.environ.get("EMAIL_SENDER"):
     email_sender = os.environ.get('EMAIL_SENDER')
     email_pwd = os.environ.get('EMAIL_SENDER_PWD')
 
@@ -221,19 +221,19 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
  # 2022-07-04- hide sensitivie environemnt variables such as the database url and login info. 
 
-if config("DB_SERVER"):
+if os.environ.get("DB_SERVER"):
 # load the environment variables
 
-    server = config("DB_SERVER")
-    user = config("DB_USER")
-    password = config("DB_PASSWORD")
-    databaseName = config("DB_DATABASE1")
+    server = os.environ.get("DB_SERVER")
+    user = os.environ.get("DB_USER")
+    password = os.environ.get("DB_PASSWORD")
+    databaseName = os.environ.get("DB_DATABASE1")
 
     # azure db server
-    az_server = config("AZURE_DB_SERVER")
-    az_user = config("AZURE_DB_USER")
-    az_password = config("AZURE_DB_PASSWORD")
-    az_databaseName = config("AZURE_DB_DATABASE")
+    az_server = os.environ.get("AZURE_DB_SERVER")
+    az_user = os.environ.get("AZURE_DB_USER")
+    az_password = os.environ.get("AZURE_DB_PASSWORD")
+    az_databaseName = os.environ.get("AZURE_DB_DATABASE")
     # use the Microsoft provided MSSQL DRIVER for Django 
     DATABASES = {
             #
