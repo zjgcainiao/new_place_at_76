@@ -169,7 +169,7 @@ DEFAULT_FILE_STORAGE = 'myapp.custom_storage.NASStorage'
 NAS_STORAGE_LOCATION = '192.168.1.30'  # NAS server IP or hostname
 
 # # django < 4.2
-# DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 # # django >= 4.2
 # STORAGES = {"default": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"}}
@@ -330,17 +330,18 @@ USE_TZ = False # turned the USE_TZ to False to avoid fetching data error when fe
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
-#STATIC_URL = 'assets/'
-STATIC_ROOT = BASE_DIR / 'assets'
-# set up the base folder to host static files in 
-# "76prolubeplus.com/prolube76site/static"
-# static files include javacscript
 
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static/bootstrap-5.0.2-dist/css",
-#     BASE_DIR / "static/bootstrap-5.0.2-dist/js",
-# ]
+# STATIC_URL = 'static/'
+
+# STATIC_URL = 'https://storage.googleapis.com/2023_new_prolube76site/static_files'
+
+STATIC_URL = 'https://storage.googleapis.com/{}/static_files/'.format(GS_BUCKET_NAME)
+
+STATIC_ROOT = BASE_DIR / 'assets'
+
+# using storage bucket to host static files
+
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
