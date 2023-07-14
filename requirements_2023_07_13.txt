@@ -85,7 +85,7 @@ pyasn1-modules==0.2.8
 pycosat==0.6.3
 pycparser==2.21
 pycryptodome==3.4.3
-pycurl==7.45.1
+# pycurl==7.45.1
 PyDispatcher==2.0.5
 PyJWT==2.7.0
 pyodbc==4.0.39
@@ -124,7 +124,7 @@ wcwidth==0.2.6
 webencodings==0.5.1
 Werkzeug==2.3.6
 whitenoise==6.4.0
-wxPython==4.2.0
-zict==2.1.0
-zipp==3.16.1
-zope.interface==6.0
+# wxPython==4.2.0
+# zict==2.1.0
+# zipp==3.16.1
+# zope.interface==6.0
