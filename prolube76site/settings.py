@@ -43,7 +43,7 @@ DEBUG = True #True
 # ADMINS=[]
 
 # ALLOWED_HOSTS=[]
-ALLOWED_HOSTS = ["www.theironmanhouse.com","127.0.0.1","localhost","192.168.1.83"]
+ALLOWED_HOSTS = ["new76prolubeplus.azurewebsites.net","127.0.0.1","localhost","192.168.1.83"]
 
 # Application definition
 INSTALLED_APPS = [
