@@ -267,7 +267,7 @@ if config("DB_SERVER"):
                 "PORT": "",
                 "OPTIONS": {
                     "driver": 'ODBC Driver 18 for SQL Server',
-                    "extra_params": "TrustServerCertificate=yes;Encrypt=yes;"
+                    "extra_params": "TrustServerCertificate=yes;Encrypt=no;"
                 },
             },
             # az db server is set to the default 2023-07-08
