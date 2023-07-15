@@ -155,7 +155,7 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 LOGIN_REDIRECT_URL = "/dashboard/"
 
 # added on 2023-04-12 ---email 
-if os.environ.get("EMAIL_SENDER"):
+if config("EMAIL_SENDER"):
     email_sender = os.environ.get('EMAIL_SENDER')
     email_pwd = os.environ.get('EMAIL_SENDER_PWD')
 
