@@ -242,7 +242,7 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
  # 2022-07-04- hide sensitivie environemnt variables such as the database url and login info. 
 
-if config("DB_SERVER"):
+if os.environ.get("DB_SERVER"):
 # load the environment variables
 
     server = os.environ.get("DB_SERVER")
