@@ -355,6 +355,9 @@ USE_TZ = False # turned the USE_TZ to False to avoid fetching data error when fe
 # STATIC_URL = 'https://storage.googleapis.com/2023_new_prolube76site/static_files'
 
 # STATIC_URL = 'https://storage.googleapis.com/{}/static_files/'.format(GS_BUCKET_NAME)
+
+# this setup won't work with bucket's subfolder when staticfiles_storage is default to googlecloudstorage
+
 STATIC_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
 
 STATIC_ROOT = BASE_DIR / 'assets'
