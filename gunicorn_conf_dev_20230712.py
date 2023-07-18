@@ -1,10 +1,10 @@
 wsgi_app = 'prolube76site.wsgi:application'
 pythonpath = '.'
 # command = '/Users/stephenwang/my_venv/bin/gunicorn'
-loglevel = 'debug'
+loglevel = 'info'
 # loglevel = 'info'
-bind = '0.0.0.0:8081'
-worker = 4
+bind = '0.0.0.0:8000'
+worker = 1
 # work class
 work_class = 'sync'
 # Write access and error info to /var/log

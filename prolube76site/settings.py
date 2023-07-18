@@ -13,6 +13,10 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 from decouple import config, Csv
+import requests
+import json
+import firebase_admin
+from firebase_admin import credentials
 
 load_dotenv()  # take environment variables from .env.
 
@@ -34,12 +38,15 @@ except KeyError as e:
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False #True
+DEBUG = False
+# DEBUG = True
 
 # ADMINS=[]
 
 # ALLOWED_HOSTS=[]
-ALLOWED_HOSTS = ["www.theironmanhouse.com","127.0.0.1","localhost","192.168.1.83"]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())
+# ALLOWED_HOSTS = ["new76prolubeplus.azurewebsites.net", "new76prolubeplus.com",
+#                  "127.0.0.1","localhost","192.168.1.83",]
 
 # Application definition
 INSTALLED_APPS = [
@@ -147,7 +154,7 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 LOGIN_REDIRECT_URL = "/dashboard/"
 
 # added on 2023-04-12 ---email 
-if os.environ.get("EMAIL_SENDER"):
+if config("EMAIL_SENDER"):
     email_sender = os.environ.get('EMAIL_SENDER')
     email_pwd = os.environ.get('EMAIL_SENDER_PWD')
 
@@ -185,7 +192,22 @@ from google.oauth2 import service_account
 
 google_credential_path = os.environ.get("GOOGLE_CREDENTIAL_PATH")
 
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(google_credential_path)
+# Download the JSON file
+response = requests.get(google_credential_path)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Parse the JSON data from the response
+    credential_info = json.loads(response.text)
+
+    # Use the JSON data to create the credentials object
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(credential_info)
+    cred = credentials.Certificate(credential_info)
+else:
+    print("Failed to download the google sdk credential file (.json)")
+    GS_CREDENTIALS = None
+    cred = None
+
 GS_BUCKET_NAME = '2023_new_prolube76site'  # Replace with your Google Cloud Storage bucket name #2023_new_prolube76site/2023_talent_employment_docs
 GS_PROJECT_ID = 'fresh-start-9fdb6'  # Replace with your Google Cloud project ID
 GS_DEFAULT_ACL = 'publicRead'
@@ -197,11 +219,10 @@ GS_AUTO_CREATE_BUCKET = True
 ## ENABLE this following script when firebase_admin is used across the site; especially when the external_users app (for customers)
 # is created. 
 
-import firebase_admin
-from firebase_admin import credentials
+
 
 # initialize the firebase auth app.
-cred = credentials.Certificate(google_credential_path)
+
 default_app = firebase_admin.initialize_app(cred)
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -245,7 +266,7 @@ if os.environ.get("DB_SERVER"):
                 "PORT": "",
                 "OPTIONS": {
                     "driver": 'ODBC Driver 18 for SQL Server',
-                    "extra_params": "TrustServerCertificate=yes;Encrypt=yes;"
+                    "extra_params": "TrustServerCertificate=yes;Encrypt=no;"
                 },
             },
             # az db server is set to the default 2023-07-08
@@ -323,6 +344,7 @@ USE_TZ = True # turned the USE_TZ to False to avoid fetching data error when fet
 # STATIC_URL = 'https://storage.googleapis.com/2023_new_prolube76site/static_files'
 
 # STATIC_URL lin khttps://storage.googleapis.com/{}/static_files/'.format(GS_BUCKET_NAME) does not work when
+
 # STATICFILES_STORAGE is set to 'storages.backends.gcloud.GoogleCloudStorage'
 
 STATIC_URL = 'https://storage.googleapis.com/{}/static_files/'.format(GS_BUCKET_NAME)
