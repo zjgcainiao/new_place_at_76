@@ -219,8 +219,6 @@ GS_AUTO_CREATE_BUCKET = True
 ## ENABLE this following script when firebase_admin is used across the site; especially when the external_users app (for customers)
 # is created. 
 
-
-
 # initialize the firebase auth app.
 
 default_app = firebase_admin.initialize_app(cred)
