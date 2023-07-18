@@ -257,10 +257,10 @@ if os.environ.get("DB_SERVER"):
             #
             "default": {
                 "ENGINE": "mssql",
-                "NAME": az_databaseName,
-                "USER": az_user,
-                "PASSWORD": az_password,
-                "HOST": az_server,
+                "NAME": databaseName,
+                "USER": user,
+                "PASSWORD": password,
+                "HOST": server,
                 "PORT": "",
                 "OPTIONS": {
                     "driver": 'ODBC Driver 18 for SQL Server',
