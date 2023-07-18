@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# 
+
 try:
     SECRET_KEY = os.getenv("DJANO_SECRET_KEY")
 except KeyError as e:
@@ -34,7 +34,7 @@ except KeyError as e:
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True #True
+DEBUG = False #True
 
 # ADMINS=[]
 
@@ -78,7 +78,6 @@ INSTALLED_APPS = [
     # 'firebase_auth', # google firebase-auth
 ]
 
-
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.
 # if os.environ.get('DJANGO._USE_DEBUG_TOOLBAR'):
 #     INSTALLED_APPS +=('debug_toolbar',)
@@ -116,7 +115,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'prolube76site.wsgi.application'
 
-
 # 2023-04-01 add a custom internal_users app to manage the future employees.
 AUTH_USER_MODEL = 'internal_users.InternalUser'
 
@@ -139,11 +137,10 @@ AUTHENTICATION_BACKENDS =[
 CELERY_TIMEZONE = "America/Los_Angeles"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+
 # Celery broker settings
 CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_RESULT_BACKEND = "redis://localhost:6379"
-
-
 
 # added so that when a user login from 127.0.0.1/users/login, he will be re-directed to 'dashboard/'.
 # controlled by dashboard app. the main core app that do the lineitems and etc.
@@ -165,11 +162,11 @@ DEFAULT_FROM_EMAIL = email_sender # replace with your email
 
 # added on 2023-06-02 storage 
 
-DEFAULT_FILE_STORAGE = 'myapp.custom_storage.NASStorage'
-NAS_STORAGE_LOCATION = '192.168.1.30'  # NAS server IP or hostname
+# DEFAULT_FILE_STORAGE = 'myapp.custom_storage.NASStorage'
+# NAS_STORAGE_LOCATION = '192.168.1.30'  # NAS server IP or hostname
 
-# # django < 4.2
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+
 
 # # django >= 4.2
 # STORAGES = {"default": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"}}
@@ -178,9 +175,11 @@ DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 # Configure Google Cloud Storage settings
 
+# # django < 4.2
 # Import the required packages
 # from storages.backends.gcloud import GoogleCloudStorage
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 from google.oauth2 import service_account
 
@@ -263,19 +262,7 @@ if os.environ.get("DB_SERVER"):
                 },
             },
     }
-# use the django-pyodbc package
-# DATABASES = {
-# 'default': {
-#     'ENGINE': "django_pyodbc",
-#     'HOST':server,
-#     'USER': user,
-#     'PASSWORD': password,
-#     'NAME': databaseName,
-#     'OPTIONS': {
-#         'host_is_server': True
-#     },
-# }
-# }
+
 else:
     DATABASES = {
        'default': {
@@ -325,7 +312,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'America/Los_Angeles' #'UTC'
 
-USE_TZ = False # turned the USE_TZ to False to avoid fetching data error when fetching data from the testing db.
+USE_TZ = True # turned the USE_TZ to False to avoid fetching data error when fetching data from the testing db.
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -334,6 +321,9 @@ USE_TZ = False # turned the USE_TZ to False to avoid fetching data error when fe
 # STATIC_URL = 'static/'
 
 # STATIC_URL = 'https://storage.googleapis.com/2023_new_prolube76site/static_files'
+
+# STATIC_URL lin khttps://storage.googleapis.com/{}/static_files/'.format(GS_BUCKET_NAME) does not work when
+# STATICFILES_STORAGE is set to 'storages.backends.gcloud.GoogleCloudStorage'
 
 STATIC_URL = 'https://storage.googleapis.com/{}/static_files/'.format(GS_BUCKET_NAME)
 
@@ -347,4 +337,3 @@ STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
