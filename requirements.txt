@@ -88,7 +88,7 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycosat==0.6.3
 pycparser==2.21
-pycryptodome==3.4.3
+# pycryptodome==3.4.3
 # pycurl==7.45.1
 PyDispatcher==2.0.5
 PyJWT==2.7.0

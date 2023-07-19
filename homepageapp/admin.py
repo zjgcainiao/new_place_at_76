@@ -11,3 +11,6 @@ from homepageapp.models import  RepairOrdersNewSQL02Model
 admin.site.register(CustomersNewSQL02Model)
 admin.site.register(PhonesNewSQL02Model)
 admin.site.register(AddressesNewSQL02Model)
+
+
+admin.site.register(RepairOrdersNewSQL02Model)
