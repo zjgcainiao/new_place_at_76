@@ -237,10 +237,10 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
  # 2022-07-04- hide sensitivie environemnt variables such as the database url and login info. 
 
-server = config("DB_SERVER")
-az_server = config("AZURE_DB_SERVER")
+server = config("DB_SERVER",default=False)
+az_server = config("AZURE_DB_SERVER", default=False)
 
-if config("DB_SERVER"):
+if server:
     # load the environment variables
     user = config("DB_USER")
     password = config("DB_PASSWORD")
@@ -261,7 +261,7 @@ if config("DB_SERVER"):
           },
       }
 
-elif config(az_server):
+elif az_server:
     az_user = config("AZURE_DB_USER")
     az_password = config("AZURE_DB_PASSWORD")
     az_databaseName = config("AZURE_DB_DATABASE")
