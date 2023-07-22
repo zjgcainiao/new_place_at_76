@@ -25,20 +25,18 @@ load_dotenv()  # take environment variables from .env.
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
 try:
-    SECRET_KEY = os.getenv("DJANO_SECRET_KEY")
+    SECRET_KEY = config("DJANO_SECRET_KEY")
 except KeyError as e:
     raise RuntimeError("Could not find a Django SECRET_KEY in the environment variables.") from e
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 # DEBUG = True
 
 # ADMINS=[]
@@ -126,12 +124,12 @@ WSGI_APPLICATION = 'prolube76site.wsgi.application'
 AUTH_USER_MODEL = 'internal_users.InternalUser'
 
 AUTHENTICATION_BACKENDS =[
-                        'social_core.backends.open_id.OpenIdAuth',
-                        'social_core.backends.google.GoogleOpenId',
-                        'social_core.backends.google.GoogleOAuth2',
-                        'social_core.backends.google.GoogleOAuth',
-                        'social_core.backends.twitter.TwitterOAuth',
-                        'social_core.backends.yahoo.YahooOpenId',  
+                        # 'social_core.backends.open_id.OpenIdAuth',
+                        # 'social_core.backends.google.GoogleOpenId',
+                        # 'social_core.backends.google.GoogleOAuth2',
+                        # 'social_core.backends.google.GoogleOAuth',
+                        # 'social_core.backends.twitter.TwitterOAuth',
+                        # 'social_core.backends.yahoo.YahooOpenId',  
                         "django.contrib.auth.backends.ModelBackend",
                         "internal_users.internal_user_auth_backend.InternalUserBackend",
                         "customer_users.customer_auth_backend.CustomerUserBackend",
@@ -227,8 +225,8 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 # Add Google ReCAPTCHA keys
-RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY")
-RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY")
+RECAPTCHA_PUBLIC_KEY = config("RECAPTCHA_PUBLIC_KEY")
+RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY")
 # ADD the following line for testing and local development
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 # Database

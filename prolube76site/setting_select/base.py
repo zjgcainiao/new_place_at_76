@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # enviroment files.
 try:
     SECRET_KEY = config('DJANGO_SECRET_KEY',
-                        default="django-insecure$prolube76site.settings.local")
+                        default="django-insecure$prolube76site.setting_select.base")
 except KeyError as e:
     raise RuntimeError("Could not find a Django SECRET_KEY in the environment variables. check your .env or other .ini files") from e
 
@@ -49,10 +49,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize',  # humanize lib. so i can use to format phone numbers
+    'django.contrib.humanize', # humanize lib. so i can use to format phone numbers
 
     # 'polls.apps.PollsConfig',
     'polls',
+    
     'homepageapp',
     'appointments',
     'apis',  # adding the apis.
@@ -74,7 +75,7 @@ INSTALLED_APPS = [
     'crispy_forms', # add django-cripsy-form
     # 'crispy_bootstrap4',
     'crispy_bootstrap5',
-    # 'social_django',
+    'social_django',
     # 'firebase_auth', # google firebase-auth
 ]
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.
@@ -130,12 +131,12 @@ WSGI_APPLICATION = 'prolube76site.wsgi.application'
 AUTH_USER_MODEL = 'internal_users.InternalUser'
 
 AUTHENTICATION_BACKENDS =[
-                        'social_core.backends.open_id.OpenIdAuth',
-                        'social_core.backends.google.GoogleOpenId',
-                        'social_core.backends.google.GoogleOAuth2',
-                        'social_core.backends.google.GoogleOAuth',
-                        'social_core.backends.twitter.TwitterOAuth',
-                        'social_core.backends.yahoo.YahooOpenId',  
+                        # 'social_core.backends.open_id.OpenIdAuth',
+                        # 'social_core.backends.google.GoogleOpenId',
+                        # 'social_core.backends.google.GoogleOAuth2',
+                        # 'social_core.backends.google.GoogleOAuth',
+                        # 'social_core.backends.twitter.TwitterOAuth',
+                        # 'social_core.backends.yahoo.YahooOpenId',  
                         "django.contrib.auth.backends.ModelBackend",
                         "internal_users.internal_user_auth_backend.InternalUserBackend",
                         "customer_users.customer_auth_backend.CustomerUserBackend",
@@ -160,8 +161,8 @@ LOGIN_REDIRECT_URL = "/dashboard/"
 
 # added on 2023-04-12 ---email 
 if config("EMAIL_SENDER"):
-    email_sender = os.environ.get('EMAIL_SENDER')
-    email_pwd = os.environ.get('EMAIL_SENDER_PWD')
+    email_sender = config('EMAIL_SENDER')
+    email_pwd = config('EMAIL_SENDER_PWD')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com' # replace with your SMTP host
@@ -233,20 +234,17 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 # 2022-07-04- hide sensitivie environemnt variables such as the database url & login info.
 # modified in November 2022.
 
+server = config("DB_SERVER")
+az_server = config("AZURE_DB_SERVER")
 if config("DB_SERVER"):
 # load the environment variables
 
-    server = config("DB_SERVER")
+
     user = config("DB_USER")
     password = config("DB_PASSWORD")
     databaseName = config("DB_DATABASE1")
-    
-    # azure db server
-    az_server = config("AZURE_DB_SERVER")
-    az_user = config("AZURE_DB_USER")assets
-    az_password = config("AZURE_DB_PASSWORD")
-    az_databaseName = config("AZURE_DB_DATABASE")
-# use the Microsoft provided MSSQL DRIVER for Django
+
+    # use the Microsoft provided MSSQL DRIVER for Django
     DATABASES = {
           "default": {
               "ENGINE": "mssql",
@@ -273,7 +271,12 @@ if config("DB_SERVER"):
     #     },
     # }
     # }
-else:
+elif config(az_server):
+    # azure db server
+
+    az_user = config("AZURE_DB_USER")
+    az_password = config("AZURE_DB_PASSWORD")
+    az_databaseName = config("AZURE_DB_DATABASE")
     DATABASES = {
        'default': {
            'ENGINE': 'django.db.backends.sqlite3',

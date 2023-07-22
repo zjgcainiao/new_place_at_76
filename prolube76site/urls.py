@@ -22,7 +22,7 @@ urlpatterns = [
     path('talents/', include('talent_management.urls')),
     path('apis/', include('apis.urls')),
     path('emails/', include('automatic_mails.urls')),
-    path('mochies/', include('internal_users.urls')),
+    path('employees/', include('internal_users.urls')),
     path('accounts/', include('customer_users.urls')),  # customer_users
     path('dashboard/', include('dashboard.urls')),
     path('polls/', include('polls.urls')),
