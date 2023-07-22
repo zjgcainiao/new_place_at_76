@@ -278,11 +278,18 @@ elif config(az_server):
     az_password = config("AZURE_DB_PASSWORD")
     az_databaseName = config("AZURE_DB_DATABASE")
     DATABASES = {
-       'default': {
-           'ENGINE': 'django.db.backends.sqlite3',
-           'NAME': BASE_DIR / 'db.sqlite3',
-       }
-   }
+          "default": {
+              "ENGINE": "mssql",
+              "NAME": az_databaseName,
+              "USER": az_user,
+              "PASSWORD": az_password,
+              "HOST": az_server,
+              "PORT": "",
+              "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  #  "ODBC Driver 18 for SQL Server",
+              "extra_params": "TrustServerCertificate=yes;Encrypt=yes"
+                          },
+          },
+      }
 
 
 # 'django.db.backends.postgresql'

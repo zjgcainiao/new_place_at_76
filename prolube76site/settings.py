@@ -237,56 +237,47 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
  # 2022-07-04- hide sensitivie environemnt variables such as the database url and login info. 
 
-if os.environ.get("DB_SERVER"):
-# load the environment variables
+server = config("DB_SERVER")
+az_server = config("AZURE_DB_SERVER")
 
-    server = os.environ.get("DB_SERVER")
-    user = os.environ.get("DB_USER")
-    password = os.environ.get("DB_PASSWORD")
-    databaseName = os.environ.get("DB_DATABASE1")
+if config("DB_SERVER"):
+    # load the environment variables
+    user = config("DB_USER")
+    password = config("DB_PASSWORD")
+    databaseName = config("DB_DATABASE1")
 
-    # azure db server
-    az_server = os.environ.get("AZURE_DB_SERVER")
-    az_user = os.environ.get("AZURE_DB_USER")
-    az_password = os.environ.get("AZURE_DB_PASSWORD")
-    az_databaseName = os.environ.get("AZURE_DB_DATABASE")
-    # use the Microsoft provided MSSQL DRIVER for Django 
+    # use the Microsoft provided MSSQL DRIVER for Django
     DATABASES = {
-            #
-            "default": {
-                "ENGINE": "mssql",
-                "NAME": databaseName,
-                "USER": user,
-                "PASSWORD": password,
-                "HOST": server,
-                "PORT": "",
-                "OPTIONS": {
-                    "driver": 'ODBC Driver 18 for SQL Server',
-                    "extra_params": "TrustServerCertificate=yes;Encrypt=no;"
-                },
-            },
-            # az db server is set to the default 2023-07-08
-            "azure_db": {
-                "ENGINE": "mssql",
-                "NAME": az_databaseName,
-                "USER": az_user,
-                "PASSWORD": az_password,
-                "HOST": az_server,
-                "PORT": "",
-                "OPTIONS": {
-                    "driver": 'ODBC Driver 18 for SQL Server', 
-                    "extra_params": "TrustServerCertificate=yes;Encrypt=yes;"
-                },
-            },
-    }
+          "default": {
+              "ENGINE": "mssql",
+              "NAME": databaseName,
+              "USER": user,
+              "PASSWORD": password,
+              "HOST": server,
+              "PORT": "",
+              "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  #  "ODBC Driver 18 for SQL Server",
+              "extra_params": "TrustServerCertificate=yes;Encrypt=yes"
+                          },
+          },
+      }
 
-else:
+elif config(az_server):
+    az_user = config("AZURE_DB_USER")
+    az_password = config("AZURE_DB_PASSWORD")
+    az_databaseName = config("AZURE_DB_DATABASE")
     DATABASES = {
-       'default': {
-           'ENGINE': 'django.db.backends.sqlite3',
-           'NAME': BASE_DIR / 'db.sqlite3',
-       }
-    }
+          "default": {
+              "ENGINE": "mssql",
+              "NAME": az_databaseName,
+              "USER": az_user,
+              "PASSWORD": az_password,
+              "HOST": az_server,
+              "PORT": "",
+              "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  #  "ODBC Driver 18 for SQL Server",
+              "extra_params": "TrustServerCertificate=yes;Encrypt=yes",
+                          },
+          },
+      }
 
 # use mysql database
     # DATABASES['default']={
