@@ -152,7 +152,7 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379"
 LOGIN_REDIRECT_URL = "/dashboard/"
 
 # added on 2023-04-12 ---email 
-if config("EMAIL_SENDER"):
+if os.environ.get('EMAIL_SENDER'):
     email_sender = os.environ.get('EMAIL_SENDER')
     email_pwd = os.environ.get('EMAIL_SENDER_PWD')
 
@@ -170,16 +170,6 @@ DEFAULT_FROM_EMAIL = email_sender # replace with your email
 # DEFAULT_FILE_STORAGE = 'myapp.custom_storage.NASStorage'
 # NAS_STORAGE_LOCATION = '192.168.1.30'  # NAS server IP or hostname
 
-
-
-
-# # django >= 4.2
-# STORAGES = {"default": {"BACKEND": "storages.backends.gcloud.GoogleCloudStorage"}}
-
-# GS_BUCKET_NAME = 'YOUR_BUCKET_NAME_GOES_HERE'
-
-# Configure Google Cloud Storage settings
-
 # # django < 4.2
 # Import the required packages
 # from storages.backends.gcloud import GoogleCloudStorage
@@ -188,6 +178,7 @@ DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 from google.oauth2 import service_account
 
+# the google service account's 
 google_credential_path = os.environ.get("GOOGLE_CREDENTIAL_PATH")
 
 # Download the JSON file
