@@ -122,9 +122,9 @@
     </div>
   </div> -->
   <!-- Member 01  -->
-  <div class ="container">
-    <div class = 'row gy-2 '>
-      <div class="col col-5">
+  <div class ="container my-auto">
+    <div class = 'row gy-2'>
+      <div class="col-md-5">
         <div class="card card-hover border-50 px-200 pt-20 text-center h-100">
           <img src="{% static 'homepageapp/img/founders/stephen_profile_small_02.png' %}" class="card-img-top" alt="Card image" style ="width: 514px; height: 567px">
           <div class="card-body">
@@ -133,10 +133,11 @@
           </div>
         </div>
       </div>
-      <div class="col col-2">
+      <div class="col-md-2">
 
       </div>
-      <div class="col col-5">
+     {% comment %} 
+      <div class="col-md-5">
         <div class="card card-dark card-hover border-50 px-20 pt-20 text-center h-100">
           <img src="{% static 'homepageapp/img/founders/max_small_profile_514x567.png' %}" class="card-img-top" alt="Card image" style ="width: 514px; height: 567px">
           <div class="card-body">
@@ -145,6 +146,7 @@
           </div>
         </div>
       </div>
+     {% endcomment %}
     </div>
   </div>
 </section>
