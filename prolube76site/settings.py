@@ -279,18 +279,6 @@ elif config(az_server):
           },
       }
 
-# use mysql database
-    # DATABASES['default']={
-    #      'ENGINE': 'django.db.backends.mysql',
-    #      'HOST': os.environ.get('DB_HOST'),
-    #      'NAME': os.environ.get('DB_DATABASE'),
-    #      'USER': os.environ.get('MY_DB_USER'),
-    #      'PASSWORD': os.environ.get('MY_DB_PASSWORD')
-    #  }
-# set this to False if you want to turn off pyodbc's connection pool
-# DATABASE_CONNECTION_POOLING = False
-
-
 # You can use a database backend that doesn’t ship with Django by setting ENGINE to a fully-qualified path (i.e. mypackage.backends.whatever).
 
 # Password validation
