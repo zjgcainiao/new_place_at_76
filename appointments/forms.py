@@ -78,8 +78,8 @@ class AppointmentRequestForm(forms.ModelForm):
         #     ],
         widgets = {
             'appointment_requested_datetime': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class':'form-control'}), ## , 'class':'form-control
-            'appointment_first_name': forms.TextInput(attrs={'type': 'text','class': 'form-control'}), # 'type': 'text','class': 'form-control'
-            'appointment_last_name': forms.TextInput(attrs={'type': 'text','placeholder':'last name'}),
+            'appointment_first_name': forms.TextInput(attrs={'type': 'text','class': 'form-control','placeholder':'first name'}), # 'type': 'text','class': 'form-control'
+            'appointment_last_name': forms.TextInput(attrs={'type': 'text','placeholder':'last name','class': 'form-control'}),
             # 'appointment_reason_for_visit': forms.TextInput(attrs={'type': 'text','class': 'form-control'}),
             # 'appointment_vehicle_detail': forms.TextInput(attrs={'type': 'text','placeholder':'for example: 2020 Toyota Tocoma SE, or 2021 Mercedez C300 AWD.'}),
             'appointment_email': forms.EmailInput(attrs={'type': 'text','placeholder': 'enter your contact email'}),
@@ -167,7 +167,7 @@ class AppointmentRequestForm(forms.ModelForm):
     def clean_appointment_vehicle_detail(self):
     
         if not self.cleaned_data['appoinment_vehicle_year'] and not self.cleaned_data['appointment_vehicle_make'] and not self.cleaned_data['appointment_vehicle_model']:
-            appointment_vehicle_detail = ''.join([self.cleaned_data['appoinment_vehicle_year'],"_",self.cleaned_data['appoinment_vehicle_make'],"_",self.cleaned_data['appoinment_vehicle_model']])
+            appointment_vehicle_detail = ''.join([self.cleaned_data['appoinment_vehicle_year'], "_", self.cleaned_data['appoinment_vehicle_make'],"_",self.cleaned_data['appoinment_vehicle_model']])
         else:
             appointment_vehicle_detail is None
         return appointment_vehicle_detail
@@ -201,15 +201,15 @@ class AppointmentRequestForm(forms.ModelForm):
         self.helper.layout = Layout(
             Row(Fieldset(_('Time and Contact Info'),
                 Row(Column(Field('appointment_email', css_class='form-control'),
-                        css_class='col-6',),
+                        css_class='col-md-6',),
                     Column(Field('appointment_phone_number',css_class='form-control', style="background-color: #333"),
-                        css_class='col-6',),
+                        css_class='col-md-6',),
                     css_class='p-1'),              
                 Row(
                     Column(Field('appointment_first_name',css_class='form-control'),
-                        css_class='col-6',),
+                        css_class='col-md-6',),
                     Column(Field('appointment_last_name',css_class='form-control'),
-                        css_class='col-6',),
+                        css_class='col-md-6',),
                     css_class='p-1 '),
 
                 Row(
@@ -235,11 +235,11 @@ class AppointmentRequestForm(forms.ModelForm):
                     # 'appointment_vehicle_detail_in_json',
                     Row(
                         Column(Field('appointment_vehicle_year',css_class='form-control'),
-                            css_class='col col-4',),
+                            css_class='col-md-4',),
                         Column(Field('appointment_vehicle_make',css_class='form-select'),
-                            css_class='col col-4',),
+                            css_class='col-md-4',),
                         Column(Field('appointment_vehicle_model',css_class='form-select'),
-                            css_class='col col-4',),
+                            css_class='col-md-4',),
                     css_class='p-1'),
                     ),
                 css_class='p-1 m-1'),
@@ -248,7 +248,7 @@ class AppointmentRequestForm(forms.ModelForm):
 
             Row(
                 Column(Field('appointment_concern_description',css_class='form-control'),
-                    css_class='col col-12'),
+                    css_class='col col-md-12'),
                 css_class='p-1 m-1'),
             
             HTML("<hr>"),
@@ -256,7 +256,7 @@ class AppointmentRequestForm(forms.ModelForm):
             ButtonHolder(
                 Row(
                 Column( Submit('submit', 'Submit', css_class='btn-outline-primary'),
-                        css_class='col col-6'),
+                        css_class='col col-md-6'),
                 # Column(Reset('Reset This Form', 'Reset Form', css_class='btn-outline-dark'),
                 #         css_class='col col-6'),
                 css_class='p-1 m-1'),
@@ -275,8 +275,8 @@ class AppointmentRequestFormV2(forms.ModelForm):
         
         self.helper.form_class = 'form-horizontal'
         
-        self.helper.label_class = 'col-lg-4'
-        self.helper.field_class = 'col-lg-8'
+        self.helper.label_class = 'col-4'
+        self.helper.field_class = 'col-8'
         self.helper.layout = Layout(
             Fieldset(_('Basic Info'),
                 Field('appointment_requested_datetime',css_class='form-control'),
@@ -346,7 +346,7 @@ class AppointmentImagesForm(forms.ModelForm):
         self.helper.field_class = 'col-9'
         self.helper.layout = Layout(
             Column(Field('appointment_image',css_class='form-control'),
-                   css_class='col col-12')
+                   css_class='col col-md-12')
 
         )
 

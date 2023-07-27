@@ -1,79 +1,81 @@
 {% extends 'appointments/00_appointment_base.html' %}
 {% load crispy_forms_tags %}
 {% block content-main %}
-<div class="container container-fluid m-1">  
-    
-    <form class ='card border border-primary' method="post" enctype="multipart/form-data">
-      <h4 class="card-header">Make a Service Appointment</h4>
-      <div class="card-subtitle m-1">Free, online, and complete in a few seconds.</div>
-      {% csrf_token %}
-      {% crispy form form.helper %}
 
-        {% comment %}
-
-        <div class ='row m-1'>
-          <div class="col col-6">
-            {{form.appointment_reason_for_visit|as_crispy_field}}
-          </div>
-        </div>
-        <div class ='row m-1'>
-          <div class="col col-6">
-            {{form.appointment_requested_datetime|as_crispy_field}}
-          </div>
-        </div>
+<div class="d-flex align-items-center justify-content-center vh-100"> 
+  <div class="container my-auto">  
       
-        <div class ='row m-1'>
-          <div class="col col-6">
-            {{form.appointment_first_name|as_crispy_field}}
-          </div>
-          <div class="col col-6">
-            {{form.appointment_last_name|as_crispy_field}}
-          </div>
-        </div>
-        <div class ='row m-1'>
-          <div class="col col-4">
-            {{form.appointment_vehicle_year|as_crispy_field}}
-          </div>
-          <div class="col col-4">
-            {{form.appointment_vehicle_make|as_crispy_field}}
-          </div>
-          <div class="col col-4">
-            {{form.appointment_vehicle_model|as_crispy_field}}
-          </div>
-        </div>
-        <div class ='row m-1'>
-          <div class="col col-12">
-            {{form.appointment_concern_description|as_crispy_field}}
-          </div>
-        </div>
-        <button class = 'btn btn-outline-primary' type="submit">Submit</button>
-        {% endcomment %}
-  </form>
-  
-  {% comment %}
+      <form class ='card border border-primary' method="post" enctype="multipart/form-data">
+        <h4 class="card-header">Make a Service Appointment</h4>
+        <div class="card-subtitle m-1">Free, online, and complete in a few seconds.</div>
+        {% csrf_token %}
+        {% crispy form form.helper %}
 
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ image_formset.management_form }}
-    {% for image_form in image_formset %}
-    {{ image_form | crispy }}
-    {% endfor %}
-    <button type="submit">Upload File</button>
-  </form>        
+          {% comment %}
+
+          <div class ='row m-1'>
+            <div class="col col-6">
+              {{form.appointment_reason_for_visit|as_crispy_field}}
+            </div>
+          </div>
+          <div class ='row m-1'>
+            <div class="col col-6">
+              {{form.appointment_requested_datetime|as_crispy_field}}
+            </div>
+          </div>
+        
+          <div class ='row m-1'>
+            <div class="col col-6">
+              {{form.appointment_first_name|as_crispy_field}}
+            </div>
+            <div class="col col-6">
+              {{form.appointment_last_name|as_crispy_field}}
+            </div>
+          </div>
+          <div class ='row m-1'>
+            <div class="col col-4">
+              {{form.appointment_vehicle_year|as_crispy_field}}
+            </div>
+            <div class="col col-4">
+              {{form.appointment_vehicle_make|as_crispy_field}}
+            </div>
+            <div class="col col-4">
+              {{form.appointment_vehicle_model|as_crispy_field}}
+            </div>
+          </div>
+          <div class ='row m-1'>
+            <div class="col col-12">
+              {{form.appointment_concern_description|as_crispy_field}}
+            </div>
+          </div>
+          <button class = 'btn btn-outline-primary' type="submit">Submit</button>
+          {% endcomment %}
+    </form>
     
-  {% if appointment.images.all %}
-  <h2>Uploaded Images</h2>
-  <div>
-      {% for image in appointment.appointment_images.all %}
-      <img src="{{ image.appointment_images.url }}" alt="">
-      {% endfor %}
-  </div>
-  {% endif %}
-  {% endcomment %}
- 
-</div>
-<!-- end of container -->
+    {% comment %}
 
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ image_formset.management_form }}
+      {% for image_form in image_formset %}
+      {{ image_form | crispy }}
+      {% endfor %}
+      <button type="submit">Upload File</button>
+    </form>        
+      
+    {% if appointment.images.all %}
+    <h2>Uploaded Images</h2>
+    <div>
+        {% for image in appointment.appointment_images.all %}
+        <img src="{{ image.appointment_images.url }}" alt="">
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endcomment %}
+  
+  </div>
+  <!-- end of container -->
+</div>
 <!-- 2023-06-06 
   adding a script so that when a dropdown list field has been updated, the corresponding field is also updated.
 Update the appointment_vehicle_make section, then have it update appointment_vehicle_model -->

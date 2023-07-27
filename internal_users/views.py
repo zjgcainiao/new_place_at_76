@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.shortcuts import render, resolve_url, redirect
 import googlemaps
+from django.http import HttpResponseForbidden
 from internal_users.forms import InternalUserCreationForm, InternalUserChangeForm, InternalUserRegistrationFormV2,InternalUserLoginForm,InternalUserPasswordResetForm
 from django.contrib.auth.views import LoginView, LogoutView,PasswordChangeDoneView, PasswordChangeView, PasswordResetView, PasswordResetConfirmView, PasswordContextMixin
 from internal_users.models import InternalUser
@@ -17,6 +18,7 @@ from django.contrib.auth import get_user_model
 from crispy_forms.utils import render_crispy_form
 from internal_users.forms import EmploymentInfoForm
 from internal_users.internal_user_auth_backend import InternalUserBackend
+from django.contrib.auth.mixins import LoginRequiredMixin
 # from internal_users.internal_user_auth_backend import authenticate
 
 ## this is the register function to register a new user.
@@ -104,7 +106,7 @@ def internal_user_login(request):
         form = InternalUserLoginForm()
         # if isinstance(request.user, CustomerUser):
         #     redirect('customer_users:customer_user_dashboard')
-    return render(request, 'customer_users/20_customer_user_login.html', {'form': form})
+    return render(request, 'internal_users/20_login.html', {'form': form})
 
 
 class InternalUserLogoutView(LogoutView):
@@ -114,12 +116,12 @@ class InternalUserLogoutView(LogoutView):
         messages.success(request, 'You have been successfully logged out.')
         return super().dispatch(request, *args, **kwargs)
 
-
+# @login_required(login_url='internal_users:internal_user_login')
 class UserPasswordChangeView(PasswordChangeView):
     template_name = 'internal_users/40_password_change.html'
     success_url = reverse_lazy('password_change_done')
 
-
+# 
 class UserPasswordChangeDoneView(PasswordChangeDoneView):
     template_name='internal_users/33_password_change_done.html'
 
@@ -179,7 +181,7 @@ def firebase_authenticate(request):
 
         # except Exception as e:
         #     return render(request, 'internal_users/pages-404.html', {'error': str(e)})
-
+@login_required(login_url='internal_users:internal_user_login')
 def InternalUserDashboard(request):
     if isinstance(request.user, InternalUser) and request.user.is_authenticated:
         internal_user = request.user
@@ -187,16 +189,21 @@ def InternalUserDashboard(request):
     else:
         render
 
+@login_required(login_url='internal_users:internal_user_login')
 def internal_user_view_employement(request):
     if isinstance(request.user, InternalUser) and request.user.is_authenticated:
         internal_user = request.user
         email = internal_user.email
         # grab the talent record based on email
         # next step is allow user to enter the birthday so that he can confirm the real employee information before displaying it.
-        talent = TalentsModel.objects.filter(talent_email="15@gmail.com")
+        talent = TalentsModel.objects.filter(talent_email=email) # "15@gmail.com"
         if talent.exists():
             talent_instance = talent.get()
             form = EmploymentInfoForm(instance=talent_instance)
-        # crispy_form = render_crispy_form(form)
-        # qs = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer').prefetch_related('repair_order_customer__addresses')
-        return render(request, 'internal_users/70_employment_information.html', {"talent": talent_instance, "form": form})
+            # crispy_form = render_crispy_form(form)
+            # qs = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer').prefetch_related('repair_order_customer__addresses')
+            return render(request, 'internal_users/70_employment_information.html', {"talent": talent_instance, "form": form})
+        else:
+            return HttpResponseForbidden('No talent found with the given email.')
+    else:
+        return HttpResponseForbidden('You are not authorized to view this page. Employees have to login.')
