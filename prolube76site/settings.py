@@ -40,7 +40,6 @@ DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 # DEBUG = True
 
 # Turn off CSRF secure in development env (HTTP); in production, HTTPS requires to have CSRF_COOKIE_SECURE = True
-
 CSRF_COOKIE_DOMAIN = 'new76prolubeplus.com'
 
 if DEBUG:
@@ -48,6 +47,9 @@ if DEBUG:
 else:
     CSRF_COOKIE_SECURE = True
 
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="new76prolubeplus.com", cast=Csv())
+
+#['new76prolubeplus.com', 'www.new76prolubeplus.com','76prolubeplus.azurewebsites.net']
 
 
 # ADMINS=[]
