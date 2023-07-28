@@ -26,10 +26,24 @@ jobs:
           python -m venv venv
           source venv/bin/activate
       
-  
+      # - name: Get pip cache dir (custom added)
+      #   id: pip-cache
+      #   run: |
+      #     echo "PIP_CACHE_DIR=$(pip cache dir)" >> $GITHUB_ENV
+      #   shell: bash
+        
+      # added the above section on 2023-07-26 to cache pip dependencies
+      - name: Cache pip dependencies (custom added)
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+
+      # - name: Install dependencies
+      #   run: pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
