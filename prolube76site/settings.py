@@ -51,7 +51,7 @@ CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="new76prolubeplus.
 
 #['new76prolubeplus.com', 'www.new76prolubeplus.com','76prolubeplus.azurewebsites.net']
 
-SECURE_SSL_REDIRECT = True
+# SECURE_SSL_REDIRECT = True
 
 
 # USE_X_FORWARDED_HOST = True
