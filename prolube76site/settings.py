@@ -49,8 +49,6 @@ else:
 
 # ALLOWED_HOSTS=[]
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())
-# ALLOWED_HOSTS = ["new76prolubeplus.azurewebsites.net", "new76prolubeplus.com",
-#                  "127.0.0.1","localhost","192.168.1.83",]
 
 # Application definition
 INSTALLED_APPS = [
