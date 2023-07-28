@@ -16,7 +16,7 @@ jobs:
 
     steps:
       # checkout the repo 
-      - uses: actions/checkout@vmaster
+      - uses: actions/checkout@master
       - name: Set up Python version
         uses: actions/setup-python@v4
         with:
