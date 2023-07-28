@@ -39,6 +39,12 @@ except KeyError as e:
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 # DEBUG = True
 
+# Turn off CSRF secure in development env (HTTP); in production, HTTPS requires to have CSRF_COOKIE_SECURE = True
+if DEBUG:
+    CSRF_COOKIE_SECURE = False
+else:
+    CSRF_COOKIE_SECURE = True
+
 # ADMINS=[]
 
 # ALLOWED_HOSTS=[]
