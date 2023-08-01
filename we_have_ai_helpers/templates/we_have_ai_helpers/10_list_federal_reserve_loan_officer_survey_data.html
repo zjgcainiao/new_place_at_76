@@ -1,0 +1,12 @@
+{% extends "we_have_ai_helpers/00_we_have_ai_helper_base.html" %}
+
+{% block content %}
+  <h2>PDF Files</h2>
+  <ul>
+    {% for pdf in pdf_files %}
+      <li><a href="{{ pdf }}">{{ pdf }}</a></li>
+    {% empty %}
+      <li>No pdfs found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

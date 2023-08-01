@@ -97,6 +97,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     # 'social_django',
     # 'firebase_auth', # google firebase-auth
+    'we_have_ai_helpers',
 ]
 
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.
