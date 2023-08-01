@@ -2,51 +2,38 @@
 {% load static %}
 
 {% block content1-main %}
-
 <section class="bg-top-center bg-repeat-0 pt-md-1" style="background-image: url({% static 'homepageapp/img/car-finder/home/hero-bg.png' %}); background-size: 1920px 630px;">
     <div class="container mt-5 pt-5">
-        <!-- <div class ='row'> -->
-            <!-- Breadcrumb-->
-            <nav class="mb-1 pt-md-1" aria-label="Breadcrumb">
-                <ol class="breadcrumb breadcrumb-dark">
+        <!-- Breadcrumb-->
+        <nav class="mb-1 pt-md-1" aria-label="Breadcrumb">
+            <ol class="breadcrumb breadcrumb-dark">
                 <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">About Us</li>
-                </ol>
-            </nav>
-        <!-- </div> -->
+            </ol>
+        </nav>
         <div class="row ">
             <div class="col col-12 pt-2 ">
-                <!-- Accordion basic -->
-                <div class="accordion" id="accordionExample">
-                    <!-- Accordion item -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Stephen Wang</button>
-                        </h2>
-                        <div class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" id="collapseOne">
-                            <div class="accordion-body">
-                                <p>
-                                    Founder. Believe in a better auto repair service can be achieved by integrating technical advancements into company operations. 
-                                </p>
-                                <p>
-                                    We combine our system into one-stop-shop model for maximizing efficiency improvements. 
-                                </p>
-                                <p>
-                                    <img src="{% static 'homepageapp/img/founders/stephen_profile_small_02.png' %}" class="card-img-top" alt="member 01" style ="width: 257px; height: 284px">
-                                </p>            
+                <!-- Profile -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <img src="{% static 'homepageapp/img/founders/stephen_profile_small_02.png' %}" class="card-img-top" alt="Stephen Wang" style="width: 257px; height: 284px">
                             </div>
-                            <!-- end of accordin body -->
+                            <div class="col-sm-8">
+                                <h2 class="card-title">Stephen Wang</h2>
+                                <p class="card-text">
+                                    Stephen Wang, our founder, envisions superior auto repair services through the seamless integration of advanced technologies into business operations. 
+                                </p>
+                                <p class="card-text">
+                                    We leverage a one-stop-shop model, amalgamating our system to achieve unprecedented improvements in efficiency.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                  
                 </div>
-                <!-- end of accordin  -->
             </div>
         </div>
     </div>
-    <!-- end of container div  -->
 </section>
-
-        
-
 {% endblock %}
