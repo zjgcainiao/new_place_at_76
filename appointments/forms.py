@@ -62,20 +62,6 @@ class AppointmentRequestForm(forms.ModelForm):
             # 'appointment_vehicle_detail',
             # 'appointment_vehicle_detail_in_json',
         ]
-        # required_fields = [
-        #     'appointment_reason_for_visit',
-        #     'appointment_requested_datetime',
-        #     'appointment_first_name',
-        #     'appointment_last_name',
-        #     'appointment_email',
-        #     'appointment_phone_number',
-        #     'appointment_vehicle_year',
-        #     'appointment_vehicle_make',
-        #     'appointment_vehicle_model',
-        #     # 'appointment_vehicle_detail',
-        #     'appointment_concern_description',
-        #     # 'appointment_vehicle_detail_in_json',
-        #     ],
         widgets = {
             'appointment_requested_datetime': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class':'form-control'}), ## , 'class':'form-control
             'appointment_first_name': forms.TextInput(attrs={'type': 'text','class': 'form-control','placeholder':'first name'}), # 'type': 'text','class': 'form-control'
@@ -110,8 +96,8 @@ class AppointmentRequestForm(forms.ModelForm):
     appointment_vehicle_model = forms.ChoiceField(choices=get_latest_vehicle_model_list, label='Model')
 
     appointment_phone_number = forms.CharField(validators=[validate_phone_number],
-                                                widget=forms.TextInput(attrs={'type': 'text','placeholder': 'we only use the phone number to contact you.'}), 
-                                               label='Phone')
+                                                widget=forms.TextInput(attrs={'type': 'text','placeholder': 'Enter a US phone number.'}), 
+                                               label='Phone', help_text="we won't spam you.")
     appointment_concern_description = forms.CharField(widget=forms.Textarea(attrs={'type': 'text','placeholder': 'Examples: 1. I want to do a oil change for 2020 Toyota Sienna. Full Synthetic as usual. 2. My A/C system does not cool enough during a hot day. Last week, i drove to ... 3. The engine acted weird this morning, the car suddenly lost power on a freeway ramp...'}), 
                                                label='Desribe your issue as detailed as you can.')
 
@@ -202,7 +188,7 @@ class AppointmentRequestForm(forms.ModelForm):
             Row(Fieldset(_('Time and Contact Info'),
                 Row(Column(Field('appointment_email', css_class='form-control'),
                         css_class='col-md-6',),
-                    Column(Field('appointment_phone_number',css_class='form-control', style="background-color: #333"),
+                    Column(Field('appointment_phone_number',css_class='form-control', style="background-color: #cfe2f3"),
                         css_class='col-md-6',),
                     css_class='p-1'),              
                 Row(

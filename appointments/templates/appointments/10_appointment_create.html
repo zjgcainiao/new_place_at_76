@@ -2,30 +2,30 @@
 {% load crispy_forms_tags %}
 {% block content1-main %}
 
-<div class="d-flex align-items-center justify-content-center vh-100"> 
+<div class="d-flex align-items-center justify-content-center vh-100 my-5 pt-5"> 
   <div class="container my-auto">  
       
       <form class ='card border border-primary' method="post" enctype="multipart/form-data">
         <h4 class="card-header">Make a Service Appointment</h4>
-        <div class="card-subtitle m-1">Free, online, and complete in a few seconds.</div>
+        <div class="card-subtitle p-1">Free, online, and complete in a few seconds.</div>
         {% csrf_token %}
         {% crispy form form.helper %}
 
           {% comment %}
 
           <div class ='row m-1'>
-            <div class="col col-6">
+            <div class="col-6">
               {{form.appointment_reason_for_visit|as_crispy_field}}
             </div>
           </div>
           <div class ='row m-1'>
-            <div class="col col-6">
+            <div class="col-6">
               {{form.appointment_requested_datetime|as_crispy_field}}
             </div>
           </div>
         
           <div class ='row m-1'>
-            <div class="col col-6">
+            <div class="col-6">
               {{form.appointment_first_name|as_crispy_field}}
             </div>
             <div class="col col-6">
@@ -33,18 +33,18 @@
             </div>
           </div>
           <div class ='row m-1'>
-            <div class="col col-4">
+            <div class="col-4">
               {{form.appointment_vehicle_year|as_crispy_field}}
             </div>
-            <div class="col col-4">
+            <div class="col-4">
               {{form.appointment_vehicle_make|as_crispy_field}}
             </div>
-            <div class="col col-4">
+            <div class="col-4">
               {{form.appointment_vehicle_model|as_crispy_field}}
             </div>
           </div>
           <div class ='row m-1'>
-            <div class="col col-12">
+            <div class="col-12">
               {{form.appointment_concern_description|as_crispy_field}}
             </div>
           </div>
@@ -77,9 +77,20 @@
   <!-- end of container -->
 </div>
 <!-- 2023-06-06 
-  adding a script so that when a dropdown list field has been updated, the corresponding field is also updated.
+adding a script so that when a dropdown list field has been updated, the corresponding field is also updated.
 Update the appointment_vehicle_make section, then have it update appointment_vehicle_model -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+this script is added to automatically format the phone number input field
+<script>
+    $('#id_appointment_phone_number').on('input', function() {
+        let x = $(this).val().replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+        $(this).val(!x[2] ? x[1] : `(${x[1]}) ${x[2]}` + (x[3] ? `-${x[3]}` : ''));
+    });
+
+  
+</script>
+  
 <script>
 $(document).ready(function() {
     $('#id_appointment_vehicle_make').change(function() {
