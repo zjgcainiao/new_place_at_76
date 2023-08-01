@@ -190,12 +190,12 @@ DEFAULT_FROM_EMAIL = email_sender # replace with your email
 # # django < 4.2
 # Import the required packages
 # from storages.backends.gcloud import GoogleCloudStorage
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
 # DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 from google.oauth2 import service_account
 
-# the google service account's 
+# the google service account's credential json file stored online
 google_credential_path = os.environ.get("GOOGLE_CREDENTIAL_PATH")
 
 # Download the JSON file
@@ -214,6 +214,7 @@ else:
     GS_CREDENTIALS = None
     cred = None
 
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 GS_BUCKET_NAME = '2023_new_prolube76site'  # Replace with your Google Cloud Storage bucket name #2023_new_prolube76site/2023_talent_employment_docs
 GS_PROJECT_ID = 'fresh-start-9fdb6'  # Replace with your Google Cloud project ID
 GS_DEFAULT_ACL = 'publicRead'
