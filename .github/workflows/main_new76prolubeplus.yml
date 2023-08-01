@@ -33,13 +33,13 @@ jobs:
       #   shell: bash
         
       # added the above section on 2023-07-26 to cache pip dependencies
-      # - name: Cache pip dependencies (custom added)
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.cache/pip
-      #     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pip-
+      - name: Cache pip dependencies (custom added)
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
 
       # - name: Install dependencies

@@ -3,6 +3,30 @@
 
 {% block content1-main %}
 
+<section class="container pt-5">
+    <div class="d-sm-flex align-items-center justify-content-between mb-3 mb-sm-4 pb-sm-2">
+      <h2 class="h3 text-dark my-2 mb-sm-0">Our Team</h2>
+    </div>
+
+    <!-- Member 01  -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-3 mb-sm-4 pb-sm-2">
+      <div class ="container my-auto">
+        <div class = 'row gy-2'>
+          <div class="col-md-5">
+            <div class="card card-hover border-50 px-200 pt-20 text-center h-100">
+              <img src="{% static 'homepageapp/img/founders/stephen_profile_small_02.png' %}" class="card-img-top" alt="Card image" style ="width: 514px; height: 567px">
+              <div class="card-body">
+                <h5 class="card-title">Stephen Wang</h5>
+                <p class="card-text fs-sm">Founder. Believe in a better auto repair service can be achieved by integrating technical advancements into company operations. We combine our system into one-stop-shop model for maximizing efficiency improvements. Ex banking analyst. </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end of row  -->
+
+      </div>
+    </div>
+  </section>
 
 <section class="bg-top-center bg-repeat-0 pt-5" style="background-image: url({% static 'homepageapp/img/car-finder/home/hero-bg.png' %}); background-size: 1920px 630px;">
     <div class="container mt-5 pt-5">
@@ -11,7 +35,7 @@
             <nav class="mb-1 pt-md-1" aria-label="Breadcrumb">
                 <ol class="breadcrumb breadcrumb-dark">
                 <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Services</li>
+                <li class="breadcrumb-item active" aria-current="page">About Us</li>
                 </ol>
             </nav>
         <!-- </div> -->

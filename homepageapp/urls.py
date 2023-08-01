@@ -1,10 +1,11 @@
 from django.urls import include, path
 
-from . import views
+from homepageapp import views
 app_name = 'homepageapp'
 urlpatterns = [
     path('', views.GetHomepageView, name='homepage'),
     path('services/', views.GetServiceListView, name='services'),
+    path('about-us/', views.GetAboutUsView, name='about-us')
     # path('customers/', views.CustomerListView.as_view(), name='customers-list'),
     # path('customersv2/', views.customer_list, name='customers-list-v2'),
     # path('customersv3/', views.active_customer_list, name='customers-list-v3'),

@@ -30,12 +30,14 @@ from django.forms import inlineformset_factory
 from django.contrib import messages
 
 def GetHomepageView(request):
-    # return render(request, 'homepageapp/20_homepageapp_home_v2.html')
     return render(request, 'homepageapp/20_homepageapp_home.html')
 
 def GetServiceListView(request):
-    # return render(request, 'homepageapp/20_homepageapp_home_v2.html')
     return render(request, 'homepageapp/21_homepageapp_service_list.html')
+
+def GetAboutUsView(request):
+    # return render(request, 'homepageapp/20_homepageapp_home_v2.html')
+    return render(request, 'homepageapp/22_homepageapp_about_us.html')
 
 # this is the class-based list view 
 class CustomerListView(ListView):
