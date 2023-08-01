@@ -3,21 +3,22 @@
 
 {% block content1-main %}
 
+<style>
 
- <!-- <section class="bg-top-center bg-repeat-0 pt-5" style=" background-image: url({% static 'homepageapp/img/car-finder/home/hero-bg.png' %}); background-size: 1920px 630px;">
- </section> -->
-  <!-- Page header-->
-<!-- <section class="container mb-5 pb-lg-5">
-  <div class="row align-items-center justify-content-lg-start justify-content-center flex-lg-nowrap gy-4">
-    <div class="col-lg-9"><img class="rounded-3" src="img/car-finder/about/hero-img.jpg" alt="Hero image"></div>
-    <div class="col-lg-4 ms-lg-n5 col-sm-9 text-lg-start text-center">
-      <div class="ms-lg-n5 pe-xl-5">
-        <h1 class="mb-lg-4 text-light">About us</h1>
-        <p class="mb-4 pb-lg-3 fs-lg text-light opacity-70">We believe that car buying and selling should be straight-forward and enjoyable, not time-consuming, complicated or stressful.</p><a class="btn btn-lg btn-primary w-sm-auto w-100" href="car-finder-catalog-list.html"><i class="fi-search me-2"></i>Search car</a>
-      </div>
-    </div>
-  </div>
-</section> -->
+
+@keyframes car-animation {
+  0%   {right: -30%;}  /* start off the right edge */
+  100% {right: 5%;}   /* stop at 30% from the right edge */
+}
+
+#animated-car {
+  position: relative;  /* changed to absolute */
+  width: 800px;        /* Adjust width as needed */
+  height: auto;
+  animation: car-animation 2s linear forwards; /* Adjust time as needed */
+}
+</style>
+
 <!-- Page header-->
 <section class="bg-top-center bg-repeat-0 pt-5" style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); background-size: cover;">
   {% if messages %}
@@ -58,7 +59,7 @@
       <!-- end of column  -->
 
       <figure class="col-md-5 p-md-5">
-        <img class="d-block mt-4 ms-auto" src="{% static 'homepageapp/img/2023-05-27-tesla-roadster-sports-car-tesla-motors-car.png' %}" width="800" alt="Car">
+        <img class="d-block mt-4 ms-auto"  src="{% static 'homepageapp/img/2023-05-27-tesla-roadster-sports-car-tesla-motors-car.png' %}" width="800" alt="Car">
       </figure>
     </article>
   </div>
