@@ -42,5 +42,5 @@ def scrape_and_download_pdfs():
         for link in pdf_links:
             # Name the pdf files using the last portion of each link which are unique in this case
             filename = link['href'].split("/")[-1]
-            pdf_content = requests.get(urljoin(base_url,link['href'])).content
+            pdf_content = requests.get(urljoin(base_url, link['href'])).content
             default_storage.save('scraped_pdfs/'+filename, ContentFile(pdf_content))
