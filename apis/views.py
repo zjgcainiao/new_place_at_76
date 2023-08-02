@@ -9,10 +9,27 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model
+from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsModel, TextMessagesModel
 from .serializers import CustomerSerializer, RepairOrderSerializer
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from rest_framework import viewsets
+
+from apis.serializers import RepairOrderSerializer, LineItemsSerializer, TextMessagesSerializer
+
+
+class RepairOrderViewSet(viewsets.ModelViewSet):
+    queryset = RepairOrdersNewSQL02Model.objects.all()
+    serializer_class = RepairOrderSerializer
+
+class LineItemsViewSet(viewsets.ModelViewSet):
+    queryset = LineItemsModel.objects.all()
+    serializer_class = LineItemsSerializer
+
+class TextMessagesViewSet(viewsets.ModelViewSet):
+    queryset = TextMessagesModel.objects.all()
+    serializer_class = TextMessagesSerializer
+
 
 
 @api_view(['GET'])
@@ -92,3 +109,4 @@ def repairorders_api(request):
 #     elif request.method == 'DELETE':
 #         student.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
+

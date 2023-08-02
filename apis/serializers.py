@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from homepageapp.models import CustomersNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsModel, TextMessagesModel
+from homepageapp.models import CustomersNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsNewSQL02Model, TextMessagesModel
 from django.utils import timezone
 
 
@@ -10,13 +10,19 @@ class RepairOrderSerializer(serializers.ModelSerializer):
 
 class LineItemsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = LineItemsModel
+        model = LineItemsNewSQL02Model
         fields = '__all__'
 
 class TextMessagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextMessagesModel
         fields = '__all__'
+
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomersNewSQL02Model
+        fields = '__all__'
+
 
 
 # class RepairOrderSerializer(serializers.ModelSerializer):
