@@ -7,7 +7,7 @@ class RepairOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = RepairOrdersNewSQL02Model
         fields = '__all__'
-
+        read_only_fields = ['repair_order_last_updated_date', 'repair_order_created_at']
 class LineItemsSerializer(serializers.ModelSerializer):
     class Meta:
         model = LineItemsNewSQL02Model

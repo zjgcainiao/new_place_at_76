@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 # added on 2022-10-29 so the load_env
 import os
 from dotenv import load_dotenv
+
 # documentation for py-mssql is https://pymssql.readthedocs.io/en/stable/pymssql_examples.html#basic-features-strict-db-api-compliance
 # import pymssql
 

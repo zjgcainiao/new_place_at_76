@@ -54,7 +54,7 @@ class TextMessagesViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 def customer_api(request):
     # try:
-        customers = CustomersNewSQL02Model.objects.all()
+        customers = CustomersNewSQL02Model.objects.filter(customer_is_deleted=False)
         # page = request.GET.get('page', 1)
         # paginator = Paginator(customers, 20)
         serializer = CustomerSerializer(customers, many=True)
@@ -97,8 +97,17 @@ def customer_api(request):
 @api_view(['GET'])
 def repairorders_api(request):
     if request.method == 'GET':
-        repairorders = RepairOrdersNewSQL02Model.objects.all()
-
+        # repairorders = RepairOrdersNewSQL02Model.objects.all()
+        repairorders = RepairOrdersNewSQL02Model.objects.filter(repair_order_phase__gte=1, repair_order_phase__lte=5)
+        repairorders = repairorders.select_related('repair_order_customer'
+                ).prefetch_related('repair_order_customer__addresses',
+                               'repair_order_customer__addresses',
+                               'repair_order_customer__phones',
+                               'repair_order_customer__emails',
+                               'repair_order_customer__taxes'
+                               )
+        repairorders = repairorders.prefetch_related('payment_repairorders',
+                                 'repair_order_customer__payment_customers')
         serializer = RepairOrderSerializer(repairorders, context={'request': request}, many=True)
 
         return JsonResponse({'repairorders': serializer.data})

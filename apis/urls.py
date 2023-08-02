@@ -6,9 +6,9 @@ from apis.views import RepairOrderViewSet, LineItemsViewSet, TextMessagesViewSet
 app_name = 'apis'
 
 router = DefaultRouter()
-router.register(r'repair_orders', RepairOrderViewSet)
-router.register(r'line_items', LineItemsViewSet)
-router.register(r'text_messages', TextMessagesViewSet)
+router.register(r'repair_orders', RepairOrderViewSet, basename='restful_to_repair_orders')
+router.register(r'line_items', LineItemsViewSet, basename='restful_to_line_items')
+router.register(r'text_messages', TextMessagesViewSet, basename='restful_to_text_messages')
 
 urlpatterns = [
     path('', include(router.urls)),
