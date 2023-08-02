@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsModel, TextMessagesModel
+from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsNewSQL02Model, TextMessagesModel
 from .serializers import CustomerSerializer, RepairOrderSerializer
 from django.core.paginator import Paginator
 from django.http import JsonResponse
@@ -19,16 +19,35 @@ from apis.serializers import RepairOrderSerializer, LineItemsSerializer, TextMes
 
 
 class RepairOrderViewSet(viewsets.ModelViewSet):
-    queryset = RepairOrdersNewSQL02Model.objects.all()
+
     serializer_class = RepairOrderSerializer
 
+    def get_queryset(self):
+        qs = RepairOrdersNewSQL02Model.objects.filter(repair_order_phase__gte=1, repair_order_phase__lte=5)
+        qs = qs.select_related('repair_order_customer'
+                ).prefetch_related('repair_order_customer__addresses',
+                               'repair_order_customer__addresses',
+                               'repair_order_customer__phones',
+                               'repair_order_customer__emails',
+                               'repair_order_customer__taxes'
+                               )
+        qs = qs.prefetch_related('payment_repairorders',
+                                 'repair_order_customer__payment_customers')
+        return qs
+
 class LineItemsViewSet(viewsets.ModelViewSet):
-    queryset = LineItemsModel.objects.all()
+
     serializer_class = LineItemsSerializer
 
+    def get_queryset(self):
+        return LineItemsNewSQL02Model.objects.all()
+
 class TextMessagesViewSet(viewsets.ModelViewSet):
-    queryset = TextMessagesModel.objects.all()
+    
     serializer_class = TextMessagesSerializer
+
+    def get_queryset(self):
+        return TextMessagesModel.objects.filter(text_customer=self.kwargs['customer_id']).order_by('-text_message_id')[:10]
 
 
 
