@@ -40,7 +40,7 @@ DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 # DEBUG = True
 
 # Turn off CSRF secure in development env (HTTP); in production, HTTPS requires to have CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_DOMAIN = '127.0.0.1' #'new76prolubeplus.com'
+CSRF_COOKIE_DOMAIN = config("CSRF_COOKIE_DOMAIN", default="127.0.0.1")
 
 if DEBUG:
     CSRF_COOKIE_SECURE = False
