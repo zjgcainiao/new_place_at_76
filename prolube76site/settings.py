@@ -40,15 +40,9 @@ except KeyError as e:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://192.168.1.48",
-    # other origins if needed...
-]
-
 
 # Turn off CSRF secure in development env (HTTP); in production, HTTPS requires to have CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_DOMAIN = config("CSRF_COOKIE_DOMAIN", default="127.0.0.1")
+CSRF_COOKIE_DOMAIN = config("CSRF_COOKIE_DOMAIN", default="192.168.1.48")
 
 if DEBUG:
     CSRF_COOKIE_SECURE = False

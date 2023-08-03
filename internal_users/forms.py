@@ -124,6 +124,9 @@ class InternalUserLoginForm(AuthenticationForm):
         }),
         label='Password',
     )
+    remember_me = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={
+        'class': 'form-check-input',
+    }))
 
     class Meta:
         model = InternalUser
@@ -207,7 +210,6 @@ class AdminAuthenticationForm(AuthenticationForm):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'type': 'text',
             'placeholder': 'Enter your password.'
         }),
         label='Password',
