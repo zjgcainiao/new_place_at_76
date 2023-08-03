@@ -3,23 +3,26 @@
 {% block content1-main %}
 
 <section class="bg-top-center p-5 m-5">
+  <div class="row">
+    <div class="col-4">
+      Have an account? Sign in.
+      <button clas="btn btn-outline-primary"><a href=''></a></button>
+    </div>
+  </div>
+
 
   <div class='row'>
     <div class="col-8">
       <div class="card card-body card-dark border-primary shadow">
         <h3  class="text-dark">Register a new account with us. </h3>
         <div class="card-text m-1"> We will be able to remind you for incoming service appointments, maintantence schedule and keep track of your vehicle's history. </div>
-        <form class = 'form-floating' method="POST">
-          {% csrf_token %}
-          {{form |crispy}}
-          <button class = 'btn btn-outline-primary justify-content-center' type="submit">Register</button>
-        </form>
+          <form class = 'form-floating' method="POST">
+            {% csrf_token %}
+            {{form |crispy}}
+            <button class = 'btn btn-outline-primary justify-content-center' type="submit">Register</button>
+          </form>
         
       </div>  
-    </div>
-    <div class="col col-4">
-      Have an account? Sign in.
-      <button clas="btn btn-outline-info"><a href=''></a></button>
     </div>
   </div>
   <!-- end of div 'row' -->

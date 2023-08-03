@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',  # humanize lib. so i can use to format phone numbers
 
     # 'polls.apps.PollsConfig',
+    'corsheaders',
     'polls',
     'homepageapp',
     'appointments',
@@ -109,6 +110,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # added CorsMiddleWare from django-cors-headers
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -152,6 +155,11 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "internal_users.internal_user_auth_backend.InternalUserBackend",
     "customer_users.customer_auth_backend.CustomerUserBackend",
+]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "192.168.1.48",
+    # other origins if needed...
 ]
 
 # 2023-05-30

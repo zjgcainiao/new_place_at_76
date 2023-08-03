@@ -10,18 +10,21 @@ from talent_management.models import TalentsModel
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from captcha.fields import ReCaptchaField
-from captcha.widgets import ReCaptchaV2Invisible,ReCaptchaV2Checkbox
+from captcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox
+
 
 class InternalUserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    
+
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
+    password2 = forms.CharField(
+        label='Repeat password', widget=forms.PasswordInput)
+
     class Meta:
         model = InternalUser
         fields = ('user_id', 'email', 'user_first_name', 'user_last_name',
-                   )
+                  )
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -38,31 +41,39 @@ class InternalUserCreationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
-    
+
 # version 2 --- via UserCreationForm, AuthenticationForm
 # 2023-04-26-chat-GPT-enabled
+
+
 class InternalUserRegistrationFormV2(UserCreationForm):
-    email = forms.EmailField(required=True, help_text='Required. Enter a valid email address.')
-    user_first_name = forms.CharField(max_length=50, required=True, help_text='Required.')
-    user_last_name = forms.CharField(max_length=50, required=True, help_text='Required.')
+    email = forms.EmailField(
+        required=True, help_text='Required. Enter a valid email address.')
+    user_first_name = forms.CharField(
+        max_length=50, required=True, help_text='Required.')
+    user_last_name = forms.CharField(
+        max_length=50, required=True, help_text='Required.')
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
     # this function will have to expand for employee email verifications.
     # employee record shall be created first before a user can be added.
+
     def email_clean(self):
         email = self.cleaned_data['email'].lower().strip()
         new = InternalUser.objects.filter(email=email)
         if new.count():
             raise ValidationError(" Email Already Exist.")
-        return email 
+        return email
+
     class Meta:
         model = InternalUser
-        fields = ['email', 'user_first_name', 'user_last_name', ] #'username',
+        fields = ['email', 'user_first_name',
+                  'user_last_name', ]  # 'username',
         widgets = {
-            'email': forms.EmailInput(attrs={'type': 'text', 'class':'form-control',}),
-            'first_name': forms.TextInput(attrs={'type': 'text', 'class':'form-control',}),
-            'last_name': forms.TextInput(attrs={ 'type': 'text','class':'form-control',}),
-            'password1': forms.PasswordInput(attrs={'type': 'text', 'class':'form-control',}),
-            'password2': forms.PasswordInput(attrs={'type': 'text', 'class':'form-control',}),
+            'email': forms.EmailInput(attrs={'type': 'text', 'class': 'form-control', }),
+            'first_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
+            'last_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
+            'password1': forms.PasswordInput(attrs={'type': 'text', 'class': 'form-control', }),
+            'password2': forms.PasswordInput(attrs={'type': 'text', 'class': 'form-control', }),
         }
         labels = {
             'email': 'Email',
@@ -71,6 +82,7 @@ class InternalUserRegistrationFormV2(UserCreationForm):
             'password1': 'Password',
             'password2': 'Repeat Password',
         }
+
 
 class InternalUserChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
@@ -92,11 +104,10 @@ class InternalUserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
-
 # class FireBaseAuthUserCreation(forms.Form):
 #     verification_provider_type = forms.ChoiceField()
 
-# the default login requires a username and a password 
+# the default login requires a username and a password
 class InternalUserLoginForm(AuthenticationForm):
     username = forms.EmailField(
         widget=forms.EmailInput(attrs={
@@ -109,11 +120,11 @@ class InternalUserLoginForm(AuthenticationForm):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'type':'text',
             'placeholder': 'Enter your password.'
         }),
         label='Password',
     )
+
     class Meta:
         model = InternalUser
 
@@ -122,8 +133,9 @@ class InternalUserPasswordResetForm(PasswordResetForm):
 
     def __init__(self, *args, **kwargs):
         super(PasswordResetForm, self).__init__(*args, **kwargs)
-    
+
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
+
     class Meta:
         model = InternalUser
 
@@ -131,17 +143,21 @@ class InternalUserPasswordResetForm(PasswordResetForm):
 # this form is used to display a internal_user's employment information
 # this detail page displays most but not all information of the talent record that is assocaited with the user.
 # the fields shall be limited and not editable.
+
+
 class EmploymentInfoForm(forms.ModelForm):
     # create a talent_full_name to store data from the property field of TalentsModel
     talent_full_name = forms.CharField(label="Full Name", required=False)
+
     class Meta:
         model = TalentsModel
-        fields = ['talent_employee_id', 'talent_first_name','talent_last_name', 'talent_middle_name',
-                  'talent_date_of_birth','talent_phone_number_primary', 'talent_mailing_address_is_the_same_physical_address',
-                   'talent_hire_date', 'talent_department', 'talent_supervisor', 
-                   'talent_pay_type', 'talent_pay_rate', 'talent_pay_frequency', 
-                    'talent_previous_department',
-                 ]
+        fields = ['talent_employee_id', 'talent_first_name', 'talent_last_name', 'talent_middle_name',
+                  'talent_date_of_birth', 'talent_phone_number_primary', 'talent_mailing_address_is_the_same_physical_address',
+                  'talent_hire_date', 'talent_department', 'talent_supervisor',
+                  'talent_pay_type', 'talent_pay_rate', 'talent_pay_frequency',
+                  'talent_previous_department',
+                  ]
+
     def set_readonly(self):
         for field in self.fields.values():
             field.widget.attrs['readonly'] = True
@@ -158,8 +174,8 @@ class EmploymentInfoForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
-                Field('talent_employee_d', css_class='form-control') ,
-                Field('talent_first_name',css_class='form-control'),
+                Field('talent_employee_d', css_class='form-control'),
+                Field('talent_first_name', css_class='form-control'),
                 css_class='card'
             ),
             Div(
@@ -178,8 +194,10 @@ class EmploymentInfoForm(forms.ModelForm):
             # Add more sections for other groups of fields
         )
 
-# a new admin authentication form 
+# a new admin authentication form
 # 2023-06-06
+
+
 class AdminAuthenticationForm(AuthenticationForm):
     """
     A custom authentication form used in the admin app.
@@ -189,11 +207,12 @@ class AdminAuthenticationForm(AuthenticationForm):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'type':'text',
+            'type': 'text',
             'placeholder': 'Enter your password.'
         }),
         label='Password',
     )
+
     class Meta:
         model = InternalUser
         # fields = ('email', 'password',)
