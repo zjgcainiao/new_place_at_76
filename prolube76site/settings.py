@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+from google.oauth2 import service_account
 import os
 from dotenv import load_dotenv
 from pathlib import Path
@@ -33,7 +34,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 try:
     SECRET_KEY = config("DJANO_SECRET_KEY")
 except KeyError as e:
-    raise RuntimeError("Could not find a Django SECRET_KEY in the environment variables.") from e
+    raise RuntimeError(
+        "Could not find a Django SECRET_KEY in the environment variables.") from e
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
@@ -47,9 +49,10 @@ if DEBUG:
 else:
     CSRF_COOKIE_SECURE = True
 
-CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="new76prolubeplus.com", cast=Csv())
+CSRF_TRUSTED_ORIGINS = config(
+    "CSRF_TRUSTED_ORIGINS", default="new76prolubeplus.com", cast=Csv())
 
-#['new76prolubeplus.com', 'www.new76prolubeplus.com','76prolubeplus.azurewebsites.net']
+# ['new76prolubeplus.com', 'www.new76prolubeplus.com','76prolubeplus.azurewebsites.net']
 
 # SECURE_SSL_REDIRECT = True
 
@@ -89,9 +92,9 @@ INSTALLED_APPS = [
     'django_celery_results',
     'django_celery_beat',
     'rest_framework',
-    'captcha', # google reCAPTCHA connection
+    'captcha',  # google reCAPTCHA connection
     'formtools',
-    'crispy_forms', # add django-cripsy-form
+    'crispy_forms',  # add django-cripsy-form
     # 'crispy_bootstrap4',
     'crispy_bootstrap5',
     # 'social_django',
@@ -139,17 +142,17 @@ WSGI_APPLICATION = 'prolube76site.wsgi.application'
 # 2023-04-01 add a custom internal_users app to manage the future employees.
 AUTH_USER_MODEL = 'internal_users.InternalUser'
 
-AUTHENTICATION_BACKENDS =[
-                        # 'social_core.backends.open_id.OpenIdAuth',
-                        # 'social_core.backends.google.GoogleOpenId',
-                        # 'social_core.backends.google.GoogleOAuth2',
-                        # 'social_core.backends.google.GoogleOAuth',
-                        # 'social_core.backends.twitter.TwitterOAuth',
-                        # 'social_core.backends.yahoo.YahooOpenId',  
-                        "django.contrib.auth.backends.ModelBackend",
-                        "internal_users.internal_user_auth_backend.InternalUserBackend",
-                        "customer_users.customer_auth_backend.CustomerUserBackend",
-                          ]
+AUTHENTICATION_BACKENDS = [
+    # 'social_core.backends.open_id.OpenIdAuth',
+    # 'social_core.backends.google.GoogleOpenId',
+    # 'social_core.backends.google.GoogleOAuth2',
+    # 'social_core.backends.google.GoogleOAuth',
+    # 'social_core.backends.twitter.TwitterOAuth',
+    # 'social_core.backends.yahoo.YahooOpenId',
+    "django.contrib.auth.backends.ModelBackend",
+    "internal_users.internal_user_auth_backend.InternalUserBackend",
+    "customer_users.customer_auth_backend.CustomerUserBackend",
+]
 
 # 2023-05-30
 # Celery Configuration Options
@@ -167,21 +170,21 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 # controlled by dashboard app. the main core app that do the lineitems and etc.
 LOGIN_REDIRECT_URL = "/dashboard/"
 
-# added on 2023-04-12 ---email 
+# added on 2023-04-12 ---email
 if os.environ.get('EMAIL_SENDER'):
     email_sender = os.environ.get('EMAIL_SENDER')
     email_pwd = os.environ.get('EMAIL_SENDER_PWD')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com' # replace with your SMTP host
-EMAIL_PORT = 587 # replace with your SMTP port. or 465
-EMAIL_USE_TLS = True # replace with your SMTP security settings
+EMAIL_HOST = 'smtp.gmail.com'  # replace with your SMTP host
+EMAIL_PORT = 587  # replace with your SMTP port. or 465
+EMAIL_USE_TLS = True  # replace with your SMTP security settings
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = email_sender # replace with your email
-EMAIL_HOST_PASSWORD = email_pwd # replace with your email password
-DEFAULT_FROM_EMAIL = email_sender # replace with your email
+EMAIL_HOST_USER = email_sender  # replace with your email
+EMAIL_HOST_PASSWORD = email_pwd  # replace with your email password
+DEFAULT_FROM_EMAIL = email_sender  # replace with your email
 
-# added on 2023-06-02 storage 
+# added on 2023-06-02 storage
 
 # DEFAULT_FILE_STORAGE = 'myapp.custom_storage.NASStorage'
 # NAS_STORAGE_LOCATION = '192.168.1.30'  # NAS server IP or hostname
@@ -192,7 +195,6 @@ DEFAULT_FROM_EMAIL = email_sender # replace with your email
 
 # DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
-from google.oauth2 import service_account
 
 # the google service account's credential json file stored online
 google_credential_path = os.environ.get("GOOGLE_CREDENTIAL_PATH")
@@ -206,7 +208,8 @@ if response.status_code == 200:
     credential_info = json.loads(response.text)
 
     # Use the JSON data to create the credentials object
-    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(credential_info)
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
+        credential_info)
     cred = credentials.Certificate(credential_info)
 else:
     print("Failed to download the google sdk credential file (.json)")
@@ -214,7 +217,8 @@ else:
     cred = None
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-GS_BUCKET_NAME = '2023_new_prolube76site'  # Replace with your Google Cloud Storage bucket name #2023_new_prolube76site/2023_talent_employment_docs
+# Replace with your Google Cloud Storage bucket name #2023_new_prolube76site/2023_talent_employment_docs
+GS_BUCKET_NAME = '2023_new_prolube76site'
 GS_PROJECT_ID = 'fresh-start-9fdb6'  # Replace with your Google Cloud project ID
 GS_DEFAULT_ACL = 'publicRead'
 GS_BUCKET_ACL = 'publicRead'
@@ -222,8 +226,8 @@ GS_AUTO_CREATE_BUCKET = True
 
 # ----2023-04-03 add firebase auth package for external_users (customers) to use ---
 
-## ENABLE this following script when firebase_admin is used across the site; especially when the external_users app (for customers)
-# is created. 
+# ENABLE this following script when firebase_admin is used across the site; especially when the external_users app (for customers)
+# is created.
 
 # initialize the firebase auth app.
 
@@ -241,11 +245,11 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 
-### use the django-mssql-backend 
+# use the django-mssql-backend
 
- # 2022-07-04- hide sensitivie environemnt variables such as the database url and login info. 
+# 2022-07-04- hide sensitivie environemnt variables such as the database url and login info.
 
-server = config("DB_SERVER",default=False)
+server = config("DB_SERVER", default=False)
 az_server = config("AZURE_DB_SERVER", default=False)
 
 if server:
@@ -256,36 +260,36 @@ if server:
 
     # use the Microsoft provided MSSQL DRIVER for Django
     DATABASES = {
-          "default": {
-              "ENGINE": "mssql",
-              "NAME": databaseName,
-              "USER": user,
-              "PASSWORD": password,
-              "HOST": server,
-              "PORT": "",
-              "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  #  "ODBC Driver 18 for SQL Server",
-              "extra_params": "TrustServerCertificate=yes;Encrypt=yes"
-                          },
-          },
-      }
+        "default": {
+            "ENGINE": "mssql",
+            "NAME": databaseName,
+            "USER": user,
+            "PASSWORD": password,
+            "HOST": server,
+            "PORT": "",
+            "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  # "ODBC Driver 18 for SQL Server",
+                        "extra_params": "TrustServerCertificate=yes;Encrypt=yes"
+                        },
+        },
+    }
 
 elif az_server:
     az_user = config("AZURE_DB_USER")
     az_password = config("AZURE_DB_PASSWORD")
     az_databaseName = config("AZURE_DB_DATABASE")
     DATABASES = {
-          "default": {
-              "ENGINE": "mssql",
-              "NAME": az_databaseName,
-              "USER": az_user,
-              "PASSWORD": az_password,
-              "HOST": az_server,
-              "PORT": "",
-              "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  #  "ODBC Driver 18 for SQL Server",
-              "extra_params": "TrustServerCertificate=yes;Encrypt=yes",
-                          },
-          },
-      }
+        "default": {
+            "ENGINE": "mssql",
+            "NAME": az_databaseName,
+            "USER": az_user,
+            "PASSWORD": az_password,
+            "HOST": az_server,
+            "PORT": "",
+            "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  # "ODBC Driver 18 for SQL Server",
+                        "extra_params": "TrustServerCertificate=yes;Encrypt=yes",
+                        },
+        },
+    }
 
 # You can use a database backend that doesn’t ship with Django by setting ENGINE to a fully-qualified path (i.e. mypackage.backends.whatever).
 
@@ -314,9 +318,10 @@ AUTH_PASSWORD_VALIDATORS = [
 USE_I18N = True
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Los_Angeles' #'UTC'
+TIME_ZONE = 'America/Los_Angeles'  # 'UTC'
 
-USE_TZ = True # turned the USE_TZ to False to avoid fetching data error when fetching data from the testing db.
+# turned the USE_TZ to False to avoid fetching data error when fetching data from the testing db.
+USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -330,7 +335,8 @@ USE_TZ = True # turned the USE_TZ to False to avoid fetching data error when fet
 
 # STATICFILES_STORAGE is set to 'storages.backends.gcloud.GoogleCloudStorage'
 
-STATIC_URL = 'https://storage.googleapis.com/{}/static_files/'.format(GS_BUCKET_NAME)
+STATIC_URL = 'https://storage.googleapis.com/{}/static_files/'.format(
+    GS_BUCKET_NAME)
 
 STATIC_ROOT = BASE_DIR / 'assets'
 
