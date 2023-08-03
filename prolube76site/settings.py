@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from google.oauth2 import service_account
 import os
 from dotenv import load_dotenv
@@ -59,6 +60,14 @@ CSRF_TRUSTED_ORIGINS = config(
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # ADMINS=[]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ]
+}
 
 # ALLOWED_HOSTS=[]
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())

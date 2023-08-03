@@ -72,8 +72,8 @@ class InternalUserRegistrationFormV2(UserCreationForm):
             'email': forms.EmailInput(attrs={'type': 'text', 'class': 'form-control', }),
             'first_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
             'last_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'password1': forms.PasswordInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'password2': forms.PasswordInput(attrs={'type': 'text', 'class': 'form-control', }),
+            'password1': forms.PasswordInput(attrs={'class': 'form-control', }),
+            'password2': forms.PasswordInput(attrs={'class': 'form-control', }),
         }
         labels = {
             'email': 'Email',

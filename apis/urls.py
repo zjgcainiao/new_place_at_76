@@ -16,7 +16,7 @@ router.register(r'text_messages', TextMessagesViewSet,
 urlpatterns = [
     path('', include(router.urls)),
     path('customers/', views.customer_api, name='customers-api'),  # apis/cust
-    path('repair_orders/', views.repairorders_api,
+    path('ros/', views.repairorders_api,
          name='repairorders-api'),  # apis/cust`
     # path('apis/repairorders', views.RepairOrderModelForm, name='api-repair-order'),
 

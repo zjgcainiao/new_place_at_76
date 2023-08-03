@@ -93,7 +93,7 @@ class InternalUserLoginView(LoginView):
 def internal_user_login(request):
     if request.method == 'POST':
         # phone_number = request.POST['phone_number']
-        email = request.POST['username']
+        email = request.POST.get('username').lower().strip()
         password = request.POST.get('password')
         remember_me = request.POST.get('remember_me')
         form = InternalUserLoginForm(request.POST)
