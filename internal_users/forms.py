@@ -212,6 +212,7 @@ class AdminAuthenticationForm(AuthenticationForm):
         }),
         label='Password',
     )
+    remember_me = forms.BooleanField(required=False)
 
     class Meta:
         model = InternalUser

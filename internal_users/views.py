@@ -94,8 +94,8 @@ def internal_user_login(request):
     if request.method == 'POST':
         # phone_number = request.POST['phone_number']
         email = request.POST['username']
-        password = request.POST['password']
-        remember_me = request.POST['remember_me']
+        password = request.POST.get('password')
+        remember_me = request.POST.get('remember_me')
         form = InternalUserLoginForm(request.POST)
         # two ways to authenticate, use the default authenticate or use the custom one in CustomerUserBackend()
         # if phone_number is None or len(phone_number)==0:
@@ -111,6 +111,7 @@ def internal_user_login(request):
             return redirect('internal_users:internal_user_dashboard')
         else:
             # Invalid credentials, handle error
+            messages.error(request, "Invalid email or password.")
             pass
     else:
         form = InternalUserLoginForm()
