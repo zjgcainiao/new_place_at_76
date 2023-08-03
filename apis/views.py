@@ -23,17 +23,19 @@ class RepairOrderViewSet(viewsets.ModelViewSet):
     serializer_class = RepairOrderSerializer
 
     def get_queryset(self):
-        qs = RepairOrdersNewSQL02Model.objects.filter(repair_order_phase__gte=1, repair_order_phase__lte=5)
+        qs = RepairOrdersNewSQL02Model.objects.filter(
+            repair_order_phase__gte=1, repair_order_phase__lte=5)
         qs = qs.select_related('repair_order_customer'
-                ).prefetch_related('repair_order_customer__addresses',
-                               'repair_order_customer__addresses',
-                               'repair_order_customer__phones',
-                               'repair_order_customer__emails',
-                               'repair_order_customer__taxes'
-                               )
+                               ).prefetch_related('repair_order_customer__addresses',
+                                                  'repair_order_customer__addresses',
+                                                  'repair_order_customer__phones',
+                                                  'repair_order_customer__emails',
+                                                  'repair_order_customer__taxes'
+                                                  )
         qs = qs.prefetch_related('payment_repairorders',
                                  'repair_order_customer__payment_customers')
         return qs
+
 
 class LineItemsViewSet(viewsets.ModelViewSet):
 
@@ -42,30 +44,31 @@ class LineItemsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return LineItemsNewSQL02Model.objects.all()
 
+
 class TextMessagesViewSet(viewsets.ModelViewSet):
-    
+
     serializer_class = TextMessagesSerializer
 
     def get_queryset(self):
         return TextMessagesModel.objects.filter(text_customer=self.kwargs['customer_id']).order_by('-text_message_id')[:10]
 
 
-
 @api_view(['GET'])
 def customer_api(request):
     # try:
-        customers = CustomersNewSQL02Model.objects.filter(customer_is_deleted=False)
-        # page = request.GET.get('page', 1)
-        # paginator = Paginator(customers, 20)
-        serializer = CustomerSerializer(customers, many=True)
-        return JsonResponse({'customers': serializer.data})
-        # return Response(serialized_customers.data)
+    customers = CustomersNewSQL02Model.objects.filter(
+        customer_is_deleted=False)
+    # page = request.GET.get('page', 1)
+    # paginator = Paginator(customers, 20)
+    serializer = CustomerSerializer(customers, many=True)
+    return JsonResponse({'customers': serializer.data})
+    # return Response(serialized_customers.data)
 
-        # formatted_data = {
-        #     'data': serializer.data
-        # }
+    # formatted_data = {
+    #     'data': serializer.data
+    # }
     # return Response(formatted_data)
-    
+
     # except PageNotAnInteger:
     #     return Response({'error': 'Invalid page number.'}, status=status.HTTP_400_BAD_REQUEST)
     # except EmptyPage:
@@ -98,17 +101,19 @@ def customer_api(request):
 def repairorders_api(request):
     if request.method == 'GET':
         # repairorders = RepairOrdersNewSQL02Model.objects.all()
-        repairorders = RepairOrdersNewSQL02Model.objects.filter(repair_order_phase__gte=1, repair_order_phase__lte=5)
+        repairorders = RepairOrdersNewSQL02Model.objects.filter(
+            repair_order_phase__gte=1, repair_order_phase__lte=5)
         repairorders = repairorders.select_related('repair_order_customer'
-                ).prefetch_related('repair_order_customer__addresses',
-                               'repair_order_customer__addresses',
-                               'repair_order_customer__phones',
-                               'repair_order_customer__emails',
-                               'repair_order_customer__taxes'
-                               )
+                                                   ).prefetch_related('repair_order_customer__addresses',
+                                                                      'repair_order_customer__addresses',
+                                                                      'repair_order_customer__phones',
+                                                                      'repair_order_customer__emails',
+                                                                      'repair_order_customer__taxes'
+                                                                      )
         repairorders = repairorders.prefetch_related('payment_repairorders',
-                                 'repair_order_customer__payment_customers')
-        serializer = RepairOrderSerializer(repairorders, context={'request': request}, many=True)
+                                                     'repair_order_customer__payment_customers')
+        serializer = RepairOrderSerializer(
+            repairorders, context={'request': request}, many=True)
 
         return JsonResponse({'repairorders': serializer.data})
 
@@ -137,4 +142,3 @@ def repairorders_api(request):
 #     elif request.method == 'DELETE':
 #         student.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
-
