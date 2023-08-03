@@ -4,8 +4,8 @@ from django.conf import settings
 from django.shortcuts import render, resolve_url, redirect
 import googlemaps
 from django.http import HttpResponseForbidden
-from internal_users.forms import InternalUserCreationForm, InternalUserChangeForm, InternalUserRegistrationFormV2,InternalUserLoginForm,InternalUserPasswordResetForm
-from django.contrib.auth.views import LoginView, LogoutView,PasswordChangeDoneView, PasswordChangeView, PasswordResetView, PasswordResetConfirmView, PasswordContextMixin
+from internal_users.forms import InternalUserCreationForm, InternalUserChangeForm, InternalUserRegistrationFormV2, InternalUserLoginForm, InternalUserPasswordResetForm
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeDoneView, PasswordChangeView, PasswordResetView, PasswordResetConfirmView, PasswordContextMixin
 from internal_users.models import InternalUser
 from talent_management.models import TalentsModel
 from django.urls import reverse_lazy
@@ -21,8 +21,10 @@ from internal_users.internal_user_auth_backend import InternalUserBackend
 from django.contrib.auth.mixins import LoginRequiredMixin
 # from internal_users.internal_user_auth_backend import authenticate
 
-## this is the register function to register a new user.
-## necessary validations are needed in the future.
+# this is the register function to register a new user.
+# necessary validations are needed in the future.
+
+
 def register(request):
     if request.method == 'POST':
         # form = InternalUserCreationForm(request.POST)
@@ -37,16 +39,18 @@ def register(request):
             user.email = form.cleaned_data.get('email').lower()
             user.set_password(form.cleaned_data.get('password1'))
             user.save()
-            
+
             email = form.cleaned_data.get('email')
             # username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
 
             # raw_password = form.cleaned_data.get('password1')
-            user = InternalUserBackend().authenticate(request, email=email, password=password)
+            user = InternalUserBackend().authenticate(
+                request, email=email, password=password)
             # Log the user in
             # modified on 2023-05-30 added custom InternalUserBackend.
-            login(request, user, backend='internal_users.intenral_user_auth_backend.InternalUserBackend')
+            login(
+                request, user, backend='internal_users.intenral_user_auth_backend.InternalUserBackend')
             # form.save()
             return redirect('dashboard:dashboard-v2')
         # 2023-04-30- added a function to list all error values when there are errors.
@@ -68,36 +72,42 @@ class InternalUserLoginView(LoginView):
     # adding this line will allow users to skip login when the user has been logged in before.
     # it does add complexity on my debugging; use private mode in a browser.
     redirect_authenticated_user = True
-    
+
     # def get_success_url(self):
     #     return self.get_redirect_url() or self.get_default_redirect_url()
-    
+
     # def get_default_redirect_url(self):
     #     """Return the default redirect URL."""
     #     return resolve_url(self.next_page or settings.LOGIN_REDIRECT_URL)
-    
+
     # def form_invalid(self, form):
     #     messages.error(self.request, 'Invalid username or password')
     #     return self.render_to_response(self.get_context_data(form=form))
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Employee Login'
         return context
+
 
 def internal_user_login(request):
     if request.method == 'POST':
         # phone_number = request.POST['phone_number']
         email = request.POST['username']
         password = request.POST['password']
+        remember_me = request.POST['remember_me']
         form = InternalUserLoginForm(request.POST)
         # two ways to authenticate, use the default authenticate or use the custom one in CustomerUserBackend()
         # if phone_number is None or len(phone_number)==0:
         # user = InternalUserLoginForm().authenticate_via_email(request, email=email, password=password)
         # authenticate via email
-        user = InternalUserBackend().authenticate(request, email=email, password=password)
+        user = InternalUserBackend().authenticate(
+            request, email=email, password=password)
         if user is not None:
-            login(request, user, backend='internal_users.internal_user_auth_backend.InternalUserBackend')
+            login(
+                request, user, backend='internal_users.internal_user_auth_backend.InternalUserBackend')
+            if not remember_me:  # if 'remember_me' box is not checked, then set the session to expire when the user closes the browser.
+                request.session.set_expiry(600)
             return redirect('internal_users:internal_user_dashboard')
         else:
             # Invalid credentials, handle error
@@ -112,39 +122,45 @@ def internal_user_login(request):
 class InternalUserLogoutView(LogoutView):
     template_name = 'internal_users/21_logout.html'
     # next_page = reverse_lazy('homepageapp:homepage')
+
     def dispatch(self, request, *args, **kwargs):
         messages.success(request, 'You have been successfully logged out.')
         return super().dispatch(request, *args, **kwargs)
 
 # @login_required(login_url='internal_users:internal_user_login')
+
+
 class UserPasswordChangeView(PasswordChangeView):
     template_name = 'internal_users/40_password_change.html'
     success_url = reverse_lazy('password_change_done')
 
-# 
+#
+
+
 class UserPasswordChangeDoneView(PasswordChangeDoneView):
-    template_name='internal_users/33_password_change_done.html'
+    template_name = 'internal_users/33_password_change_done.html'
 
 
-# 'PasswordResetView" class Allows a user to reset their password by generating a one-time use link that 
+# 'PasswordResetView" class Allows a user to reset their password by generating a one-time use link that
 # can be used to reset the password, and sending that link to the user’s registered email address.
 class InternalUserPasswordResetView(PasswordResetView):
     template_name = 'internal_users/30_password_reset.html'
 
-    success_url = reverse_lazy('password_reset_confirm')  #'/password_reset/done/'
+    # '/password_reset/done/'
+    success_url = reverse_lazy('password_reset_confirm')
 
-    form_class=InternalUserPasswordResetForm
+    form_class = InternalUserPasswordResetForm
     email_template_name = 'internal_users/password_reset_email.html'
     subject_template_name = 'internal_users/password_reset_subject.txt'
 
     def form_valid(self, form):
         InternalUserModel = get_user_model()
         email = form.cleaned_data['email'].lower()
-        users = InternalUserModel.objects.filter(user_is_active=True, email__iexact=email)
+        users = InternalUserModel.objects.filter(
+            user_is_active=True, email__iexact=email)
         if not users.exists():
             return self.form_valid(form)
         return super().form_valid(form)
-
 
 
 # ---- 2023-04-03 creating firebase authentication view funciton ----
@@ -171,16 +187,19 @@ def firebase_authenticate(request):
         user = auth.get_user(uid)
 
         # Authenticate the user in Django
-        django_user = authenticate(request, username=user.email, password='password')
+        django_user = authenticate(
+            request, username=user.email, password='password')
 
         if django_user is not None:
             login(request, django_user)
-            return redirect('dashboard',{'logged_in_customized_user': django_user})
+            return redirect('dashboard', {'logged_in_customized_user': django_user})
         else:
             raise Exception('Failed to authenticate user')
 
         # except Exception as e:
         #     return render(request, 'internal_users/pages-404.html', {'error': str(e)})
+
+
 @login_required(login_url='internal_users:internal_user_login')
 def InternalUserDashboard(request):
     if isinstance(request.user, InternalUser) and request.user.is_authenticated:
@@ -189,6 +208,7 @@ def InternalUserDashboard(request):
     else:
         render
 
+
 @login_required(login_url='internal_users:internal_user_login')
 def internal_user_view_employement(request):
     if isinstance(request.user, InternalUser) and request.user.is_authenticated:
@@ -196,7 +216,8 @@ def internal_user_view_employement(request):
         email = internal_user.email
         # grab the talent record based on email
         # next step is allow user to enter the birthday so that he can confirm the real employee information before displaying it.
-        talent = TalentsModel.objects.filter(talent_email=email) # "15@gmail.com"
+        talent = TalentsModel.objects.filter(
+            talent_email=email)  # "15@gmail.com"
         if talent.exists():
             talent_instance = talent.get()
             form = EmploymentInfoForm(instance=talent_instance)
