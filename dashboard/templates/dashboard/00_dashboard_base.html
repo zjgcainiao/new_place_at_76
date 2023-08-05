@@ -8,7 +8,7 @@
         <meta charset="utf-8" />
         <title>Dashboard -- a place where the main work is done. </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta content="this website is still under development." name="description" />
+        <meta content="work station that provides dashboard view based on user groups" name="description" />
         <meta content="amazing-automan-llc" name="author" />
 
         <!-- App favicon -->
@@ -30,9 +30,10 @@
         <!-- Vendor js -->
         <script src="{% static 'dashboard/js/vendor.min.js' %}"></script>
         
+        {% comment %}
         <!-- App js -->
         <script src="{% static 'dashboard/js/app.min.js' %}"></script>
-
+        {% endcomment %}
 
         <!-- Daterangepicker js -->
         <script src="{% static 'dashboard/vendor/daterangepicker/moment.min.js' %}"></script>
@@ -47,11 +48,7 @@
 
         <!-- Dashboard App js -->
         <script src="{% static 'dashboard/js/pages/demo.dashboard.js' %}"></script>
-  
-        {% comment %}
-        <!-- App js -->
-        <script src="{% static 'dashboard/js/app.min.js' %}"></script>
-        {% endcomment %}
+
 
 
 
@@ -85,15 +82,6 @@
                                 </span> -->
                             </a>
 
-                            <!-- Logo Dark -->
-                            <!-- <a href="index.html" class="logo-dark">
-                                <span class="logo-lg">
-                                    <img src="assets/images/logo-dark.png" alt="dark logo">
-                                </span>
-                                <span class="logo-sm">
-                                    <img src="assets/images/logo-dark-sm.png" alt="small logo">
-                                </span>
-                            </a> -->
                         </div>
 
                         <!-- Sidebar Menu Toggle Button -->
@@ -104,17 +92,6 @@
                     </div>
 
                     <ul class="topbar-menu d-flex align-items-center gap-3">
-                        <li class="dropdown d-lg-none">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="ri-search-line font-22"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
-                                <form class="p-3">
-                                    <input type="search" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
-                                </form>
-                            </div>
-                        </li>
-
                         <li class="nav-item">
                             <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                 <img src="{% static 'dashboard/images/flags/us.jpg' %}" alt="user-image" class="me-0 me-sm-1" height="12">

@@ -1,3 +1,6 @@
+from django.contrib.auth import authenticate, login
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 # from apis.models import CustomersNewSQL01Moxwxdel, VehiclesNewSQL01Model, RepairOrdersNewSQL01Model
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -14,8 +17,11 @@ from .serializers import CustomerSerializer, RepairOrderSerializer
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from rest_framework import viewsets
-
+import json
 from apis.serializers import RepairOrderSerializer, LineItemsSerializer, TextMessagesSerializer
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
+from internal_users.models import InternalUser
+from internal_users.internal_user_auth_backend import InternalUserBackend
 
 
 class RepairOrderViewSet(viewsets.ModelViewSet):
@@ -142,3 +148,32 @@ def repairorders_api(request):
 #     elif request.method == 'DELETE':
 #         student.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
+
+# 2023-08-04 this is the Login API that was created to respond to react app dashboard_react
+# dashboard_react is designed to
+
+
+@csrf_exempt
+@require_POST
+def api_internal_user_login(request):
+    data = json.loads(request.body.decode('utf-8'))
+    email = data.get('email')
+    password = data.get('password')
+
+    user = InternalUserBackend().authenticate(
+        request, email=email, password=password)
+
+    if user is not None:
+        login(request, user,
+              backend='internal_users.internal_user_auth_backend.InternalUserBackend')
+
+        return JsonResponse({
+            'email': user.email,
+            # user.groups.filter(name='Technicians').exists(),
+            'is_technician': True,
+            'is_authenticated_user': user.is_authenticated,
+            'is_internal_user': isinstance(user, InternalUser),
+        })
+    else:
+        # Unauthorized sattus code.
+        return JsonResponse({'error': 'Invalid login details.'}, status=401)

@@ -40,6 +40,13 @@ except KeyError as e:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',  # or the domain where your React app is hosted
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:5173",  # Add the origin of your React app here
+]
 
 # Turn off CSRF secure in development env (HTTP); in production, HTTPS requires to have CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_DOMAIN = config("CSRF_COOKIE_DOMAIN", default="192.168.1.48")

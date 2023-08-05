@@ -19,6 +19,10 @@ from crispy_forms.utils import render_crispy_form
 from internal_users.forms import EmploymentInfoForm
 from internal_users.internal_user_auth_backend import InternalUserBackend
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
+
+from django.contrib.auth.models import Group
+
 # from internal_users.internal_user_auth_backend import authenticate
 
 # this is the register function to register a new user.
@@ -229,3 +233,24 @@ def internal_user_view_employement(request):
             return HttpResponseForbidden('No talent found with the given email.')
     else:
         return HttpResponseForbidden('You are not authorized to view this page. Employees have to login.')
+
+
+# @login_required(login_url='internal_users:internal_user_login')
+def return_current_internal_user_json(request):
+    data = {
+        'is_authenticated_user': request.user.is_authenticated,
+        'is_internal_user': isinstance(request.user, InternalUser),
+        # Add other user details as needed
+    }
+
+    if request.user.is_authenticated:
+        data['email'] = request.user.email
+        # Check if user belongs to 'Technicians' group
+        data['is_technician'] = True  # manual setting for testing purpose
+        # Group.objects.get(
+        #    name='Technicians') in request.user.groups.all()
+    else:
+        data['email'] = None
+        data['is_technician'] = False
+
+    return JsonResponse(data)

@@ -7,22 +7,26 @@ class RepairOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = RepairOrdersNewSQL02Model
         fields = '__all__'
-        read_only_fields = ['repair_order_last_updated_date', 'repair_order_created_at']
+        read_only_fields = [
+            'repair_order_last_updated_date', 'repair_order_created_at']
+
+
 class LineItemsSerializer(serializers.ModelSerializer):
     class Meta:
         model = LineItemsNewSQL02Model
         fields = '__all__'
+
 
 class TextMessagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextMessagesModel
         fields = '__all__'
 
+
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomersNewSQL02Model
         fields = '__all__'
-
 
 
 # class RepairOrderSerializer(serializers.ModelSerializer):
@@ -66,10 +70,10 @@ class CustomerSerializer(serializers.ModelSerializer):
 #                   'customer_is_okay_to_charge',
 #                    'customer_created_at',
 #                   ]
-    
+
 #     def get_full_name(self, instance):
 #         return f"{instance.first_name} {instance.last_name}"
-    
+
 
 #     # The to_representation method is used to transform the data into a format that will be used in the serialized output. In this case, it is taking the customer_created_at date and transforming it into an ISO fo
 #     def to_representation(self, instance):
