@@ -1,11 +1,22 @@
+import React, { useState, useEffect } from "react";
+import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
-// Navbar.tsx
-import React from "react";
 
-const Navbar = ({ user }) => {
+const DashboardNavbar = ({ user }) => {
+  const [datetime, setDateTime] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDateTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // const formattedDateTime = `${dateTime.toLocaleDateString()}, ${dateTime.toLocaleTimeString()}`;
+
   return (
-    <div className="navbar">
-      <div className="topbar container-fluid">
+    <Navbar bg="light" expand="lg">
+      <Container>
         <div className="d-flex align-items-center gap-lg-2 gap-1">
           <div className="logo-topbar">
             <a href="/" className="logo-light">
@@ -28,7 +39,7 @@ const Navbar = ({ user }) => {
               aria-expanded="false"
             >
               <img
-                src="/path/to/us.jpg"
+                src="https://storage.googleapis.com/2023_new_prolube76site/dashboard/images/flags/us.jpg"
                 alt="user-image"
                 className="me-0 me-sm-1"
                 height="12"
@@ -82,9 +93,9 @@ const Navbar = ({ user }) => {
             )}
           </li>
         </ul>
-      </div>
-    </div>
+      </Container>
+    </Navbar>
   );
 };
 
-export default Navbar;
+export default DashboardNavbar;

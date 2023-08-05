@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import LoginForm from "./components/LoginForm";
 import TechnicianView from "./components/TechnicianView";
 import ServiceAdvisorView from "./components/ServiceAdvisorView";
-import Navbar from "./components/Navbar"; // import the Navbar component
+import DashboardNavbar from "./components/DashboardNavbar"; // import the DashboardNavbar component
 
 function App() {
   const [user, setUser] = useState(null);
@@ -38,7 +38,7 @@ function App() {
         </>
       ) : user.is_technician ? (
         <>
-          <Navbar user={user} />
+          <DashboardNavbar user={user} />
           <TechnicianView />
         </>
       ) : (
