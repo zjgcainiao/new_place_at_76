@@ -41,48 +41,61 @@ function ServiceAdvisorView() {
     fetchData();
   }, []);
 
-  const markAsFinished = (id) => {
-    // implement functionality to mark a task as finished
-  };
-
-  const deleteTask = (id) => {
-    // implement functionality to delete a task
-  };
-
   return (
     <>
-      <h2>Service Advisor Dashboard</h2>
+      <h2>Service Advisor Dashboard React</h2>
 
-      <div className="container py-5">
+      <MDBContainer className="py-5">
         <h2 className="text-center mb-4">Active Repair Order</h2>
-        <table className="table">
-          <thead>
+        <MDBTable hover>
+          <MDBTableHead>
             <tr>
-              <th scope="col">Order ID</th>
-              <th scope="col">Vehicle Location</th>
-              <th scope="col">Service Status</th>
-              <th scope="col">Actions</th>
+              <th>Order ID</th>
+              <th>Order Status</th>
+              <th>Customer Name</th>
+              <th>Phone Nbr</th>
+              <th>Email Addresses</th>
+              <th>Customer Address</th>
+              <th>Updated Date</th>
             </tr>
-          </thead>
-          <tbody>
-            {repairOrders.map((task) => (
-              <tr key={task.repair_order_id}>
-                <td>{task.repair_order_id}</td>
-                <td>{task.repair_order_serviced_vehicle_location}</td>
-                <td>{task.repair_order_service_status}</td>
+          </MDBTableHead>
+          <MDBTableBody>
+            {repairOrders.map((order) => (
+              <tr key={order.repair_order_id}>
+                <td>{order.repair_order_id}</td>
+                <td>{order.repair_order_service_status}</td>
                 <td>
-                  <button type="button" className="btn btn-success me-2">
-                    Mark as finished
-                  </button>
-                  <button type="button" className="btn btn-primary">
-                    Add Comment
-                  </button>
+                  {order.customer_first_name} {order.customer_last_name}
+                </td>
+                <td>
+                  {order.phones.map((phone) => (
+                    <p key={phone.phone_id}>
+                      {phone.phone_desc}: {phone.phone_number}
+                    </p>
+                  ))}
+                </td>
+                <td>
+                  {order.emails.map((email) => (
+                    <p key={email.email_id}>{email.email_address}</p>
+                  ))}
+                </td>
+                <td>
+                  {order.addresses.map((address) => (
+                    <p key={address.address_id}>
+                      {address.address_line_01}, {address.address_city},{" "}
+                      {address.address_state} {address.address_zip_code}
+                    </p>
+                  ))}
+                </td>
+                <td>
+                  {new Date(order.repair_order_last_updated_date).getFullYear()}
                 </td>
               </tr>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </MDBTableBody>
+        </MDBTable>
+        {repairOrders.length === 0 && <p>There are no results found.</p>}
+      </MDBContainer>
     </>
   );
 }

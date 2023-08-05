@@ -169,6 +169,7 @@ def api_internal_user_login(request):
 
         return JsonResponse({
             'email': user.email,
+            # 'user': user,
             # user.groups.filter(name='Technicians').exists(),
             'is_technician': True,
             'is_authenticated_user': user.is_authenticated,

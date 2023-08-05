@@ -4,95 +4,48 @@ import "bootstrap/dist/css/bootstrap.css";
 
 const DashboardNavbar = ({ user }) => {
   const [datetime, setDateTime] = useState(new Date());
+  const [formattedDateTime, setFormattedDateTime] = useState("");
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDateTime(new Date());
+      const newDateTime = new Date();
+      setDateTime(newDateTime);
+      setFormattedDateTime(
+        `${newDateTime.toLocaleDateString()}, ${newDateTime.toLocaleTimeString()}`
+      );
     }, 1000);
     return () => clearInterval(interval);
   }, []);
 
-  // const formattedDateTime = `${dateTime.toLocaleDateString()}, ${dateTime.toLocaleTimeString()}`;
-
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="lg" data-bs-theme="light">
       <Container>
-        <div className="d-flex align-items-center gap-lg-2 gap-1">
-          <div className="logo-topbar">
-            <a href="/" className="logo-light">
-              <img
-                src="https://storage.googleapis.com/2023_new_prolube76site/homepageapp/2022-Logo-Transparent-small.png"
-                width="80"
-                alt="logo"
-              />
-            </a>
-          </div>
-        </div>
-        <ul className="topbar-menu d-flex align-items-center gap-3">
-          <li className="nav-item">
-            <a
-              className="nav-link dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown"
-              href="#"
-              role="button"
-              aria-haspopup="false"
-              aria-expanded="false"
-            >
-              <img
-                src="https://storage.googleapis.com/2023_new_prolube76site/dashboard/images/flags/us.jpg"
-                alt="user-image"
-                className="me-0 me-sm-1"
-                height="12"
-              />
-              <span className="align-middle d-none d-lg-inline-block">
-                English
-              </span>{" "}
-              <i className="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>
-            </a>
-          </li>
-          <li className="dropdown">
-            {user ? (
-              <>
-                <a
-                  className="nav-link dropdown-toggle arrow-none nav-user px-2"
-                  data-bs-toggle="dropdown"
-                  href="#"
-                  role="button"
-                  aria-haspopup="false"
-                  aria-expanded="false"
-                >
-                  <span className="account-user-avatar">
-                    <img
-                      src="https://storage.googleapis.com/2023_new_prolube76site/dashboard/images/users/avatar-1.jpg"
-                      alt="user-image"
-                      width="32"
-                      className="rounded-circle"
-                    />
-                  </span>
-                  <span className="d-lg-flex flex-column gap-1 d-none">
-                    <h5 className="my-0">Hi {user.user_first_name}</h5>
-                    <h6 className="my-0 fw-normal">Email: {user.email}</h6>
-                  </span>
-                </a>
-                <div className="dropdown-menu dropdown-menu-end dropdown-menu-animated profile-dropdown">
-                  <a href="/profile" className="dropdown-item">
-                    <i className="mdi mdi-account-circle me-1"></i>
-                    <span>My Profile - Employee Info</span>
-                  </a>
-                  <a href="/logout" className="dropdown-item">
-                    <i className="mdi mdi-logout me-1"></i>
-                    <span>Logout</span>
-                  </a>
-                </div>
-              </>
-            ) : (
-              <span className="d-lg-flex flex-column gap-1 d-none">
-                <h5 className="my-0">NO INFORMATION</h5>
-                <h6 className="my-0 fw-normal">No internal user logged in.</h6>
-              </span>
+        <Navbar.Brand href="#home">
+          <img
+            src="https://storage.googleapis.com/2023_new_prolube76site/dashboard/images/logo-2022.svg"
+            width="80"
+            alt="logo"
+          />
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="dashboard-navbar-nav" />
+        <Navbar.Collapse id="dashbaord-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link href="#home">Home</Nav.Link>
+            {/* Add more navigation links as needed */}
+          </Nav>
+          <Nav>
+            {/* <small>Today is {formattedDateTime}</small> */}
+            {user && (
+              <NavDropdown title={`Hi ${user.email}`} id="basic-nav-dropdown">
+                <NavDropdown.Item href="#action/3.1">
+                  My Profile - Employee Info
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="#action/3.4">Logout</NavDropdown.Item>
+              </NavDropdown>
             )}
-          </li>
-        </ul>
+          </Nav>
+        </Navbar.Collapse>
       </Container>
     </Navbar>
   );
