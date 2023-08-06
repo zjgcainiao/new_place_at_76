@@ -1,14 +1,66 @@
 from rest_framework import serializers
 from homepageapp.models import CustomersNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsNewSQL02Model, TextMessagesModel
+from homepageapp.models import AddressesNewSQL02Model, PhonesNewSQL02Model, EmailsNewSQL02Model, CustomersNewSQL02Model, PhoneDescModel, PaymentsModel
 from django.utils import timezone
 
 
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AddressesNewSQL02Model
+        fields = ['address_line_01', 'address_city',
+                  'address_state', 'address_zip_code']
+
+
+class PhoneDescSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PhoneDescModel
+        fields = '__all__'  # or list the specific fields you want
+
+
+class PhoneSerializer(serializers.ModelSerializer):
+    phone_desc = PhoneDescSerializer(read_only=True)
+
+    class Meta:
+        model = PhonesNewSQL02Model
+        fields = ['phone_desc', 'phone_number']
+
+
+class EmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailsNewSQL02Model
+        fields = ['email_address']
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentsModel
+        fields = '__all__'  # or list the specific fields you want
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    addresses = AddressSerializer(many=True, read_only=True)
+    phones = PhoneSerializer(many=True, read_only=True)
+    emails = EmailSerializer(many=True, read_only=True)
+    # payment_customers = PaymentSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = CustomersNewSQL02Model
+        fields = ['customer_first_name', 'customer_last_name',
+                  'addresses', 'phones', 'emails',
+                  # 'payment_customers',
+                  ]
+
+
 class RepairOrderSerializer(serializers.ModelSerializer):
+    repair_order_customer = CustomerSerializer(read_only=True)
+    # payment_repairorders = PaymentSerializer(many=True, read_only=True)
+
     class Meta:
         model = RepairOrdersNewSQL02Model
-        fields = '__all__'
-        read_only_fields = [
-            'repair_order_last_updated_date', 'repair_order_created_at']
+        fields = ['repair_order_id', 'repair_order_service_status',
+                  'repair_order_last_updated_date', 'repair_order_customer',
+                  # 'payment_repairorders'
+                  ]
 
 
 class LineItemsSerializer(serializers.ModelSerializer):
@@ -20,12 +72,6 @@ class LineItemsSerializer(serializers.ModelSerializer):
 class TextMessagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextMessagesModel
-        fields = '__all__'
-
-
-class CustomerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomersNewSQL02Model
         fields = '__all__'
 
 

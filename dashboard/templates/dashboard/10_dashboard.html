@@ -22,11 +22,11 @@
       {% for repair_order in repair_orders %}
           <tr>
             <td><a href="{% url 'dashboard:dashboard-detail' pk=repair_order.repair_order_id %}"></a>{{ repair_order.repair_order_id }}</td>
-            <td>{{ repair_order.repair_order_customer.customer_first_name }} {{ repair_order.repair_order_customer_id.customer_last_name }}</td>
+            <td>{{ repair_order.repair_order_customer.customer_first_name }} {{ repair_order.repair_order_customer.customer_last_name }}</td>
             <td>{{ repair_order.repair_order_customer.addresses.get.address_line_01 }}</td>
             <td>{{ repair_order.repair_order_customer.addresses.get.address_city }}</td>
             <td>{{ repair_order.repair_order_customer.addresses.get.address_state }}</td>
-            <td>{{ crepair_order.repair_order_customer.addresses.get.address_zip_code }}</td>
+            <td>{{ repair_order.repair_order_customer.addresses.get.address_zip_code }}</td>
           </tr>
 
       {% endfor %}

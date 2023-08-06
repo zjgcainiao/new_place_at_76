@@ -18,14 +18,14 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from rest_framework import viewsets
 import json
-from apis.serializers import RepairOrderSerializer, LineItemsSerializer, TextMessagesSerializer
+from apis.serializers import LineItemsSerializer, TextMessagesSerializer
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from internal_users.models import InternalUser
 from internal_users.internal_user_auth_backend import InternalUserBackend
+from apis.serializers import AddressSerializer, PhoneSerializer, EmailSerializer, CustomerSerializer, RepairOrderSerializer, PaymentSerializer
 
 
 class RepairOrderViewSet(viewsets.ModelViewSet):
-
     serializer_class = RepairOrderSerializer
 
     def get_queryset(self):
@@ -36,10 +36,10 @@ class RepairOrderViewSet(viewsets.ModelViewSet):
                                                   'repair_order_customer__addresses',
                                                   'repair_order_customer__phones',
                                                   'repair_order_customer__emails',
-                                                  'repair_order_customer__taxes'
+                                                  'repair_order_customer__taxes',
+                                                  'payment_repairorders',
+                                                  'repair_order_customer__payment_customers'
                                                   )
-        qs = qs.prefetch_related('payment_repairorders',
-                                 'repair_order_customer__payment_customers')
         return qs
 
 
@@ -171,7 +171,7 @@ def api_internal_user_login(request):
             'email': user.email,
             # 'user': user,
             # user.groups.filter(name='Technicians').exists(),
-            'is_technician': True,
+            'is_technician': False,  # True,
             'is_authenticated_user': user.is_authenticated,
             'is_internal_user': isinstance(user, InternalUser),
         })

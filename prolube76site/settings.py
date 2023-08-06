@@ -49,7 +49,7 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 # Turn off CSRF secure in development env (HTTP); in production, HTTPS requires to have CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_DOMAIN = config("CSRF_COOKIE_DOMAIN", default="192.168.1.48")
+CSRF_COOKIE_DOMAIN = config("CSRF_COOKIE_DOMAIN", default="localhost")
 
 if DEBUG:
     CSRF_COOKIE_SECURE = False
@@ -101,7 +101,7 @@ INSTALLED_APPS = [
     'dashboard',
     'talent_management',
     'we_create_3d_models',
-    'automatic_mails',
+    'automatic_emails',
     'core_operations',
     'firebase_auth_app',
     'celery',
@@ -276,6 +276,7 @@ if server:
     user = config("DB_USER")
     password = config("DB_PASSWORD")
     databaseName = config("DB_DATABASE1")
+    # print('using the DB_SERVER database')
 
     # use the Microsoft provided MSSQL DRIVER for Django
     DATABASES = {
@@ -296,6 +297,7 @@ elif az_server:
     az_user = config("AZURE_DB_USER")
     az_password = config("AZURE_DB_PASSWORD")
     az_databaseName = config("AZURE_DB_DATABASE")
+    print('Using Azure SQL DB.')
     DATABASES = {
         "default": {
             "ENGINE": "mssql",
@@ -354,14 +356,16 @@ USE_TZ = True
 
 # STATICFILES_STORAGE is set to 'storages.backends.gcloud.GoogleCloudStorage'
 
+
+# using storage bucket to host static files
+
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
 STATIC_URL = 'https://storage.googleapis.com/{}/static_files/'.format(
     GS_BUCKET_NAME)
 
 STATIC_ROOT = BASE_DIR / 'assets'
 
-# using storage bucket to host static files
-
-STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

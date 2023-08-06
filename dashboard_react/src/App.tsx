@@ -8,19 +8,16 @@ function App() {
   const [user, setUser] = useState(null);
 
   const handleLogin = async (email, password) => {
-    const response = await fetch(
-      "http://192.168.1.48/apis/internal_user_login/",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      }
-    );
+    const response = await fetch("http://localhost/apis/internal_user_login/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
 
     if (response.ok) {
       const user = await response.json();
@@ -42,7 +39,10 @@ function App() {
           <TechnicianView />
         </>
       ) : (
-        <ServiceAdvisorView />
+        <>
+          <DashboardNavbar user={user} />
+          <ServiceAdvisorView />
+        </>
       )}
     </>
   );

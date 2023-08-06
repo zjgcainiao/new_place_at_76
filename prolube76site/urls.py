@@ -12,8 +12,9 @@ app_name = 'prolube76site'
 urlpatterns = [
     path('', include('homepageapp.urls')),
     path('talents/', include('talent_management.urls')),
-    path('apis/', include('apis.urls')), # add pilot ViewSet via django restframework
-    path('emails/', include('automatic_mails.urls')),
+    # add pilot ViewSet via django restframework
+    path('apis/', include('apis.urls')),
+    path('emails/', include('automatic_emails.urls')),
     path('employees/', include('internal_users.urls')),
     path('accounts/', include('customer_users.urls')),  # customer_users
     path('dashboard/', include('dashboard.urls')),
@@ -21,6 +22,7 @@ urlpatterns = [
     path('appts/', include('appointments.urls')),
     path('admin/', admin.site.urls),
     # path('admin/', my_admin_site.urls),
-    path('3dmodels/', include('we_create_3d_models.urls')),  # added on 2023-05-26. 3d model creating app.
+    # added on 2023-05-26. 3d model creating app.
+    path('3dmodels/', include('we_create_3d_models.urls')),
     path('aihelpers/', include('we_have_ai_helpers.urls')),
 ]

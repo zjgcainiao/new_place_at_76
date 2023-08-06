@@ -13,7 +13,7 @@ accesslog = errorlog = '/Users/stephenwang/new_76prolubeplus.com/gunicorn/gunico
 pidfile = "/Users/stephenwang/new_76prolubeplus.com/gunicorn/gunicorn-dev.pid"
 # Restart workers when code changes (development only!)
 reload = True
-# set to "*" to disable checking of Front-end IPs; useful when you don't know in advance the ip address of front-end, 
+# set to "*" to disable checking of Front-end IPs; useful when you don't know in advance the ip address of front-end,
 # but you still trust the environment
 proxy_protocol = True
 proxy_allow_ips = '*'
