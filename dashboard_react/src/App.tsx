@@ -3,17 +3,17 @@ import LoginForm from "./components/LoginForm";
 import TechnicianView from "./components/TechnicianView";
 import ServiceAdvisorView from "./components/ServiceAdvisorView";
 import DashboardNavbar from "./components/DashboardNavbar"; // import the DashboardNavbar component
-
-interface User {
-  email: string;
-  password: string;
-  is_technician: boolean;
-  // Add other possible properties of a user here
-}
+import {
+  BrowserRouter as Router,
+  Routes, // instead of "Switch"
+  Route,
+} from "react-router-dom";
+import HomepageApp from "./components/HomepageApp";
+import { InternalUser } from "./components/Types";
 
 function App() {
   // const [user, setUser] = useState(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<InternalUser | null>(null);
 
   const handleLogin = async (email: string, password: string) => {
     const response = await fetch("http://localhost/apis/internal_user_login/", {
