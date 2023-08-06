@@ -3,17 +3,17 @@
 # representing a modern version of old mitchell1 dashboard
 # WIP, search, etc.
 from django.urls import reverse
-from django.shortcuts import render, get_list_or_404, get_object_or_404,redirect
+from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import ListView
-from django.views.generic import  DetailView #,UpdateView
+from django.views.generic import DetailView  # ,UpdateView
 from django.views.generic.edit import CreateView, UpdateView,  DeleteView
 from django.db.models import Q
 from django.db.models import Prefetch
 from django.utils import timezone
 from django.http import HttpResponseRedirect
-from homepageapp.models import RepairOrdersNewSQL02Model, CustomerAddressesNewSQL02Model,CustomersNewSQL02Model,AddressesNewSQL02Model
+from homepageapp.models import RepairOrdersNewSQL02Model, CustomerAddressesNewSQL02Model, CustomersNewSQL02Model, AddressesNewSQL02Model
 from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model
 # from homepageapp.forms import RepairOrderModelForm, CustomerModelForm, AddressModelForm, RepairOrderLineItemModelForm, PartItemModelForm, LaborItemModelForm
 from dashboard.forms import PartItemFormSet, LaborItemFormSet
@@ -26,34 +26,42 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from internal_users.models import InternalUser
 from appointments.models import AppointmentRequest
-from dashboard.forms import SearchForm, CustomerUpdateForm, RepairOrderUpdateForm,VehicleUpdateForm, AddressUpdateForm, LineItemUpdateForm, PartItemUpdateForm,LaborItemUpdateForm
+from dashboard.forms import SearchForm, CustomerUpdateForm, RepairOrderUpdateForm, VehicleUpdateForm, AddressUpdateForm, LineItemUpdateForm, PartItemUpdateForm, LaborItemUpdateForm
 from django.core.paginator import Paginator
 from django.db.models import Max
+from django.views.generic import TemplateView
 
 # You can do the same sort of thing manually by testing on request.user.is_authenticated, but the decorator is much more convenient!
 # dashboard listview via function. Version 1
+
+
 def dashboard(request):
-    repair_orders = RepairOrdersNewSQL02Model.objects.filter(repair_order_phase__gte=1, repair_order_phase__lte=5).prefetch_related('repair_order_customer')
+    repair_orders = RepairOrdersNewSQL02Model.objects.filter(
+        repair_order_phase__gte=1, repair_order_phase__lte=5).prefetch_related('repair_order_customer')
     # repair_orders_v2 = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer_id', 'repair_order_customer_id__addresses').filter(repair_order_phase_id__in=[1,2,3,4,5])
-    customer_addresses = AddressesNewSQL02Model.objects.prefetch_related('addresses')
-    ## the alternative way to grab repair orders, as well as the address information
+    customer_addresses = AddressesNewSQL02Model.objects.prefetch_related(
+        'addresses')
+    # the alternative way to grab repair orders, as well as the address information
     # __gte means great than or equal; __lte means less than equal
-    all_in_one_set = RepairOrdersNewSQL02Model.objects.filter(repair_order_phase__gte=1, repair_order_phase__lte=5).prefetch_related(Prefetch('repair_order_customer__addresses'))
+    all_in_one_set = RepairOrdersNewSQL02Model.objects.filter(
+        repair_order_phase__gte=1, repair_order_phase__lte=5).prefetch_related(Prefetch('repair_order_customer__addresses'))
     context = {
         'repair_orders': repair_orders,
         'customer_addresses': customer_addresses,
         'all_in_one_set': all_in_one_set,
-    }    
+    }
     return render(request, 'dashboard/10_dashboard.html', context)
 
 # using listview to display the dashboarrd. version 2, dashboard list view.
+
+
 class DashboardView(LoginRequiredMixin, ListView):
     model = RepairOrdersNewSQL02Model
     context_object_name = 'repair_orders'
     template_name = 'dashboard/11_dashboard_v2.html'
     login_url = reverse_lazy('internal_users:internal_user_login')
 
-    def dispatch(self, request, *args, **kwargs):   
+    def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             if not isinstance(request.user, InternalUser):
                 return self.handle_no_permission()
@@ -64,22 +72,30 @@ class DashboardView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         # repair order phase defines the WIP (work-in-progress) caegory. 6 means invoice.
         # qs = qs.filter(Q(repair_order_phase=1) | Q(repair_order_phase=2) | Q(repair_order_phase=3) | Q(repair_order_phase=4) | Q(repair_order_phase=5))
-        qs = RepairOrdersNewSQL02Model.objects.filter(repair_order_phase__gte=1, repair_order_phase__lte=5)
+        qs = RepairOrdersNewSQL02Model.objects.filter(
+            repair_order_phase__gte=1, repair_order_phase__lte=5)
         qs = qs.select_related('repair_order_customer'
-            ).prefetch_related('repair_order_customer__addresses',
-                               'repair_order_customer__addresses', 
-                               'repair_order_customer__phones',
-                               'repair_order_customer__emails',
-                               'repair_order_customer__taxes'
-                               )
+                               ).prefetch_related('repair_order_customer__addresses',
+                                                  'repair_order_customer__addresses',
+                                                  'repair_order_customer__phones',
+                                                  'repair_order_customer__emails',
+                                                  'repair_order_customer__taxes'
+                                                  )
         qs = qs.prefetch_related('payment_repairorders',
                                  'repair_order_customer__payment_customers')
-        
-        
+
         return qs
-    
-# dashboard detail view. version 1 
+
+
+# dashboard-react app entrypoint html 2023-08-06
+class DashboardReactView(TemplateView):
+    template_name = 'dashboard/13_dashboard_react.html'
+    login_url = reverse_lazy('internal_users:internal_user_login')
+
+# dashboard detail view. version 1
 # modified to prefetch emails, phones, taxes to each repair_order_customer object
+
+
 def dashboard_detail_v1(request, pk):
     repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
         Prefetch('repair_order_customer__addresses'),
@@ -88,15 +104,16 @@ def dashboard_detail_v1(request, pk):
         'repair_order_customer__taxes',
         'lineitems__lineitem_noteitem',
         'repair_order_vehicle'
-        ).get(pk=pk)
+    ).get(pk=pk)
     # repair_order = RepairOrdersNewSQL02Model.objects.get(id=repair_order_id)
     repair_order_id = repair_order.repair_order_id
     customer_id = repair_order.repair_order_customer.customer_id
     vehicle = repair_order.repair_order_vehicle
-    
+
     line_items = repair_order.lineitems.all()
-    
-    text_messages = TextMessagesModel.objects.filter(text_customer=customer_id).order_by('-text_message_id')[:10]
+
+    text_messages = TextMessagesModel.objects.filter(
+        text_customer=customer_id).order_by('-text_message_id')[:10]
 
     # send out a repair_order_id stored in the request.session.
     request.session['repair_order_id'] = repair_order_id
@@ -116,24 +133,26 @@ def dashboard_detail_v1(request, pk):
     context = {
         'repair_order': repair_order,
         'form': form,
-        'repair_order_id':repair_order_id,
-        'customer_id':customer_id,
+        'repair_order_id': repair_order_id,
+        'customer_id': customer_id,
         'line_items': line_items,
         'current_time': timezone.now().replace(microsecond=0),
-        'text_messages':text_messages,
+        'text_messages': text_messages,
 
     }
     return render(request, 'dashboard/20_dashboard_detail.html', context)
 
 # dashboard detail view. Version 2
+
+
 def dashboard_detail_v2(request, pk):
     repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
         Prefetch('repair_order_customer__addresses'),
         'repair_order_customer__phones',
         'repair_order_customer__emails',
-        ).prefetch_related(
-        ).prefetch_related(
-        ).prefetch_related('repair_order_customer__taxes').get(pk=pk)
+    ).prefetch_related(
+    ).prefetch_related(
+    ).prefetch_related('repair_order_customer__taxes').get(pk=pk)
     # repair_order = RepairOrdersNewSQL02Model.objects.get(id=repair_order_id)
     repair_order_customer = repair_order.repair_order_customer
     customer_address = repair_order_customer.addresses.first()
@@ -150,6 +169,8 @@ def dashboard_detail_v2(request, pk):
     })
 
 # dashboard detail view. based on the DetailView model. version 3
+
+
 class DashboardDetailView(DetailView):
     template_name = 'dashboard/23_dashboard_detail_v3.html'
 
@@ -158,7 +179,7 @@ class DashboardDetailView(DetailView):
     # slug_field = 'isbn'
     # slug_url_kwarg = 'isbn'
     # model = RepairOrdersNewSQL02Model
-    
+
     # whenever visiting a repair order, update the `repair_order_last_updated_date``
     # def get_object(self):
     #         obj = super().get_object()
@@ -166,10 +187,11 @@ class DashboardDetailView(DetailView):
     #         obj.repair_order_last_updated_date = timezone.now()
     #         obj.save()
     #         return obj
-    # 
+    #
     def get_queryset(self):
-        ## `__` double undestore..more researched are needed.
-        qs = RepairOrdersNewSQL02Model.objects.prefetch_related(Prefetch('repair_order_customer__addresses')).filter(repair_order_id=self.kwargs['pk'])
+        # `__` double undestore..more researched are needed.
+        qs = RepairOrdersNewSQL02Model.objects.prefetch_related(Prefetch(
+            'repair_order_customer__addresses')).filter(repair_order_id=self.kwargs['pk'])
         # qs = RepairOrdersNewSQL02Model.objects.prefetch_related(Prefetch('repair_order_customer__addresses'))
         # qs = qs.filter(repair_order_id=self.kwargs['pk']).get()
         # qs = qs.prefetch()
@@ -180,7 +202,7 @@ class DashboardDetailView(DetailView):
 # 2023-04-08. generated by ChatGPT 4.0.
 # for the updating view. separate update views based on the model types
 # one for repair order; one for customer and one for address
-# future: one update view with  
+# future: one update view with
 
 class RepairOrderUpdateView(UpdateView):
     template_name = 'dashboard/52_repairorder_updateview.html'
@@ -190,7 +212,8 @@ class RepairOrderUpdateView(UpdateView):
     # success_url = reverse_lazy('dashboard:dashboard-detail',pk=self.kwargs['repair_order.repair_order_id'])
 
     def post(self, request, *args, **kwargs):
-        self.object = get_object_or_404(RepairOrdersNewSQL02Model, pk=self.kwargs['pk'])
+        self.object = get_object_or_404(
+            RepairOrdersNewSQL02Model, pk=self.kwargs['pk'])
         form = RepairOrderUpdateForm(request.POST, instance=self.object)
         if form.is_valid():
             # self.object.repair_order_last_updated_date = timezone.now()
@@ -202,22 +225,27 @@ class RepairOrderUpdateView(UpdateView):
             return self.render_to_response(self.get_context_data(form=form))
 
 # 2023-04-08 repair order update version 2.
-# generated by ChatGPT 4.0 
+# generated by ChatGPT 4.0
+
+
 def repair_order_update(request, pk):
     repair_order = get_object_or_404(RepairOrdersNewSQL02Model, pk=pk)
-    AddressFormSet = inlineformset_factory(CustomersNewSQL02Model, AddressesNewSQL02Model, 
-                                           fields=('address_type', 'address_line_01', '', 
-                                           'address_city', 'address_state', 'address_zip_code'), extra=1)
+    AddressFormSet = inlineformset_factory(CustomersNewSQL02Model, AddressesNewSQL02Model,
+                                           fields=('address_type', 'address_line_01', '',
+                                                   'address_city', 'address_state', 'address_zip_code'), extra=1)
     if request.method == 'POST':
-        repair_order_form = RepairOrderUpdateForm(request.POST, instance=repair_order)
-        customer_address_formset = AddressFormSet(request.POST, instance=repair_order.repair_order_customer)
+        repair_order_form = RepairOrderUpdateForm(
+            request.POST, instance=repair_order)
+        customer_address_formset = AddressFormSet(
+            request.POST, instance=repair_order.repair_order_customer)
         if repair_order_form.is_valid() and customer_address_formset.is_valid():
             repair_order_form.save()
             customer_address_formset.save()
             return redirect('repair_order_detail', pk=repair_order.pk)
     else:
         repair_order_form = RepairOrderUpdateForm(instance=repair_order)
-        customer_address_formset = AddressFormSet(instance=repair_order.repair_order_customer)
+        customer_address_formset = AddressFormSet(
+            instance=repair_order.repair_order_customer)
     context = {
         'repair_order': repair_order,
         'repair_order_form': repair_order_form,
@@ -225,33 +253,37 @@ def repair_order_update(request, pk):
     }
     return render(request, 'dashboard/53_repair_order_updateview_v2.html', context)
 
+
 def repair_order_and_line_items_detail(request, repair_order_id):
     repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
         Prefetch('repair_order_customer__addresses')).prefetch_related(
         'repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
-        ).prefetch_related('repair_order_customer__taxes'
-        ).prefetch_related('lineitems__lineitem_noteitem').prefetch_related('lineitems__parts_lineitems'
-        ).prefetch_related('lineitems__lineitem_laboritem').get(pk=repair_order_id)
+                                                          ).prefetch_related('repair_order_customer__taxes'
+                                                                             ).prefetch_related('lineitems__lineitem_noteitem').prefetch_related('lineitems__parts_lineitems'
+                                                                                                                                                 ).prefetch_related('lineitems__lineitem_laboritem').get(pk=repair_order_id)
     line_items = repair_order.lineitems.all()
-    part_items = {lineitem.parts_lineitems.all():lineitem.line_item_id for lineitem in line_items}
-    labor_items = {lineitem.lineitem_laboritem.all():lineitem.line_item_id for lineitem in line_items} 
-    formset_dict = {}          
+    part_items = {lineitem.parts_lineitems.all(
+    ): lineitem.line_item_id for lineitem in line_items}
+    labor_items = {lineitem.lineitem_laboritem.all(
+    ): lineitem.line_item_id for lineitem in line_items}
+    formset_dict = {}
     formsets = []
     for line_item in line_items:
         formset = PartItemFormSet(instance=line_item)
         if formset.total_form_count() == 0:
             formset = LaborItemFormSet(instance=line_item)
         formsets.append(formset)
-        formset_dict.append({formset:line_item.line_item_id})
+        formset_dict.append({formset: line_item.line_item_id})
     context = {
         'repair_order': repair_order,
         'formsets': formsets,
-        'formset_dict':formset_dict,
+        'formset_dict': formset_dict,
         'line_items': line_items,
         'part_items': part_items,
         'labor_items': labor_items,
     }
     return render(request, 'dashboard/51_repair_order_line_items.html', context)
+
 
 class RepairOrderLineItemListView(ListView):
     template_name = 'dashboard/02-repair_order_line_items.html'
@@ -259,7 +291,7 @@ class RepairOrderLineItemListView(ListView):
     context_object_name = 'repair_order'
 
     def get_queryset(self):
-        ## `__` double undestore..more researched are needed.
+        # `__` double undestore..more researched are needed.
         qs = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer').prefetch_related(
             'repair_order_customer__addresses',
             'repair_order_customer__phones',
@@ -267,11 +299,12 @@ class RepairOrderLineItemListView(ListView):
             'repair_order_customer__taxes',
             'lineitems__parts_lineitems',
             'lineitems__lineitem_laboritem',
-            )
-        
+        )
+
         # repair order phase defines the WIP (work-in-progress) caegory. 6 means invoice.
-        
-        qs = qs.filter(Q(repair_order_phase=1) | Q(repair_order_phase=2) | Q(repair_order_phase=3) | Q(repair_order_phase=4) | Q(repair_order_phase=5))
+
+        qs = qs.filter(Q(repair_order_phase=1) | Q(repair_order_phase=2) | Q(
+            repair_order_phase=3) | Q(repair_order_phase=4) | Q(repair_order_phase=5))
         return qs
 
     # ro_single --object consite of only repair order data
@@ -288,6 +321,7 @@ class RepairOrderLineItemListView(ListView):
     # address_form = AddressModelForm(instance=address)
     # form_class = repair_order_form
 
+
 class PartItemUpdateView(UpdateView):
     # template_name = 'dashboard/90_part_item_list_view.html'
     template_name = 'dashboard/92_part_labor_item_update_view.html'
@@ -295,17 +329,20 @@ class PartItemUpdateView(UpdateView):
     context_object_name = 'part_item'
 
     def get_queryset(self):
-        ## `__` double undestore..more researched are needed.
+        # `__` double undestore..more researched are needed.
         # qs = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer').prefetch_related('repair_order_customer__addresses')
         # qs = qs.prefetch_related('repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
         #        ).prefetch_related('repair_order_customer__taxes').prefetch_related('lineitems__parts_lineitems').prefetch_related('lineitems__lineitem_laboritem')
-        qs = LineItemsNewSQL02Model.objects.prefetch_related('parts_lineitems').prefetch_related('lineitem_laboritem')
+        qs = LineItemsNewSQL02Model.objects.prefetch_related(
+            'parts_lineitems').prefetch_related('lineitem_laboritem')
         # repair order phase defines the WIP (work-in-progress) category. 6 means invoice.  7 counter sale. 8 deleted. 9 scheduled.
         # qs = qs.filter(Q(repair_order_phase=1) | Q(repair_order_phase=2) | Q(repair_order_phase=3) | Q(repair_order_phase=4) | Q(repair_order_phase=5))
         return qs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        line_item = get_object_or_404(LineItemsNewSQL02Model, pk=self.kwargs['line_item_id'])
+        line_item = get_object_or_404(
+            LineItemsNewSQL02Model, pk=self.kwargs['line_item_id'])
         if line_item is not None:
             part_item_formset = PartItemFormSet(instance=line_item)
             labor_item_formset = LaborItemFormSet(instance=line_item)
@@ -316,82 +353,90 @@ class PartItemUpdateView(UpdateView):
         context['selected_formset'] = selected_formset
         context['part_item_formset'] = part_item_formset
         context['labor_item_formset'] = labor_item_formset
-            # try:
-            #     part_item = line_item.parts_lineitems.first()
-            #     form = PartItemModelForm(instance=part_item)
-            #     # part_item = get_object_or_404(PartItemModel,pk=self.kwargs['line_item_id'])
-            # except ObjectDoesNotExist:
-            #     # return redirect(reverse('dashboard:labor-item-update-view', kwargs=self.kwargs))
-            #     labor_item = line_item.lineitem_laboritem.first()
-            #     form = LaborItemModelForm(instance=labor_item)
-        
+        # try:
+        #     part_item = line_item.parts_lineitems.first()
+        #     form = PartItemModelForm(instance=part_item)
+        #     # part_item = get_object_or_404(PartItemModel,pk=self.kwargs['line_item_id'])
+        # except ObjectDoesNotExist:
+        #     # return redirect(reverse('dashboard:labor-item-update-view', kwargs=self.kwargs))
+        #     labor_item = line_item.lineitem_laboritem.first()
+        #     form = LaborItemModelForm(instance=labor_item)
+
         context['page_title'] = 'Update a Line Item'
         # context['form'] = form
         context['fields'] = self.get_form().fields.items()
-        context['line_item_id']=self.kwargs['line_item_id'] # the line_item_id in the url pattern is passed on to the Updateview .
-        context['repair_order_id']=self.kwargs['pk'] # the pk in the url pattern is passed on to the UpdateView .
-        context['line_item']=line_item
+        # the line_item_id in the url pattern is passed on to the Updateview .
+        context['line_item_id'] = self.kwargs['line_item_id']
+        # the pk in the url pattern is passed on to the UpdateView .
+        context['repair_order_id'] = self.kwargs['pk']
+        context['line_item'] = line_item
         return context
-    
+
     # def form_valid(self,form):
     #     response = super().form_valid(form)
     #     return redirect(reverse('dashboard:dashboard_detail',args=self.kwargs['line_item_id']))
 
 #
+
+
 def line_item_labor_and_part_item_update_view(request, pk, line_item_id):
     repair_order_id = pk
     line_item = LineItemsNewSQL02Model.objects.prefetch_related(
         'parts_lineitems',
         'lineitem_laboritem').filter(line_item_id=line_item_id).get()
-    
+
     # in one single line item, some data is from lineitem table, some is either from partitem or laboritem table.
     if request.method == 'POST':
         form = LineItemUpdateForm(request.POST, instance=line_item)
-        formset = PartItemFormSet(request.POST, instance=line_item, prefix='partitems')
+        formset = PartItemFormSet(
+            request.POST, instance=line_item, prefix='partitems')
         if formset.total_form_count() == 0:
-            formset = LaborItemFormSet(request.POST, instance=line_item,prefix='laboritems')
-        
-        if form.is_valid() and formset.is_valid() :
+            formset = LaborItemFormSet(
+                request.POST, instance=line_item, prefix='laboritems')
+
+        if form.is_valid() and formset.is_valid():
             formset.save()
             form.save()
-            messages.success(request, 'Line items have been updated successfully!')
+            messages.success(
+                request, 'Line items have been updated successfully!')
             return redirect('repair_order_detail', pk=pk)
     else:
         if line_item:
-                part_item_formset = PartItemFormSet(instance=line_item)
-                labor_item_formset = LaborItemFormSet(instance=line_item)
-                form = LineItemUpdateForm(instance=line_item)
-                if labor_item_formset.total_form_count()==0:
-                    selected_formset = part_item_formset
-                    is_labor_item = 0
-                elif part_item_formset.total_form_count()==0:
-                    selected_formset = labor_item_formset
-                    is_labor_item = 1
-                else:
-                    selected_formset = None
-                    form = None
-        
+            part_item_formset = PartItemFormSet(instance=line_item)
+            labor_item_formset = LaborItemFormSet(instance=line_item)
+            form = LineItemUpdateForm(instance=line_item)
+            if labor_item_formset.total_form_count() == 0:
+                selected_formset = part_item_formset
+                is_labor_item = 0
+            elif part_item_formset.total_form_count() == 0:
+                selected_formset = labor_item_formset
+                is_labor_item = 1
+            else:
+                selected_formset = None
+                form = None
 
         context = {
-                'selected_formset':selected_formset,
-                'form':form,
-                'repair_order_id':repair_order_id,
-                'line_item_id':line_item_id,
-                'line_item':line_item,
+            'selected_formset': selected_formset,
+            'form': form,
+            'repair_order_id': repair_order_id,
+            'line_item_id': line_item_id,
+            'line_item': line_item,
         }
         return render(request, 'dashboard/93_part_labor_item_update_view_v2.html', context)
 
-    
+
 class LaborItemUpdateView(UpdateView):
     template_name = 'dashboard/91_labor_item_list_view.html'
     form_class = LaborItemUpdateForm
     context_object_name = 'labor_item'
+
     def get_queryset(self):
-        ## `__` double undestore..more researched are needed.
+        # `__` double undestore..more researched are needed.
         # qs = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer').prefetch_related('repair_order_customer__addresses')
         # qs = qs.prefetch_related('repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
         #        ).prefetch_related('repair_order_customer__taxes').prefetch_related('lineitems__parts_lineitems').prefetch_related('lineitems__lineitem_laboritem')
-        qs = LineItemsNewSQL02Model.objects.prefetch_related('parts_lineitems').prefetch_related('lineitem_laboritem')
+        qs = LineItemsNewSQL02Model.objects.prefetch_related(
+            'parts_lineitems').prefetch_related('lineitem_laboritem')
         # repair order phase defines the WIP (work-in-progress) category. 6 means invoice.  7 counter sale. 8 delet
 
     # class AppointmentOfNext7DaysListView(ListView):
@@ -400,8 +445,9 @@ class LaborItemUpdateView(UpdateView):
     #     context_object_name = 'appointments'
 
 
-def chat_sidebar_view(request,customer_id):
-    text_messages = TextMessagesModel.objects.filter(text_customer=customer_id).order_by('-text_message_id')[:10]
+def chat_sidebar_view(request, customer_id):
+    text_messages = TextMessagesModel.objects.filter(
+        text_customer=customer_id).order_by('-text_message_id')[:10]
     context = {
         'text_messages': text_messages,
         # 2023-04-18: in dashboard_detail_v1() function, there stores a `customer_id` in the request.session ensures persistence in data.
@@ -411,12 +457,12 @@ def chat_sidebar_view(request,customer_id):
     return render(request, 'dashboard/50_text_message_side_bar.html', context)
 
 
-
 # added on 2023-06-03. ChatGPT generated.
 # search form page --- the first step before creating an repair order.
 class SearchView(LoginRequiredMixin, View):
 
     login_url = reverse_lazy('internal_users:internal_user_login')
+
     def get(self, request):
         form = SearchForm()
         return render(request, 'dashboard/30_search.html', {'form': form})
@@ -428,19 +474,19 @@ class SearchView(LoginRequiredMixin, View):
             # Perform the search query in the appointments or other relevant models
             appointments = AppointmentRequest.objects.filter(Q(appointment_phone_number__icontains=search_query) |
                                                              Q(appointment_email__icontains=search_query)).order_by('appointment_id')
-            
+
             repair_orders = RepairOrdersNewSQL02Model.objects.prefetch_related(
-                    Prefetch('repair_order_customer__addresses')).prefetch_related(
-                    'repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
-                    )
-            
+                Prefetch('repair_order_customer__addresses')).prefetch_related(
+                'repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
+                                                                  )
+
             repair_orders = repair_orders.filter(
                 repair_order_customer__emails__email_address__icontains=search_query
-                ).filter(repair_order_customer__phones__phone_number__icontains=search_query)
-            
-            context ={'appointments': appointments,
-                      'repair_orders':repair_orders,
-                      }
+            ).filter(repair_order_customer__phones__phone_number__icontains=search_query)
+
+            context = {'appointments': appointments,
+                       'repair_orders': repair_orders,
+                       }
             return render(request, 'dashboard/30_search.html', context)
             # if appointments.exists():
             #     return render(request, 'dashboard/20_search.html', {'appointments': appointments})
@@ -474,9 +520,10 @@ class SearchView(LoginRequiredMixin, View):
 
 
 def active_customer_list(request):
-    # customer_is_activate=False means that a customer is not deactivated. the name of this field is confusing. will 
+    # customer_is_activate=False means that a customer is not deactivated. the name of this field is confusing. will
     # need to revise it before PROD launch.
-    active_customers = CustomersNewSQL02Model.objects.filter(customer_is_deleted = False)
+    active_customers = CustomersNewSQL02Model.objects.filter(
+        customer_is_deleted=False)
     paginator = Paginator(active_customers, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -486,11 +533,11 @@ def active_customer_list(request):
 # createView
 class CustomerCreateView(CreateView):
     model = CustomersNewSQL02Model
-    fields = ['customer_first_name','customer_last_name', 'customer_middle_name',
+    fields = ['customer_first_name', 'customer_last_name', 'customer_middle_name',
               'customer_does_allow_SMS',]
     success_url = reverse_lazy('customers-list')
     template_name = 'homepageapp/42_customer_creation.html'
-    
+
     # ---- 2023-03-27-------
     # encounter Conversion failed when converting from a character string to uniqueidentifier.
     # ChatGPT 4.0
@@ -499,13 +546,15 @@ class CustomerCreateView(CreateView):
         # Generate a new UUID for the customer_id field. customer_new_uid_v01 -- newly added uuid
         # form.instance.customer_new_uid_v01 = uuid.uuid4()
         # Get the current maximum value of the customer_id field. customer_id is the legacy id used in old DB.
-        max_customer_id = CustomersNewSQL02Model.objects.aggregate(Max('customer_id'))['customer_id__max']
+        max_customer_id = CustomersNewSQL02Model.objects.aggregate(Max('customer_id'))[
+            'customer_id__max']
         # Increment the max value by 1 to get the new customer_id value
         new_customer_id = max_customer_id + 1 if max_customer_id is not None else 1
         # Set the customer_id value for the new record and save it
         form.instance.customer_id = new_customer_id
-        return super().form_valid(form)    
- 
+        return super().form_valid(form)
+
+
 class CustomerDetailView(DetailView):
     model = CustomersNewSQL02Model
     success_url = reverse_lazy('customers-list')
@@ -515,11 +564,12 @@ class CustomerDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
-            context['form'] = CustomerUpdateForm(self.request.POST, instance=self.object)
+            context['form'] = CustomerUpdateForm(
+                self.request.POST, instance=self.object)
         else:
             context['form'] = CustomerUpdateForm(instance=self.object)
         return context
-    
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = CustomerUpdateForm(request.POST, instance=self.object)
@@ -532,13 +582,11 @@ class CustomerDetailView(DetailView):
             # return self.render_to_response(self.get_context_data(form=form))
 
 
-        
 class CustomerUpdateView(UpdateView):
     model = CustomersNewSQL02Model
     success_url = reverse_lazy('dashboard:customer-detail')
     form_class = CustomerUpdateForm
     template_name = 'dashboard/43_customer_update.html'
-
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -551,7 +599,7 @@ class CustomerUpdateView(UpdateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
- 
+
 class RepairOrderListView(ListView):
     # model = RepairOrdersNewSQL02Model
 
@@ -585,5 +633,3 @@ class RepairOrderListView(ListView):
 #             serializer.is_valid(raise_exception=True)
 #             serializer.save()
 #         return Response({'status': 'success'})
-    
-
