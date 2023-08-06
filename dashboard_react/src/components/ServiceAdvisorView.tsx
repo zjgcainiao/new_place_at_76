@@ -3,7 +3,6 @@ import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import React, { useEffect, useState } from "react";
 // import "~mdbreact/dist/css/mdb.css";
 
-// import { MDBContainer, MDBDataTable } from "mdbreact";
 import {
   MDBContainer,
   MDBTable,

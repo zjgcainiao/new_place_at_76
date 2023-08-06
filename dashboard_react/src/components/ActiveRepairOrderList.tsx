@@ -1,17 +1,21 @@
-import {
-  MDBContainer,
-  MDBTable,
-  MDBTableBody,
-  MDBTableHead,
-} from "mdb-react-ui-kit";
+import { Container } from "react-bootstrap";
 import PhoneList from "./PhoneList";
 import EmailList from "./EmailList";
 import AddressList from "./AddressList";
 import DataTable from "react-data-table-component";
+import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 
 interface PhoneProps {
   phone_desc: { phone_desc: string };
   phone_number: string;
+}
+
+interface PhonesProps {
+  phones: PhoneProps[];
+}
+
+interface EmailsProps {
+  emails: { email_address: string }[];
 }
 
 interface AddressProps {
@@ -21,8 +25,8 @@ interface AddressProps {
   address_zip_code: string;
 }
 
-interface EmailProps {
-  email_address: string;
+interface AddressesProps {
+  addresses: AddressProps[];
 }
 
 interface OrderProps {
@@ -32,9 +36,9 @@ interface OrderProps {
   repair_order_customer?: {
     customer_first_name: string;
     customer_last_name: string;
-    phones: PhoneProps[];
-    emails: EmailProps[];
-    addresses: AddressProps[];
+    phones: PhonesProps[];
+    emails: EmailsProps[];
+    addresses: AddressesProps[];
   };
 }
 
@@ -42,68 +46,75 @@ interface ActiveRepairOrderListProps {
   repairOrders: OrderProps[];
 }
 
+const columns = [
+  {
+    name: "Order ID",
+    selector: (row) => row.repair_order_id,
+    sortable: true,
+  },
+  {
+    name: "Order Status",
+    selector: (row) => row.repair_order_service_status,
+    sortable: true,
+  },
+  {
+    name: "Customer Name",
+    selector: (row: OrderProps) =>
+      row.repair_order_customer
+        ? `${row.repair_order_customer.customer_first_name} ${row.repair_order_customer.customer_last_name}`
+        : "",
+  },
+  {
+    name: "Phone Nbr",
+    selector: (row) =>
+      row.repair_order_customer && (
+        <PhoneList phones={row.repair_order_customer.phones} />
+      ),
+    sortable: false,
+  },
+  {
+    name: "Email Addresses",
+    selector: (row) =>
+      row.repair_order_customer && (
+        <EmailList emails={row.repair_order_customer.emails} />
+      ),
+    sortable: false,
+  },
+  {
+    name: "Customer Address",
+    selector: (row) =>
+      row.repair_order_customer && (
+        <AddressList addresses={row.repair_order_customer.addresses} />
+      ),
+    sortable: false,
+  },
+  {
+    name: "Updated Date",
+    selector: (row) =>
+      new Date(row.repair_order_last_updated_date).toLocaleDateString(),
+    sortable: true,
+  },
+];
+
 const ActiveRepairOrderList: React.FC<ActiveRepairOrderListProps> = ({
   repairOrders,
 }) => {
   return (
     <>
-      <MDBContainer className="mt-5">
+      <Container className="mt-5">
         <h2 className="text-center mb-4">Work Station - Service Advisor</h2>
-        <MDBTable className="table-light table-hover">
-          <MDBTableHead>
-            <tr>
-              <th>Order ID</th>
-              <th>Order Status</th>
-              <th>Customer Name</th>
-              <th>Phone Nbr</th>
-              <th>Email Addresses</th>
-              <th>Customer Address</th>
-              <th>Updated Date</th>
-            </tr>
-          </MDBTableHead>
-          <MDBTableBody>
-            {repairOrders.length > 0 ? (
-              repairOrders.map((order) => (
-                <tr key={order.repair_order_id}>
-                  <td>{order.repair_order_id}</td>
-                  <td>{order.repair_order_service_status}</td>
-                  <td>
-                    {order.repair_order_customer
-                      ? `${order.repair_order_customer.customer_first_name} ${order.repair_order_customer.customer_last_name}`
-                      : ""}
-                  </td>
-                  <td>
-                    {order.repair_order_customer && (
-                      <PhoneList phones={order.repair_order_customer.phones} />
-                    )}
-                  </td>
-                  <td>
-                    {order.repair_order_customer && (
-                      <EmailList emails={order.repair_order_customer.emails} />
-                    )}
-                  </td>
-                  <td>
-                    {order.repair_order_customer && (
-                      <AddressList
-                        addresses={order.repair_order_customer.addresses}
-                      />
-                    )}
-                  </td>
-                  <td>
-                    {new Date(
-                      order.repair_order_last_updated_date
-                    ).toLocaleDateString()}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={7}>There are no results found.</td>
-              </tr>
-            )}
-          </MDBTableBody>
-        </MDBTable>
-      </MDBContainer>
+        <DataTable
+          // title=""
+          columns={columns}
+          data={repairOrders}
+          pointerOnHover={true}
+          noHeader
+          pagination
+          highlightOnHover
+          striped
+          noDataComponent="There are no results found."
+        />
+      </Container>
     </>
   );
 };
