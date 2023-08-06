@@ -43,6 +43,7 @@ const HomepageBody: React.FC<HomepageBodyProps> = ({
         <Row className="pt-2">
           <Col md={7} className="pt-3 pt-md-3 pt-lg-5">
             {/* ... Your Content ... */}
+            My Content
             <Button variant="outline-primary" size="sm">
               Service Appointment
             </Button>

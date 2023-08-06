@@ -1,29 +1,42 @@
 import React, { useState, useEffect } from "react";
-import LoginForm from "./components/LoginForm";
-import TechnicianView from "./components/TechnicianView";
-import ServiceAdvisorView from "./components/ServiceAdvisorView";
-import DashboardNavbar from "./components/DashboardNavbar"; // import the DashboardNavbar component
+import "./App.css";
+import HomepageApp from "./components/HomepageApp";
+import HomepageSection from "./components/HomepageSection";
 import {
   createBrowserRouter,
   BrowserRouter as Router,
   Routes, // instead of "Switch"
   Route,
+  redirect,
+  useNavigate,
   Link,
   RouteMatch,
 } from "react-router-dom";
-import HomepageApp from "./components/HomepageApp";
+
 import DashboardView from "./components/DashboardView";
+
+// custom component to do redirect
+const RedirectTo: React.FC<{ to: string }> = ({ to }) => {
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    navigate(to);
+  }, [to, navigate]);
+
+  return null;
+};
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<HomepageApp />} />
-        {/* <HomepageApp /> */}
-        <Route path="/dash">
-          <DashboardView />
-        </Route>
-        {/* Add more routes as needed */}
+        {/* Redirect '/homepage' and '/home' to '/' */}
+        <Route path="/homepage" element={<RedirectTo to="/" />} />
+        <Route path="/home" element={<RedirectTo to="/" />} />
+        <Route path="/dash" element={<DashboardView />} />
+
+        {/* New '/section' route */}
+        <Route path="/section" element={<HomepageSection />} />
       </Routes>
     </Router>
   );
