@@ -2,8 +2,8 @@ import { Container } from "react-bootstrap";
 import PhoneList from "./PhoneList";
 import EmailList from "./EmailList";
 import AddressList from "./AddressList";
-import DataTable from "react-data-table-component";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import DataTable, { TableColumn } from "react-data-table-component";
+// import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 
 interface PhoneProps {
   phone_desc: { phone_desc: string };
@@ -14,10 +14,9 @@ interface PhonesProps {
   phones: PhoneProps[];
 }
 
-interface EmailsProps {
-  emails: { email_address: string }[];
+interface EmailProps {
+  email_address: string;
 }
-
 interface AddressProps {
   address_line_01: string;
   address_city: string;
@@ -33,12 +32,12 @@ interface OrderProps {
   repair_order_id: string;
   repair_order_service_status: string;
   repair_order_last_updated_date: string;
-  repair_order_customer?: {
+  repair_order_customer: {
     customer_first_name: string;
     customer_last_name: string;
-    phones: PhonesProps[];
-    emails: EmailsProps[];
-    addresses: AddressesProps[];
+    phones: PhoneProps[];
+    emails: EmailProps[];
+    addresses: AddressProps[];
   };
 }
 
@@ -46,15 +45,15 @@ interface ActiveRepairOrderListProps {
   repairOrders: OrderProps[];
 }
 
-const columns = [
+const columns: TableColumn<OrderProps>[] = [
   {
     name: "Order ID",
-    selector: (row) => row.repair_order_id,
+    selector: (row: OrderProps) => row.repair_order_id,
     sortable: true,
   },
   {
     name: "Order Status",
-    selector: (row) => row.repair_order_service_status,
+    selector: (row: OrderProps) => row.repair_order_service_status,
     sortable: true,
   },
   {
@@ -63,38 +62,41 @@ const columns = [
       row.repair_order_customer
         ? `${row.repair_order_customer.customer_first_name} ${row.repair_order_customer.customer_last_name}`
         : "",
+    sortable: true,
   },
   {
     name: "Phone Nbr",
-    selector: (row) =>
-      row.repair_order_customer && (
+    cell: (row: OrderProps) =>
+      row.repair_order_customer ? (
         <PhoneList phones={row.repair_order_customer.phones} />
-      ),
-    sortable: false,
+      ) : null,
   },
   {
     name: "Email Addresses",
-    selector: (row) =>
-      row.repair_order_customer && (
+    cell: (row: OrderProps) =>
+      row.repair_order_customer ? (
         <EmailList emails={row.repair_order_customer.emails} />
-      ),
-    sortable: false,
+      ) : null,
   },
   {
     name: "Customer Address",
-    selector: (row) =>
-      row.repair_order_customer && (
+    cell: (row: OrderProps) =>
+      row.repair_order_customer ? (
         <AddressList addresses={row.repair_order_customer.addresses} />
-      ),
-    sortable: false,
+      ) : null,
   },
   {
     name: "Updated Date",
-    selector: (row) =>
+    selector: (row: OrderProps) =>
       new Date(row.repair_order_last_updated_date).toLocaleDateString(),
     sortable: true,
   },
 ];
+// Explicitly declared the type for the selectedRows parameter in the handleChange function.
+const handleChange = ({ selectedRows }: { selectedRows: OrderProps[] }) => {
+  // You can set state or dispatch with something like Redux so we can use the retrieved data
+  console.log("Selected Rows: ", selectedRows);
+};
 
 const ActiveRepairOrderList: React.FC<ActiveRepairOrderListProps> = ({
   repairOrders,
@@ -113,6 +115,8 @@ const ActiveRepairOrderList: React.FC<ActiveRepairOrderListProps> = ({
           highlightOnHover
           striped
           noDataComponent="There are no results found."
+          selectableRows
+          onSelectedRowsChange={handleChange}
         />
       </Container>
     </>

@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
+import { InternalUser } from "./Types";
 
-const DashboardNavbar = ({ user }) => {
+interface DashboardNavbarProps {
+  user: InternalUser;
+}
+
+const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ user }) => {
   const [datetime, setDateTime] = useState(new Date());
   const [formattedDateTime, setFormattedDateTime] = useState("");
 

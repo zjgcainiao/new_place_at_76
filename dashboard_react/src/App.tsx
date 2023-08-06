@@ -4,10 +4,18 @@ import TechnicianView from "./components/TechnicianView";
 import ServiceAdvisorView from "./components/ServiceAdvisorView";
 import DashboardNavbar from "./components/DashboardNavbar"; // import the DashboardNavbar component
 
-function App() {
-  const [user, setUser] = useState(null);
+interface User {
+  email: string;
+  password: string;
+  is_technician: boolean;
+  // Add other possible properties of a user here
+}
 
-  const handleLogin = async (email, password) => {
+function App() {
+  // const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
+
+  const handleLogin = async (email: string, password: string) => {
     const response = await fetch("http://localhost/apis/internal_user_login/", {
       method: "POST",
       headers: {

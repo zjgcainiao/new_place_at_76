@@ -1,22 +1,17 @@
 import "bootstrap/dist/css/bootstrap.css";
-import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import React, { useEffect, useState } from "react";
-import {
-  MDBBtn,
-  MDBCard,
-  MDBCardBody,
-  MDBCol,
-  MDBContainer,
-  MDBInput,
-  MDBRow,
-  MDBTable,
-  MDBTableBody,
-  MDBTableHead,
-} from "mdb-react-ui-kit";
+
+type WorkItem = {
+  repair_order_id: number;
+  repair_order_serviced_vehicle_location: string;
+  repair_order_service_status: string;
+  // Add any other properties as needed.
+};
 
 function TechnicianView() {
-  const [repairOrders, setRepairOrders] = useState([0]);
-  const [error, setError] = useState([]);
+  //Use the RepairOrder type to define the type of your repairOrders state
+  const [WorkItems, setWorkItems] = useState<WorkItem[]>([]);
+  const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -30,10 +25,10 @@ function TechnicianView() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setRepairOrders(data);
+        setWorkItems(data);
         setIsLoading(false);
       } catch (error) {
-        setError(error);
+        setError(error as Error);
         setIsLoading(false);
       }
     };
@@ -41,11 +36,11 @@ function TechnicianView() {
     fetchData();
   }, []);
 
-  const markAsFinished = (id) => {
+  const markAsFinished = (id: string) => {
     // implement functionality to mark a task as finished
   };
 
-  const deleteTask = (id) => {
+  const deleteTask = (id: string) => {
     // implement functionality to delete a task
   };
 
@@ -63,11 +58,11 @@ function TechnicianView() {
             </tr>
           </thead>
           <tbody>
-            {repairOrders.map((task) => (
-              <tr key={task.repair_order_id}>
-                <td>{task.repair_order_id}</td>
-                <td>{task.repair_order_serviced_vehicle_location}</td>
-                <td>{task.repair_order_service_status}</td>
+            {WorkItems.map((workitem) => (
+              <tr key={workitem.repair_order_id}>
+                <td>{workitem.repair_order_id}</td>
+                <td>{workitem.repair_order_serviced_vehicle_location}</td>
+                <td>{workitem.repair_order_service_status}</td>
                 <td>
                   <button type="button" className="btn btn-success me-2">
                     Mark as finished

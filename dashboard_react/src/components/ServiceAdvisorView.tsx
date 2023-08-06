@@ -1,17 +1,6 @@
 import "bootstrap/dist/css/bootstrap.css";
-import "mdb-react-ui-kit/dist/css/mdb.min.css";
+// import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import React, { useEffect, useState } from "react";
-// import "~mdbreact/dist/css/mdb.css";
-
-import {
-  MDBContainer,
-  MDBTable,
-  MDBTableBody,
-  MDBTableHead,
-} from "mdb-react-ui-kit";
-import PhoneList from "./PhoneList";
-import EmailList from "./EmailList";
-import AddressList from "./AddressList";
 import ActiveRepairOrderList from "./ActiveRepairOrderList";
 
 function ServiceAdvisorView() {
@@ -36,7 +25,11 @@ function ServiceAdvisorView() {
         setRepairOrders(data);
         setIsLoading(false);
       } catch (error) {
-        setError(error);
+        if (error instanceof Error) {
+          setError(error);
+        } else {
+          setError(new Error("An unexpected error occurred."));
+        }
         setIsLoading(false);
       }
     };
