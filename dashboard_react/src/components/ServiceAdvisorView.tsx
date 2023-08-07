@@ -3,6 +3,8 @@ import "bootstrap/dist/css/bootstrap.css";
 import React, { useEffect, useState } from "react";
 import ActiveRepairOrderList from "./ActiveRepairOrderList";
 
+import { RepairOrderAPI } from "./Constants";
+
 function ServiceAdvisorView() {
   // const [repairOrders, setRepairOrders] = useState([]);
   // const [error, setError] = useState([]);
@@ -15,9 +17,7 @@ function ServiceAdvisorView() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        let response = await fetch(
-          "http://localhost/apis/repair_orders/?format=json"
-        );
+        let response = await fetch(RepairOrderAPI);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

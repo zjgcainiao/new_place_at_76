@@ -17,8 +17,12 @@ export const homepageImageUrl =
 
 export const homepageAppExternalCSS =
   "https://storage.googleapis.com/2023_new_prolube76site/homepageapp/css/theme.min.css";
+
 export const InternalUserLoginAPI =
   "http://localhost/apis/internal_user_login/";
+
+export const RepairOrderAPI =
+  "http://localhost/apis/repair_orders/?format=json";
 
 export const homepageRichTextContent: RichTextElement[] = [
   {

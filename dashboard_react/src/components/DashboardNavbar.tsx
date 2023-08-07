@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
 import { InternalUser } from "./Types";
+import { logo } from "./Constants";
 
 interface DashboardNavbarProps {
   user: InternalUser;
@@ -26,23 +27,19 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ user }) => {
     <Navbar bg="light" expand="lg" data-bs-theme="light">
       <Container>
         <Navbar.Brand href="#home">
-          <img
-            src="https://storage.googleapis.com/2023_new_prolube76site/dashboard/images/logo-2022.svg"
-            width="80"
-            alt="logo"
-          />
+          <img src={logo} width="80" alt="logo" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="dashboard-navbar-nav" />
         <Navbar.Collapse id="dashbaord-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="/">Home</Nav.Link>
             {/* Add more navigation links as needed */}
           </Nav>
           <Nav>
             {/* <small>Today is {formattedDateTime}</small> */}
             {user && (
               <NavDropdown title={`Hi ${user.email}`} id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">
+                <NavDropdown.Item href="#">
                   My Profile - Employee Info
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
