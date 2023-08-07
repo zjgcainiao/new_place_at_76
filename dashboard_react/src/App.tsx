@@ -9,33 +9,43 @@ import {
   Route,
   redirect,
   useNavigate,
+  Navigate,
   Link,
   RouteMatch,
 } from "react-router-dom";
 import { ExternalCSS } from "./components/ExternalCSS";
 import DashboardView from "./components/DashboardView";
-
-// custom component to do redirect
-const RedirectTo: React.FC<{ to: string }> = ({ to }) => {
-  const navigate = useNavigate();
-  React.useEffect(() => {
-    navigate(to);
-  }, [to, navigate]);
-
-  return null;
-};
+import { homepageAppExternalCSS } from "./components/Constants";
+import { RedirectTo } from "./components/Types";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  // This useEffect will simulate checking if the user is "remembered"
+  // You'll likely replace this with actual logic to check e.g. local storage or an auth token.
+  useEffect(() => {
+    const rememberedUser = localStorage.getItem("username");
+    if (rememberedUser) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   return (
     <>
-      {/* this is the homepageapp's main theme css  */}
-      <ExternalCSS href="https://storage.googleapis.com/2023_new_prolube76site/homepageapp/css/theme.min.css" />
+      {/* this is the homepageapp's main theme css.  */}
+      <ExternalCSS href={homepageAppExternalCSS} />
       <Router>
         <Routes>
           <Route path="/" element={<HomepageApp />} />
           {/* Redirect '/homepage' and '/home' to '/' */}
           <Route path="/homepage" element={<RedirectTo to="/" />} />
           <Route path="/home" element={<RedirectTo to="/" />} />
+
+          {/* Check if user visits 'employees/login/' */}
+          <Route
+            path="employees/login/"
+            element={!isLoggedIn ? <DashboardView /> : <Navigate to="/dash/" />}
+          />
           <Route path="/dash" element={<DashboardView />} />
 
           {/* New '/section' route */}

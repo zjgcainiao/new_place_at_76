@@ -11,26 +11,42 @@ import {
   Alert,
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { ExternalCSS } from "./ExternalCSS";
+import { homepageAppExternalCSS, logo } from "./Constants";
 
 interface LoginFormProps {
   handleLogin: (username: string, password: string) => void;
+  logoUrl?: string;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     handleLogin(username, password);
+
+    if (rememberMe) {
+      const tenDays = 10 * 24 * 60 * 60 * 1000; // 10 days in milliseconds
+      const expiryDate = new Date(new Date().getTime() + tenDays);
+
+      localStorage.setItem("username", username);
+      localStorage.setItem("expiry", expiryDate.toString());
+    } else {
+      localStorage.removeItem("username");
+      localStorage.removeItem("expiry");
+    }
   };
 
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100">
+      <ExternalCSS href={homepageAppExternalCSS} />
       <Card style={{ width: "24rem" }}>
         <Card.Header className="text-center bg-light">
           <a href="/">
-            <img src="/path/to/logo-174x150.png" alt="logo" />
+            <img src={logo} alt="logo" />
           </a>
         </Card.Header>
         <Card.Body>
@@ -43,12 +59,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
           </div>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label>Username</Form.Label>
+              <Form.Label>Enter Email</Form.Label>
               <FormControl
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
+                placeholder="Use the contact email you submit in your employment docs."
               />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -70,7 +86,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
               </Form.Text>
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Check type="checkbox" label="Remember me" />
+              <Form.Check
+                type="checkbox"
+                label="Remember me"
+                checked={rememberMe} // <-- this line ensures the checkbox reflects the state
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
             </Form.Group>
             <Button variant="outline-primary" type="submit" className="w-100">
               Log In

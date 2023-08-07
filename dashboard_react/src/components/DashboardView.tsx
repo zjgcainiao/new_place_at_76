@@ -5,7 +5,7 @@ import ServiceAdvisorView from "./ServiceAdvisorView";
 import DashboardNavbar from "./DashboardNavbar"; // import the DashboardNavbar component
 import HomepageApp from "./HomepageApp";
 import { InternalUser } from "./Types";
-
+import { InternalUserLoginAPI } from "./Constants";
 import {
   BrowserRouter as Router,
   Routes, // instead of "Switch"
@@ -13,11 +13,10 @@ import {
 } from "react-router-dom";
 
 function DashboardView() {
-  // const [user, setUser] = useState(null);
   const [user, setUser] = useState<InternalUser | null>(null);
 
   const handleLogin = async (email: string, password: string) => {
-    const response = await fetch("http://localhost/apis/internal_user_login/", {
+    const response = await fetch(InternalUserLoginAPI, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

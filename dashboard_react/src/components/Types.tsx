@@ -1,10 +1,13 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 export interface InternalUser {
   email: string;
   password?: string;
   is_technician?: boolean;
   // Add any other fields you might have
 }
-
+import logo from "https://storage.googleapis.com/2023_new_prolube76site/homepageapp/2022-Logo-Transparent-small.png"; // Adjust the path accordingly
 export interface Message {
   id: number; // unique identifier to manage the removal from the list
   type: "info" | "error" | "success"; // assuming these are the message types, you can add or adjust as needed
@@ -114,32 +117,12 @@ export type RichTextElement =
   | { type: "ul"; content: string[] }
   | { type: "ol"; content: string[] }; // You can extend this with more types if needed
 
-export const homepageRichTextContent: RichTextElement[] = [
-  {
-    type: "p",
-    content:
-      "We strive to offer a seamless and transparent service experience. Our integrated system unifies appointments, repair orders, and customer information, enabling real-time tracking of active work orders and appointments. Be it an early part arrival or an unforeseen delay, we keep you updated.",
-  },
-  {
-    type: "p",
-    content:
-      "Our mission surpasses that of traditional dealerships - we pledge to keep you informed frequently about your car's repair status.",
-  },
-  {
-    type: "p",
-    content: "Our unique strengths include:",
-  },
-  {
-    type: "ul",
-    content: [
-      "Vertical Integration: Real-time tracking of repair status and online payments.",
-      "Automation: Eliminating repetitive tasks to boost efficiency.",
-      "AI-Driven Solutions: Leveraging AI to answer customer queries, set to launch in 2024.",
-    ],
-  },
-  {
-    type: "p",
-    content:
-      "Start your journey with us by booking an online service appointment for issues like oil changes, A/C issues, etc.",
-  },
-];
+// custom component to do redirect
+export const RedirectTo: React.FC<{ to: string }> = ({ to }) => {
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    navigate(to);
+  }, [to, navigate]);
+
+  return null;
+};

@@ -4,6 +4,8 @@ import EmailList from "./EmailList";
 import AddressList from "./AddressList";
 import DataTable, { TableColumn } from "react-data-table-component";
 // import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import _ from "lodash";
+import { debounce } from "lodash";
 
 interface PhoneProps {
   phone_desc: { phone_desc: string };
@@ -58,14 +60,29 @@ const columns: TableColumn<OrderProps>[] = [
   },
   {
     name: "Customer Name",
-    selector: (row: OrderProps) =>
-      row.repair_order_customer
-        ? `${row.repair_order_customer.customer_first_name} ${row.repair_order_customer.customer_last_name}`
-        : "",
+    cell: (row: OrderProps) => {
+      if (row.repair_order_customer) {
+        const names = _.startCase(
+          row.repair_order_customer.customer_first_name +
+            " " +
+            row.repair_order_customer.customer_last_name
+        )
+          .trim()
+          .split(" ");
+        const firstName = names.slice(0, -1).join(" ");
+        const lastName = names.slice(-1).join(" ");
+        return (
+          <>
+            {firstName} &nbsp;&nbsp;<strong>{lastName}</strong>
+          </>
+        );
+      }
+      return "";
+    },
     sortable: true,
   },
   {
-    name: "Phone Nbr",
+    name: "Phones",
     cell: (row: OrderProps) =>
       row.repair_order_customer ? (
         <PhoneList phones={row.repair_order_customer.phones} />

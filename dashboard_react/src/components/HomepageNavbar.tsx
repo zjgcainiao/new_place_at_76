@@ -32,7 +32,7 @@ const HomepageNavbar: React.FC = () => {
         </button>
         <Link
           className="btn btn-link btn-dark btn-sm d-none d-lg-block order-lg-3"
-          to="/dashboard-v2"
+          to="/employees/login"
         >
           {" "}
           {/* Replace with your route */}

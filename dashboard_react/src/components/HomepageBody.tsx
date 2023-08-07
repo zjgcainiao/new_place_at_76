@@ -17,7 +17,6 @@ import {
   homepageParagraphs,
   serviceIcons,
   ServiceIcon,
-  homepageRichTextContent,
   RichTextElement,
 } from "./Types";
 
@@ -26,6 +25,7 @@ import {
   homepageImageCar,
   homepageButtonLink,
   homepageButtonText,
+  homepageRichTextContent,
   homepageImageUrl,
 } from "./Constants";
 
