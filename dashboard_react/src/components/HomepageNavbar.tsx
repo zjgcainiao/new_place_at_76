@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom"; // Import if you're using React Router for navigation
-import logo from "https://storage.googleapis.com/2023_new_prolube76site/homepageapp/2022-Logo-Transparent-small.png"; // Adjust the path accordingly
+import { logo } from "./Constants";
 
 const HomepageNavbar: React.FC = () => {
   return (
@@ -9,12 +9,12 @@ const HomepageNavbar: React.FC = () => {
       data-scroll-header
     >
       <div className="container">
-        <Link className="navbar-brand me-1 me-xl-4" to="/homepage">
+        <Link className="navbar-brand me-1 me-xl-4" to="/">
           {" "}
           {/* Replace `/homepage` with your route */}
           <img
             className="d-block"
-            src="https://storage.googleapis.com/2023_new_prolube76site/homepageapp/2022-Logo-Transparent-small.png"
+            src={logo}
             width="75"
             alt="Amazing Automan LLC"
           />

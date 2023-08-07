@@ -6,15 +6,18 @@ import {
   Container,
   TabContainer,
 } from "react-bootstrap";
+import { RichTextElement } from "./Types";
 import { Message, ServiceIcon } from "./Types";
-import Spinner from "react-bootstrap/Spinner";
 
-import homepageBackgroundURL from "https://storage.googleapis.com/2023_new_prolube76site/homepageapp/img/home/hero-bg.png";
+import HomepageSection2 from "./HomepageSectionAlt";
+import { homepageBackgroundURL } from "./Constants";
+import Spinner from "react-bootstrap/Spinner";
 
 export interface HomepageSectionProps {
   bgImageBackground?: string;
   header?: string; // add the ? to make the field optoinal
   children?: React.ReactNode;
+  richTextContent?: RichTextElement[];
   paragraphs?: string[];
   listItems?: string[];
   buttonText?: string;
@@ -28,9 +31,12 @@ export interface HomepageSectionProps {
 }
 
 const HomepageSection: React.FC<HomepageSectionProps> = ({
-  //   bgImageBackground = homepageBackgroundURL, assuming bgImagBackground will get value from props passed on from HomepageBody.
+  // bgImageBackground = homepageBackgroundURL,
+  // assuming bgImagBackground will get value from props passed on from HomepageBody.
   bgImageBackground,
   header,
+  children,
+  richTextContent = [],
   paragraphs = [],
   listItems = [],
   buttonText,
@@ -67,7 +73,6 @@ const HomepageSection: React.FC<HomepageSectionProps> = ({
           ))}
         </div>
       )}
-
       <div className="container pt-2">
         <article className="row pt-lg-3 pt-xl-4">
           <section className="col-md-7 pt-3 pt-md-3 pt-lg-5">
@@ -75,18 +80,34 @@ const HomepageSection: React.FC<HomepageSectionProps> = ({
               <h2 className="text-dark pb-2 mb-4 me-md-n5">{header}</h2>
             </header>
             <div className="content-body">
-              {paragraphs.map((para, idx) => (
-                <p key={idx} className="fs-lg text-dark opacity-70">
-                  {para}
-                </p>
-              ))}
-              {listItems.length > 0 && (
-                <ul className="fs-lg text-dark opacity-70">
-                  {listItems.map((item, idx) => (
-                    <li key={idx}>{item}</li>
-                  ))}
-                </ul>
-              )}
+              {richTextContent.map((element, index) => {
+                switch (element.type) {
+                  case "p":
+                    return (
+                      <p key={index} className="fs-lg text-dark opacity-70">
+                        {element.content}
+                      </p>
+                    );
+                  case "ul":
+                    return (
+                      <ul key={index} className="fs-lg text-dark opacity-70">
+                        {element.content.map((item, liIndex) => (
+                          <li key={liIndex}>{item}</li>
+                        ))}
+                      </ul>
+                    );
+                  case "ol":
+                    return (
+                      <ol key={index} className="fs-lg text-dark opacity-70">
+                        {element.content.map((item, liIndex) => (
+                          <li key={liIndex}>{item}</li>
+                        ))}
+                      </ol>
+                    );
+                  default:
+                    return null;
+                }
+              })}
               {buttonText && buttonLink && (
                 <Button
                   variant="outline-primary"
@@ -111,6 +132,7 @@ const HomepageSection: React.FC<HomepageSectionProps> = ({
           )}
         </article>
       </div>
+      {children} {/* Render the children prop content here */}
     </section>
   );
 };

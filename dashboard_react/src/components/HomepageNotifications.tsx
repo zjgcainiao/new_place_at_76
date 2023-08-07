@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Alert, Figure, Container, Button } from "react-bootstrap";
 import { Message } from "./Types";
 // type Message = {
 //   text: string;
@@ -10,7 +10,7 @@ const HomepageNotifications: React.FC<{ messages: Message[] }> = ({
   messages,
 }) => {
   return (
-    <div className="pt-5">
+    <Container className="m-5 pt-5">
       {messages.map((message, index) => (
         <div
           key={index}
@@ -28,7 +28,7 @@ const HomepageNotifications: React.FC<{ messages: Message[] }> = ({
           </button>
         </div>
       ))}
-    </div>
+    </Container>
   );
 };
 

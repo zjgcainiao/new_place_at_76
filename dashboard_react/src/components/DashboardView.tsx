@@ -3,14 +3,14 @@ import LoginForm from "./LoginForm";
 import TechnicianView from "./TechnicianView";
 import ServiceAdvisorView from "./ServiceAdvisorView";
 import DashboardNavbar from "./DashboardNavbar"; // import the DashboardNavbar component
+import HomepageApp from "./HomepageApp";
+import { InternalUser } from "./Types";
 
 import {
   BrowserRouter as Router,
   Routes, // instead of "Switch"
   Route,
 } from "react-router-dom";
-import HomepageApp from "./HomepageApp";
-import { InternalUser } from "./Types";
 
 function DashboardView() {
   // const [user, setUser] = useState(null);
