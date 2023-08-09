@@ -160,10 +160,10 @@ class AppointmentRequestForm(forms.ModelForm):
         return phone_number_formatted
 
     def clean(self):
-        cleaned_data = super().clean()
-        # images = self.files.getlist('image')
-        # if len(images) > 5:
-        raise ValidationError("You can only upload a maximum of 5 images.")
+        # cleaned_data = super().clean()
+        images = self.files.getlist('image')
+        if len(images) > 5:
+            raise ValidationError("You can only upload a maximum of 5 images.")
 
     def __init__(self, *args, **kwargs):
         # add a request into the keyword arguments in the form

@@ -1,3 +1,7 @@
+from homepageapp.models import ModelsNewSQL02Model
+from django.conf import settings
+from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
 import os
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator
@@ -23,17 +27,17 @@ import calendar
 from formtools.wizard.views import SessionWizardView
 from appointments.models import APPT_STATUS_CANCELLED, APPT_STATUS_NOT_SUBMITTED
 
-    
-# 2023-04-10 
+
+# 2023-04-10
 def appointment_create_view(request):
     # form = AppointmentRequestForm(request.POST or None)
     if request.method == 'POST':
         form = AppointmentRequestForm(request.POST)
-        
+
         # image_formset =AppointmentImageFormSet(request.POST, request.FILES, user=request.user)
         # image_form = AppointmentImagesForm(request.POST, request.FILES, user=request.user)
     # form = AppointmentRequestForm(request.POST)
-        if form.is_valid(): #and image_formset.is_valid()
+        if form.is_valid():  # and image_formset.is_valid()
             # form.save()
             form.save(commit=False)
             appointment_data = form.cleaned_data
@@ -53,7 +57,7 @@ def appointment_create_view(request):
         else:
             print(form.errors)  # print out the form errors
             # return redirect('appointment_preview', args=[appointment.appointment_id])
-    else: 
+    else:
         form = AppointmentRequestForm
         # image_formset = AppointmentImageFormSet(queryset=AppointmentImages.objects.none())
         # image_form = AppointmentImagesForm()
@@ -61,6 +65,7 @@ def appointment_create_view(request):
     # context = {'form': form,'image_formset': image_formset,'image_form':image_form}
 
     return render(request, 'appointments/10_appointment_create.html', context)
+
 
 def appointment_preview_view(request):
     # appointment = kwargs.get('appointment', None)
@@ -70,7 +75,7 @@ def appointment_preview_view(request):
     if not appointment_data:
         return redirect('appointments:appointment-create-view')
     # 2024-04-10 using json.loads to load back the appointment_data.
-    # otherwise appointment_data will be 
+    # otherwise appointment_data will be
     appointment_data = json.loads(appointment_data)
     images = json.loads(images)
 # if request.method == 'GET':
@@ -82,7 +87,8 @@ def appointment_preview_view(request):
     if request.method == 'POST':
         appointment.appointment_status = APPT_STATUS_NOT_SUBMITTED
         appointment.save()
-        messages.success(request, 'Appointment has been submitted successfuly.')
+        messages.success(
+            request, 'Appointment has been submitted successfuly.')
         request.session.pop('appointment_data')
         return redirect('appointments:appointment-success-view')
     return render(request, 'appointments/20_appointment_preview.html', context)
@@ -91,58 +97,60 @@ def appointment_preview_view(request):
     # #         appointment = form.save(commit=False)
     # #         appointment.appointment_status = 'C'
     # #         appointment.save()
-        # form = AppointmentRequestForm(request.POST)
-        # if form.is_valid():
-        #     appointment = AppointmentRequest(form.fields)
-        #     appointment.save()
-        #     messages.success(request, 'Appointment has been submitted successfuly.')
-        #     request.session.pop('appointment_data')
-        # # send_appointment_confirmation_email(appointment)
-        #     return redirect('appointments:appointment-success')
-        # return redirect('appointment_success')
-        # form = AppointmentRequestForm(initial=kwargs)
-        # return render(request, 'appointments/02-appointment-preview.html', {'form': form})
-        # elif 'confirm' in request.POST:
-        #     form = AppointmentRequestForm(request.POST)
-        #     if form.is_valid():
-        #         appointment = form.save(commit=False)
-        #         appointment.appointment_status = 'C'
-        #         appointment.save()
-        #         # Send confirmation email -- pending
-        #         # 2023-04-10
-        #         # subject = 'Appointment Confirmed'
-        #         # html_message = render_to_string('appointment_confirmation_email.html', {'appointment': appointment})
-        #         # plain_message = strip_tags(html_message)
-        #         # from_email = 'Your Company <noreply@yourcompany.com>'
-        #         # to_email = appointment.appointment_email
-        #         # send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
+    # form = AppointmentRequestForm(request.POST)
+    # if form.is_valid():
+    #     appointment = AppointmentRequest(form.fields)
+    #     appointment.save()
+    #     messages.success(request, 'Appointment has been submitted successfuly.')
+    #     request.session.pop('appointment_data')
+    # # send_appointment_confirmation_email(appointment)
+    #     return redirect('appointments:appointment-success')
+    # return redirect('appointment_success')
+    # form = AppointmentRequestForm(initial=kwargs)
+    # return render(request, 'appointments/02-appointment-preview.html', {'form': form})
+    # elif 'confirm' in request.POST:
+    #     form = AppointmentRequestForm(request.POST)
+    #     if form.is_valid():
+    #         appointment = form.save(commit=False)
+    #         appointment.appointment_status = 'C'
+    #         appointment.save()
+    #         # Send confirmation email -- pending
+    #         # 2023-04-10
+    #         # subject = 'Appointment Confirmed'
+    #         # html_message = render_to_string('appointment_confirmation_email.html', {'appointment': appointment})
+    #         # plain_message = strip_tags(html_message)
+    #         # from_email = 'Your Company <noreply@yourcompany.com>'
+    #         # to_email = appointment.appointment_email
+    #         # send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
 
-        # # else:
-        # #     return redirect('appointment-create-view')
-        # # form = AppointmentRequestForm()
-    
+    # # else:
+    # #     return redirect('appointment-create-view')
+    # # form = AppointmentRequestForm()
+
     # context = {'form': form}
     # return render(request, 'appointments/02-appointment-preview.html', context)
     # return redirect('appointment-create-view')
 
+
 def appointment_success(request):
     return render(request, 'appointments/30_appointment_creation_success.html')
 
-from django.conf import settings
-from django.core.files.storage import FileSystemStorage
 
-# version 2 of appointment creation. 
+# version 2 of appointment creation.
+
+
 class AppointmentCreateView(SessionWizardView):
     # def get_template_names(self):
     #     return ['appointments/12_appointment_create_v2_step_1.html', 'appointments/13_appointment_create_v2_step_2.html']
     template_name = 'appointments/11_appointment_create_v2.html'
 
-    file_storage = FileSystemStorage(location=os.path.join(settings.DEFAULT_FILE_STORAGE, 'appointment_images'))
+    file_storage = FileSystemStorage(location=os.path.join(
+        settings.DEFAULT_FILE_STORAGE, 'appointment_images'))
     form_list = [
-            ('upload images', AppointmentImageFormSet),
-            ('new_appointment', AppointmentRequestForm),
-            ] 
-    
+        ('upload images', AppointmentImageFormSet),
+        ('new_appointment', AppointmentRequestForm),
+    ]
+
     success_url = reverse_lazy('appointments:appointment-preview-view')
 
     def done(self, form_list, **kwargs):
@@ -180,6 +188,7 @@ class AppointmentPreviewView(FormView):
         kwargs['data'] = self.request.session.get('appointment_data', {})
         return kwargs
 
+
 class AppointmentSuccessView(TemplateView):
     template_name = 'appointments/30_appointment_creation_success.html'
 
@@ -201,14 +210,15 @@ class AppointmentListView(LoginRequiredMixin, ListView):
     login_url = reverse_lazy('internal_users:internal_user_login')
 
     def get_queryset(self):
-        ## `__` double undestore..more researched are needed.
-        qs = AppointmentRequest.objects.prefetch_related('appointment_repair_order').exclude(appointment_status=APPT_STATUS_CANCELLED).all()
+        # `__` double undestore..more researched are needed.
+        qs = AppointmentRequest.objects.prefetch_related(
+            'appointment_repair_order').exclude(appointment_status=APPT_STATUS_CANCELLED).all()
         # qs=qs.filter(appointment_status=APPT_STATUS_CANCELLED)
         # select_related('repair_order_customer').prefetch_related('repair_order_customer__addresses')
         # repair order phase defines the WIP (work-in-progress) caegory. 6 means invoice.
 
         return qs
-    
+
 
 class AppointmentDetailView(LoginRequiredMixin, DetailView):
     model = AppointmentRequest
@@ -220,7 +230,7 @@ class AppointmentDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['form'] = AppointmentImagesForm()
         return context
-    
+
     def post(self, request, *args, **kwargs):
         appointment = self.get_object()
         form = AppointmentImagesForm(request.POST, request.FILES)
@@ -238,30 +248,32 @@ class AppointmentDetailView(LoginRequiredMixin, DetailView):
     #         document.talent = talent
     #         document.save()
     #     return self.get(request, *args, **kwargs)
-    
+
     # def get_queryset(self):
     #     queryset = super().get_queryset()
     #     return queryset.filter(user=self.request.user)
 
-from homepageapp.models import ModelsNewSQL02Model
-from django.http import JsonResponse
 
 def appointment_get_vehicle_models(request, make_id):
-    models = ModelsNewSQL02Model.objects.filter(make_id=make_id).all().order_by('model_name')
+    models = ModelsNewSQL02Model.objects.filter(
+        make_id=make_id).all().order_by('model_name')
     model_dict_list = list(models.values('model_id', 'model_name'))
     model_tuple_list = [(model.pk, model.model_name) for model in models]
     # return JsonResponse(model_tuple_list, safe=False)
-    return JsonResponse(model_dict_list, safe=False)    
+    return JsonResponse(model_dict_list, safe=False)
 
 
 def appointment_image_list(request, pk):
     appointment = AppointmentRequest.objects.get(pk=pk)
-    images = AppointmentImages.objects.filter(image_is_active=True).filter(appointment=appointment).all()
+    images = AppointmentImages.objects.filter(
+        image_is_active=True).filter(appointment=appointment).all()
     return render(request, 'appointments/70_appointment_image_list.html', {'images': images, 'appointment': appointment})
+
 
 def appointment_image_soft_delete(request, image_id):
     image = get_object_or_404(AppointmentImages, image_id=image_id)
     image.image_is_active = False
     image.save()
-    messages.add_message(request, messages.INFO, "Image selected has been deleted.")
+    messages.add_message(request, messages.INFO,
+                         "Image selected has been deleted.")
     return redirect('appointment:appointment_image_list')

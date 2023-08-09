@@ -40,7 +40,7 @@ const HomepageNavbar: React.FC = () => {
         </Link>
         <Link
           className="btn btn-primary btn-sm ms-2 order-lg-3"
-          to="/customer-register"
+          to="/react/customer-register"
         >
           {" "}
           {/* Replace with your route */}
@@ -71,7 +71,7 @@ const HomepageNavbar: React.FC = () => {
                 </li>
                 <li className="dropdown-divider"></li>
                 <li>
-                  <Link className="dropdown-item" to="/about-us">
+                  <Link className="dropdown-item" to="react/about-us">
                     {" "}
                     {/* Replace with your route */}
                     <i className="fi-friends fs-base me-2"></i>About Us
@@ -80,7 +80,7 @@ const HomepageNavbar: React.FC = () => {
               </ul>
             </li>
             <li className="nav-item active">
-              <Link className="nav-link" to="/appointment-create">
+              <Link className="nav-link" to="react/appointment-create">
                 {" "}
                 {/* Replace with your route */}
                 Service Appointment
