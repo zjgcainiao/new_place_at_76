@@ -15,6 +15,7 @@ APPT_STATUS_PORGRESSING = 5
 APPT_STATUS_COMPLETED = 10
 APPT_STATUS_CANCELLED = 20
 
+
 class AppointmentRequest(models.Model):
     STATUS_CHOICES = (
         (APPT_STATUS_NOT_SUBMITTED, _('00_Not_Submitted')),
@@ -37,33 +38,50 @@ class AppointmentRequest(models.Model):
     appointment_id = models.BigAutoField(primary_key=True)
     # appointment_date = models.DateField()
     appointment_requested_datetime = models.DateTimeField()
-    appointment_reason_for_visit = models.PositiveSmallIntegerField(choices=REASON_CHOICES, default=0)
-    appointment_customer_user = models.ForeignKey(CustomerUser, on_delete=models.SET_NULL, null=True)
+    appointment_reason_for_visit = models.PositiveSmallIntegerField(
+        choices=REASON_CHOICES, default=0)
+    appointment_customer_user = models.ForeignKey(
+        CustomerUser, on_delete=models.SET_NULL, null=True)
     appointment_first_name = models.CharField(max_length=50, null=True)
     appointment_last_name = models.CharField(max_length=50, null=True)
     appointment_phone_number = FormattedPhoneNumberField()
-    appointment_phone_number_digits_only = models.CharField(max_length=20, null=True)
-    appointment_user_type = models.CharField(max_length=50, blank=True, null=True) # recording either customer_user or internal_user
+    appointment_phone_number_digits_only = models.CharField(
+        max_length=20, null=True)
+    # recording either customer_user or internal_user
+    appointment_user_type = models.CharField(
+        max_length=50, blank=True, null=True)
     appointment_email = models.EmailField(null=True)
-    appointment_vehicle_year = models.CharField(max_length=4, null=True,blank=True)
-    appointment_vehicle_make = models.CharField(max_length=100, null=True,blank=True)
-    appointment_vehicle_model = models.CharField(max_length=100, null=True,blank=True)
-    appointment_vehicle_license_plate = models.CharField(max_length=20, null=True,blank=True)
-    appointment_vehicle_license_state = models.CharField(max_length=2, null=True,blank=True)
-    appointment_vehilce_vin_number = models.CharField(max_length=30, null=True, blank=True)
+    appointment_vehicle_year = models.CharField(
+        max_length=4, null=True, blank=True)
+    appointment_vehicle_make = models.CharField(
+        max_length=100, null=True, blank=True)
+    appointment_vehicle_model = models.CharField(
+        max_length=100, null=True, blank=True)
+    appointment_vehicle_license_plate = models.CharField(
+        max_length=20, null=True, blank=True)
+    appointment_vehicle_license_state = models.CharField(
+        max_length=2, null=True, blank=True)
+    appointment_vehilce_vin_number = models.CharField(
+        max_length=30, null=True, blank=True)
     appointment_vehicle_detail = models.TextField()
-    appointment_vehicle_detail_in_json = models.CharField(max_length=4000, null=True) # {'year': 2003, 'model': VW, ...}
+    appointment_vehicle_detail_in_json = models.CharField(
+        max_length=4000, null=True)  # {'year': 2003, 'model': VW, ...}
     appointment_concern_description = models.TextField(blank=True)
-    appointment_status = models.CharField(max_length=50, choices=STATUS_CHOICES, default=APPT_STATUS_NOT_SUBMITTED)
-    appointment_status_comments = models.CharField(max_length=4000, null=True,blank=True)
+    appointment_status = models.CharField(
+        max_length=50, choices=STATUS_CHOICES, default=APPT_STATUS_NOT_SUBMITTED)
+    appointment_status_comments = models.CharField(
+        max_length=4000, null=True, blank=True)
     appointment_is_active = models.BooleanField(default=True)
 
-    appointment_preferred_contact_method = models.CharField(max_length=100, blank=True, null=True)
-    appointment_repair_order = models.ForeignKey(RepairOrder, on_delete=models.SET_NULL, null=True, related_name='appointment_repair_order')
+    appointment_preferred_contact_method = models.CharField(
+        max_length=100, blank=True, null=True)
+    appointment_repair_order = models.ForeignKey(
+        RepairOrder, on_delete=models.SET_NULL, null=True, related_name='appointment_repair_order')
     appointment_is_converted_to_ro = models.BooleanField(default=False)
 
     # appointment can either be created by anoymous user, a signed-in customer_user or created by an internal_user when a customer shows up on the physical store.
-    appointment_created_by_internal_user = models.ForeignKey(InternalUser, on_delete=models.SET_NULL, null=True) # when null, it measn its created by customer user
+    appointment_created_by_internal_user = models.ForeignKey(
+        InternalUser, on_delete=models.SET_NULL, null=True)  # when null, it measn its created by customer user
     appointment_created_at = models.DateTimeField(auto_now_add=True)
     appointment_last_updated_date = models.DateTimeField(auto_now=True)
 
@@ -73,22 +91,23 @@ class AppointmentRequest(models.Model):
 
     class Meta:
         db_table = 'appointments'
-    
+
     def __str__(self):
         return f"Name: {self.appointment_first_name} {self.appointment_last_name}-Time: {self.appointment_requested_datetime}"
-    
+
 
 class AppointmentImages(models.Model):
     image_id = models.BigAutoField(primary_key=True)
-    appointment = models.ForeignKey(AppointmentRequest, on_delete=models.SET_NULL, null=True, related_name='appointment_appointmentimages') 
-    appointment_image = models.FileField(upload_to='appointment_images') # the bucket's subfolder
+    appointment = models.ForeignKey(AppointmentRequest, on_delete=models.SET_NULL,
+                                    null=True, related_name='appointment_appointmentimages')
+    appointment_image = models.FileField(
+        upload_to='appointment_images')  # the bucket's subfolder
     uploaded_date = models.DateTimeField(auto_now_add=True)
     image_is_active = models.BooleanField(default=True)
+
     class Meta:
-            
+
         db_table = 'appointment_images'
-        ordering =['-image_id']
+        ordering = ['-image_id']
         verbose_name = 'appointment_image'
         verbose_name_plural = 'appointment_images'
-
-

@@ -18,6 +18,7 @@ from customer_users.models import CustomerUser
 from django.contrib.contenttypes.models import ContentType
 from core_operations.models import US_COUNTRY_CODE
 from core_operations.common_functions import format_phone_number_to_shop_standard
+from core_operations.common_functions import deformat_phone_numbers
 
 # custom validator 01
 
@@ -44,10 +45,11 @@ def validate_file_size(value):
 
 
 def validate_phone_number(value):
+    value = deformat_phone_numbers(value)
     # Check if value has exactly 10 digits. US phone number. no country codde 1, or +1 is needed.
     if not re.match(r'^\d{10}$', value):
         raise ValidationError(
-            'Enter a valid 10-digit US phone number.Ex: 2223334444')
+            'The phone number should have 10digits. Ex: 2223334444, or (222)333-4444.')
 
 
 class AppointmentRequestForm(forms.ModelForm):

@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.core.mail import EmailMessage, get_connection
 from django.conf import settings
 from django.contrib import messages
@@ -7,7 +7,8 @@ import os
 from dotenv import load_dotenv
 import json
 
-load_dotenv()  # take environment variables from .env.
+
+# load_dotenv()  # take environment variables from .env.
 
 
 # added on 2023-06-01 to validate if a receipent email is valid.
@@ -27,6 +28,7 @@ def is_valid_email(data):
             return True
     return False
 
+
 def validate_email(email):
     email_url = '&email=' + email
     response = requests.get(api_url + email_url)
@@ -39,7 +41,7 @@ def validate_email(email):
 
 
 # Create your views here.
-def send_email_sample(request):  
+def send_email_sample(request):
     if request.method == "POST":
         with get_connection(
             host=settings.EMAIL_HOST,
@@ -47,17 +49,17 @@ def send_email_sample(request):
             username=settings.EMAIL_HOST_USER,
             password=settings.EMAIL_HOST_PASSWORD,
             use_tls=settings.EMAIL_USE_TLS
-            ) as connection:
-            
+        ) as connection:
+
             subject = request.POST.get("subject")
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [request.POST.get("email"), ]
             message = request.POST.get("message")
-            messages.add_message(request, messages.SUCCESS, f"email has been sent to {recipient_list}")
-            EmailMessage(subject, message, email_from, recipient_list, connection=connection).send()
+            messages.add_message(request, messages.SUCCESS,
+                                 f"email has been sent to {recipient_list}")
+            EmailMessage(subject, message, email_from,
+                         recipient_list, connection=connection).send()
             # return redirect('automatic_mails/email_sent_success.html')
-            return render(request,'automatic_mails/email_sent_success.html' )
+            return render(request, 'automatic_mails/email_sent_success.html')
 
     return render(request, 'automatic_mails/send_an_email.html')
-
-

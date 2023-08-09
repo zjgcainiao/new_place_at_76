@@ -29,13 +29,17 @@ from appointments.models import APPT_STATUS_CANCELLED, APPT_STATUS_NOT_SUBMITTED
 
 
 # 2023-04-10
+
+
 def appointment_create_view(request):
     # form = AppointmentRequestForm(request.POST or None)
     if request.method == 'POST':
-        form = AppointmentRequestForm(request.POST)
-
-        # image_formset =AppointmentImageFormSet(request.POST, request.FILES, user=request.user)
-        # image_form = AppointmentImagesForm(request.POST, request.FILES, user=request.user)
+        # form = AppointmentRequestForm(request.POST)
+        form = AppointmentRequestForm(request.POST, request.FILES)
+        image_formset = AppointmentImageFormSet(
+            request.POST, request.FILES, user=request.user)
+        image_form = AppointmentImagesForm(
+            request.POST, request.FILES, user=request.user)
     # form = AppointmentRequestForm(request.POST)
         if form.is_valid():  # and image_formset.is_valid()
             # form.save()
@@ -59,10 +63,12 @@ def appointment_create_view(request):
             # return redirect('appointment_preview', args=[appointment.appointment_id])
     else:
         form = AppointmentRequestForm
-        # image_formset = AppointmentImageFormSet(queryset=AppointmentImages.objects.none())
-        # image_form = AppointmentImagesForm()
-    context = {'form': form}
-    # context = {'form': form,'image_formset': image_formset,'image_form':image_form}
+        image_formset = AppointmentImageFormSet(
+            queryset=AppointmentImages.objects.none())
+        image_form = AppointmentImagesForm()
+    # context = {'form': form}
+    context = {'form': form, 'image_formset': image_formset,
+               'image_form': image_form}
 
     return render(request, 'appointments/10_appointment_create.html', context)
 
@@ -92,11 +98,7 @@ def appointment_preview_view(request):
         request.session.pop('appointment_data')
         return redirect('appointments:appointment-success-view')
     return render(request, 'appointments/20_appointment_preview.html', context)
-    # #     form = AppointmentRequestForm(request.POST)
-    # #     if form.is_valid():
-    # #         appointment = form.save(commit=False)
-    # #         appointment.appointment_status = 'C'
-    # #         appointment.save()
+
     # form = AppointmentRequestForm(request.POST)
     # if form.is_valid():
     #     appointment = AppointmentRequest(form.fields)
