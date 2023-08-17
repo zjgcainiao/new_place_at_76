@@ -26,7 +26,7 @@ const DashboardNavbar: React.FC<DashboardNavbarProps> = ({ user }) => {
   return (
     <Navbar bg="light" expand="lg" data-bs-theme="light">
       <Container>
-        <Navbar.Brand href="#home">
+        <Navbar.Brand href="/">
           <img src={logo} width="80" alt="logo" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="dashboard-navbar-nav" />

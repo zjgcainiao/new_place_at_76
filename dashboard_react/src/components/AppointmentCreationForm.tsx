@@ -1,109 +1,274 @@
-import React, { useState } from "react";
-// allows customer user, signed in or not, to create an appointment request. future sub for Django's appointments app. 2023-08-07 created.
-
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import {
+  Form,
+  Button,
+  Row,
+  Col,
+  Container,
+  InputGroup,
+  FormControl,
+} from "react-bootstrap";
+// https://www.npmjs.com/package/react-datetime
+import Datetime from "react-datetime";
+import "react-datetime/css/react-datetime.css";
 interface AppointmentFormData {
-  appointmentEmail: string;
-  appointmentPhoneNumber: string;
-  appointmentFirstName: string;
-  appointmentLastName: string;
-  appointmentRequestedDatetime: Date;
-  appointmentReasonForVisit: string;
-  appointmentVehicleYear: number;
-  appointmentVehicleMake: string;
-  appointmentVehicleModel: string;
-  appointmentConcernDescription: string;
+  appointment_email: string;
+  appointment_phone_number: string;
+  appointment_first_name?: string;
+  appointment_last_name?: string;
+  appointment_requested_datetime?: Date;
+  appointment_reason_for_visit?: string;
+  appointment_vehicle_year?: string;
+  appointment_vehicle_make?: string;
+  appointment_vehicle_model?: string;
+  appointment_concern_description: string;
+  appointment_images?: FileList | null;
 }
 
-const initialFormData: AppointmentFormData = {
-  appointmentEmail: "",
-  appointmentPhoneNumber: "",
-  appointmentFirstName: "",
-  appointmentLastName: "",
-  appointmentRequestedDatetime: new Date(),
-  appointmentReasonForVisit: "",
-  appointmentVehicleYear: new Date().getFullYear(),
-  appointmentVehicleMake: "",
-  appointmentVehicleModel: "",
-  appointmentConcernDescription: "",
-};
+const AppointmentCreationForm: React.FC = () => {
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const nextStep = () => setCurrentStep((prevStep) => prevStep + 1);
+  const prevStep = () => setCurrentStep((prevStep) => prevStep - 1);
+  const [formData, setFormData] = useState<AppointmentFormData>({
+    appointment_email: "",
+    appointment_phone_number: "",
+    appointment_first_name: "",
+    appointment_last_name: "",
+    appointment_requested_datetime: new Date(),
+    appointment_reason_for_visit: "",
+    appointment_vehicle_year: "",
+    appointment_vehicle_make: "",
+    appointment_vehicle_model: "",
+    appointment_concern_description: "",
+    appointment_images: null,
+  });
 
-const AppointmentCreationView: React.FC = () => {
-  const [formData, setFormData] = useState(initialFormData);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  const handleInputChange = (
+    e: ChangeEvent<HTMLTextAreaElement | HTMLSelectElement | HTMLInputElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
+    setFormData((prevData: AppointmentFormData) => ({
+      ...prevData,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevData: AppointmentFormData) => ({
+      ...prevData,
+      appointment_images: e.target.files,
+    }));
+  };
+
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log("here is the appointment form information submitted.");
-    console.log(formData);
-    // Submit logic here, like sending data to an API endpoint
+    // Do your submission logic here...
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-horizontal">
-      {/* Time and Contact Info */}
-      <fieldset>
-        <legend>Time and Contact Info</legend>
-        <div className="row p-1">
-          <div className="col-md-6">
-            <input
+    <Container className="m-1 p-1">
+      <Form onSubmit={handleSubmit} className="m-1 p-1">
+        {/* Conditionally render steps based on currentStep state */}
+
+        {/* Conditionally render steps based on currentStep state */}
+        {currentStep === 1 && (
+          <>
+            <p className="m-1 p-1">
+              Welcome to our appointment system! We value your time, and we've
+              made this process straightforward to help you schedule a visit
+              with ease. You're a few steps away from finalizing your
+              appointment. Kindly provide the necessary details in the following
+              pages to ensure a seamless experience.
+            </p>
+
+            <Form.Group as={Row}>
+              <Col md={6}>
+                <Form.Control
+                  type="datetime-local"
+                  name="appointment_requested_datetime"
+                  value={formData.appointment_requested_datetime
+                    .toISOString()
+                    .slice(0, 16)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      appointment_requested_datetime: new Date(e.target.value),
+                    }));
+                  }}
+                />
+              </Col>
+              <Col md={6}>
+                <Form.Control
+                  type="text"
+                  name="appointment_reason_for_visit"
+                  value={formData.appointment_reason_for_visit}
+                  onChange={handleInputChange}
+                  placeholder="choose from one of the following"
+                />
+              </Col>
+              <Col md={6} className="m-1 p-1">
+                <Form.Control
+                  type="email"
+                  name="appointment_email"
+                  value={formData.appointment_email}
+                  onChange={handleInputChange}
+                  placeholder="Contact Email"
+                  style={{ backgroundColor: "#cfe2f3" }}
+                />
+              </Col>
+              <Col md={6} className="m-1 p-1">
+                <Form.Control
+                  type="tel"
+                  name="appointment_phone_number"
+                  value={formData.appointment_phone_number}
+                  onChange={handleInputChange}
+                  placeholder="Contact Phone Number"
+                  style={{ backgroundColor: "#cfe2f3" }}
+                />
+              </Col>
+
+              <Col md={6}>
+                <Form.Control
+                  type="text"
+                  name="appointment_first_name"
+                  value={formData.appointment_first_name}
+                  onChange={handleInputChange}
+                  placeholder="First Name"
+                />
+              </Col>
+              <Col md={6} className="m-1 p-1">
+                <Form.Control
+                  type="text"
+                  name="aappointment_last_name"
+                  value={formData.appointment_last_name}
+                  onChange={handleInputChange}
+                  placeholder="Last Name"
+                />
+              </Col>
+
+              <Col md={6} className="m-1 p-1">
+                <Form.Control
+                  type="text"
+                  name="appointment_vehicle_year"
+                  value={formData.appointment_vehicle_year}
+                  onChange={handleInputChange}
+                  placeholder="enter full year, i.e. 2020"
+                />
+              </Col>
+              <Col md={6}>
+                <Form.Control
+                  type="text"
+                  name="appointment_vehicle_make"
+                  value={formData.appointment_vehicle_make}
+                  onChange={handleInputChange}
+                  placeholder="for instance, Toyota, Honda, Kia, etc."
+                />
+              </Col>
+              <Col md={6}>
+                <Form.Control
+                  type="text"
+                  name="appointment_vehicle_model"
+                  value={formData.appointment_vehicle_model}
+                  onChange={handleInputChange}
+                  placeholder="choose one if you know. optional."
+                />
+              </Col>
+
+              <Col md={6}>
+                <Form.Control
+                  type="text"
+                  name=" appointment_concern_description"
+                  value={formData.appointment_concern_description}
+                  onChange={handleInputChange}
+                  placeholder="for instance, Lexus, Honda, Kia, etc."
+                />
+              </Col>
+            </Form.Group>
+
+            <Button variant="outline-primary" onClick={nextStep}>
+              Next
+            </Button>
+          </>
+        )}
+
+        {currentStep === 2 && (
+          <div>
+            {/* Image Upload Input */}
+            <Form.Group as={Row} className="p-1 m-1">
+              <Col md={6}>
+                <Form.Control
+                  type="file"
+                  name="appointment_images"
+                  onChange={handleInputChange}
+                />
+              </Col>
+            </Form.Group>
+
+            <Button variant="outline-secondary" onClick={prevStep}>
+              Back
+            </Button>
+            <Button variant="outline-primary" onClick={nextStep}>
+              Next
+            </Button>
+          </div>
+        )}
+
+        {currentStep === 3 && (
+          <div>
+            {/* Render all form data in a readable manner for the user to review */}
+            <div>
+              {Object.entries(formData).map(([key, value]) => (
+                <p key={key}>
+                  <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong>{" "}
+                  {value}
+                </p>
+              ))}
+              {/* ... repeat for all other fields ... */}
+            </div>
+
+            <Button variant="outline-secondary" onClick={prevStep}>
+              Back
+            </Button>
+            <Button variant="outline-primary" type="submit">
+              Submit
+            </Button>
+          </div>
+        )}
+        {/* <Form.Group as={Row} className="p-1">
+          <Col md={6}>
+            <Form.Control
               type="email"
-              name="appointmentEmail"
-              value={formData.appointmentEmail}
-              onChange={handleChange}
-              className="form-control"
-              placeholder="Email"
-            />
-          </div>
-          <div className="col-md-6">
-            <input
-              type="tel"
-              name="appointmentPhoneNumber"
-              value={formData.appointmentPhoneNumber}
-              onChange={handleChange}
-              className="form-control"
+              name="appointment_email"
+              value={formData.appointment_email}
+              onChange={handleInputChange}
+              placeholder="Contact Email"
               style={{ backgroundColor: "#cfe2f3" }}
-              placeholder="Phone Number"
             />
-          </div>
-        </div>
-        <div className="row p-1">
-          {/* ... similar structure for other fields ... */}
-        </div>
-      </fieldset>
+          </Col>
+          <Col md={6}>
+            <Form.Control
+              type="tel"
+              name="appointment_phone_number"
+              value={formData.appointment_phone_number}
+              onChange={handleInputChange}
+              placeholder="Contact Phone Number"
+              style={{ backgroundColor: "#cfe2f3" }}
+            />
+          </Col>
+        </Form.Group> */}
+        {/* ... (Continue similarly for the rest of the fields) ... */}
+        <hr />
 
-      <hr />
-
-      {/* Vehicle & Concern */}
-      <fieldset>
-        <legend>Vehicle & Concern</legend>
-        {/* ... */}
-      </fieldset>
-
-      <hr />
-
-      {/* ... additional sections ... */}
-
-      <hr />
-
-      <div className="row p-1 m-1">
-        <div className="col-md-6">
-          <button type="submit" className="btn btn-outline-primary">
-            Submit
-          </button>
-        </div>
-        {/* ... reset button or other controls ... */}
-      </div>
-    </form>
+        {/* <Form.Group as={Row} className="p-1 m-1">
+          <Col md={6}>
+            <Button type="submit" variant="outline-primary">
+              Submit
+            </Button>
+          </Col>
+        </Form.Group> */}
+      </Form>
+    </Container>
   );
 };
 
-export default AppointmentCreationView;
+export default AppointmentCreationForm;

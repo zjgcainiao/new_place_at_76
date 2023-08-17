@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 // import "./App.css";
 import HomepageApp from "./components/HomepageApp";
+import Error404Component from "./components/Error404Component";
 import HomepageSection from "./components/HomepageSection";
 import {
   createBrowserRouter,
@@ -17,6 +18,7 @@ import { ExternalCSS } from "./components/ExternalCSS";
 import DashboardView from "./components/DashboardView";
 import { homepageAppExternalCSS } from "./components/Constants";
 import { RedirectTo } from "./components/Types";
+import AppointmentCreationView from "./components/AppointmentCreationForm";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -34,22 +36,25 @@ function App() {
     <>
       {/* this is the homepageapp's main theme css.  */}
       <ExternalCSS href={homepageAppExternalCSS} />
-      <Router>
+      <Router basename="/dashboard/react">
         <Routes>
           <Route path="/" element={<HomepageApp />} />
           {/* Redirect '/homepage' and '/home' to '/' */}
-          <Route path="/homepage" element={<RedirectTo to="/" />} />
+          <Route path="/homagepage" element={<RedirectTo to="/" />} />
           <Route path="/home" element={<RedirectTo to="/" />} />
 
           {/* Check if user visits 'employees/login/' */}
           <Route
-            path="employees/login/"
+            path="/employees/login"
             element={!isLoggedIn ? <DashboardView /> : <Navigate to="/dash/" />}
           />
           <Route path="/dash" element={<DashboardView />} />
+          <Route path="/appts/create" element={<AppointmentCreationView />} />
 
           {/* New '/section' route */}
           <Route path="/section" element={<HomepageSection />} />
+
+          <Route path="*" element={<Error404Component />} />
         </Routes>
       </Router>
     </>

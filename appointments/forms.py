@@ -17,8 +17,7 @@ from internal_users.models import InternalUser
 from customer_users.models import CustomerUser
 from django.contrib.contenttypes.models import ContentType
 from core_operations.models import US_COUNTRY_CODE
-from core_operations.common_functions import format_phone_number_to_shop_standard
-from core_operations.common_functions import deformat_phone_numbers
+from core_operations.common_functions import format_phone_number_to_shop_standard, deformat_phone_numbers
 
 # custom validator 01
 
@@ -45,6 +44,7 @@ def validate_file_size(value):
 
 
 def validate_phone_number(value):
+    # javacript based script will format the user's input as (800)234-0690.
     value = deformat_phone_numbers(value)
     # Check if value has exactly 10 digits. US phone number. no country codde 1, or +1 is needed.
     if not re.match(r'^\d{10}$', value):
@@ -55,6 +55,7 @@ def validate_phone_number(value):
 class AppointmentRequestForm(forms.ModelForm):
     class Meta:
         model = AppointmentRequest
+        exclude = ('appointment_created_at', 'appointment_last_updated_date',)
         fields = [
             'appointment_reason_for_visit',
             'appointment_requested_datetime',
@@ -101,8 +102,10 @@ class AppointmentRequestForm(forms.ModelForm):
     # Add your custom fields
     appointment_vehicle_year = forms.IntegerField(validators=[validate_vehicle_year],
                                                   widget=forms.TextInput(
-                                                      attrs={'type': 'text', 'class': 'form-control'}),
-                                                  label='Year',)
+                                                      attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'the year of vehicle, 2022, 2021 etc.', }),
+                                                  label='Year',
+
+                                                  )
 
     appointment_vehicle_make = forms.ChoiceField(
         choices=get_latest_vehicle_make_list, label='Make')
@@ -120,14 +123,35 @@ class AppointmentRequestForm(forms.ModelForm):
     # appointment_requested_time = forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control datetimepicker-input'}))
     # attrs={'type': 'datetime-local', }
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
+    # Add the image field from AppointmentImages
+    appointment_images = forms.ImageField(
+        required=False,
+        label="Upload Image (ChatGPT 2023-08-08)",
+        widget=forms.ClearableFileInput(attrs={'multiple': True})
+    )
 
-        # instance.some_flag = True
-        if commit:
-            instance.save()
-            self.save_m2m()
-        return instance
+    def save(self, commit=True):
+        # First save the appointment instance
+        appointment = super(AppointmentRequestForm, self).save(commit)
+
+        # If image data exists, save them
+        for img_file in self.files.getlist('appointment_images'):
+            image_instance = AppointmentImages(
+                appointment=appointment,
+                appointment_image=img_file,
+            )
+            image_instance.save()
+
+        return appointment
+
+    # old save function as of 2023-08-08
+    # def save(self, commit=True):
+    #     instance = super().save(commit=False)
+    #     # instance.some_flag = True
+    #     if commit:
+    #         instance.save()
+    #         self.save_m2m()
+    #     return instance
 
     def clean_appointment_email(self):
         appointment_email = self.cleaned_data['appointment_email']
@@ -178,8 +202,8 @@ class AppointmentRequestForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
         self.helper.form_method = "post"
-        self.helper.label_class = 'col-3'
-        self.helper.field_class = 'col-9'
+        self.helper.label_class = 'col-md-3'
+        self.helper.field_class = 'col-md-9'
         self.helper.layout = Layout(
             Row(Fieldset(_('Time and Contact Info'),
                 Row(Column(Field('appointment_email', css_class='form-control'),
@@ -210,7 +234,7 @@ class AppointmentRequestForm(forms.ModelForm):
             HTML("<hr>"),
 
             Row(
-                Fieldset(_('Vehicle & Concern'),
+                Fieldset(_('Describe your service requests or issues:'),
                          # Div(Column(Field('appointment_vehicle_detail',css_class='form-control'),
                          #     css_class='col col-12'),
                          #     css_class='p-1'),
@@ -230,7 +254,17 @@ class AppointmentRequestForm(forms.ModelForm):
 
             Row(
                 Column(Field('appointment_concern_description', css_class='form-control'),
-                       css_class='col col-md-12'),
+                       css_class='col-md-12'),
+                css_class='p-1 m-1'),
+
+            HTML("<hr>"),
+
+            # appointment-image upload section.
+            Row(
+                Column(
+                    Field('appointment_images', css_class='form-control'),
+                    css_class='col-md-6'
+                ),
                 css_class='p-1 m-1'),
 
             HTML("<hr>"),

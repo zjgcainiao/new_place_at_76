@@ -80,7 +80,7 @@ const HomepageNavbar: React.FC = () => {
               </ul>
             </li>
             <li className="nav-item active">
-              <Link className="nav-link" to="react/appointment-create">
+              <Link className="nav-link" to="appts/create/">
                 {" "}
                 {/* Replace with your route */}
                 Service Appointment
