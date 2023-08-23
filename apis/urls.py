@@ -17,9 +17,10 @@ urlpatterns = [
     path('', include(router.urls)),
     path('internal_user_login/', api_internal_user_login,
          name='api_internal_user_login'),
-    path('customers/', views.customer_api, name='customers-api'),  # apis/cust
-    path('ros/', views.repairorders_api,
-         name='repairorders-api'),  # apis/cust`
+    path('customers/', views.get_active_customers_api,
+         name='customers-api'),  # apis/cust
+    path('ros/', views.get_active_repairorders_api,
+         name='repairorders-api'),
     # path('apis/repairorders', views.RepairOrderModelForm, name='api-repair-order'),
 
 ]

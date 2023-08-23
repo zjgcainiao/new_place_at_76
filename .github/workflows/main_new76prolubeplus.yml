@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Main brach to Azure Web App 
+name: Main brach to Azure Web App at 76prolubeplus.com
 on:
   push:
     branches:
@@ -14,24 +14,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # checkout the repo 
+      # checkout the repo
       - uses: actions/checkout@master
       - name: Set up Python version
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: "3.11"
 
       - name: Create and start virtual environment
         run: |
           python -m venv venv
           source venv/bin/activate
-      
+
       # - name: Get pip cache dir (custom added)
       #   id: pip-cache
       #   run: |
       #     echo "PIP_CACHE_DIR=$(pip cache dir)" >> $GITHUB_ENV
       #   shell: bash
-      
+
       # added the above section on 2023-07-26 to cache pip dependencies
       - name: Cache pip dependencies (custom added)
         uses: actions/cache@v3
@@ -43,9 +43,9 @@ jobs:
 
       # - name: Install dependencies
       #   run: pip install -r requirements.txt
-        
+
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
-      
+
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v3
         with:
@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'Production'
+      name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -67,11 +67,11 @@ jobs:
         with:
           name: python-app
           path: .
-          
-      - name: 'Deploy to Azure Web App'
+
+      - name: "Deploy to Azure Web App"
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
-          app-name: 'new76prolubeplus'
-          slot-name: 'Production'
+          app-name: "new76prolubeplus"
+          slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D24551A996B5446DAD20FD4CC5190E13 }}

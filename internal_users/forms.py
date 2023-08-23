@@ -3,7 +3,7 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import InternalUser
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, PasswordResetForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, PasswordResetForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from talent_management.models import TalentsModel

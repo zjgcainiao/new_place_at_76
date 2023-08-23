@@ -60,7 +60,7 @@ class TextMessagesViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['GET'])
-def customer_api(request):
+def get_active_customers_api(request):
     # try:
     customers = CustomersNewSQL02Model.objects.filter(
         customer_is_deleted=False)
@@ -81,30 +81,8 @@ def customer_api(request):
     #     return Response({'error': 'Page out of range.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# def index(request):
-#     render(request, 'index.html')
-
-
-# # using the Django formview
-# class CustomerCreateView(CreateView):
-#     model = CustomersNewSQL01Model
-#     fields = ['ustomer_id','customer_first_name','customer_last_name', 'customer_middle_name'
-#               'customer_does_allow_SMS',]
-
-
-# class CustomerDeleteView(DeleteView):
-#     model = CustomersNewSQL01Model
-#     success_url = reverse_lazy('/')
-
-# class CustomerUpdateView(UpdateView):
-#     model = CustomersNewSQL01Model
-#     fields = ['ustomer_id','customer_first_name','customer_last_name', 'customer_middle_name'
-#               'customer_does_allow_SMS',]
-#     template_name_suffix = '_updated_form'
-
-
 @api_view(['GET'])
-def repairorders_api(request):
+def get_active_repairorders_api(request):
     if request.method == 'GET':
         # repairorders = RepairOrdersNewSQL02Model.objects.all()
         repairorders = RepairOrdersNewSQL02Model.objects.filter(

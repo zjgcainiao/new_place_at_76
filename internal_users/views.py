@@ -137,13 +137,13 @@ class InternalUserLogoutView(LogoutView):
 
 class UserPasswordChangeView(PasswordChangeView):
     template_name = 'internal_users/40_password_change.html'
-    success_url = reverse_lazy('password_change_done')
+    success_url = reverse_lazy('internal_users:password_change_done')
 
 #
 
 
 class UserPasswordChangeDoneView(PasswordChangeDoneView):
-    template_name = 'internal_users/33_password_change_done.html'
+    template_name = 'internal_users/41_password_change_done.html'
 
 
 # 'PasswordResetView" class Allows a user to reset their password by generating a one-time use link that
@@ -152,11 +152,11 @@ class InternalUserPasswordResetView(PasswordResetView):
     template_name = 'internal_users/30_password_reset.html'
 
     # '/password_reset/done/'
-    success_url = reverse_lazy('password_reset_confirm')
+    success_url = reverse_lazy('internal_users:password_reset_confirm')
 
     form_class = InternalUserPasswordResetForm
-    email_template_name = 'internal_users/password_reset_email.html'
-    subject_template_name = 'internal_users/password_reset_subject.txt'
+    email_template_name = 'internal_users/34_password_reset_email.html'
+    subject_template_name = 'internal_users/35_password_reset_subject.txt'
 
     def form_valid(self, form):
         InternalUserModel = get_user_model()
@@ -174,7 +174,7 @@ class InternalUserPasswordResetView(PasswordResetView):
 def firebase_authenticate(request):
     if request.method == 'GET':
         form = InternalUserCreationForm()
-        return render(request, 'internal_users/register.html', {'form': form})
+        return render(request, 'internal_users/10_register.html', {'form': form})
     else:
 
         # if request.method is `POST`
@@ -211,7 +211,7 @@ def InternalUserDashboard(request):
         internal_user = request.user
         return render(request, 'internal_users/60_internal_user_dashboard.html', {'internal_user': internal_user})
     else:
-        render
+        return render(request, 'internal_users/90_pages_404.html', {'error': str(e)})
 
 
 @login_required(login_url='internal_users:internal_user_login')
