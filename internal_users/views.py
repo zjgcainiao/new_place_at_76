@@ -16,7 +16,7 @@ from firebase_admin import auth
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
 from crispy_forms.utils import render_crispy_form
-from internal_users.forms import EmploymentInfoForm
+from internal_users.forms import EmploymentInfoForm, InternalUserPasswordChangeForm
 from internal_users.internal_user_auth_backend import InternalUserBackend
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
@@ -126,7 +126,7 @@ def internal_user_login(request):
 
 class InternalUserLogoutView(LogoutView):
     template_name = 'internal_users/21_logout.html'
-    # next_page = reverse_lazy('homepageapp:homepage')
+    next_page = reverse_lazy('homepageapp:homepage')
 
     def dispatch(self, request, *args, **kwargs):
         messages.success(request, 'You have been successfully logged out.')
@@ -135,14 +135,15 @@ class InternalUserLogoutView(LogoutView):
 # @login_required(login_url='internal_users:internal_user_login')
 
 
-class UserPasswordChangeView(PasswordChangeView):
+class InternalUserPasswordChangeView(PasswordChangeView):
     template_name = 'internal_users/40_password_change.html'
+    # form_class = InternalUserPasswordChangeForm
     success_url = reverse_lazy('internal_users:password_change_done')
 
 #
 
 
-class UserPasswordChangeDoneView(PasswordChangeDoneView):
+class InternalUserPasswordChangeDoneView(PasswordChangeDoneView):
     template_name = 'internal_users/41_password_change_done.html'
 
 

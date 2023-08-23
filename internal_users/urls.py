@@ -1,6 +1,6 @@
 from django.urls import include, path
 from django.contrib.auth import views as auth_views
-from internal_users.views import InternalUserLoginView, InternalUserLogoutView, UserPasswordChangeView, UserPasswordChangeDoneView, InternalUserPasswordResetView
+from internal_users.views import InternalUserLoginView, InternalUserLogoutView, InternalUserPasswordChangeView, InternalUserPasswordChangeDoneView, InternalUserPasswordResetView
 from internal_users.views import InternalUserDashboard, internal_user_view_employement
 from internal_users.views import register, firebase_authenticate, internal_user_login, return_current_internal_user_json
 app_name = 'internal_users'
@@ -19,10 +19,10 @@ urlpatterns = [
     # path('login/v2/', MyLoginView.as_view(), name='login-v2'),
     path('logout/', InternalUserLogoutView.as_view(),
          name='internal_user_logout'),
-    path('password_change/', UserPasswordChangeView.as_view(),
+    path('password_change/', InternalUserPasswordChangeView.as_view(),
          name='internal_user_password_change'),
     # path('password_change/confirm/', UserPasswordChangeDoneView.as_view(), name='password_change_confirm'),
-    path('password_change/done/', UserPasswordChangeDoneView.as_view(),
+    path('password_change/done/', InternalUserPasswordChangeDoneView.as_view(),
          name='password_change_done'),
     path('password_reset/', InternalUserPasswordResetView.as_view(),
          name='password_reset'),
