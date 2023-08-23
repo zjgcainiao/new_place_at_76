@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Favicon and Touch Icons-->
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'homepageapp/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static '/apis/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'homepageapp/img/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'homepageapp/img/logo/logo-2022.svg' %}">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
@@ -134,7 +134,6 @@
         <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span></button>
           <a class="btn btn-link btn-dark btn-sm d-none d-lg-block order-lg-3" href="{% url 'dashboard:dashboard-v2' %}" ><i class="fi-login me-2"></i>Employee</a>
-          <a class="btn btn-link btn-dark btn-sm d-none d-lg-block order-lg-3" href="{% url 'dashboard:dashboard-react' %}" ><i class="fi-plane"></i>React</a>
           <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}"><i class="fi-users me-2"></i>Create an Account</a>
         <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
           <ul class="navbar-nav navbar-nav-scroll" style="max-height: 20rem;">
@@ -147,12 +146,12 @@
                 <li><a class="dropdown-item" href="{% url 'homepageapp:about-us' %}"><i class="fi-friends fs-base me-2"></i>About Us</a></li>
               </ul>
             </li>
-            <!-- Menu items-->
+            
             <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'appointments:appointment-create-view' %}">Service Appointment</a></li>
             {% comment %}
             <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'appointments:appointment-create-view' %}">3D automotive Models</a></li>
             {% endcomment %}
-            <!-- <li class="nav-item"><a class="nav-link" href="#" role="button">Careers</a></li> -->
+
           </ul>
         </div>
       </div>

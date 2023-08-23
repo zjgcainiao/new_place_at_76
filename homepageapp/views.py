@@ -7,7 +7,7 @@ from homepageapp.models import lineItemTaxesNewSQL02Model, LineItemsNewSQL02Mode
 from homepageapp.models import NoteItemsNewSQL02Model
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 # from django.views.generic import CreateView, FormView, TemplateView
-from django.views.generic import ListView, FormView, DetailView
+from django.views.generic import ListView, FormView, DetailView, TemplateView
 from django.views.generic.edit import ModelFormMixin
 from django.utils import timezone
 from rest_framework.response import Response
@@ -99,7 +99,12 @@ def GetAboutUsView(request):
     # return render(request, 'homepageapp/20_homepageapp_home_v2.html')
     return render(request, 'homepageapp/22_homepageapp_about_us.html')
 
-# this is the class-based list view
+# dashboard-react app entrypoint html 2023-08-06
+
+
+class GetReactAppView(TemplateView):
+    template_name = 'homepageapp/13_react_app_portal.html'
+    login_url = reverse_lazy('internal_users:internal_user_login')
 
 
 class CustomerListView(ListView):

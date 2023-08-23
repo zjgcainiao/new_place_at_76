@@ -66,7 +66,7 @@ const AppointmentCreationForm: React.FC = () => {
   };
 
   return (
-    <Container className="m-1 p-1">
+    <Container className="m-2 p-2 ">
       <Form onSubmit={handleSubmit} className="m-1 p-1">
         {/* Conditionally render steps based on currentStep state */}
 
@@ -82,12 +82,12 @@ const AppointmentCreationForm: React.FC = () => {
             </p>
 
             <Form.Group as={Row}>
-              <Col md={6}>
+              <Col md={5} className="m-1 p-1">
                 <Form.Control
                   type="datetime-local"
                   name="appointment_requested_datetime"
                   value={formData.appointment_requested_datetime
-                    .toISOString()
+                    ?.toISOString()
                     .slice(0, 16)}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setFormData((prev) => ({
@@ -97,7 +97,7 @@ const AppointmentCreationForm: React.FC = () => {
                   }}
                 />
               </Col>
-              <Col md={6}>
+              <Col md={5} className="m-1 p-1">
                 <Form.Control
                   type="text"
                   name="appointment_reason_for_visit"
@@ -106,7 +106,7 @@ const AppointmentCreationForm: React.FC = () => {
                   placeholder="choose from one of the following"
                 />
               </Col>
-              <Col md={6} className="m-1 p-1">
+              <Col md={5} className="m-1 p-1">
                 <Form.Control
                   type="email"
                   name="appointment_email"
@@ -116,7 +116,7 @@ const AppointmentCreationForm: React.FC = () => {
                   style={{ backgroundColor: "#cfe2f3" }}
                 />
               </Col>
-              <Col md={6} className="m-1 p-1">
+              <Col md={5} className="m-1 p-1">
                 <Form.Control
                   type="tel"
                   name="appointment_phone_number"
@@ -126,8 +126,7 @@ const AppointmentCreationForm: React.FC = () => {
                   style={{ backgroundColor: "#cfe2f3" }}
                 />
               </Col>
-
-              <Col md={6}>
+              <Col md={5} className="m-1 p-1">
                 <Form.Control
                   type="text"
                   name="appointment_first_name"
@@ -136,7 +135,7 @@ const AppointmentCreationForm: React.FC = () => {
                   placeholder="First Name"
                 />
               </Col>
-              <Col md={6} className="m-1 p-1">
+              <Col md={5} className="m-1 p-1">
                 <Form.Control
                   type="text"
                   name="aappointment_last_name"
@@ -145,8 +144,7 @@ const AppointmentCreationForm: React.FC = () => {
                   placeholder="Last Name"
                 />
               </Col>
-
-              <Col md={6} className="m-1 p-1">
+              <Col md={5} className="m-1 p-1">
                 <Form.Control
                   type="text"
                   name="appointment_vehicle_year"
@@ -155,18 +153,19 @@ const AppointmentCreationForm: React.FC = () => {
                   placeholder="enter full year, i.e. 2020"
                 />
               </Col>
-              <Col md={6}>
+              <Col md={5} className="m-1 p-1">
                 <Form.Control
-                  type="text"
+                  type="form-select"
                   name="appointment_vehicle_make"
                   value={formData.appointment_vehicle_make}
                   onChange={handleInputChange}
                   placeholder="for instance, Toyota, Honda, Kia, etc."
                 />
               </Col>
-              <Col md={6}>
+              <Col md={6} className="m-1 p-1">
                 <Form.Control
                   type="text"
+                  className="form-select"
                   name="appointment_vehicle_model"
                   value={formData.appointment_vehicle_model}
                   onChange={handleInputChange}
@@ -174,13 +173,13 @@ const AppointmentCreationForm: React.FC = () => {
                 />
               </Col>
 
-              <Col md={6}>
+              <Col md={6} className="m-1 p-1">
                 <Form.Control
                   type="text"
                   name=" appointment_concern_description"
                   value={formData.appointment_concern_description}
                   onChange={handleInputChange}
-                  placeholder="for instance, Lexus, Honda, Kia, etc."
+                  placeholder="Examples: 1. I want to do a oil change for 2020 Toyota Sienna. Full Synthetic as usual. 2. My A/C system does not cool enough during a hot day. Last week, i drove to ... 3. The engine acted weird this morning, the car suddenly lost power on a freeway ramp..."
                 />
               </Col>
             </Form.Group>

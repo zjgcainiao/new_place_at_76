@@ -5,7 +5,10 @@ app_name = 'homepageapp'
 urlpatterns = [
     path('', views.GetHomepageView, name='homepage'),
     path('services/', views.GetServiceListView, name='services'),
-    path('about-us/', views.GetAboutUsView, name='about-us')
+    path('about-us/', views.GetAboutUsView, name='about-us'),
+    # react app created in dashboard_react folder
+    path('react/', views.GetReactAppView.as_view(),
+         name='react-app'),
     # path('customers/', views.CustomerListView.as_view(), name='customers-list'),
     # path('customersv2/', views.customer_list, name='customers-list-v2'),
     # path('customersv3/', views.active_customer_list, name='customers-list-v3'),

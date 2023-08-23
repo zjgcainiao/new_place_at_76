@@ -17,7 +17,7 @@ import {
 import { ExternalCSS } from "./components/ExternalCSS";
 import DashboardView from "./components/DashboardView";
 import { homepageAppExternalCSS } from "./components/Constants";
-import { RedirectTo } from "./components/Types";
+// import { CustomRedirectTo } from "./components/Types";
 import AppointmentCreationView from "./components/AppointmentCreationForm";
 
 function App() {
@@ -36,12 +36,12 @@ function App() {
     <>
       {/* this is the homepageapp's main theme css.  */}
       <ExternalCSS href={homepageAppExternalCSS} />
-      <Router basename="/dashboard/react">
+      <Router basename="/react">
         <Routes>
           <Route path="/" element={<HomepageApp />} />
           {/* Redirect '/homepage' and '/home' to '/' */}
-          <Route path="/homagepage" element={<RedirectTo to="/" />} />
-          <Route path="/home" element={<RedirectTo to="/" />} />
+          <Route path="/homepage" element={<Navigate replace to="/" />} />
+          <Route path="/home" element={<Navigate replace to="/" />} />
 
           {/* Check if user visits 'employees/login/' */}
           <Route

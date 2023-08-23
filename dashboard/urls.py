@@ -1,7 +1,7 @@
 from django.urls import include, path
 from .views import dashboard, dashboard_detail_v1, dashboard_detail_v2
 from .views import DashboardView
-from .views import DashboardDetailView, RepairOrderUpdateView, PartItemUpdateView, LaborItemUpdateView, DashboardReactView
+from .views import DashboardDetailView, RepairOrderUpdateView, PartItemUpdateView, LaborItemUpdateView
 from .views import repair_order_update, repair_order_and_line_items_detail, line_item_labor_and_part_item_update_view
 from dashboard.views import chat_sidebar_view, SearchView
 from dashboard import views
@@ -18,9 +18,7 @@ urlpatterns = [
     path('old',  dashboard, name='dashboard-testing-v1'),
     # current version is v2
     path('', DashboardView.as_view(), name='dashboard-v2'),
-    # dashboard-react
-    path('react/', DashboardReactView.as_view(),
-         name='dashboard-react'),  # react app created in dashboard_react folder
+
     path('search/', SearchView.as_view(), name='search'),
     # the dashboard detail apge
     path('v2/detail/<int:pk>/', dashboard_detail_v1, name='dashboard-detail'),

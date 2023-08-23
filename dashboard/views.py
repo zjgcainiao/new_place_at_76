@@ -87,11 +87,6 @@ class DashboardView(LoginRequiredMixin, ListView):
         return qs
 
 
-# dashboard-react app entrypoint html 2023-08-06
-class DashboardReactView(TemplateView):
-    template_name = 'dashboard/13_dashboard_react.html'
-    login_url = reverse_lazy('internal_users:internal_user_login')
-
 # dashboard detail view. version 1
 # modified to prefetch emails, phones, taxes to each repair_order_customer object
 

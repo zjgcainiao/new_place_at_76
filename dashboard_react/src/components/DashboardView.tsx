@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import LoginForm from "./LoginForm";
+import InternalUserLoginForm from "./InternalUserLoginForm";
 import TechnicianView from "./TechnicianView";
 import ServiceAdvisorView from "./ServiceAdvisorView";
 import DashboardNavbar from "./DashboardNavbar"; // import the DashboardNavbar component
@@ -11,7 +11,10 @@ import {
   Routes, // instead of "Switch"
   Route,
 } from "react-router-dom";
-
+import {
+  handleInternalUserLogin,
+  handleInternalUserLogout,
+} from "./authService";
 function DashboardView() {
   const [user, setUser] = useState<InternalUser | null>(null);
 
@@ -39,7 +42,7 @@ function DashboardView() {
     <>
       {!user ? (
         <>
-          <LoginForm handleLogin={handleLogin} />
+          <InternalUserLoginForm handleLogin={handleLogin} />
         </>
       ) : user.is_technician ? (
         <>

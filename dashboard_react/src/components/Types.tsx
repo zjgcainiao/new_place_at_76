@@ -5,9 +5,11 @@ export interface InternalUser {
   email: string;
   password?: string;
   is_technician?: boolean;
+  is_talent_management?: boolean;
   // Add any other fields you might have
 }
 import logo from "https://storage.googleapis.com/2023_new_prolube76site/homepageapp/2022-Logo-Transparent-small.png"; // Adjust the path accordingly
+
 export interface Message {
   id: number; // unique identifier to manage the removal from the list
   type: "info" | "error" | "success"; // assuming these are the message types, you can add or adjust as needed
@@ -118,7 +120,7 @@ export type RichTextElement =
   | { type: "ol"; content: string[] }; // You can extend this with more types if needed
 
 // custom component to do redirect
-export const RedirectTo: React.FC<{ to: string }> = ({ to }) => {
+export const CustomRedirectTo: React.FC<{ to: string }> = ({ to }) => {
   const navigate = useNavigate();
   React.useEffect(() => {
     navigate(to);
