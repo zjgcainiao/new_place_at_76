@@ -20,7 +20,7 @@ urlpatterns = [
     path('logout/', InternalUserLogoutView.as_view(),
          name='internal_user_logout'),
     path('password_change/', InternalUserPasswordChangeView.as_view(),
-         name='internal_user_password_change'),
+         name='password_change'),
     # path('password_change/confirm/', UserPasswordChangeDoneView.as_view(), name='password_change_confirm'),
     path('password_change/done/', InternalUserPasswordChangeDoneView.as_view(),
          name='password_change_done'),
