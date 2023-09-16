@@ -14,7 +14,7 @@ from django.db.models import Prefetch
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from homepageapp.models import RepairOrdersNewSQL02Model, CustomerAddressesNewSQL02Model, CustomersNewSQL02Model, AddressesNewSQL02Model
-from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model
+from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model, VehiclesNewSQL02Model
 # from homepageapp.forms import RepairOrderModelForm, CustomerModelForm, AddressModelForm, RepairOrderLineItemModelForm, PartItemModelForm, LaborItemModelForm
 from dashboard.forms import PartItemFormSet, LaborItemFormSet
 from django.forms.models import inlineformset_factory, modelformset_factory
@@ -370,8 +370,6 @@ class PartItemUpdateView(UpdateView):
     #     response = super().form_valid(form)
     #     return redirect(reverse('dashboard:dashboard_detail',args=self.kwargs['line_item_id']))
 
-#
-
 
 def line_item_labor_and_part_item_update_view(request, pk, line_item_id):
     repair_order_id = pk
@@ -518,23 +516,25 @@ def get_customer_dash(request):
     # need to revise it before PROD launch.
     active_customers = CustomersNewSQL02Model.objects.filter(
         customer_is_deleted=False).prefetch_related(
-        Prefetch('customer_addresses'),
-        'customer_phones',
-        'customer_emails')
-
+        'vehicle_customers',
+    )
+    current_time = timezone.now()
     paginator = Paginator(active_customers, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'dashboard/40_customer_list_view.html', {'page_obj': page_obj})
-
+    return render(request, 'dashboard/40_customer_dash_view.html', {'page_obj': page_obj,
+                                                                    'current_time': current_time,
+                                                                    })
 
 # Customer Create  View
+
+
 class CustomerCreateView(CreateView):
     model = CustomersNewSQL02Model
     fields = ['customer_first_name', 'customer_last_name', 'customer_middle_name',
               'customer_does_allow_SMS',]
-    success_url = reverse_lazy('customers-dash')
     template_name = 'dashboard/42_customer_creation.html'
+    success_url = reverse_lazy('customers-dash')
 
     # ---- 2023-03-27-------
     # encounter Conversion failed when converting from a character string to uniqueidentifier.
@@ -586,17 +586,6 @@ class CustomerUpdateView(UpdateView):
     template_name = 'dashboard/43_customer_update.html'
     success_url = reverse_lazy('dashboard:customer-detail')
 
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     form = CustomerUpdateForm(request.POST, instance=self.object)
-    #     if form.is_valid():
-    #         self.object.customer_last_updated_date = timezone.now()
-    #         form.save()
-    #         messages.success(request, 'Update success.')
-    #         return redirect('dashboard:customer-detail', pk=self.object.customer_id)
-    #     else:
-    #         return self.render_to_response(self.get_context_data(form=form))
-
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.customer_last_updated_date = timezone.now()
@@ -621,6 +610,53 @@ class CustomerDeleteView(DeleteView):
         self.object.save()
         messages.success(request, 'Customer deactivated successfully.')
         return redirect(self.get_success_url())
+
+
+def get_vehicle_dash(request):
+    vehciles = VehiclesNewSQL02Model.objects.select_related(
+        'vehicle_cust',
+        'vehicle_brake',
+        'vehicle_body_style',
+        'vehicle_sub_model',
+        'vehicle_make',
+        'vehicle_GVW',
+        'vehicle_drive_type',
+        'vehicle_transmission',
+    ).order_by('-vehicle_id')
+    current_time = timezone.now()
+    paginator = Paginator(vehciles, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'dashboard/60_vehicle_dash_view.html', {'page_obj': page_obj,
+                                                                   'current_time': current_time,
+                                                                   })
+
+
+class VehicleDetailView(DetailView):
+    model = VehiclesNewSQL02Model
+    success_url = reverse_lazy('vehicle-dash')
+    context_object_name = 'vehicle'
+    template_name = 'dashboard/61_vehicle_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['form'] = CustomerUpdateForm(
+                self.request.POST, instance=self.object)
+        else:
+            context['form'] = CustomerUpdateForm(instance=self.object)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = CustomerUpdateForm(request.POST, instance=self.object)
+        if form.is_valid():
+            self.object.vehicle_last_updated_date = timezone.now()
+            form.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return self.form_invalid(form)
+            # return self.render_to_response(self.get_context_data(form=form))
 
 
 class RepairOrderListView(ListView):

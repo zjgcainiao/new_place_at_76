@@ -5,26 +5,27 @@
 {% if page_obj %}
 <div class="container container-fluid my-1">
     
-    <h2>Active Customers List </h2>
-    <p class="title">Today is {{current_time}} </p>
- 
+    <h2>Customer Dashboard </h2>
+    <p class="title">Today is {{current_time|date}} </p>
+     <p></p>
     <div class='row'>
       <div class="col-12 btn-group my-1">
-        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-list' %}"> <i class="uil-home-alt"></i>Main Customer Dash</a>
+        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-dash' %}"> <i class="uil-home-alt"></i>Main Customer Dash</a>
         <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-create' %}"><i class ='uil-file-plus-alt' ></i> New Customer</a>
       </div>
     </div>
     <!-- end of an row of function buttons -->
 
-    <table class="table table-light table-hover">
+    <table class="table table-light table-hover mb-0">
         <thead>
             <tr>
-                <th>Old ID</th>
+                <th>ID</th>
                 <th>first Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Phone Nbr</th>      
                 <th>Updated at</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -34,17 +35,18 @@
                     <td>{{ customer.customer_first_name}}</td>
                     <td>{{ customer.customer_last_name }}</td>
                     <td>
-                        {% for email in repair_order.repair_order_customer.emails.all %}
+                        {% for email in customer.emails.all %}
                         {{email.email_address|truncatechars:30 }}
                         {% endfor %}
                     </td>
                     <td>
-                        {% for phone in repair_order.repair_order_customer.phones.all %}
+                        {% for phone in customer.phones.all %}
                         <p>{{phone.phone_desc.phone_desc}}   {{phone.phone_number|phone2numeric }}</p>
                         {% endfor %}
                     </td>
 
                     <td>{{ customer.customer_last_updated_date }}</td>
+                    <td class="table-action"><a class="action-icon"><i class="uil uil-edit"></i></a><a><i class="uil uil-trash-alt"></i></a></td>
                     
                 </tr>
             {% empty %}

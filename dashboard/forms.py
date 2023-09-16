@@ -33,7 +33,7 @@ class CustomerUpdateForm(forms.ModelForm):
     customer_spouse_name = forms.CharField(required=False, label='Spouse Name', widget=forms.TextInput(
         attrs={'class': 'form-control', 'type': 'text', 'placeholder': 'enter your spouse name or another trusted person who we can contact.'}))
     customer_dob = forms.DateField(required=False, widget=forms.DateInput(
-        attrs={'type': 'date', 'class': 'form-control'}), label='Date of birth (dob)', help_text='dob is used for customer verification.')
+        attrs={'type': 'date', 'class': 'form-control'}), label='Date of birth (dob)', help_text='dob is only used to verififcation purpose, such as picking up the car after service.')
 
     class Meta:
         model = CustomersNewSQL02Model
@@ -79,9 +79,9 @@ class CustomerUpdateForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(_('customer_info'),
                      Row(Column(Field('customer_first_name', css_class='form-control'),
-                                css_class='col-4 ',),
+                                css_class='col-4',),
                          Column(Field('customer_last_name', css_class='form-control', ),  # style="background-color: #333"
-                                css_class='col-4 ',),
+                                css_class='col-4',),
                          Column(Field('customer_middle_name', css_class='form-control'),
                                 css_class='col-4',),
                          Column(Field('customer_spouse_name', css_class='form-control',),
@@ -98,7 +98,7 @@ class CustomerUpdateForm(forms.ModelForm):
             Row(HTML("<hr>"),
                 css_class='m-1 p-1'),
 
-            Fieldset(_('special information: tax exempt or fleet customer.'),
+            Fieldset(_('Special Information: tax exempt or fleet customer.'),
                      Row(Column(Field('customer_is_tax_exempt', css_class='form-check'),
                                 css_class='col-4'),
                          Column(Field('customer_resale_permit_nbr', css_class='form-control'),

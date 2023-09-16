@@ -30,8 +30,7 @@ from appointments.models import APPT_STATUS_CANCELLED, APPT_STATUS_NOT_SUBMITTED
 
 # 2023-04-10
 
-
-def appointment_create_view(request):
+def appointment_create_view_for_customer(request):
     # form = AppointmentRequestForm(request.POST or None)
     if request.method == 'POST':
         # form = AppointmentRequestForm(request.POST)

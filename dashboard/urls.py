@@ -51,6 +51,10 @@ urlpatterns = [
          views.CustomerUpdateView.as_view(), name='customer-update'),
     path('customers/<int:pk>/delete/',
          views.CustomerDeleteView.as_view(), name='customer-delete'),
+
+    path('vehicles/', views.get_vehicle_dash, name='vehicle-dash'),
+    path('vehicle/<int:pk>/', views.VehicleDetailView.as_view(),
+         name='vehicle-detail'),
     path('repairorders/', views.RepairOrderListView.as_view(),
          name='repairorders-list'),
     path('tech_dash/<int:technician_id>/',
