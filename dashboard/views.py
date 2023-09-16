@@ -93,9 +93,9 @@ class DashboardView(LoginRequiredMixin, ListView):
 def dashboard_detail_v1(request, pk):
     repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
         Prefetch('repair_order_customer__addresses'),
-        'repair_order_customer__phones',
-        'repair_order_customer__emails',
-        'repair_order_customer__taxes',
+        'repair_order_customer__customer_phones',
+        'repair_order_customer__customer_emails',
+        'repair_order_customer__customer_taxes',
         'lineitems__lineitem_noteitem',
         'repair_order_vehicle'
     ).get(pk=pk)
@@ -141,12 +141,12 @@ def dashboard_detail_v1(request, pk):
 
 def dashboard_detail_v2(request, pk):
     repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
-        Prefetch('repair_order_customer__addresses'),
-        'repair_order_customer__phones',
-        'repair_order_customer__emails',
+        Prefetch('repair_order_customer__customer_addresses'),
+        'repair_order_customer__customer_phones',
+        'repair_order_customer__customer_emails',
     ).prefetch_related(
     ).prefetch_related(
-    ).prefetch_related('repair_order_customer__taxes').get(pk=pk)
+    ).prefetch_related('repair_order_customer__customer_taxes').get(pk=pk)
     # repair_order = RepairOrdersNewSQL02Model.objects.get(id=repair_order_id)
     repair_order_customer = repair_order.repair_order_customer
     customer_address = repair_order_customer.addresses.first()
@@ -517,7 +517,10 @@ def get_customer_dash(request):
     # customer_is_activate=False means that a customer is not deactivated. the name of this field is confusing. will
     # need to revise it before PROD launch.
     active_customers = CustomersNewSQL02Model.objects.filter(
-        customer_is_deleted=False)
+        customer_is_deleted=False).prefetch_related(
+        Prefetch('customer_addresses'),
+        'customer_phones',
+        'customer_emails')
 
     paginator = Paginator(active_customers, 10)
     page_number = request.GET.get('page')

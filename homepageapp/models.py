@@ -252,11 +252,11 @@ class CustomersNewSQL02Model(models.Model):
     customer_last_visit_date = models.DateTimeField(null=True)
     customer_first_visit_date = models.DateTimeField(null=True)
     customer_is_deleted = models.BooleanField(default=False)
+    customer_is_active = models.BooleanField(default=True)
     customer_memebership_nbr = models.CharField(max_length=20, null=True)
     customer_does_allow_SMS = models.BooleanField(default=True)
     customer_email_address_in_json = models.CharField(
         max_length=200, null=True)
-
     customer_last_updated_date = models.DateTimeField(auto_now=True)
     customer_is_created_from_appointments = models.BooleanField(default=False)
     customer_fleet_vendor_id = models.CharField(max_length=100, null=True)
