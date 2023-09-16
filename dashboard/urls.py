@@ -40,18 +40,21 @@ urlpatterns = [
          PartItemUpdateView.as_view(), name='part-item-update-view'),
     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/merge/',
          line_item_labor_and_part_item_update_view, name='part-labor-item-merge-view'),
+
     # customer dash
-    path('customers/', views.active_customer_list, name='customers-list'),
+    path('customers/', views.get_customer_dash, name='customer-dash'),
     path('customers/<int:pk>/', views.CustomerDetailView.as_view(),
          name='customer-detail'),
     path('customers/create', views.CustomerCreateView.as_view(),
-         name='create-new-customer'),
+         name='customer-create'),
     path('customers/<int:pk>/update/',
          views.CustomerUpdateView.as_view(), name='customer-update'),
+    path('customers/<int:pk>/delete/',
+         views.CustomerDeleteView.as_view(), name='customer-delete'),
     path('repairorders/', views.RepairOrderListView.as_view(),
          name='repairorders-list'),
     path('tech_dash/<int:technician_id>/',
-         views.technician_dash_view, name='technician_dash'),
+         views.technician_dash_view, name='technician-dash'),
     # path('repairorders/<int:repair_order_id>/lineitems/', views.repair_order_and_line_items_detail, name='repairorder-lineitem-detail'),
     # path('dataimport/email', views.EmailDataView.as_view(), name='import-email-data')
 

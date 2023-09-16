@@ -14,16 +14,17 @@
     </div>
   </div>
   <div class="container container-fluid ">
-    <div class = 'row'>
+    <div class='row'>
       <div class="col-12 btn-group my-1">
         <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search' %}"> <i class="uil-file-plus-alt"></i> New Repair Order</a>
-        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customers-list' %}"><i class ='uil-users-alt' ></i> Go to Customer Dash</a>
+        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-dash' %}"><i class ='uil-users-alt' ></i> Go to Customer Dash</a>
         <a type="button" class="btn btn-outline-dark" href="{% url 'appointments:appointment_list' %}"> <i class="uil-calendar-alt"></i> Go to Appointment Dash</a>
         <a type="button" class="btn btn-outline-dark">Go to Vehicle Dash</a>
       </div>
-
     </div>
   </div>
+  <!-- end of container -->
+  
   <div class = 'container container-fluid'>
     <form method="post">
       {% csrf_token %}

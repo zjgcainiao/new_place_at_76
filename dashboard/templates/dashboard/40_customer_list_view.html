@@ -3,10 +3,19 @@
 {% block content-main %}
 
 {% if page_obj %}
-<div class="navbar" style="background-color: rgb(212, 219, 220);">
-    <h4>Active Customers List </h4>
+<div class="container container-fluid my-1">
+    
+    <h2>Active Customers List </h2>
     <p class="title">Today is {{current_time}} </p>
-</div>
+ 
+    <div class='row'>
+      <div class="col-12 btn-group my-1">
+        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-list' %}"> <i class="uil-home-alt"></i>Main Customer Dash</a>
+        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-create' %}"><i class ='uil-file-plus-alt' ></i> New Customer</a>
+      </div>
+    </div>
+    <!-- end of an row of function buttons -->
+
     <table class="table table-light table-hover">
         <thead>
             <tr>

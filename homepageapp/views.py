@@ -20,8 +20,7 @@ import pyodbc
 import json
 import os
 # from .serializers import *
-# , RepairOrderModelForm
-from homepageapp.forms import CustomerModelForm, VehicleModelForm, RepairOrderLineItemModelForm
+
 from django.db.models import Count
 from django.core.paginator import Paginator
 # from uuid import UUID
@@ -144,99 +143,9 @@ def customer_list(request):
     return render(request, 'homepageapp/01-customer-view-list-v2.html', {'customers': customers,
                                                                          'number_of_actives': number_of_actives,
                                                                          'current_time': current_time, })
-
-# -------------------------------
-# ------2023-03-26---------------
-# GPT 4.0 generated
-# display data on 01-customer-view-list-v3.html
-
-
-def active_customer_list(request):
-    # customer_is_activate=False means that a customer is not deactivated. the name of this field is confusing. will
-    # need to revise it before PROD launch.
-    active_customers = CustomersNewSQL02Model.objects.filter(
-        customer_is_deleted=False)
-    paginator = Paginator(active_customers, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return render(request, 'homepageapp/01-customer-view-list-v3.html', {'page_obj': page_obj})
-
-
-# createView
-class CustomerCreateView(CreateView):
-    model = CustomersNewSQL02Model
-    fields = ['customer_first_name', 'customer_last_name', 'customer_middle_name',
-              'customer_does_allow_SMS',]
-    success_url = reverse_lazy('homepageapp:customers-list-v3')
-    template_name = 'homepageapp/02-customer-creation.html'
-
-    # ---- 2023-03-27-------
-    # encounter Conversion failed when converting from a character string to uniqueidentifier.
-    # ChatGPT 4.0
-    # ----------------------
-    def form_valid(self, form):
-        # Generate a new UUID for the customer_id field. customer_new_uid_v01 -- newly added uuid
-        # form.instance.customer_new_uid_v01 = uuid.uuid4()
-        # Get the current maximum value of the customer_id field. customer_id is the legacy id used in old DB.
-        max_customer_id = CustomersNewSQL02Model.objects.aggregate(Max('customer_id'))[
-            'customer_id__max']
-        # Increment the max value by 1 to get the new customer_id value
-        new_customer_id = max_customer_id + 1 if max_customer_id is not None else 1
-        # Set the customer_id value for the new record and save it
-        form.instance.customer_id = new_customer_id
-        return super().form_valid(form)
-
-
-class CustomerDetailView(DetailView):
-    model = CustomersNewSQL02Model
-    success_url = reverse_lazy('customers-list-v3')
-    context_object_name = 'customer'
-    template_name = 'homepageapp/03-customer-detail.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context['form'] = CustomerModelForm(
-                self.request.POST, instance=self.object)
-        else:
-            context['form'] = CustomerModelForm(instance=self.object)
-        return context
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = CustomerModelForm(request.POST, instance=self.object)
-        if form.is_valid():
-            self.object.customer_last_updated_date = timezone.now()
-            form.save()
-            return HttpResponseRedirect(self.get_success_url())
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
-
-
-class CustomerUpdateView(UpdateView):
-    model = CustomersNewSQL02Model
-    success_url = reverse_lazy('homepageapp:customer-detail')
-    form_class = CustomerModelForm
-    template_name = 'homepageapp/03-customer-update.html'
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = CustomerModelForm(request.POST, instance=self.object)
-        if form.is_valid():
-            self.object.customer_last_updated_date = timezone.now()
-            form.save()
-            messages.success(request, 'Update success.')
-            return redirect('homepageapp:customer-detail', pk=self.object.customer_id)
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
-
-
-class CustomerDeleteView(DeleteView):
-    model = CustomersNewSQL02Model
-    # success_url = reverse_lazy('/')
-
-
 #
+
+
 class RepairOrderListView(ListView):
     # model = RepairOrdersNewSQL02Model
 

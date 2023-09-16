@@ -76,7 +76,6 @@ class DashboardView(LoginRequiredMixin, ListView):
             repair_order_phase__gte=1, repair_order_phase__lte=5)
         qs = qs.select_related('repair_order_customer'
                                ).prefetch_related('repair_order_customer__addresses',
-                                                  'repair_order_customer__addresses',
                                                   'repair_order_customer__phones',
                                                   'repair_order_customer__emails',
                                                   'repair_order_customer__taxes'
@@ -288,10 +287,10 @@ class RepairOrderLineItemListView(ListView):
     def get_queryset(self):
         # `__` double undestore..more researched are needed.
         qs = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer').prefetch_related(
-            'repair_order_customer__addresses',
-            'repair_order_customer__phones',
-            'repair_order_customer__emails',
-            'repair_order_customer__taxes',
+            'repair_order_customer__customer_addresses',
+            'repair_order_customer__customer_phones',
+            'repair_order_customer__customer_emails',
+            'repair_order_customer__customer_taxes',
             'lineitems__parts_lineitems',
             'lineitems__lineitem_laboritem',
         )
@@ -514,24 +513,25 @@ class SearchView(LoginRequiredMixin, View):
 #         return render(request, '80_search.html', {'form': form})
 
 
-def active_customer_list(request):
+def get_customer_dash(request):
     # customer_is_activate=False means that a customer is not deactivated. the name of this field is confusing. will
     # need to revise it before PROD launch.
     active_customers = CustomersNewSQL02Model.objects.filter(
         customer_is_deleted=False)
+
     paginator = Paginator(active_customers, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'dashboard/40_customer_list_view.html', {'page_obj': page_obj})
 
 
-# createView
+# Customer Create  View
 class CustomerCreateView(CreateView):
     model = CustomersNewSQL02Model
     fields = ['customer_first_name', 'customer_last_name', 'customer_middle_name',
               'customer_does_allow_SMS',]
-    success_url = reverse_lazy('customers-list')
-    template_name = 'homepageapp/42_customer_creation.html'
+    success_url = reverse_lazy('customers-dash')
+    template_name = 'dashboard/42_customer_creation.html'
 
     # ---- 2023-03-27-------
     # encounter Conversion failed when converting from a character string to uniqueidentifier.
@@ -552,7 +552,7 @@ class CustomerCreateView(CreateView):
 
 class CustomerDetailView(DetailView):
     model = CustomersNewSQL02Model
-    success_url = reverse_lazy('customers-list')
+    success_url = reverse_lazy('customer-dash')
     context_object_name = 'customer'
     template_name = 'dashboard/41_customer_detail.html'
 
@@ -579,20 +579,45 @@ class CustomerDetailView(DetailView):
 
 class CustomerUpdateView(UpdateView):
     model = CustomersNewSQL02Model
-    success_url = reverse_lazy('dashboard:customer-detail')
     form_class = CustomerUpdateForm
     template_name = 'dashboard/43_customer_update.html'
+    success_url = reverse_lazy('dashboard:customer-detail')
 
-    def post(self, request, *args, **kwargs):
+    # def post(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     form = CustomerUpdateForm(request.POST, instance=self.object)
+    #     if form.is_valid():
+    #         self.object.customer_last_updated_date = timezone.now()
+    #         form.save()
+    #         messages.success(request, 'Update success.')
+    #         return redirect('dashboard:customer-detail', pk=self.object.customer_id)
+    #     else:
+    #         return self.render_to_response(self.get_context_data(form=form))
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.customer_last_updated_date = timezone.now()
+        self.object.modified_by = self.request.user  # assuming the user is logged in
+        self.object.save()
+        messages.success(self.request, 'Update success.')
+        return redirect('dashboard:customer-detail', pk=self.object.customer_id)
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+
+class CustomerDeleteView(DeleteView):
+    model = CustomersNewSQL02Model
+    template_name = 'dashboard/44_customer_delete.html'
+    # Redirect to customer list after "deletion"
+    success_url = reverse_lazy('dashboard:customer-dash')
+
+    def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form = CustomerUpdateForm(request.POST, instance=self.object)
-        if form.is_valid():
-            self.object.customer_last_updated_date = timezone.now()
-            form.save()
-            messages.success(request, 'Update success.')
-            return redirect('dashboard:customer-detail', pk=self.object.customer_id)
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
+        self.object.customer_is_deleted = True  # Soft delete: mark as inactive
+        self.object.save()
+        messages.success(request, 'Customer deactivated successfully.')
+        return redirect(self.get_success_url())
 
 
 class RepairOrderListView(ListView):

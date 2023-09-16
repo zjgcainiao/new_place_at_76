@@ -53,13 +53,16 @@ class UserManager(BaseUserManager):
 
 
 class InternalUser(AbstractBaseUser, PermissionsMixin):
+    USER_LEVEL_0 = 0
     USER_LEVEL_1 = 1
     USER_LEVEL_2 = 2
     USER_LEVEL_3 = 3
+    USER_LEVEL_3 = 4
     USER_PERMISSION_LEVELS = (
-        (USER_LEVEL_1, 'Level 1'),
-        (USER_LEVEL_2, 'Level 2'),
-        (USER_LEVEL_3, 'Level 3'),
+        (USER_LEVEL_1, 'Viewer'),
+        (USER_LEVEL_2, 'Viewer'),
+        (USER_LEVEL_3, 'Processor/Technican'),
+        (USER_LEVEL_3, 'Level 4 - not used'),
     )
     AUTH_GROUP_LEVEL_0 = 0
     AUTH_GROUP_LEVEL_1 = 1
@@ -69,6 +72,11 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     AUTH_GROUP_LEVEL_5 = 5
     AUTH_GROUP_LEVEL_6 = 6
     AUTH_GROUP_LEVEL_7 = 7
+    AUTH_GROUP_LEVEL_8 = 8
+    AUTH_GROUP_LEVEL_9 = 9
+    AUTH_GROUP_LEVEL_11 = 11
+    AUTH_GROUP_LEVEL_12 = 12
+    AUTH_GROUP_LEVEL_13 = 13
     AUTH_GROUP_LEVEL_88 = 88
 
     USER_AUTH_GROUP = (
@@ -77,9 +85,12 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
         (AUTH_GROUP_LEVEL_2, 'internal-user-group'),
         (AUTH_GROUP_LEVEL_3, 'talent-management-group'),
         (AUTH_GROUP_LEVEL_4, 'accounting-group'),
-        (AUTH_GROUP_LEVEL_5, 'it-group'),
-        (AUTH_GROUP_LEVEL_6, 'manager-group'),
-        (AUTH_GROUP_LEVEL_7, 'boardmember-group'),
+        (AUTH_GROUP_LEVEL_5, 'manager-group'),
+        (AUTH_GROUP_LEVEL_6, 'boardmember-group'),
+        # information strucuture group starts with "1x"
+        (AUTH_GROUP_LEVEL_11, 'external_developer-group'),
+        (AUTH_GROUP_LEVEL_12, 'developer-group'),
+        (AUTH_GROUP_LEVEL_13, 'user-management-group'),
         (AUTH_GROUP_LEVEL_88, 'master-shi-fu-group'),
     )
     user_id = models.AutoField(primary_key=True)
@@ -116,7 +127,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     user_created_at = models.DateTimeField(auto_now_add=True)
     # this field is track the internal user id that is used to create an user. usually should belong to IT group.
 
-    user_created_by = models.integerfield(null=True)
+    user_created_by = models.IntegerField(null=True)
     user_last_updated_at = models.DateTimeField(auto_now=True)
 
     # define the username for this internal_user module is email.
