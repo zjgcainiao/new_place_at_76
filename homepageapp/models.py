@@ -768,10 +768,38 @@ class RepairOrderLineItemSquencesNewSQL02Model(models.Model):
     class Meta:
         db_table = 'repairorderlineitemsequences_new_03'
         ordering = ["-ro_line_item_sequence_id", 'repair_order', 'line_item']
- 
+        
+class LineItemAssignedTechnicanModel(models.Model):
+        line_item_assigned_tech_id = models.AutoField(primary_key=True)
+        line_item = models.ForeignKey(LineItemsNewSQL02Model, models.CASCADE, blank=True, null=True)
+        old_employee_id = models.IntegerField(null=True, blank=True)
+        assigned_tech_hours_actual = models.DecimalField(max_digits=15, decimal_places=2)
+        assigned_tech_hours_pay  = models.DecimalField(max_digits=15, decimal_places=2)
+        assigned_tech_comission  = models.DecimalField(max_digits=15, decimal_places=2)
+
+        line_item_assigned_tech_last_change_date = models.DateTimeField(null=True, auto_now=True)
+        line_item_assigned_tech_created_at = models.DateTimeField(auto_now_add=True)
+        internal_user = 
+        
+    
+        def __str__(self):
+            # view of the model in admin pannel
+            return 
+    
+        def save(self, *args, **kwargs):
+            # logic before you save you model object
+            
+            super().save(*args, **kwargs)
+    
+        class Meta:
+            # for naming you table
+            db_table = ""
+    
+
 class PaymentTransactionsModel(models.Model):
     payment_transaction_id = models.AutoField(primary_key=True)
     payment_last_updated_date = models.DateTimeField(null=True, auto_now=True)
+    
     class Meta:
         db_table = 'paymenttransactions_new_03'
         ordering = ["-payment_transaction_id",]

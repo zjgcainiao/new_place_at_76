@@ -18,7 +18,6 @@ urlpatterns = [
     path('employees/', include('internal_users.urls')),
     path('accounts/', include('customer_users.urls')),  # customer_users
     path('dashboard/', include('dashboard.urls')),
-    path('polls/', include('polls.urls')),
     path('appts/', include('appointments.urls')),
     path('admin/', admin.site.urls),
     # path('admin/', my_admin_site.urls),

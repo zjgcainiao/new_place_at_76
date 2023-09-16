@@ -31,15 +31,15 @@ class RepairOrderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         qs = RepairOrdersNewSQL02Model.objects.filter(
             repair_order_phase__gte=1, repair_order_phase__lte=5)
-        qs = qs.select_related('repair_order_customer'
-                               ).prefetch_related('repair_order_customer__addresses',
-                                                  'repair_order_customer__addresses',
-                                                  'repair_order_customer__phones',
-                                                  'repair_order_customer__emails',
-                                                  'repair_order_customer__taxes',
-                                                  'payment_repairorders',
-                                                  'repair_order_customer__payment_customers'
-                                                  )
+        qs = qs.prefetch_related('repair_order_customer',
+                                 'repair_order_customer__addresses',
+                                 'repair_order_customer__addresses',
+                                 'repair_order_customer__phones',
+                                 'repair_order_customer__emails',
+                                 'repair_order_customer__taxes',
+                                 'payment_repairorders',
+                                 'repair_order_customer__payment_customers'
+                                 )
         return qs
 
 
@@ -48,7 +48,10 @@ class LineItemsViewSet(viewsets.ModelViewSet):
     serializer_class = LineItemsSerializer
 
     def get_queryset(self):
-        return LineItemsNewSQL02Model.objects.all()
+        return LineItemsNewSQL02Model.objects.prefetch_related(
+            'lineitems__lineitem_noteitem',
+            'lineitems__lineitem_laboritem',
+            'lineitems__parts_lineitems')
 
 
 class TextMessagesViewSet(viewsets.ModelViewSet):

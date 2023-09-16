@@ -92,7 +92,7 @@ INSTALLED_APPS = [
 
     # 'polls.apps.PollsConfig',
     'corsheaders',
-    'polls',
+    # 'polls',
     'homepageapp',
     'appointments',
     'apis',  # adding the apis.

@@ -6,8 +6,10 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password
 # from usermanagers import UserManager
 
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
+
     def create_user(self, email, password=None, **extra_fields):
         """
         Creates and saves a User with the given email and password.
@@ -45,19 +47,20 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
-            
+
         user.save(using=self._db)
         return user
+
 
 class InternalUser(AbstractBaseUser, PermissionsMixin):
     USER_LEVEL_1 = 1
     USER_LEVEL_2 = 2
     USER_LEVEL_3 = 3
     USER_PERMISSION_LEVELS = (
-            (USER_LEVEL_1, 'Level 1'),
-            (USER_LEVEL_2, 'Level 2'),
-            (USER_LEVEL_3, 'Level 3'),
-        )
+        (USER_LEVEL_1, 'Level 1'),
+        (USER_LEVEL_2, 'Level 2'),
+        (USER_LEVEL_3, 'Level 3'),
+    )
     AUTH_GROUP_LEVEL_0 = 0
     AUTH_GROUP_LEVEL_1 = 1
     AUTH_GROUP_LEVEL_2 = 2
@@ -78,9 +81,11 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
         (AUTH_GROUP_LEVEL_6, 'manager-group'),
         (AUTH_GROUP_LEVEL_7, 'boardmember-group'),
         (AUTH_GROUP_LEVEL_88, 'master-shi-fu-group'),
-        )
+    )
     user_id = models.AutoField(primary_key=True)
     user_first_name = models.CharField(_('first name'), max_length=50)
+    user_middle_name = models.CharField(
+        _('middle name'), max_length=50, null=True)
     user_last_name = models.CharField(_('last name'), max_length=50)
     email = models.EmailField(verbose_name='email address', unique=True)
     password = models.CharField(max_length=128, blank=False, null=False)
@@ -92,14 +97,16 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     # that resides in the TalentsModel
 
     user_talent_id = models.IntegerField(null=True)
-    user_talent_profile_linkage_is_confirmed = models.BooleanField(default=False)
-    user_talent_profile_last_linked_date =  models.DateTimeField(null=True, blank=True)
+    user_talent_profile_linkage_is_confirmed = models.BooleanField(
+        default=False)
+    user_talent_profile_last_linked_date = models.DateTimeField(
+        null=True, blank=True)
 
     user_start_date = models.DateTimeField(null=True)
     user_discharge_date = models.DateTimeField(null=True, blank=True)
 
-    user_is_active = models.BooleanField(_('active'), default=True, 
-        help_text=_('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'))
+    user_is_active = models.BooleanField(_('active'), default=True,
+                                         help_text=_('Designates whether this user should be treated as active. if the value is False; it means the account has been deactivated.'))
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     user_is_admin = models.BooleanField(default=False)
@@ -107,6 +114,9 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
                                                        default=AUTH_GROUP_LEVEL_0,
                                                        )
     user_created_at = models.DateTimeField(auto_now_add=True)
+    # this field is track the internal user id that is used to create an user. usually should belong to IT group.
+
+    user_created_by = models.integerfield(null=True)
     user_last_updated_at = models.DateTimeField(auto_now=True)
 
     # define the username for this internal_user module is email.
@@ -116,12 +126,11 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        return f'{self.user_first_name} {self.user_last_name}'
+        first_name = self.user_first_name.strip().capitalize()
+        last_name = self.user_last_name.strip().capitalize()
+        return f'{first_name} {last_name}'
 
     class Meta:
         db_table = 'internalusers_new_03'
         verbose_name = 'internaluser'
         verbose_name_plural = 'internalusers'
-
-
-

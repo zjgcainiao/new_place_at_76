@@ -20,6 +20,7 @@ urlpatterns = [
     path('', DashboardView.as_view(), name='dashboard-v2'),
 
     path('search/', SearchView.as_view(), name='search'),
+
     # the dashboard detail apge
     path('v2/detail/<int:pk>/', dashboard_detail_v1, name='dashboard-detail'),
     path('chats/customers/<int:customer_id>/',
@@ -49,6 +50,8 @@ urlpatterns = [
          views.CustomerUpdateView.as_view(), name='customer-update'),
     path('repairorders/', views.RepairOrderListView.as_view(),
          name='repairorders-list'),
+    path('tech_dash/<int:technician_id>/',
+         views.technician_dash_view, name='technician_dash'),
     # path('repairorders/<int:repair_order_id>/lineitems/', views.repair_order_and_line_items_detail, name='repairorder-lineitem-detail'),
     # path('dataimport/email', views.EmailDataView.as_view(), name='import-email-data')
 
