@@ -4,9 +4,15 @@
 
 {% if page_obj %}
 <div class="container container-fluid my-1">
-    
-    <h2>Vehicle Dashboard </h2>
-    <p class="title">Today is {{current_time|date}} </p>
+    <!-- Breadcrumb-->
+    <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb breadcrumb-dark mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:dashboard-v2' %}">Work Dashboard</a></li>
+            <li class="breadcrumb-item active"><a href="{% url 'dashboard:vehicle-dash' %}">Vehicles</a></li>
+        </ol>
+    </nav>
+
+    <h2>Vehicles </h2> <p class="title small">Today is {{current_time|date}} </p>
      <p></p>
     <div class='row'>
       <div class="col-12 btn-group my-1">
@@ -22,8 +28,9 @@
                 <th>ID</th>
                 <th>VIN number</th>
                 <th>License plate</th>
-                <th>Email</th>
-                <th>Phone Nbr</th>      
+                <th>State</th>
+                <th>Customer</th>
+                <th>Vehicle Info</th>      
                 <th>Updated at</th>
                 <th>Action</th>
             </tr>
@@ -32,26 +39,26 @@
             {% for vehicle in page_obj %}
                 <tr>
                     <td><a href ="{% url 'dashboard:vehicle-detail' pk=vehicle.vehicle_id %} ">{{vehicle.vehicle_id}}</a></td>
-                    <td>{{ vehicle.vehicle_vin}}</td>
-                    <td>{{ vehicle.license}}</td>
+                    <td>{{vehicle.VIN_number}}</td>
+                    <td>{{vehicle.vehicle_license_plate_nbr}}</td>
+                    <td>{{vehicle.vehicle_license_state}}</td>
+
                     <td>
-                        {% for email in vehicle.emails.all %}
-                        {{email.email_address|truncatechars:30 }}
+                        {% for vehicle_customer in vehicle.vehicle_cust.all %}
+                        {{vehicle_customer.customer_first_name|truncatechars:30 }}
                         {% endfor %}
                     </td>
-                    <td>
-                        {% for phone in vehicle.phones.all %}
-                        <p>{{phone.phone_desc.phone_desc}}   {{phone.phone_number|phone2numeric }}</p>
-                        {% endfor %}
+                    <td >
+                         {{vehicle.vehicle_year}}_{{vehicle.vehicle_make.make_name}}_{{vehicle.vehicle_sub_model.submodel_name}}_{{vehicle.vehicle_body_style.body_style_name}}_{{vehicle.vehicle_engine.engine_number_of_liter}}_{{vehicle.vehicle_tranmission.transmission_type}}
                     </td>
 
-                    <td>{{ vehicle.customer_last_updated_date }}</td>
+                    <td>{{ vehicle.vehicle_last_updated_datetime }}</td>
                     <td class="table-action"><a class="action-icon"><i class="uil uil-edit"></i></a><a><i class="uil uil-trash-alt"></i></a></td>
                     
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="4">No active customers found.</td>
+                    <td colspan="4">No vehicle record found.</td>
                 </tr>
                 {% endfor %} 
         </tbody>

@@ -18,10 +18,10 @@
 
 <div class="container container-fluid " id ='vehicle-detail-container'>
     <!-- Breadcrumb-->
-    <nav class="pt-1" aria-label="Breadcrumb">
-        <ol class="breadcrumb breadcrumb-dark">
+    <nav  aria-label="Breadcrumb">
+        <ol class="breadcrumb breadcrumb-dark mb-0">
             <li class="breadcrumb-item"><a href="{% url 'dashboard:dashboard-v2' %}">Dashboard</a></li>
-            <li class="breadcrumb-item "><a href="{% url 'dashboard:vehcile-dash' %}">Vehicles</a></li>
+            <li class="breadcrumb-item "><a href="{% url 'dashboard:vehicle-dash' %}">Vehicles</a></li>
             <li class="breadcrumb-item active"><a href="{% url 'dashboard:vehicle-detail' pk=vehicle.vehicle_id %}">Vehicle Detail</a></li>
         </ol>
     </nav>
@@ -30,16 +30,19 @@
     <div class = 'row'>
         <div class ='col col-12'>
             <div class="card card-hover border border-light" >
-                <div class ='card-header text-dark'>Vehicle ID:{{customer.customer_id}}. customer since {{customer.customer_first_visit_date|date:'Y-m-d'}}  </div>
+                <div class ='card-header text-dark'>Vehicle ID:{{vehicle.vehicle_id}}. Last recorded Odometer: {{vehicle.vehicle_odometer_1}}  </div>
                 <div class = 'card-body text-dark'>
-                    <p class="card-text"> Name: {{customer.customer_first_name}} {{customer.customer_last_name}} </p>
-                    <p class="card-text"> Spouse Name: {{customer.customer_spouse_name}} </p>
-                    <p class ='card-text'> Memo: {{customer.customer_memo_1}} </p>
-                    <p class ='card-text'> Okay to Charge: {{customer.customer_is_okay_to_charge}} </p>                  
-                    <p class ='card-text'>Charge status: {{customer.customer_is_in_social_crm}}</p>
-                    <p class ='card-text'>Last visit on: {{customer.customer_last_visit_date}} </p>
-                    <p class ='card-text small'> Updated on: {{customer.customer_last_updated_date}}</p>
-                    <a href="{% url 'dashboard:customer-update' customer.customer_id %}" class="btn btn-outline-info">Update</a>
+                    <p class="card-text"> VIN: {{vehicle.VIN_number}} </p>
+                    <p class="card-text"> License Plate: {{vehicle.vehicle_license_plate_nbr}}. State: {{vehicle.vehicle_license_state}}</p>
+                    <p class="card-text"> Vehicle Info:  {{vehicle.vehicle_year}} {{vehicle.vehicle_make.make_name}} {{vehicle.vehicle_sub_model.submodel_name}}. Bodystyle: {{vehicle.vehicle_body_style.body_style_name}}. Brakes: {{vehicle.vehicle_brake.brake_system_type}}. Weight: {{vehicle.vehicle_GVW.gvw_text}} </p>            
+                    <p class ='card-text'>Engine hours In: {{vehicle.vehicle_engine_hour_in}}</p>
+                    <p class ='card-text'>Customer First Name: {{vehicle.vehicle_cust.customer_first_name}}</p>
+
+                    
+                    <p class ='card-text'>Last visit on: {{vehicle.vehicle_last_in_date}} </p>
+                     <p class ='card-text'> Memo: {{vehicle.vehicle_memo_1}} </p>                   
+                    <p class ='card-text small'> Updated on: {{vehicle.vehicle_last_updated_datetime}}</p>
+                    <a href="{% url 'dashboard:customer-update' pk=vehicle.vehicle_id %}" class="btn btn-outline-info">Update</a>
                 </div>
             </div>
         </div>

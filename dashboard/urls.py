@@ -1,7 +1,7 @@
 from django.urls import include, path
-from .views import dashboard, dashboard_detail_v1, dashboard_detail_v2
-from .views import DashboardView
-from .views import DashboardDetailView, RepairOrderUpdateView, PartItemUpdateView, LaborItemUpdateView
+from .views import wip_dashboard, dashboard_detail_v1, dashboard_detail_v2
+from dashboard.views import WIPDashboardView, get_main_dashboard
+from dashboard.views import DashboardDetailView, RepairOrderUpdateView, PartItemUpdateView, LaborItemUpdateView
 from .views import repair_order_update, repair_order_and_line_items_detail, line_item_labor_and_part_item_update_view
 from dashboard.views import chat_sidebar_view, SearchView
 from dashboard import views
@@ -13,12 +13,15 @@ urlpatterns = [
     # path('register/', auth_views.register, name='register'),
     # path('', IndexPage, name='dashboard-index'),
 
+    path('', get_main_dashboard, name='main-dash'),
+
+
     # dashboard -- repair order plus customer info and customer information. Phone numbers are not included yet.
     # prefix: dashboard/
-    path('old',  dashboard, name='dashboard-testing-v1'),
-    # current version is v2
-    path('', DashboardView.as_view(), name='dashboard-v2'),
+    path('old',  wip_dashboard, name='dashboard-testing-v1'),
 
+    # current version is v2
+    path('WIPs/', WIPDashboardView.as_view(), name='dashboard-v2'),
     path('search/', SearchView.as_view(), name='search'),
 
     # the dashboard detail apge

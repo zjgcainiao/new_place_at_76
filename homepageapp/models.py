@@ -20,7 +20,8 @@ from internal_users.models import InternalUser
 
 class CategoryModel(models.Model):
     category_id = models.AutoField(primary_key=True)
-    category_description = models.CharField(max_length=200, blank=True)
+    category_description = models.CharField(
+        max_length=200, blank=True, null=True)
     category_display = models.IntegerField(blank=True, null=True)
     category_created_at = models.DateTimeField(auto_now_add=True)
     # tracking fields
@@ -88,11 +89,12 @@ class InvoiceStatusModel(models.Model):
 class AddressesNewSQL02Model(models.Model):
     address_id = models.AutoField(primary_key=True)
     address_type_id = models.IntegerField()
-    address_company_or_ATTN = models.CharField(max_length=50, blank=True)
-    address_line_01 = models.CharField(max_length=80, blank=True)
-    address_city = models.CharField(max_length=50,  blank=True)
-    address_state = models.CharField(max_length=50, blank=True)
-    address_zip_code = models.CharField(max_length=30, blank=True)
+    address_company_or_ATTN = models.CharField(
+        max_length=50, null=True, blank=True)
+    address_line_01 = models.CharField(max_length=80, null=True, blank=True)
+    address_city = models.CharField(max_length=50,  null=True, blank=True)
+    address_state = models.CharField(max_length=50, null=True, blank=True)
+    address_zip_code = models.CharField(max_length=30, null=True, blank=True)
     address_created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='address_created', on_delete=models.SET_NULL, null=True, blank=True)
@@ -234,9 +236,10 @@ class CustomersNewSQL02Model(models.Model):
     # customer_new_uid_v01 = models.CharField(editable=False, auto_created=True, primary_key=True, max_length=36)
     # primary key = True
     customer_id = models.AutoField(primary_key=True)
-    customer_title_id = models.CharField(max_length=20, null=True)
-    customer_first_name = models.CharField(max_length=50, null=True)
-    customer_last_name = models.CharField(max_length=50, null=True)
+    customer_title_id = models.CharField(max_length=20, null=True, blank=True)
+    customer_first_name = models.CharField(
+        max_length=50, null=True, blank=True)
+    customer_last_name = models.CharField(max_length=50, null=True, blank=True)
     customer_middle_name = models.CharField(
         max_length=50, null=True, blank=True)
     customer_dob = models.DateTimeField(null=True, blank=True)
@@ -244,23 +247,28 @@ class CustomersNewSQL02Model(models.Model):
     # customer_primary_phone_uid = models.CharField(max_length=36, null=True)
     # customer_primary_email_uid = models.CharField(max_length=36, null=True)
     customer_is_okay_to_charge = models.BooleanField(default=True)
-    customer_memo_1 = models.CharField(max_length=4000, null=True)
+    customer_memo_1 = models.CharField(max_length=4000, null=True, blank=True)
     customer_is_tax_exempt = models.BooleanField(default=False)
-    customer_resale_permit_nbr = models.CharField(max_length=20, null=True)
+    customer_resale_permit_nbr = models.CharField(
+        max_length=20, null=True, blank=True)
     customer_is_in_social_crm = models.BooleanField(default=True)
     customer_hear_from_us_type = models.CharField(max_length=20, null=True)
-    customer_last_visit_date = models.DateTimeField(null=True)
+    customer_last_visit_date = models.DateTimeField(null=True, blank=True)
     customer_first_visit_date = models.DateTimeField(null=True)
-    customer_is_deleted = models.BooleanField(default=False)
-    customer_is_active = models.BooleanField(default=True)
-    customer_memebership_nbr = models.CharField(max_length=20, null=True)
+    customer_is_deleted = models.BooleanField(
+        default=False, null=True, blank=True)
+    customer_is_active = models.BooleanField(
+        default=True, null=True, blank=True)
+    customer_memebership_nbr = models.CharField(
+        max_length=20, null=True, blank=True)
     customer_does_allow_SMS = models.BooleanField(default=True)
     customer_email_address_in_json = models.CharField(
-        max_length=200, null=True)
+        max_length=200, null=True, blank=True)
 
     customer_last_updated_date = models.DateTimeField(auto_now=True)
     customer_is_created_from_appointments = models.BooleanField(default=False)
-    customer_fleet_vendor_id = models.CharField(max_length=100, null=True)
+    customer_fleet_vendor_id = models.CharField(
+        max_length=100, null=True, blank=True)
     customer_created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='customer_created', on_delete=models.SET_NULL, null=True, blank=True)
@@ -498,7 +506,7 @@ class TransmissionsModel(models.Model):
     transmission_control_type = models.CharField(
         max_length=100, blank=True, null=True)
     tranmission_is_electronic_controlled = models.BooleanField(default=False)
-    transmission_number_of_speed = models.IntegerField(null=True)
+    transmission_number_of_speed = models.IntegerField(null=True, blank=True)
     transmission_created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='transmission_created', on_delete=models.SET_NULL, null=True, blank=True)
@@ -720,7 +728,8 @@ class VehiclesNewSQL02Model(models.Model):
     vehicle_memo_does_print_on_order = models.BooleanField(default=False)
     vehicle_is_included_in_CRM_compaign = models.BooleanField(default=True)
     vehicle_color = models.CharField(max_length=20, null=True)
-    vehicle_record_is_activate = models.BooleanField(default=True)
+
+    vehicle_record_is_active = models.BooleanField(default=True)
     vehicle_class_id = models.CharField(max_length=20, null=True)
     vehicle_engine_hour_in = models.DecimalField(
         max_digits=7, decimal_places=1)
@@ -732,6 +741,7 @@ class VehiclesNewSQL02Model(models.Model):
         PhonesNewSQL02Model, on_delete=models.SET_NULL, null=True, related_name='vehicle_phones')
     vehicle_contact_phone_main_new_uid = models.CharField(
         max_length=36, null=True)
+
     vehicle_created_at = models.DateTimeField(auto_now_add=True)
 
     created_by = models.ForeignKey(

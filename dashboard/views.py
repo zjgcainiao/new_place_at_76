@@ -12,7 +12,7 @@ from django.views.generic.edit import CreateView, UpdateView,  DeleteView
 from django.db.models import Q
 from django.db.models import Prefetch
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from homepageapp.models import RepairOrdersNewSQL02Model, CustomerAddressesNewSQL02Model, CustomersNewSQL02Model, AddressesNewSQL02Model
 from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model, VehiclesNewSQL02Model
 # from homepageapp.forms import RepairOrderModelForm, CustomerModelForm, AddressModelForm, RepairOrderLineItemModelForm, PartItemModelForm, LaborItemModelForm
@@ -30,12 +30,33 @@ from dashboard.forms import SearchForm, CustomerUpdateForm, RepairOrderUpdateFor
 from django.core.paginator import Paginator
 from django.db.models import Max
 from django.views.generic import TemplateView
-
+from core_operations.models import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
 # You can do the same sort of thing manually by testing on request.user.is_authenticated, but the decorator is much more convenient!
+
+# 2023-09-17 list all dashboards available
+
+
+def get_main_dashboard(request):
+    # Create the context with the current time.
+    context = {
+        'current_time': timezone.now().replace(microsecond=0),
+    }
+
+    if request.user.is_authenticated:
+        if isinstance(request.user, InternalUser):
+            return render(request, 'dashboard/10_main_dashboard.html', context)
+        else:
+            # Handle what happens if the user is of type InternalUser
+            return HttpResponseForbidden("You don't have permission to access this page.")
+    else:
+        # Handle what happens if the user is of type InternalUser
+        return HttpResponseForbidden("you don't have permission to access to this page.")
+    return HttpResponseForbidden("you don't have permission to access to this page.")
+
 # dashboard listview via function. Version 1
 
 
-def dashboard(request):
+def wip_dashboard(request):
     repair_orders = RepairOrdersNewSQL02Model.objects.filter(
         repair_order_phase__gte=1, repair_order_phase__lte=5).prefetch_related('repair_order_customer')
     # repair_orders_v2 = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer_id', 'repair_order_customer_id__addresses').filter(repair_order_phase_id__in=[1,2,3,4,5])
@@ -50,24 +71,25 @@ def dashboard(request):
         'customer_addresses': customer_addresses,
         'all_in_one_set': all_in_one_set,
     }
-    return render(request, 'dashboard/10_dashboard.html', context)
+    return render(request, 'dashboard/11_WIP_dashboard.html', context)
 
 # using listview to display the dashboarrd. version 2, dashboard list view.
 
 
-class DashboardView(LoginRequiredMixin, ListView):
+class WIPDashboardView(LoginRequiredMixin, ListView):
     model = RepairOrdersNewSQL02Model
     context_object_name = 'repair_orders'
-    template_name = 'dashboard/11_dashboard_v2.html'
+    template_name = 'dashboard/12_WIP_dashboard_v2.html'
     login_url = reverse_lazy('internal_users:internal_user_login')
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             if not isinstance(request.user, InternalUser):
                 return self.handle_no_permission()
+            else:
+                return super().dispatch(request, *args, **kwargs)
         else:
             return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         # repair order phase defines the WIP (work-in-progress) caegory. 6 means invoice.
@@ -251,8 +273,8 @@ def repair_order_update(request, pk):
 def repair_order_and_line_items_detail(request, repair_order_id):
     repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
         Prefetch('repair_order_customer__addresses')).prefetch_related(
-        'repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
-                                                          ).prefetch_related('repair_order_customer__taxes'
+        'repair_order_customer__phones').prefetch_related('repair_order_customer__customer_emails'
+                                                          ).prefetch_related('repair_order_customer__customer_taxes'
                                                                              ).prefetch_related('lineitems__lineitem_noteitem').prefetch_related('lineitems__parts_lineitems'
                                                                                                                                                  ).prefetch_related('lineitems__lineitem_laboritem').get(pk=repair_order_id)
     line_items = repair_order.lineitems.all()
@@ -518,7 +540,7 @@ def get_customer_dash(request):
         customer_is_deleted=False).prefetch_related(
         'vehicle_customers',
     )
-    current_time = timezone.now()
+    current_time = CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
     paginator = Paginator(active_customers, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -698,6 +720,6 @@ def technician_dash_view(request, technician_id):
     line_items = LineItemsNewSQL02Model.objects.filter(LineItemTech__id=technician_id).prefetch_related(
         'lineitems__lineitem_noteitem',
         'lineitems__lineitem_laboritem',
-        'lineitems__parts_lineitems'
+        'lineitems__parts_lineitems',
     )
     return render(request, 'dashboard/technician_workstation.html', {'line_items': line_items})
