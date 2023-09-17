@@ -529,7 +529,7 @@ class TransmissionsModel(models.Model):
 
 class BrakesModel(models.Model):
     brake_id = models.AutoField(primary_key=True)
-    brake_system_type = models.CharField(max_length=150, null=True)
+    brake_system_type = models.CharField(max_length=150, null=True, blank=True)
     brake_created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='brake_created', on_delete=models.SET_NULL, null=True, blank=True)
@@ -719,24 +719,28 @@ class VehiclesNewSQL02Model(models.Model):
     VIN_number = models.CharField(max_length=50, null=True)
     vehicle_inspection_datetime = models.DateTimeField(null=True)
     vehicle_last_in_date = models.DateTimeField(null=True)
-    vehicle_license_plate_nbr = models.CharField(max_length=20, null=True)
-    vehicle_license_state = models.CharField(max_length=20, null=True)
-    vehicle_part_level = models.CharField(max_length=20, null=True)
-    vehicle_labor_level = models.CharField(max_length=20, null=True)
-    vehicle_used_level = models.CharField(max_length=20, null=True)
-    vehicle_memo_01 = models.CharField(max_length=4000, null=True)
+    vehicle_license_plate_nbr = models.CharField(
+        max_length=20, null=True, blank=True)
+    vehicle_license_state = models.CharField(
+        max_length=20, null=True, blank=True)
+    vehicle_part_level = models.CharField(max_length=20, null=True, blank=True)
+    vehicle_labor_level = models.CharField(
+        max_length=20, null=True, blank=True)
+    vehicle_used_level = models.CharField(max_length=20, null=True, blank=True)
+    vehicle_memo_01 = models.CharField(max_length=4000, null=True, blank=True)
     vehicle_memo_does_print_on_order = models.BooleanField(default=False)
     vehicle_is_included_in_CRM_compaign = models.BooleanField(default=True)
     vehicle_color = models.CharField(max_length=20, null=True)
 
     vehicle_record_is_active = models.BooleanField(default=True)
-    vehicle_class_id = models.CharField(max_length=20, null=True)
+    vehicle_class_id = models.CharField(max_length=20, null=True, blank=True)
     vehicle_engine_hour_in = models.DecimalField(
         max_digits=7, decimal_places=1)
     vehicle_engine_hour_out = models.DecimalField(
         max_digits=7, decimal_places=1)
-    vehicle_active_recall_counts = models.IntegerField(null=True)
-    vehicle_recall_last_checked_datetime = models.DateTimeField(null=True)
+    vehicle_active_recall_counts = models.IntegerField(null=True, blank=True)
+    vehicle_recall_last_checked_datetime = models.DateTimeField(
+        null=True, blank=True)
     vehicle_phone = models.ForeignKey(
         PhonesNewSQL02Model, on_delete=models.SET_NULL, null=True, related_name='vehicle_phones')
     vehicle_contact_phone_main_new_uid = models.CharField(
@@ -773,10 +777,11 @@ class TextMessagesModel(models.Model):
     text_to_phonenumber = models.CharField(max_length=15)
     text_direction = models.BooleanField(default=False)
     text_status = models.IntegerField()
-    text_error_message = models.CharField(max_length=255, null=True)
-    text_error_code = models.CharField(max_length=255, null=True)
-    text_datetime = models.DateTimeField()
-    text_body_size = models.IntegerField()
+    text_error_message = models.CharField(
+        max_length=255, null=True, blank=True)
+    text_error_code = models.CharField(max_length=255, null=True, blank=True)
+    text_datetime = models.DateTimeField(null=True, blank=True)
+    text_body_size = models.IntegerField(null=True, blank=True)
     text_created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='text_created', on_delete=models.SET_NULL, null=True, blank=True)
@@ -805,7 +810,8 @@ class CannedJobsNewSQL02Model(models.Model):
     canned_job_applied_year = models.IntegerField(blank=True, null=True)
     canned_job_applied_make_id = models.IntegerField(blank=True, null=True)
     canned_job_applied_submodel_id = models.IntegerField(blank=True, null=True)
-    canned_job_vehicle_class = models.CharField(max_length=50, null=True)
+    canned_job_vehicle_class = models.CharField(
+        max_length=50, null=True, blank=True)
     canned_job_last_updated_date = models.DateTimeField(
         auto_now=True, null=True)
     canned_job_created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -877,9 +883,9 @@ class NoteItemsNewSQL02Model(models.Model):
     # when it is a foreign key,"_id" is added at the end of the field name
     line_item = models.ForeignKey(
         LineItemsNewSQL02Model, on_delete=models.CASCADE, related_name='lineitem_noteitem')
-    note_item_text = models.TextField(null=True)
+    note_item_text = models.TextField(null=True, blank=True)
     note_item_is_printed_on_order = models.BooleanField(default=True)
-    note_item_tech_observation = models.TextField(null=True)
+    note_item_tech_observation = models.TextField(null=True, blank=True)
 
     note_item_created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
@@ -955,11 +961,12 @@ class LaborItemModel(models.Model):
     labor_item_work_performed = models.TextField(blank=True, null=True)
     labor_item_hours_charged = models.DecimalField(
         max_digits=10, decimal_places=2)
-    labor_item_symptom = models.CharField(max_length=4000, null=True)
+    labor_item_symptom = models.CharField(
+        max_length=4000, null=True, blank=True)
     labor_item_is_come_back_invoice = models.BooleanField(
         default=False, null=True)
     labor_item_parts_estimate = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True)
+        max_digits=10, decimal_places=2, null=True, blank=True)
     labor_item_is_MPlg_item = models.IntegerField(default=False)
     labor_item_is_Changed_MPlg_item = models.BooleanField(default=False)
 
@@ -1030,15 +1037,15 @@ class PartItemModel(models.Model):
     part_item_is_user_entered_unit_sale = models.BooleanField(default=False)
     part_item_is_user_entered_unit_cost = models.BooleanField(default=False)
     part_item_quantity = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True)
+        max_digits=12, decimal_places=2, null=True, blank=True)
     part_item_unit_price = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True)
+        max_digits=12, decimal_places=2, null=True, blank=True)
     part_item_unit_list = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True)
+        max_digits=12, decimal_places=2, null=True, blank=True)
     part_item_unit_sale = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True)
+        max_digits=12, decimal_places=2, null=True, blank=True)
     part_item_unit_cost = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True)
+        max_digits=12, decimal_places=2, null=True, blank=True)
     part_item_part_no = models.CharField(max_length=100, null=True, blank=True)
     part_item_part = models.ForeignKey(
         PartsModel, on_delete=models.SET_NULL, null=True, related_name='parts_parts')
@@ -1050,7 +1057,7 @@ class PartItemModel(models.Model):
     part_item_invoice_number = models.CharField(
         max_length=50, null=True, blank=True)
     part_item_commission_amount = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True)
+        max_digits=12, decimal_places=2, null=True, blank=True)
     part_item_is_committed = models.BooleanField(default=False)
     part_item_is_quantity_confirmed = models.BooleanField(default=False)
     part_item_confirmed_quantity = models.DecimalField(
@@ -1108,7 +1115,7 @@ class RepairOrdersNewSQL02Model(models.Model):
     # repair_order_customer_new_uid = models.CharField(max_length=20, null=True)
     # models.ForeignKey(CustomersNewSQL01Model, on_delete=models.CASCADE, null=True,db_column='customer_new_uid_v01')
     repair_order_vehicle = models.ForeignKey(
-        VehiclesNewSQL02Model, on_delete=models.SET_NULL, null=True)
+        VehiclesNewSQL02Model, on_delete=models.SET_NULL, null=True, blank=True)
     # repair_order_serviced_vehicle_new_uid = models.CharField(max_length=36, null=True, primary_key=False)
     repair_order_serviced_vehicle_location = models.CharField(
         max_length=36, null=True)
@@ -1120,7 +1127,8 @@ class RepairOrdersNewSQL02Model(models.Model):
     repair_order_promise_datetime = models.DateTimeField(null=True)
     repair_order_is_printed = models.BooleanField(default=False)
     repair_order_invoice_is_printed = models.BooleanField(default=False)
-    repair_order_serviced_vehicle_in_datetime = models.DateTimeField(null=True)
+    repair_order_serviced_vehicle_in_datetime = models.DateTimeField(
+        null=True, blank=True)
     repair_order_serviced_vehicle_out_datetime = models.DateTimeField(
         null=True)
     repair_order_serviced_vehicle_hat = models.CharField(
@@ -1130,50 +1138,52 @@ class RepairOrdersNewSQL02Model(models.Model):
         null=True)
     repair_order_serviced_vehicle_odometer_out = models.BigIntegerField(
         null=True)
-    repair_order_reference_number = models.CharField(max_length=30, null=True)
+    repair_order_reference_number = models.CharField(
+        max_length=30, null=True, blank=True)
     repair_order_receipt_printed_datetime = models.DateTimeField(null=True)
     repair_order_snapshot_is_tax_exempt = models.BooleanField(default=False)
-    repair_order_aggr_notes = models.CharField(max_length=4000, null=True)
+    repair_order_aggr_notes = models.CharField(
+        max_length=4000, null=True, blank=True)
     repair_order_observation_text_area = models.CharField(
         max_length=4000, null=True)
     repair_order_created_as_estimate = models.BooleanField(
         default=False)  # connecting to the estimates
     repair_order_snapshot_margin_pct = models.DecimalField(
-        max_digits=10, decimal_places=2, null=True)
+        max_digits=10, decimal_places=2, null=True, blank=True)
     repair_order_snapshot_haz_waste_amount = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True)
+        max_digits=15, decimal_places=2, null=True, blank=True)
     repair_order_snapshot_labor_sale_amount = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True)
+        max_digits=15, decimal_places=2, null=True, blank=True)
     repair_order_snapshot_parts_sale_amount = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True)
+        max_digits=15, decimal_places=2, null=True, blank=True)
     repair_order_snapshot_supply_from_shop_amount = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True)
+        max_digits=15, decimal_places=2, null=True, blank=True)
     repair_order_snapshot_tax_haz_material_amount = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True)
+        max_digits=15, decimal_places=2, null=True, blank=True)
     repair_order_snapshot_tax_supply_from_shop_amount = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True)
+        max_digits=15, decimal_places=2, null=True, blank=True)
     repair_order_snapshot_total_tax_amount = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True)
+        max_digits=15, decimal_places=2, null=True, blank=True)
     repair_order_snapshot_balance_due_adjusted = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True)
+        max_digits=15, decimal_places=2, null=True, blank=True)
     repair_order_snapshot_discounted_amount = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True)
+        max_digits=15, decimal_places=2, null=True, blank=True)
     repair_order_snapshot_part_discounted_desc_id = models.IntegerField(
         null=True, blank=True)
     repair_order_snapshot_labor_discounted_desc_id = models.IntegerField(
         null=True, blank=True)
     repair_order_snapshot_order_total_amount = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True)
+        max_digits=15, decimal_places=2, null=True, blank=True)
     repair_order_snapshot_calc_haz_waste_cost = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True)
+        max_digits=15, decimal_places=2, null=True, blank=True)
     repair_order_snapshot_calc_shop_supply_cost = models.DecimalField(
-        max_digits=15, decimal_places=2, null=True)
+        max_digits=15, decimal_places=2, null=True, blank=True)
     repair_order_serviced_vehicle_engine_hours_in = models.DecimalField(
-        max_digits=10, decimal_places=1, null=True)
+        max_digits=10, decimal_places=1, null=True, blank=True)
     repair_order_serviced_vehicle_engine_hours_out = models.DecimalField(
-        max_digits=10, decimal_places=1, null=True)
+        max_digits=10, decimal_places=1, null=True, blank=True)
     repair_order_appointment_request_uid = models.CharField(
-        max_length=50, null=True)
+        max_length=50, null=True, blank=True)
 
     repair_order_last_updated_date = models.DateTimeField(
         null=True, auto_now=True)
