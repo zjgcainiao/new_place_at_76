@@ -51,7 +51,6 @@ def get_main_dashboard(request):
     else:
         # Handle what happens if the user is of type InternalUser
         return HttpResponseForbidden("you don't have permission to access to this page.")
-    return HttpResponseForbidden("you don't have permission to access to this page.")
 
 # dashboard listview via function. Version 1
 

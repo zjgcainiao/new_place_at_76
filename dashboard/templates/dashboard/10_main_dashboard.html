@@ -2,76 +2,85 @@
 
 {% block content-main %}
 <div class="container">
-  <h1>Welcome. {{ user.user_first_name }}. Logged in as {{user.email}}</h1>
-  <!-- Display the date and logged in user -->
-  <div class="container mt-3">
-    <div class="row">
-      <div class="col">
-        <p><strong>Date:</strong> {{ current_date }}</p>
-      </div>
-      <div class="col">
-        <p><strong>User:</strong> </p>
-      </div>
-    </div>
-  </div>
-
-  <a class =' btn btn-primary' href = "{% url 'homepageapp:homepage' %}">go back to Homepage</a>
+  <!-- Breadcrumb-->
+  <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb breadcrumb-dark mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+          <li class="breadcrumb-item active"><a href="{% url 'dashboard:main-dash' %}">Main Dash</a></li>
+      </ol>
+  </nav>
 </div>
 
+<div class="container ">
+  <h2>Main Dashboard</h2>
+  <!-- Display the date and logged in user -->
+  <div class="row">
+    <div class="col">
+      Welcome. {{ user.user_first_name }}. Logged in as {{user.email}}
+      
+    </div>
+    <div class="col">
+        <p><strong>Date:</strong> {{ current_time |date}}</p>
+    </div>
+  </div>
+</div>
 <!-- The main content with 6 app portals -->
-<div class="container">
+<div class="container my-1">
   <div class="row text-center">
     <!-- Each col represents a portal -->
-    <div class="col-md-4 col-lg-2 mb-4">
+    <div class="col-md-4 col-lg-3 mb-4">
       <div class="card rounded">
-        <a href="{% url 'dashboard:dashboard-v2' %}">
+        <a href="{% url 'dashboard:wip-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
+        Work Station Dash
       </div>
     </div>
 
-    <div class="col-md-4 col-lg-2 mb-4">
+    <div class="col-md-4 col-lg-3 mb-4">
       <div class="card rounded">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        WIP dashboard
+        Vehicles
       </div>
     </div>
-    <div class="col-md-4 col-lg-2 mb-4">
+    <div class="col-md-4 col-lg-3 mb-4">
       <div class="card rounded">
         <a href="{% url 'dashboard:customer-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        customer
+        customers
       </div>
     </div>
 
-    <div class="col-md-4 col-lg-2 mb-4">
+    <div class="col-md-4 col-lg-3 mb-4">
       <div class="card rounded">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        this is the third app
+        this is the third app. Vehicle
       </div>
     </div>
-    <div class="col-md-4 col-lg-2 mb-4">
+    <div class="col-md-4 col-lg-3 mb-4">
       <div class="card rounded">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
+        Number Four
       </div>
     </div>
-    <div class="col-md-4 col-lg-2 mb-4">
+
+    <div class="col-md-4 col-lg-3 mb-4">
       <div class="card rounded">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
+        Number Five
       </div>
     </div>
 
 
-    <!-- Add more portals similarly -->
 
   </div>
 </div>

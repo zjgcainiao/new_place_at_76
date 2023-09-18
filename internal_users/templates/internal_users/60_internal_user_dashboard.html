@@ -23,7 +23,7 @@
                             <img src="{% static 'homepageapp/img/avatars/avatar_new_02.png' %}" alt="internal-user-image" >
                         </div>
                         <div class="row my-3">
-                            <h3> {{internal_user.user_first_name}} {{internal_user.user_last_name}}, {{internal_user.user_middle_name}}</h3>
+                            <h3> {{internal_user.user_first_name}} {{internal_user.user_middle_name}} {{internal_user.user_last_name}} </h3>
                         </div>
                         
                     </div>    
@@ -89,13 +89,12 @@
                     <hr>
 
                     <div class="p-1 m-1">
-                        <button class="btn btn-outline-primary"> <a class='nav-link' href="{% url 'dashboard:dashboard-v2' %}">Back to Work Station</a> </button>
-                        
+                        <button class="btn btn-outline-primary"> <a class='nav-link' href="{% url 'dashboard:wip-dash' %}">Back to Work Station</a> </button>
                     </div>
                 </ul>
                 <!--- End Sidemenu -->
 
-                <div class="clearfix"> theriosds</div>
+                <div class="clearfix"> </div>
             </div>
             
         </div>

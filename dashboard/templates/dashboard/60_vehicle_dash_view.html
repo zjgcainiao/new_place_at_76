@@ -7,7 +7,7 @@
     <!-- Breadcrumb-->
     <nav aria-label="Breadcrumb">
         <ol class="breadcrumb breadcrumb-dark mb-0">
-            <li class="breadcrumb-item"><a href="{% url 'dashboard:dashboard-v2' %}">Work Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:wip-dash' %}">Work Dashboard</a></li>
             <li class="breadcrumb-item active"><a href="{% url 'dashboard:vehicle-dash' %}">Vehicles</a></li>
         </ol>
     </nav>
@@ -16,8 +16,8 @@
      <p></p>
     <div class='row'>
       <div class="col-12 btn-group my-1">
-        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:vehicle-dash' %}"> <i class="uil-home-alt"></i>Main Customer Dash</a>
-        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-create' %}"><i class ='uil-file-plus-alt' ></i> New Customer</a>
+        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:vehicle-dash' %}"> <i class="uil-home-alt"></i>Main Vehilce Dash</a>
+        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-create' %}"><i class ='uil-file-plus-alt' ></i> New Vehicle Record</a>
       </div>
     </div>
     <!-- end of an row of function buttons -->

@@ -12,16 +12,16 @@ urlpatterns = [
     # path('dash/', include('django.contrib.auth.urls')),
     # path('register/', auth_views.register, name='register'),
     # path('', IndexPage, name='dashboard-index'),
+    # prefix: dashboard/
 
     path('', get_main_dashboard, name='main-dash'),
 
-
     # dashboard -- repair order plus customer info and customer information. Phone numbers are not included yet.
-    # prefix: dashboard/
-    path('old',  wip_dashboard, name='dashboard-testing-v1'),
+
+    path('WIPs/old',  wip_dashboard, name='dashboard-testing-v1'),
 
     # current version is v2
-    path('WIPs/', WIPDashboardView.as_view(), name='dashboard-v2'),
+    path('WIPs/', WIPDashboardView.as_view(), name='wip-dash'),
     path('search/', SearchView.as_view(), name='search'),
 
     # the dashboard detail apge

@@ -243,7 +243,8 @@ class CustomersNewSQL02Model(models.Model):
     customer_middle_name = models.CharField(
         max_length=50, null=True, blank=True)
     customer_dob = models.DateTimeField(null=True, blank=True)
-    customer_spouse_name = models.CharField(max_length=50, null=True)
+    customer_spouse_name = models.CharField(
+        max_length=50, null=True, blank=True)
     # customer_primary_phone_uid = models.CharField(max_length=36, null=True)
     # customer_primary_email_uid = models.CharField(max_length=36, null=True)
     customer_is_okay_to_charge = models.BooleanField(default=True)
@@ -252,9 +253,10 @@ class CustomersNewSQL02Model(models.Model):
     customer_resale_permit_nbr = models.CharField(
         max_length=20, null=True, blank=True)
     customer_is_in_social_crm = models.BooleanField(default=True)
-    customer_hear_from_us_type = models.CharField(max_length=20, null=True)
+    customer_hear_from_us_type = models.CharField(
+        max_length=20, null=True, blank=True)
     customer_last_visit_date = models.DateTimeField(null=True, blank=True)
-    customer_first_visit_date = models.DateTimeField(null=True)
+    customer_first_visit_date = models.DateTimeField(null=True, blank=True)
     customer_is_deleted = models.BooleanField(
         default=False, null=True, blank=True)
     customer_is_active = models.BooleanField(
@@ -696,28 +698,28 @@ class VehiclesNewSQL02Model(models.Model):
     # vehicle_new_uid_v01 = models.CharField(editable=False, auto_created=True, primary_key=True, max_length=36)  # default = uuid.uuid4
     vehicle_id = models.AutoField(primary_key=True)
     vehicle_cust = models.ForeignKey(
-        CustomersNewSQL02Model, on_delete=models.SET_NULL, null=True, related_name='vehicle_customers')
-    vehicle_year = models.CharField(max_length=20, null=True)
+        CustomersNewSQL02Model, on_delete=models.SET_NULL, null=True, related_name='vehicle_customers', blank=True)
+    vehicle_year = models.CharField(max_length=20, null=True, blank=True)
     vehicle_make = models.ForeignKey(
-        MakesNewSQL02Model, on_delete=models.SET_NULL, null=True, related_name='vehicle_makes')
+        MakesNewSQL02Model, on_delete=models.SET_NULL, null=True, related_name='vehicle_makes', blank=True)
     vehicle_sub_model = models.ForeignKey(
-        SubmodelsModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_submodels')
+        SubmodelsModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_submodels', blank=True)
     vehicle_body_style = models.ForeignKey(
-        BodyStylesModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_bodystyles')
+        BodyStylesModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_bodystyles', blank=True)
     vehicle_engine = models.ForeignKey(
-        EnginesModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_engines')
+        EnginesModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_engines', blank=True)
     vehicle_transmission = models.ForeignKey(
         TransmissionsModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_transmissions')
     vehicle_brake = models.ForeignKey(
-        BrakesModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_brakes')
+        BrakesModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_brakes', blank=True)
     vehicle_drive_type = models.ForeignKey(
-        DrivesModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_drives')
+        DrivesModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_drives', blank=True)
     vehicle_GVW = models.ForeignKey(
-        GVWsModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_gvws')
-    vehicle_odometer_1 = models.BigIntegerField(null=True)
-    vehicle_odometer_2 = models.BigIntegerField(null=True)
-    VIN_number = models.CharField(max_length=50, null=True)
-    vehicle_inspection_datetime = models.DateTimeField(null=True)
+        GVWsModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_gvws', blank=True)
+    vehicle_odometer_1 = models.BigIntegerField(null=True, blank=True)
+    vehicle_odometer_2 = models.BigIntegerField(null=True, blank=True)
+    VIN_number = models.CharField(max_length=50, null=True, blank=True)
+    vehicle_inspection_datetime = models.DateTimeField(null=True, blank=True)
     vehicle_last_in_date = models.DateTimeField(null=True)
     vehicle_license_plate_nbr = models.CharField(
         max_length=20, null=True, blank=True)
@@ -730,14 +732,14 @@ class VehiclesNewSQL02Model(models.Model):
     vehicle_memo_01 = models.CharField(max_length=4000, null=True, blank=True)
     vehicle_memo_does_print_on_order = models.BooleanField(default=False)
     vehicle_is_included_in_CRM_compaign = models.BooleanField(default=True)
-    vehicle_color = models.CharField(max_length=20, null=True)
+    vehicle_color = models.CharField(max_length=20, null=True, blank=True)
 
     vehicle_record_is_active = models.BooleanField(default=True)
     vehicle_class_id = models.CharField(max_length=20, null=True, blank=True)
     vehicle_engine_hour_in = models.DecimalField(
-        max_digits=7, decimal_places=1)
+        max_digits=7, decimal_places=1, blank=True)
     vehicle_engine_hour_out = models.DecimalField(
-        max_digits=7, decimal_places=1)
+        max_digits=7, decimal_places=1, blank=True)
     vehicle_active_recall_counts = models.IntegerField(null=True, blank=True)
     vehicle_recall_last_checked_datetime = models.DateTimeField(
         null=True, blank=True)
