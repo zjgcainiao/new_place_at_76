@@ -41,6 +41,63 @@ logging.basicConfig(filename='data_import_v01.log', level=logging.ERROR)
 module_dir = '/Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/New_site_database-data-migration-python-scripts/old_db_jsons'
 suffix_pattern = '_20230115.json'
 
+
+def parse_time(datetime_string):
+    if not datetime_string:
+        # If time_str is None or empty, return None
+        return None
+    try:
+        formatted_datetime = datetime.strptime(
+            datetime_string, '%Y-%m-%dT%H:%M:%S')
+    except ValueError:
+        formatted_datetime = datetime.strptime(
+            datetime_string, '%Y-%m-%dT%H:%M:%S.%f')
+    return formatted_datetime
+
+# customized uitity function get_or_none.
+# added on 2023-09-17 to simplify the data writing code
+
+
+def get_or_none(model, pk):
+    try:
+        return model.objects.get(pk=pk)
+    except ObjectDoesNotExist:
+        return None
+
+
+def make_timezone_aware(input_datetime, datetime_formats=['%Y-%m-%d %H:%M:%S.%f', '%Y-%m-%dT%H:%M:%S.%f']):
+    """
+    Convert a naive datetime string or datetime object to a timezone-aware datetime object.
+
+    Parameters:
+    - input_datetime: The naive datetime string or datetime object.
+    - datetime_formats: A list of datetime formats to try for parsing. Defaults to include common formats.
+
+    Returns:
+    - A timezone-aware datetime object or None.
+    """
+    if input_datetime is None:
+        return None
+
+    if isinstance(input_datetime, datetime):
+        native_datetime = input_datetime
+    elif isinstance(input_datetime, str):
+        native_datetime = None
+        for fmt in datetime_formats:
+            try:
+                native_datetime = datetime.strptime(input_datetime, fmt)
+                break
+            except ValueError:
+                continue
+        if native_datetime is None:
+            return None
+    else:
+        raise TypeError(
+            "The input must be either a datetime object or a string.")
+
+    return timezone.make_aware(native_datetime)
+
+
 # Load all foreign key objects into a dictionary for quick lookup. RepairOrderPhase, Customer and Vehicle models.
 # pre-load phases, customers, vehicles, phones and emails and etc
 phase_dict = {
@@ -67,7 +124,7 @@ gvw_dict = {gvw.gvw_id: gvw for gvw in GVW.objects.all()}
 transmission_dict = {
     trans.transmission_id: trans for trans in Transmission.objects.all()}
 brake_dict = {brake.brake_id: brake for brake in Brake.objects.all()}
-engine_dict = {engine.engine_id: engine for engine in Engine.objects.all()}
+
 myshopvehicleconfig_dict = {myshopvehicleconfig.myshop_vehicle_config_id:
                             myshopvehicleconfig for myshopvehicleconfig in MyShopVehicleConfig.objects.all()}
 
@@ -77,29 +134,6 @@ vehicle_dict = {
     vehicle_obj.vehicle_id: vehicle_obj for vehicle_obj in Vehicle.objects.all()}
 
 # repairorder into repairorders_new_03 sql Table
-
-
-def parse_time(datetime_string):
-    if not datetime_string:
-        # If time_str is None or empty, return None
-        return None
-    try:
-        formatted_datetime = datetime.strptime(
-            datetime_string, '%Y-%m-%dT%H:%M:%S')
-    except ValueError:
-        formatted_datetime = datetime.strptime(
-            datetime_string, '%Y-%m-%dT%H:%M:%S.%f')
-    return formatted_datetime
-
-# customized uitity function get_or_none.
-# added on 2023-09-17 to simplify the data writing code
-
-
-def get_or_none(model, pk):
-    try:
-        return model.objects.get(pk=pk)
-    except ObjectDoesNotExist:
-        return None
 
 
 # def testing(request):
@@ -600,140 +634,32 @@ model_name = 'Vehicle'
 file_path = os.path.join(module_dir, model_name + suffix_pattern)
 with open(file_path, 'r') as f:
     data = json.load(f)
+    # try:
     with transaction.atomic():  # wrap in a transaction
         for aa in data:
             if 'VehicleId' not in aa:
                 logging.error(
                     f"Skipping entry due to missing 'VehicleId': {aa}")
-                exit
+                continue
 
-            vehicle_cust_obj = get_or_none(Customer, aa.get('CustId'))
-            # vehicle_cust_id = aa['CustId'],
-            # if vehicle_cust_id is not None:
-            #     try:
-            #         vehicle_cust_obj = customer_dict.get(vehicle_cust_id)
-            #     except ObjectDoesNotExist:
-            #         vehicle_cust_obj = Customer.objects.get(pk=vehicle_cust_id)
-            # else:
-            #     vehicle_cust_obj = None
+            # Debugging
+            # print(aa.get('VehicleId'), aa.get(
+            #     'BrakeId'), type(aa.get('BrakeId')))
+            # the .get() method will return None if the key is not found
 
-            vehicle_make_obj = get_or_none(Make, aa.get('MakeId'))
-            # vehicle_make_id = aa["MakeId"]
-            # if vehicle_make_id is not None:
-            #     try:
-            #         vehicle_make_obj = make_dict.get(vehicle_make_id)
-            #     except ObjectDoesNotExist:
-            #         vehicle_make_obj = Make.objects.get(pk=vehicle_make_id)
-            # else:
-            #     vehicle_make_obj = None
-
-            # vehicle_model_obj = get_or_none(Model, aa.get('ModelId'))
-            # vehicle_model_id = aa['ModelId']
-            # if vehicle_model_id is not None:
-            #     try:
-            #         vehicle_model_obj = model_dict.get(vehicle_model_id)
-            #     except ObjectDoesNotExist:
-            #         vehicle_model_obj = Model.objects.get(pk=vehicle_model_id)
-            # else:
-            #     vehicle_model_obj = None
-
-            vehicle_submodel_obj = get_or_none(SubModel, aa.get('SubModelId'))
-            # vehicle_submodel_id = aa['SubModelId']
-            # if vehicle_submodel_id is not None:
-            #     try:
-            #         vehicle_submodel_obj = submodel_dict.get(vehicle_submodel_id)
-            #     except ObjectDoesNotExist:
-            #         vehicle_submodel_obj = SubModel.objects.get(
-            #             pk=vehicle_submodel_id)
-            # else:
-            #     vehicle_submodel_obj = None
-
-            vehicle_bodystyle_obj = get_or_none(BodyStyle, aa.get('BodyId'))
-            # vehicle_bodystyle_id = aa['BodyId']
-            # if vehicle_bodystyle_id is not None:
-            #     try:
-            #         vehicle_bodystyle_obj = bodystyle_dict.get(
-            #             vehicle_bodystyle_id)
-            #     except ObjectDoesNotExist:
-            #         vehicle_bodystyle_obj = BodyStyle.objects.get(
-            #             pk=vehicle_submodel_id)
-            # else:
-            #     vehicle_bodystyle_obj = None
-
-            vehicle_engine_obj = get_or_none(Engine, aa.get('EngineId'))
-            # vehicle_engine_id = aa['EngineId']
-            # if vehicle_engine_id is not None:
-            #     try:
-            #         vehicle_engine_obj = engine_dict.get(vehicle_engine_id)
-            #     except ObjectDoesNotExist:
-            #         vehicle_engine_obj = Engine.objects.get(pk=vehicle_engine_id)
-            # else:
-            #     vehicle_engine_obj = None
-
-            vehicle_brake_obj = get_or_none(Brake, aa.get('BrakeId'))
-
-            # vehicle_brake_id = aa['BrakeId']
-            # if vehicle_brake_id is not None:
-            #     try:
-            #         vehicle_brake_obj = brake_dict.get(vehicle_brake_id)
-            #     except ObjectDoesNotExist:
-            #         vehicle_brake_obj = Brake.objects.get(pk=vehicle_brake_id)
-            # else:
-            #     vehicle_engine_obj = None
-
-            vehicle_transmission_obj = get_or_none(
-                Transmission, aa.get('TransmissionId'))
-
-            # vehicle_transmission_id = aa['TransmissionId']
-            # if vehicle_transmission_id is not None:
-            #     try:
-            #         vehicle_transmission_obj = transmission_dict.get(
-            #             vehicle_transmission_id)
-            #     except ObjectDoesNotExist:
-            #         vehicle_transmission_obj = Transmission.objects.get(
-            #             pk=vehicle_transmission_id)
-            # else:
-            #     vehicle_transmission_obj = None
-
-            vehicle_GVW_obj = get_or_none(GVW, aa.get('GVWId'))
-
-            # vehicle_GVW_id = aa['GVWId']
-            # if vehicle_GVW_id is not None:
-            #     try:
-            #         vehicle_GVW_obj = gvw_dict.get(vehicle_GVW_id)
-            #     except ObjectDoesNotExist:
-            #         vehicle_GVW_obj = GVW.objects.get()
-            # else:
-            #     vehicle_GVW_obj = None
-
-            vehicle_drive_obj = get_or_none(Drive, aa.get('GVWId'))
-            # vehicle_drive_id = aa['DriveTypeId'],
-            # if vehicle_drive_id is not None:
-            #     try:
-            #         vehicle_drive_obj = drive_dict.get(vehicle_drive_id)
-            #     except ObjectDoesNotExist:
-            #         vehicle_drive_obj = None
-            # else:
-            #     vehicle_drive_obj = None
-
-            vehicle_phone_obj = get_or_none(Phone, aa.get('GVWId'))
-            # vehicle_phone_id = aa['DriverPhoneId'],
-            # if vehicle_phone_id is not None:
-            #     try:
-            #         vehicle_phone_obj = phone_dict.get(vehicle_phone_id)
-            #     except ObjectDoesNotExist:
-            #         vehicle_phone_obj = Phone.get(pk=vehicle_phone_id)
-            # else:
-            #     vehicle_phone_obj = None
-
+            # Retrieve objects from dictionaries instead of DB queries
+            vehicle_cust_obj = customer_dict.get(aa.get('CustId'))
+            vehicle_make_obj = make_dict.get(aa.get('MakeId'))
+            vehicle_submodel_obj = submodel_dict.get(aa.get('SubModelId'))
+            vehicle_bodystyle_obj = bodystyle_dict.get(aa.get('BodyId'))
+            vehicle_engine_obj = engine_dict.get(aa.get('EngineId'))
+            vehicle_brake_obj = brake_dict.get(aa.get('BrakeId'))
+            vehicle_transmission_obj = transmission_dict.get(
+                aa.get('TransmissionId'))
+            vehicle_GVW_obj = gvw_dict.get(aa.get('GVWId'))
+            vehicle_drive_obj = drive_dict.get(aa.get('DriveTypeId'))
+            vehicle_phone_obj = phone_dict.get(aa.get('DriverPhoneId'))
             vehicle_is_active = aa.get("Deleted") == 0
-            # vehicle_is_deleted = aa["Deleted"]
-            # if vehicle_is_deleted == 0:
-            #     vehicle_is_active = True
-            # else:
-            #     vehicle_is_active = False
-
-            # when the vehicle instance can be found via vehicle_id, rewrite the following fields
 
             # use update_or_create
             defaults = {
@@ -744,14 +670,14 @@ with open(file_path, 'r') as f:
                 'vehicle_body_style': vehicle_bodystyle_obj,
                 'vehicle_engine': vehicle_engine_obj,
                 'vehicle_transmission': vehicle_transmission_obj,
-                'vehicle_brake_id': vehicle_brake_obj,
+                'vehicle_brake': vehicle_brake_obj,
                 'vehicle_drive_type': vehicle_drive_obj,
-                'vehicle_GVW_id': vehicle_GVW_obj,
+                'vehicle_GVW': vehicle_GVW_obj,
                 'vehicle_odometer_1': aa['Odometer1'],
                 'vehicle_odometer_2': aa['Odometer2'],
                 'VIN_number': aa['Vin'],
-                'vehicle_inspection_datetime': aa['InspDate'],
-                'vehicle_last_in_date': aa['LastInDate'],
+                'vehicle_inspection_datetime': make_timezone_aware(aa['InspDate']),
+                'vehicle_last_in_date': make_timezone_aware(aa['LastInDate']),
                 'vehicle_license_plate_nbr': aa['License'],
                 'vehicle_license_state': aa['LicenseState'],
                 'vehicle_part_level': aa['PartLevel'],
@@ -767,11 +693,9 @@ with open(file_path, 'r') as f:
                 'vehicle_engine_hour_in': aa['EngineHoursIn'],
                 'vehicle_engine_hour_out': aa['EngineHoursOut'],
                 'vehicle_active_recall_counts': aa['ActiveRecallCount'],
-                'vehicle_recall_last_checked_datetime': aa['ActiveRecallLastChecked'],
+                'vehicle_recall_last_checked_datetime': make_timezone_aware(aa['ActiveRecallLastChecked']),
                 'vehicle_last_updated_datetime': aa['LastChangeDate'],
             }
-            Vehicle.objects.update_or_create(vehicle_id=aa['VehicleId'],
-                                             defaults=defaults)
             try:
                 vehicle_instance, created = Vehicle.objects.update_or_create(
                     vehicle_id=aa['VehicleId'],
@@ -783,77 +707,83 @@ with open(file_path, 'r') as f:
                 logging.error(
                     f"Validation error for Vehicle ID {aa['VehicleId']}: {e}")
                 print(
-                    f"Validation error for Customer ID {aa['VehicleId']}: {e}")
+                    f"Validation error for Vehicle ID {aa['VehicleId']}: {e}")
+
+                raise
             except Exception as e:
                 logging.error(
                     f"An error occurred while updating/creating Vehicle with ID {aa['VehicleId']}: {e}")
                 print(
                     f"An error occurred while updating/creating Vehicle with ID {aa['VehicleId']}: {e}")
-            # old repetitive way
-            # if Vehicle.objects.get(pk=aa['VehicleId']) is not None:
-            #     aa_instance = Vehicle.objects.get(pk=aa['VehicleId'])
-            #     if vehicle_cust_obj is not None:
-            #         aa_instance.vehicle_cust = vehicle_cust_obj
-            #     if vehicle_make_obj is not None:
-            #         aa_instance.vehicle_make = vehicle_make_obj
 
-            #     if vehicle_submodel_obj is not None:
-            #         aa_instance.vehicle_sub_model = vehicle_submodel_obj
-            #     if vehicle_bodystyle_obj is not None:
-            #         aa_instance.vehicle_body_style = vehicle_bodystyle_obj
-            #     if vehicle_brake_obj is not None:
-            #         aa_instance.vehicle_brake = vehicle_brake_obj
-            #     if vehicle_transmission_obj is not None:
-            #         aa_instance.vehicle_transmission = vehicle_transmission_obj
-            #     if vehicle_engine_obj is not None:
-            #         aa_instance.vehicle_engine = vehicle_engine_obj
-            #     if vehicle_GVW_obj is not None:
-            #         aa_instance.vehicle_GVW = vehicle_GVW_obj
-            #     if vehicle_drive_obj is not None:
-            #         aa_instance.vehicle_drive_type = vehicle_drive_obj
-            #     if vehicle_phone_obj is not None:
-            #         aa_instance.vehicle_phone = vehicle_phone_obj
+    # except Exception as e:
+    #     logging.error(f"An error occurred in transaction block: {e}")
 
-            #     # Flip the existing 'deleted' field to vehicle_is_active field.
-            #     aa_instance.vehicle_record_is_active = vehicle_is_active
-            # else:
-            #     aa_instance = Vehicle(
-            #         vehicle_id=aa['VehicleId'],
-            #         vehicle_cust_id=aa['CustId'],
-            #         vehicle_year=aa['Year'],
-            #         vehicle_make_id=aa['MakeId'],
-            #         vehicle_sub_model_id=aa['SubModelId'],
-            #         vehicle_body_style_id=aa['BodyId'],
-            #         vehicle_engine_id=aa['EngineId'],
-            #         vehicle_transmission_id=aa['TransmissionId'],
-            #         vehicle_brake_id=aa['BrakeId'],
-            #         vehicle_drive_type_id=aa['DriveTypeId'],
-            #         vehicle_GVW_id=aa['GVWId'],
-            #         vehicle_odometer_1=aa['Odometer1'],
-            #         vehicle_odometer_2=aa['Odometer2'],
-            #         VIN_number=aa['Vin'],
-            #         vehicle_inspection_datetime=aa['InspDate'],
-            #         vehicle_last_in_date=aa['LastInDate'],
-            #         vehicle_license_plate_nbr=aa['License'],
-            #         vehicle_license_state=aa['LicenseState'],
-            #         vehicle_part_level=aa['PartLevel'],
-            #         vehicle_labor_level=aa['LaborLevel'],
-            #         vehicle_used_level=aa['UseVehicleLevels'],
-            #         vehicle_memo_01=aa['VehicleMemo'],
-            #         vehicle_memo_does_print_on_order=aa['VehicleMemoPrintOnOrder'],
-            #         vehicle_is_included_in_CRM_compaign=aa['IncludeInCRMCampaign'],
-            #         vehicle_color=aa['Color'],
-            #         vehicle_record_is_active=vehicle_is_active,
-            #         vehicle_class_id=aa['VehicleClass'],
-            #         vehicle_phone_id=aa['DriverPhoneId'],
-            #         vehicle_engine_hour_in=aa['EngineHoursIn'],
-            #         vehicle_engine_hour_out=aa['EngineHoursOut'],
-            #         vehicle_active_recall_counts=aa['ActiveRecallCount'],
-            #         vehicle_recall_last_checked_datetime=aa['ActiveRecallLastChecked'],
-            #         vehicle_last_updated_datetime=aa['LastChangeDate'],
+        # old repetitive way
+        # if Vehicle.objects.get(pk=aa['VehicleId']) is not None:
+        #     aa_instance = Vehicle.objects.get(pk=aa['VehicleId'])
+        #     if vehicle_cust_obj is not None:
+        #         aa_instance.vehicle_cust = vehicle_cust_obj
+        #     if vehicle_make_obj is not None:
+        #         aa_instance.vehicle_make = vehicle_make_obj
 
-            #     )
-            # aa_instance.save()
+        #     if vehicle_submodel_obj is not None:
+        #         aa_instance.vehicle_sub_model = vehicle_submodel_obj
+        #     if vehicle_bodystyle_obj is not None:
+        #         aa_instance.vehicle_body_style = vehicle_bodystyle_obj
+        #     if vehicle_brake_obj is not None:
+        #         aa_instance.vehicle_brake = vehicle_brake_obj
+        #     if vehicle_transmission_obj is not None:
+        #         aa_instance.vehicle_transmission = vehicle_transmission_obj
+        #     if vehicle_engine_obj is not None:
+        #         aa_instance.vehicle_engine = vehicle_engine_obj
+        #     if vehicle_GVW_obj is not None:
+        #         aa_instance.vehicle_GVW = vehicle_GVW_obj
+        #     if vehicle_drive_obj is not None:
+        #         aa_instance.vehicle_drive_type = vehicle_drive_obj
+        #     if vehicle_phone_obj is not None:
+        #         aa_instance.vehicle_phone = vehicle_phone_obj
+
+        #     # Flip the existing 'deleted' field to vehicle_is_active field.
+        #     aa_instance.vehicle_record_is_active = vehicle_is_active
+        # else:
+        #     aa_instance = Vehicle(
+        #         vehicle_id=aa['VehicleId'],
+        #         vehicle_cust_id=aa['CustId'],
+        #         vehicle_year=aa['Year'],
+        #         vehicle_make_id=aa['MakeId'],
+        #         vehicle_sub_model_id=aa['SubModelId'],
+        #         vehicle_body_style_id=aa['BodyId'],
+        #         vehicle_engine_id=aa['EngineId'],
+        #         vehicle_transmission_id=aa['TransmissionId'],
+        #         vehicle_brake_id=aa['BrakeId'],
+        #         vehicle_drive_type_id=aa['DriveTypeId'],
+        #         vehicle_GVW_id=aa['GVWId'],
+        #         vehicle_odometer_1=aa['Odometer1'],
+        #         vehicle_odometer_2=aa['Odometer2'],
+        #         VIN_number=aa['Vin'],
+        #         vehicle_inspection_datetime=aa['InspDate'],
+        #         vehicle_last_in_date=aa['LastInDate'],
+        #         vehicle_license_plate_nbr=aa['License'],
+        #         vehicle_license_state=aa['LicenseState'],
+        #         vehicle_part_level=aa['PartLevel'],
+        #         vehicle_labor_level=aa['LaborLevel'],
+        #         vehicle_used_level=aa['UseVehicleLevels'],
+        #         vehicle_memo_01=aa['VehicleMemo'],
+        #         vehicle_memo_does_print_on_order=aa['VehicleMemoPrintOnOrder'],
+        #         vehicle_is_included_in_CRM_compaign=aa['IncludeInCRMCampaign'],
+        #         vehicle_color=aa['Color'],
+        #         vehicle_record_is_active=vehicle_is_active,
+        #         vehicle_class_id=aa['VehicleClass'],
+        #         vehicle_phone_id=aa['DriverPhoneId'],
+        #         vehicle_engine_hour_in=aa['EngineHoursIn'],
+        #         vehicle_engine_hour_out=aa['EngineHoursOut'],
+        #         vehicle_active_recall_counts=aa['ActiveRecallCount'],
+        #         vehicle_recall_last_checked_datetime=aa['ActiveRecallLastChecked'],
+        #         vehicle_last_updated_datetime=aa['LastChangeDate'],
+
+        #     )
+        # aa_instance.save()
 
 # AccountClass model into the accountclassess_new_03 table.
 model_name = 'AccountClass'

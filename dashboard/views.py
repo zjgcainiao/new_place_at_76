@@ -69,6 +69,7 @@ def wip_dashboard(request):
         'repair_orders': repair_orders,
         'customer_addresses': customer_addresses,
         'all_in_one_set': all_in_one_set,
+        'current_time': CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
     }
     return render(request, 'dashboard/11_WIP_dashboard.html', context)
 

@@ -709,7 +709,7 @@ class VehiclesNewSQL02Model(models.Model):
     vehicle_engine = models.ForeignKey(
         EnginesModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_engines', blank=True)
     vehicle_transmission = models.ForeignKey(
-        TransmissionsModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_transmissions')
+        TransmissionsModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_transmissions', blank=True)
     vehicle_brake = models.ForeignKey(
         BrakesModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_brakes', blank=True)
     vehicle_drive_type = models.ForeignKey(
@@ -720,7 +720,7 @@ class VehiclesNewSQL02Model(models.Model):
     vehicle_odometer_2 = models.BigIntegerField(null=True, blank=True)
     VIN_number = models.CharField(max_length=50, null=True, blank=True)
     vehicle_inspection_datetime = models.DateTimeField(null=True, blank=True)
-    vehicle_last_in_date = models.DateTimeField(null=True)
+    vehicle_last_in_date = models.DateTimeField(null=True, blank=True)
     vehicle_license_plate_nbr = models.CharField(
         max_length=20, null=True, blank=True)
     vehicle_license_state = models.CharField(
@@ -744,9 +744,9 @@ class VehiclesNewSQL02Model(models.Model):
     vehicle_recall_last_checked_datetime = models.DateTimeField(
         null=True, blank=True)
     vehicle_phone = models.ForeignKey(
-        PhonesNewSQL02Model, on_delete=models.SET_NULL, null=True, related_name='vehicle_phones')
+        PhonesNewSQL02Model, on_delete=models.SET_NULL, null=True, blank=True, related_name='vehicle_phones',)
     vehicle_contact_phone_main_new_uid = models.CharField(
-        max_length=36, null=True)
+        max_length=36, null=True, blank=True)
 
     vehicle_created_at = models.DateTimeField(auto_now_add=True)
 
@@ -774,11 +774,11 @@ class TextMessagesModel(models.Model):
     text_customer = models.ForeignKey(
         CustomersNewSQL02Model, on_delete=models.SET_NULL, null=True, related_name='text_customers')
     text_body = models.CharField(max_length=4000, blank=True, null=True)
-    text_external_id = models.BigIntegerField(null=True)
+    text_external_id = models.BigIntegerField(null=True, blank=True)
     text_type = models.IntegerField()
     text_to_phonenumber = models.CharField(max_length=15)
     text_direction = models.BooleanField(default=False)
-    text_status = models.IntegerField()
+    text_status = models.IntegerField(null=True, blank=True)
     text_error_message = models.CharField(
         max_length=255, null=True, blank=True)
     text_error_code = models.CharField(max_length=255, null=True, blank=True)
@@ -808,7 +808,8 @@ class CannedJobsNewSQL02Model(models.Model):
     canned_job_title = models.CharField(max_length=50, null=True)
     canned_job_description = models.CharField(max_length=200, null=True)
     canned_job_is_in_quick_menu = models.BooleanField(default=False)
-    canned_job_category_id = models.IntegerField(blank=True, null=True)
+    canned_job_category = models.ForeignKey(
+        CategoryModel, on_delete=models.SET_NULL, null=True)
     canned_job_applied_year = models.IntegerField(blank=True, null=True)
     canned_job_applied_make_id = models.IntegerField(blank=True, null=True)
     canned_job_applied_submodel_id = models.IntegerField(blank=True, null=True)
@@ -996,7 +997,8 @@ class PartsModel(models.Model):
     part_cost = models.DecimalField(max_digits=12, decimal_places=2)
     part_price = models.DecimalField(max_digits=12, decimal_places=2)
     part_is_tax_exempt = models.BooleanField(default=False)
-    part_category_id = models.IntegerField(null=True)
+    part_category = models.ForeignKey(
+        CategoryModel, on_delete=models.SET_NULL, null=True)
     part_account_class = models.ForeignKey(
         AccountClassModel, on_delete=models.SET_NULL, null=True, related_name='parts_accountclasses')
     part_comments = models.CharField(max_length=4000, null=True, blank=True)

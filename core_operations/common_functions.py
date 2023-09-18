@@ -1,16 +1,56 @@
+from core_operations.models import US_COUNTRY_CODE
+from homepageapp.models import ModelsNewSQL02Model
+from django.http import JsonResponse
+from homepageapp.models import MakesNewSQL02Model
 import phonenumbers
 # from customer_users.forms import AddressForm
 from django.shortcuts import render
 from django.utils import timezone
 from django.db.models import Count
 import re
-# 
+from datetime import datetime
+
+
+#
 def is_valid_us_phone_number(phone_number):
     try:
         parsed_number = phonenumbers.parse(phone_number, 'US')
         return phonenumbers.is_valid_number(parsed_number) or phonenumbers.is_possible_number(parsed_number)
     except phonenumbers.NumberParseException:
         return False
+
+
+def make_timezone_aware(input_datetime, datetime_formats=['%Y-%m-%d %H:%M:%S.%f', '%Y-%m-%dT%H:%M:%S.%f']):
+    """
+    Convert a naive datetime string or datetime object to a timezone-aware datetime object.
+
+    Parameters:
+    - input_datetime: The naive datetime string or datetime object.
+    - datetime_formats: A list of datetime formats to try for parsing. Defaults to include common formats.
+
+    Returns:
+    - A timezone-aware datetime object or None.
+    """
+    if input_datetime is None:
+        return None
+
+    if isinstance(input_datetime, datetime):
+        native_datetime = input_datetime
+    elif isinstance(input_datetime, str):
+        native_datetime = None
+        for fmt in datetime_formats:
+            try:
+                native_datetime = datetime.strptime(input_datetime, fmt)
+                break
+            except ValueError:
+                continue
+        if native_datetime is None:
+            return None
+    else:
+        raise TypeError(
+            "The input must be either a datetime object or a string.")
+
+    return timezone.make_aware(native_datetime)
 
 
 # def validate_address(request):
@@ -60,6 +100,8 @@ def format_string_with_underscore(string):
     return formatted_string
 
 # common function 04
+
+
 def deformat_phone_numbers(phone_number):
     # Remove non-digit characters from the phone number
     deformatted_number = ''.join(filter(str.isdigit, phone_number))
@@ -82,27 +124,29 @@ def capitalize_first_letters(string):
 
 
 # common function 06
-from homepageapp.models import MakesNewSQL02Model
-from django.http import JsonResponse
 def get_latest_vehicle_make_list():
-# Get a distinct list of makes
+    # Get a distinct list of makes
     # Get a distinct list of makes
     # makes = MakesNewSQL02Model.objects.values_list('make_name', flat=True)
-    
+
     # makes = MakesNewSQL02Model.objects.exclude(make_name__isnull=True).exclude(make_name__exact='').values_list('make_name', flat=True)
-    
-    makes = MakesNewSQL02Model.objects.exclude(make_name__isnull=True).exclude(make_name__exact='').all().order_by('make_name')
+
+    makes = MakesNewSQL02Model.objects.exclude(make_name__isnull=True).exclude(
+        make_name__exact='').all().order_by('make_name')
     make_dict_list = list(makes.values('make_id', 'make_name'))
     make_tuple_list = [(make.pk, make.make_name) for make in makes]
-    
+
     # Create a list of tuples for the choices, removing duplicates using set() and sort the result
     # models = ModelsNewSQL02Model.objects.filter(make_id=make_id)
     return make_tuple_list
 
+
 # common function 07
-from homepageapp.models import ModelsNewSQL02Model
+
+
 def get_latest_vehicle_model_list():
-    models = ModelsNewSQL02Model.objects.exclude(model_name__isnull=True).exclude(model_name__exact='').all().order_by('model_name')
+    models = ModelsNewSQL02Model.objects.exclude(model_name__isnull=True).exclude(
+        model_name__exact='').all().order_by('model_name')
     model_dict_list = list(models.values('model_id', 'model_name'))
     model_tuple_list = [(model.pk, model.model_name) for model in models]
     return model_tuple_list
@@ -110,9 +154,10 @@ def get_latest_vehicle_model_list():
 
 
 # common function 08
-from core_operations.models import US_COUNTRY_CODE
+
+
 def format_phone_number_to_shop_standard(phone_number):
-    phone_number_digits = re.sub(r'\D','', phone_number)
+    phone_number_digits = re.sub(r'\D', '', phone_number)
     if len(phone_number_digits) == 10:
         full_phone_number_digits = US_COUNTRY_CODE + phone_number_digits
         # Format the phone number as "+1 (818) 223-4456"
