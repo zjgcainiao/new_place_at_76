@@ -427,31 +427,30 @@ class LineItemUpdateForm(forms.ModelForm):
 
 
 class LiteEmailUpdateForm(forms.ModelForm):
-    email_id = forms.IntegerField(widget=forms.TextInput(
-        attrs={'readonly': 'readonly'}), required=False)
-    email_type_id = forms.ChoiceField(choices=EMAIL_TYPES,
-                                      label='email type', widget=forms.Select(attrs={"class": "form-select"}))
-    email_address = forms.EmailField(widget=forms.EmailInput(
-        attrs={'type': 'text'}))
+    email_id = forms.IntegerField(required=False)
+    email_type_id = forms.ChoiceField(choices=EMAIL_TYPES)
+    email_address = forms.EmailField()
     email_description = forms.CharField(
-        max_length=200, widget=forms.TextInput(attrs={'type': 'text', "class": "editable-field"}))
-    email_can_send_notification = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': 'form-check'}), label='allow notifications', required=False)
+        max_length=200)
+    email_can_send_notification = forms.BooleanField(required=False)
 
     class Meta:
         model = EmailsNewSQL02Model
         fields = ['email_id', 'email_type_id',
-                  'email_address', 'email_description']
+                  'email_address', 'email_description', 'email_can_send_notification']
 
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs)
-        # add a "form-control" class to each form input
-        # for enabling bootstrap
-        for name in self.fields.keys():
-            self.fields[name].widget.attrs.update({
-                'class': 'form-control',
-            })
+        widgets = {
+            'email_id': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'email_type_id': forms.Select(attrs={"type": "text", "class": "form-control form-select"}),
+            'email_address': forms.EmailInput(attrs={"type": "text", "class": "form-control"}),
+            'email_description': forms.TextInput(attrs={"type": "text", "class": "form-control editable-field"}),
+            'email_can_send_notification': forms.CheckboxInput(attrs={'class': 'form-check form-control'}),
+        }
+        labels = {
+            'email_can_send_notification': 'allow notifications?',
+            'email_type_id': 'email type',
+            'email_address': 'address',
+        }
 
 
 LiteCustomerVehicleUpdateFormset = inlineformset_factory(

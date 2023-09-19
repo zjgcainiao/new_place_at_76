@@ -1,8 +1,21 @@
 {% extends 'dashboard/00_dashboard_base.html' %}
 {% load crispy_forms_tags %}
 {% block content-main %}
-  <h1>Work Order Detail v2 -- using forms method</h1>
-<!-- repair_order_detail.html -->
+<div class="container container-fluid">
+  <div class ='row justify-content-between'>
+    <div class="col-8">
+      <h3>Work Order Update - ID:{{repair_order.repair_order_id}} - Status</h3>
+    </div>
+    <div class ='col-2 '>
+      <h4 class ='text-left'>Today is {{current_time|date}} </h4>
+    </div>
+     
+  </div>
+  
+  <a class='btn btn-outline-dark my-1' href = "{% url 'dashboard:wip-dash' %}"> <i class ='fa fa-arrow-circle-left'> </i> go back to dashboard</a>
+</div>
+
+
 <form method="POST">
   {% csrf_token %}
   {{ repair_order_form.as_p |crispy}}

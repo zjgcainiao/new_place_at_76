@@ -1,5 +1,5 @@
 {% extends 'dashboard/00_dashboard_base.html' %}
-
+{% load crispy_forms_tags %}
 {% block content-main %}
 
 
@@ -57,22 +57,29 @@
                             {% csrf_token %}
                                 <div class="form-display">
                                     <div class="row">
-                                        <div class="col-auto">ID: {{ email_form.email_id.value }} </div>
-                                        <div class="col-auto">Type: {{ email_form.email_type_id.value }} </div>
-                                        <div class="col-auto">{{ email_form.email_address.value |lower}} </div>
-                                        <div class="col-auto">{{ email_form.email_description.value}} </div>
+                                        <div class="col">ID: {{ email_form.email_id.value }} </div>
+                                        <div class="col">Type: {{ email_form.email_type_id.value }} </div>
+                                        <div class="col">{{ email_form.email_address.value |lower}} </div>
+                                        <div class="col">{{ email_form.email_description.value}} </div>
+                                        <div class="col">
+                                            
+
+                                        </div>
                                         <div class="col-auto"><button class="btn btn-outline-info edit-button mb-1" type="button">Edit</button> </div>
                                     </div>
                                 </div>
 
                                 <div class="form-edit" style="display:none;">
                                     <div class="row ">
-                                        <div class="col-auto">{{ email_form.email_id }}</div>
-                                        <div class="col-auto">{{ email_form.email_type_id }}</div>
-                                        <div class="col-auto">{{ email_form.email_address }}</div> 
-                                        <div class="col-auto">{{ email_form.email_description }}</div>
-                                        <div class="col-auto">{{ email_form.email_can_send_notification }}</div>
-                                        <button class="btn btn-outline-primary save-email-button" type="submit">Save</button>
+                                        <div class="col-auto">{{ email_form.email_id.value|as_crispy_field }}</div>
+                                        <div class="col-auto">{{ email_form.email_type_id |as_crispy_field}}</div>
+                                        <div class="col-auto">{{ email_form.email_address |as_crispy_field}}</div> 
+                                        <div class="col-auto">{{ email_form.email_description |as_crispy_field}}</div>
+                                        <div class="col-auto">{{ email_form.email_can_send_notification|as_crispy_field}}</div>
+                                        <div class="col-auto">
+                                            <button class="btn btn-outline-primary save-email-button" type="submit">Save</button>
+                                        </div>
+                                        
                                     </div>
                                 </div>
                             
@@ -215,6 +222,23 @@
                     $(this).attr('contenteditable', 'false');
                 }
             });
+        });
+
+        // the snippet of javascript code for handling the switch icon.
+        const $switch = $('#id_email_can_send_notification');
+        const $label = $('label[for="id_email_can_send_notification"]');
+
+        function updateLabel() {
+            const state = $switch.prop('checked') ? $label.data('on-label') : $label.data('off-label');
+            $label.text(state);
+        }
+
+        // Initial update
+        updateLabel();
+
+        // Update on change
+        $switch.on('change', function() {
+            updateLabel();
         });
 
     });
