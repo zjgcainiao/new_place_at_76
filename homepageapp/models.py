@@ -138,8 +138,7 @@ class EmailsNewSQL02Model(models.Model):
     email_id = models.IntegerField(primary_key=True)
     email_type_id = models.IntegerField()
     email_address = models.EmailField()
-    email_description = models.CharField(max_length=255)
-
+    email_description = models.CharField(max_length=255, null=True, blank=True)
     email_can_send_notification = models.BooleanField(default=True)
     email_created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
