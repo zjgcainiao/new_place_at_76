@@ -1,0 +1,14 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+
+{% block content-main %}
+<div class="container my-1">
+    <h3> Create a new vehicle record </h3>
+    <form  method="POST">
+        {% csrf_token %}   
+        
+        {{form.as_p}}
+
+        <button type="submit">SUBMIT</button>
+    </form>
+</div>
+{% endblock %}

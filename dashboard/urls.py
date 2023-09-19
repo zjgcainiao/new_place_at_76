@@ -1,30 +1,25 @@
 from django.urls import include, path
-from .views import wip_dashboard, dashboard_detail_v1, dashboard_detail_v2
+from dashboard.views import wip_dashboard, dashboard_detail_v1, dashboard_detail_v2
 from dashboard.views import WIPDashboardView, get_main_dashboard
 from dashboard.views import DashboardDetailView, RepairOrderUpdateView, PartItemUpdateView, LaborItemUpdateView
-from .views import repair_order_update, repair_order_and_line_items_detail, line_item_labor_and_part_item_update_view
+from dashboard.views import repair_order_update, repair_order_and_line_items_detail, line_item_labor_and_part_item_update_view
 from dashboard.views import chat_sidebar_view, SearchView
 from dashboard import views
 
 app_name = 'dashboard'
 urlpatterns = [
-    # other URL patterns
-    # path('dash/', include('django.contrib.auth.urls')),
-    # path('register/', auth_views.register, name='register'),
-    # path('', IndexPage, name='dashboard-index'),
-    # prefix: dashboard/
 
     path('', get_main_dashboard, name='main-dash'),
-
+    path('search/', SearchView.as_view(), name='search'),
     # dashboard -- repair order plus customer info and customer information. Phone numbers are not included yet.
 
     path('WIPs/old',  wip_dashboard, name='dashboard-testing-v1'),
 
     # current version is v2
     path('WIPs/', WIPDashboardView.as_view(), name='wip-dash'),
-    path('search/', SearchView.as_view(), name='search'),
 
-    # the dashboard detail apge
+    # the dashboard detail page. url starts wtih v2. it is confusing.
+
     path('v2/detail/<int:pk>/', dashboard_detail_v1, name='dashboard-detail'),
     path('chats/customers/<int:customer_id>/',
          chat_sidebar_view, name='dashboard-chats'),
@@ -48,21 +43,27 @@ urlpatterns = [
     path('customers/', views.get_customer_dash, name='customer-dash'),
     path('customers/<int:pk>/', views.CustomerDetailView.as_view(),
          name='customer-detail'),
+    path('customers/<int:pk>/v2', views.CustomerDetail2View.as_view(),
+         name='customer-detail-v2'),
     path('customers/create', views.CustomerCreateView.as_view(),
          name='customer-create'),
+
+    path('update-customer-email/<int:email_id>/',
+         views.update_customer_email, name='update-customer-email'),
     path('customers/<int:pk>/update/',
          views.CustomerUpdateView.as_view(), name='customer-update'),
     path('customers/<int:pk>/delete/',
          views.CustomerDeleteView.as_view(), name='customer-delete'),
 
     path('vehicles/', views.get_vehicle_dash, name='vehicle-dash'),
-    path('vehicle/<int:pk>/', views.VehicleDetailView.as_view(),
+    path('vehicles/<int:pk>/', views.VehicleDetailView.as_view(),
          name='vehicle-detail'),
+    path('vehicles/<int:pk>/update/', views.VehicleUpdateView.as_view(),
+         name='vehicle-update'),
     path('repairorders/', views.RepairOrderListView.as_view(),
          name='repairorders-list'),
     path('tech_dash/<int:technician_id>/',
          views.technician_dash_view, name='technician-dash'),
     # path('repairorders/<int:repair_order_id>/lineitems/', views.repair_order_and_line_items_detail, name='repairorder-lineitem-detail'),
     # path('dataimport/email', views.EmailDataView.as_view(), name='import-email-data')
-
 ]

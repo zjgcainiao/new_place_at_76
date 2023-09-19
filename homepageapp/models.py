@@ -139,7 +139,8 @@ class EmailsNewSQL02Model(models.Model):
     email_type_id = models.IntegerField()
     email_address = models.EmailField()
     email_description = models.CharField(max_length=255)
-    # record_version = models.IntegerField()
+
+    email_can_send_notification = models.BooleanField(default=True)
     email_created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='email_created', on_delete=models.SET_NULL, null=True, blank=True)
@@ -155,8 +156,8 @@ class EmailsNewSQL02Model(models.Model):
     class Meta:
         db_table = 'emails_new_03'
         ordering = ["-email_id"]
-        # verbose_name = 'email'
-        # verbose_name_plural = 'emails'
+        verbose_name = 'email'
+        verbose_name_plural = 'emails'
 
 
 class PhoneDescModel(models.Model):
@@ -260,7 +261,7 @@ class CustomersNewSQL02Model(models.Model):
     customer_is_deleted = models.BooleanField(
         default=False, null=True, blank=True)
     customer_is_active = models.BooleanField(
-        default=True, null=True, blank=True)
+        default=True, null=True, blank=True)  # flip the original 'deleted' field in the old database.
     customer_memebership_nbr = models.CharField(
         max_length=20, null=True, blank=True)
     customer_does_allow_SMS = models.BooleanField(default=True)
@@ -672,8 +673,8 @@ class MyShopVehicleConfigsModel(models.Model):
     class Meta:
         db_table = 'myshopvehicleconfigs_new_03'
         ordering = ["-myshop_vehicle_config_id"]
-        verbose_name = 'myshopvehicleconfig'
-        verbose_name_plural = 'myshopvehicleconfigs'
+        verbose_name = 'myshop vehicle configuration'
+        verbose_name_plural = 'myshop vehicle configurations'
 
 
 class VehicleConfigMyShopConfigsModel(models.Model):
@@ -686,6 +687,12 @@ class VehicleConfigMyShopConfigsModel(models.Model):
         InternalUser, related_name='vehicle_config_myshop_config_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='vehicle_config_myshop_config_modified', on_delete=models.SET_NULL, null=True, blank=True)
+
+    # Methods
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.created_by = self.modified_by
+        super(MyShopVehicleConfigsModel, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'vehicleconfigmyshopconfigs_new_03'

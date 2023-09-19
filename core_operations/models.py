@@ -62,10 +62,17 @@ LIST_OF_STATES_IN_US = (
     ('WI', 'Wisconsin'),
     ('WY', 'Wyoming'),
 )
-
+EMAIL_TYPES = [
+    (1, "Personal"),
+    (2, "Work"),
+    (3, "Other"),
+    (4, "Unassigned"),
+]
 
 # custom field.
 # This field will format the phone number into a standard format "+18182234567"
+
+
 class FormattedPhoneNumberField(models.CharField):
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 15

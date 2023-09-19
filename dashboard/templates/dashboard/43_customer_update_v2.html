@@ -1,0 +1,17 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load crispy_forms_tags %}
+{% block content-main %}
+<div class="container container-fluid my-1">
+  <h3>Update Vehicles for customer {{object.customer_id}}</h3>
+  <a class="btn btn-outline-dark" href="{% url 'dashboard:customer-detail' pk=object.customer_id %}">Go Back</a>
+  <div class="card card-hover border border-50 my-1">
+
+    <form method="post" class="card-body my-1">
+      {% csrf_token %}
+      
+      {% crispy form form.helper %}
+      <!-- <button class='btn btn-outline-primary' type="submit">Update</button> -->
+    </form>
+  </div>
+</div>
+{% endblock %}

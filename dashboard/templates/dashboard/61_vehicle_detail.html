@@ -20,7 +20,7 @@
     <!-- Breadcrumb-->
     <nav  aria-label="Breadcrumb">
         <ol class="breadcrumb breadcrumb-dark mb-0">
-            <li class="breadcrumb-item"><a href="{% url 'dashboard:dashboard-v2' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:wip-dash' %}">Dashboard</a></li>
             <li class="breadcrumb-item "><a href="{% url 'dashboard:vehicle-dash' %}">Vehicles</a></li>
             <li class="breadcrumb-item active"><a href="{% url 'dashboard:vehicle-detail' pk=vehicle.vehicle_id %}">Vehicle Detail</a></li>
         </ol>
@@ -42,7 +42,7 @@
                     <p class ='card-text'>Last visit on: {{vehicle.vehicle_last_in_date}} </p>
                      <p class ='card-text'> Memo: {{vehicle.vehicle_memo_1}} </p>                   
                     <p class ='card-text small'> Updated on: {{vehicle.vehicle_last_updated_datetime}}</p>
-                    <a href="{% url 'dashboard:customer-update' pk=vehicle.vehicle_id %}" class="btn btn-outline-info">Update</a>
+                    <a href="{% url 'dashboard:vehicle-update' pk=vehicle.vehicle_id %}" class="btn btn-outline-info">Update</a>
                 </div>
             </div>
         </div>

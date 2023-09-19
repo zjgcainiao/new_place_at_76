@@ -1,7 +1,7 @@
 {% extends 'dashboard/00_dashboard_base.html' %}
 
 {% block content-main %}
-<div class="container">
+<div class="container container-fluid">
   <!-- Breadcrumb-->
   <nav aria-label="Breadcrumb">
       <ol class="breadcrumb breadcrumb-dark mb-0">
@@ -11,7 +11,7 @@
   </nav>
 </div>
 
-<div class="container ">
+<div class="container container-fluid">
   <h2>Main Dashboard</h2>
   <!-- Display the date and logged in user -->
   <div class="row">
@@ -25,63 +25,86 @@
   </div>
 </div>
 <!-- The main content with 6 app portals -->
-<div class="container my-1">
-  <div class="row text-center">
+<div class="container container-fluid ">
+  <div class="row align-items-center">
     <!-- Each col represents a portal -->
-    <div class="col-md-4 col-lg-3 mb-4">
-      <div class="card rounded">
+    <div class="col-md-3 col-lg-2 mb-0">
+      <div class="card widget-flat">
         <a href="{% url 'dashboard:wip-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        Work Station Dash
+        <div class="card-body">1. Work Orders</div>
       </div>
     </div>
+    <!-- end of column  -->
 
-    <div class="col-md-4 col-lg-3 mb-4">
-      <div class="card rounded">
+    <div class="col-md-3 col-lg-2 mb-0">
+      <div class="card widget-flat">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        Vehicles
+          <div class="card-body">2. Vehicles</div>
+        
       </div>
     </div>
-    <div class="col-md-4 col-lg-3 mb-4">
-      <div class="card rounded">
+
+    <div class="col-md-3 col-lg-2 mb-0">
+      <div class="card widget-flat">
         <a href="{% url 'dashboard:customer-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        customers
+        <div class="card-body">3. Customers</div>
+        
       </div>
     </div>
 
-    <div class="col-md-4 col-lg-3 mb-4">
+    <div class="col-md-3 col-lg-2 mb-0">
+      <div class="card card-h-100">
+        <a href="{% url 'appointments:appointment_list' %}">
+          <img src="" class="card-img-top" alt="...">
+        </a>
+                <div class="card-body">4. Appointments</div>
+
+      </div>
+    </div>
+  </div>
+  <!-- end of row  -->
+
+  <div class="row"> 
+    <div class="col-md-3 col-lg-2 mb-0">
+      <div class="card">
+        <a href="{% url 'talent_management:talent_list' %}">
+          <img src="" class="card-img-top" alt="...">
+        </a>
+        5. Talent Managements
+      </div>
+    </div>
+
+    <div class="col-md-3 col-lg-2 mb-2">
+      <div class="card">
+        <a href="{% url 'dashboard:vehicle-dash' %}">
+          <img src="" class="card-img-top" alt="...">
+        </a>
+        6. Payments
+      </div>
+    </div>
+
+    <div class="col-md-3 col-lg-2 mb-2">
       <div class="card rounded">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        this is the third app. Vehicle
+        7. Accounting and Finance
       </div>
     </div>
-    <div class="col-md-4 col-lg-3 mb-4">
+    <div class="col-md-3 col-lg-2 mb-2">
       <div class="card rounded">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        Number Four
+        8. User Management and IT
       </div>
     </div>
-
-    <div class="col-md-4 col-lg-3 mb-4">
-      <div class="card rounded">
-        <a href="{% url 'dashboard:vehicle-dash' %}">
-          <img src="" class="card-img-top" alt="...">
-        </a>
-        Number Five
-      </div>
-    </div>
-
-
-
   </div>
 </div>
 

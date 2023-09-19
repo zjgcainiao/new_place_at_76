@@ -9,7 +9,7 @@
         <ol class="breadcrumb breadcrumb-dark mb-0">
             <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
             <li class="breadcrumb-item"><a href="{% url 'dashboard:main-dash' %}">Main Dash</a></li>
-            <li class="breadcrumb-item active"><a href="{% url 'dashboard:wip-dash' %}">Work Dashboard</a></li>
+            <li class="breadcrumb-item active"><a href="{% url 'dashboard:wip-dash' %}">Work Orders</a></li>
         </ol>
     </nav>
 
@@ -26,7 +26,7 @@
   </div>
   
   <div class="container container-fluid ">
-        <h2>WIP Dashboard</h2>
+        <h2>Work Orders In Progress (WIP)</h2>
     <div class='row'>
       <div class="col-12 btn-group my-1">
         <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search' %}"> <i class="uil-focus-add"></i> New Repair Order</a>
@@ -42,7 +42,7 @@
   <div class = 'container container-fluid'>
     <form method="post">
       {% csrf_token %}
-      <table class ='table table-light table-hover'>
+      <table class ='table table-light table-hover table-centered'>
         <thead>
           <tr>
             <th>Order ID</th>

@@ -6,14 +6,16 @@ from django.utils.translation import gettext_lazy as _
 from django.forms import formset_factory
 from django.forms import inlineformset_factory
 from django.db.models import Prefetch
-from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model, LaborItemModel
+from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model, LaborItemModel, EmailsNewSQL02Model
 from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model, AddressesNewSQL02Model, CustomerAddressesNewSQL02Model, PhonesNewSQL02Model
 # using crispy_forms to control the search form.
+
+from core_operations.models import EMAIL_TYPES
 
 
 class SearchForm(forms.Form):
     search_query = forms.CharField(label='Search', widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholer': 'enter phone number, license plate to search'}))
+        attrs={'class': 'form-control', 'placeholer': 'enter phone number, license plate to search.'}))
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
     #     self.helper = FormHelper()
@@ -80,11 +82,11 @@ class CustomerUpdateForm(forms.ModelForm):
             Fieldset(_('customer_info'),
                      Row(Column(Field('customer_first_name', css_class='form-control'),
                                 css_class='col-4',),
-                         Column(Field('customer_last_name', css_class='form-control', ),  # style="background-color: #333"
+                         Column(Field('customer_last_name', css_class='form-control'),  # style="background-color: #333"
                                 css_class='col-4',),
                          Column(Field('customer_middle_name', css_class='form-control'),
                                 css_class='col-4',),
-                         Column(Field('customer_spouse_name', css_class='form-control',),
+                         Column(Field('customer_spouse_name', css_class='form-control'),
                                 css_class='col-4',),
                          Column(Field('customer_dob', css_class='form-control'),
                                 css_class='col-4',),
@@ -108,7 +110,7 @@ class CustomerUpdateForm(forms.ModelForm):
                      ),
             ButtonHolder(
                 Row(
-                    Column(Submit('submit', 'Update', css_class='btn btn-primary', css_id='submit-button', style="float: left;"),
+                    Column(Submit('submit', 'Apply', css_class='btn btn-primary', css_id='submit-button', style="float: left;"),
                            css_class='col col-6'),
                     Column(Reset('reset', 'Reset', css_class='btn btn-secondary', css_id='reset-button', style="float: right;"),
                            css_class='col col-6'),
@@ -167,6 +169,14 @@ class VehicleUpdateForm(forms.ModelForm):
     class Meta:
         model = VehiclesNewSQL02Model
         fields = ['vehicle_id', 'vehicle_cust', 'VIN_number',
+                  'vehicle_license_plate_nbr', 'vehicle_license_state',
+                  'vehicle_make', 'vehicle_year', 'vehicle_sub_model',
+                  'vehicle_drive_type', 'vehicle_engine',
+                  'vehicle_body_style', 'vehicle_brake',
+                  'vehicle_GVW', 'vehicle_color',
+                  'vehicle_recall_last_checked_datetime',
+                  'vehicle_active_recall_counts',
+                  'vehicle_is_included_in_CRM_compaign',
                   'vehicle_memo_01', 'vehicle_odometer_1']
         # exclude = ('created_at', 'updated_at',)
         # widgets = {
@@ -184,6 +194,62 @@ class VehicleUpdateForm(forms.ModelForm):
                 'class': 'form-control',
             })
 
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.form_method = "post"
+        self.helper.label_class = 'col-3'
+        self.helper.field_class = 'col-9'
+        self.helper.layout = Layout(
+            Row(HTML("<hr>"),
+                css_class='m-1 p-1'),
+            Fieldset(_('Linked Customer'),
+                     Row(Field('vehicle_cust.customer_first_name', css_class='form-select'),
+                         css_class='m-1 p-1'),
+                     Fieldset(_('vehicle_info'),
+                     Row(Column(Field('vehicle_id', css_class='form-control'),
+                                css_class='col-4',),
+                         Column(Field('vehicle_year', css_class='form-control'),  # style="background-color: #333"
+                                css_class='col-4',),
+                         Column(Field('vehicle_last_in_date', css_class='form-control'),
+                                css_class='col-4',),
+                         Column(Field('vehicle_record_is_active', css_class='form-check'),
+                                css_class='col-4',),
+                         Column(Field('vehicle_make', css_class='form-control'),
+                                css_class='col-4',),
+                         Column(Field('vehicle_model', css_class='form-control'),
+                                css_class='col-4',),
+                         Column(Field('vehicle', css_class='form-control'),
+                                css_class='col-4',),
+                         Row(HTML("<hr>"),
+                             css_class='m-1 p-1'),
+                         Column(Field('vehicle_memo_1', css_class='form-control'),
+                                css_class='col-12',),
+                         css_class='pt-1 mb-3'),
+                     css_class='p-1 m-1'),
+
+                     Row(HTML("<hr>"),
+                         css_class='m-1 p-1'),
+
+                     Fieldset(_('Vehicle_Details'),
+                     Row(Column(Field('vehicle_is_included_in_CRM_compaign', css_class='form-check-input'),
+                                css_class='col-4'),
+                         Column(Field('vehicle_active_recall_counts', css_class='form-control'),
+                                css_class='col-8'),
+                         css_class='p-1 m-1'),
+
+            ),
+                ButtonHolder(
+                Row(
+                    Column(Submit('submit', 'Apply', css_class='btn btn-primary', css_id='submit-button', style="float: left;"),
+                           css_class='col col-6'),
+                    Column(Reset('reset', 'Reset', css_class='btn btn-secondary', css_id='reset-button', style="float: right;"),
+                           css_class='col col-6'),
+                    css_class='p-1 m-1'),
+            ),
+                css_class='p-1 m-1')
+        )
+        # end of self.helper.Layout
+
 
 class PartItemUpdateForm(forms.ModelForm):
     part_item_quantity = forms.IntegerField(min_value=0, max_value=100)
@@ -192,7 +258,7 @@ class PartItemUpdateForm(forms.ModelForm):
     part_item_is_quantity_confirmed = forms.BooleanField(widget=forms.CheckboxInput(
         attrs={'class': 'form-check-input'}), label='is quantity confirmed?')
     part_item_is_user_entered_unit_sale = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': 'form-check'}), label='is quantity confirmed?')
+        attrs={'class': 'form-check'}), label='is user entered unit sale?')
     part_item_is_user_entered_unit_cost = forms.BooleanField(widget=forms.CheckboxInput(
         attrs={'class': 'form-check'}), label='is quantity confirmed?')
 
@@ -358,3 +424,36 @@ class LineItemUpdateForm(forms.ModelForm):
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
     #     self.fields['line_item'].queryset = LineItem.objects.all()
+
+
+class LiteEmailUpdateForm(forms.ModelForm):
+    email_id = forms.IntegerField(widget=forms.TextInput(
+        attrs={'readonly': 'readonly'}), required=False)
+    email_type_id = forms.ChoiceField(choices=EMAIL_TYPES,
+                                      label='email type', widget=forms.Select(attrs={"class": "form-select"}))
+    email_address = forms.EmailField(widget=forms.EmailInput(
+        attrs={'type': 'text'}))
+    email_description = forms.CharField(
+        max_length=200, widget=forms.TextInput(attrs={'type': 'text', "class": "editable-field"}))
+    email_can_send_notification = forms.BooleanField(widget=forms.CheckboxInput(
+        attrs={'class': 'form-check'}), label='allow notifications', required=False)
+
+    class Meta:
+        model = EmailsNewSQL02Model
+        fields = ['email_id', 'email_type_id',
+                  'email_address', 'email_description']
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+        # add a "form-control" class to each form input
+        # for enabling bootstrap
+        for name in self.fields.keys():
+            self.fields[name].widget.attrs.update({
+                'class': 'form-control',
+            })
+
+
+LiteCustomerVehicleUpdateFormset = inlineformset_factory(
+    CustomersNewSQL02Model, VehiclesNewSQL02Model, edit_only=True,
+    fields=('vehicle_id', 'VIN_number', 'vehicle_license_plate_nbr'))

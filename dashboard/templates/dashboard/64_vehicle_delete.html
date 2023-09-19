@@ -1,0 +1,11 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+
+{% block content-main %}
+<h2>Update Customer</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Delete</button>
+</form>
+{% endblock %}
