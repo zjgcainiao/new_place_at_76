@@ -12,10 +12,10 @@ urlpatterns = [
     path('', get_main_dashboard, name='main-dash'),
     path('search/', SearchView.as_view(), name='search'),
     # dashboard -- repair order plus customer info and customer information. Phone numbers are not included yet.
-
+    # dashboard v1
     path('WIPs/old',  wip_dashboard, name='dashboard-testing-v1'),
 
-    # current version is v2
+    # dashboard v2. current version
     path('WIPs/', WIPDashboardView.as_view(), name='wip-dash'),
 
     # the dashboard detail page. url starts wtih v2. it is confusing.
@@ -55,11 +55,18 @@ urlpatterns = [
     path('customers/<int:pk>/delete/',
          views.CustomerDeleteView.as_view(), name='customer-delete'),
 
+    path('search_customer_by_phone/', views.search_customer_by_phone,
+         name='search_customer_by_phone'),
+    path('update_customer_assignment/', views.update_customer_assignment,
+         name='update_customer_assignment'),
+
     path('vehicles/', views.get_vehicle_dash, name='vehicle-dash'),
     path('vehicles/<int:pk>/', views.VehicleDetailView.as_view(),
          name='vehicle-detail'),
     path('vehicles/<int:pk>/update/', views.VehicleUpdateView.as_view(),
          name='vehicle-update'),
+    path('vehicles/<int:pk>/delete/', views.VehicleDeleteView.as_view(),
+         name='vehicle-delete'),
     path('repairorders/', views.RepairOrderListView.as_view(),
          name='repairorders-list'),
     path('tech_dash/<int:technician_id>/',

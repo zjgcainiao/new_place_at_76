@@ -171,7 +171,7 @@ class InternalUserPasswordResetView(PasswordResetView):
 
 # ---- 2023-04-03 creating firebase authentication view funciton ----
 # in the firebase_auth.py, create a new class `authentication.BaseAuthentication`
-@login_required
+@login_required(login_url='internal_users:internal_user_login')
 def firebase_authenticate(request):
     if request.method == 'GET':
         form = InternalUserCreationForm()
@@ -241,9 +241,9 @@ def return_current_internal_user_json(request):
     data = {
         'is_authenticated_user': request.user.is_authenticated,
         'is_internal_user': isinstance(request.user, InternalUser),
-        # Add other user details as needed
-    }
 
+    }
+    # Add other user details as needed
     if request.user.is_authenticated:
         data['email'] = request.user.email
         # Check if user belongs to 'Technicians' group

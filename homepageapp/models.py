@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 import os
 from dotenv import load_dotenv
 from internal_users.models import InternalUser
-
+import re
 # documentation for py-mssql is https://pymssql.readthedocs.io/en/stable/pymssql_examples.html#basic-features-strict-db-api-compliance
 # import pymssql
 
@@ -200,8 +200,12 @@ class PhonesNewSQL02Model(models.Model):
     modified_by = models.ForeignKey(
         InternalUser, related_name='phone_modified', on_delete=models.SET_NULL, null=True, blank=True)
     phone_last_updated_date = models.DateTimeField(auto_now=True)
-    # custom the corresponding data table name for this model
 
+    @property
+    def get_phone_number_digit_only(self):
+        phone_number_digits = re.sub(r'\D', '', self.phone_number)
+
+    # custom the corresponding data table name for this model
     def save(self, *args, **kwargs):
         if self._state.adding:
             self.created_by = self.modified_by
@@ -291,7 +295,7 @@ class CustomersNewSQL02Model(models.Model):
         TaxesModel, through='CustomerTaxesModel', related_name='customer_taxes')
 
     @property
-    def customer_full_name(self):
+    def get_customer_full_name(self):
         first_name = self.customer_first_name.capitalize(
         ) if self.customer_first_name else None
         middle_name = self.customer_middle_name.capitalize(
@@ -300,7 +304,7 @@ class CustomersNewSQL02Model(models.Model):
         name_fields = [first_name, middle_name, last_name]
         full_name = ' '.join(
             [field for field in name_fields if field is not None])
-        return f"{full_name}" if full_name.strip() else "Cannot retrieve customer full name or it is not available."
+        return full_name.strip() if full_name.strip() else "No available name."
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -312,6 +316,9 @@ class CustomersNewSQL02Model(models.Model):
         ordering = ["-customer_id"]
         verbose_name = 'customer'
         verbose_name_plural = 'customers'
+
+    def __str__(self):
+        return self.customer_full_name
 
 
 class CustomerAddressesNewSQL02Model(models.Model):
@@ -432,6 +439,9 @@ class MakesNewSQL02Model(models.Model):
         verbose_name = 'make'
         verbose_name_plural = 'makes'
 
+    def __str__(self):
+        return self.make_name.strip()
+
 
 class ModelsNewSQL02Model(models.Model):
     model_id = models.AutoField(primary_key=True)
@@ -442,6 +452,7 @@ class ModelsNewSQL02Model(models.Model):
         InternalUser, related_name='model_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='model_modified', on_delete=models.SET_NULL, null=True, blank=True)
+    make_last_updated_date = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -453,7 +464,9 @@ class ModelsNewSQL02Model(models.Model):
         ordering = ["-model_id", 'make']
         verbose_name = 'model'
         verbose_name_plural = 'models'
-    make_last_updated_date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.model_name.strip()
 
 
 class EnginesModel(models.Model):
@@ -488,6 +501,24 @@ class EnginesModel(models.Model):
         InternalUser, related_name='engine_modified', on_delete=models.SET_NULL, null=True, blank=True)
     engine_last_updated_date = models.DateTimeField(auto_now=True, null=True)
 
+    @property
+    def get_engine_feature(self):
+        fields = [str(self.engine_id), ": ",
+                  str(self.engine_number_of_cylinder).strip(
+        ) if self.engine_number_of_cylinder is not None else '',
+            str(self.engine_valve_per_cyclinder).strip(
+        ) if self.engine_valve_per_cyclinder is not None else '',
+            "-", self.engine_vin_code if self.engine_vin_code is not None else '',
+            "-", self.engine_fuel_type.strip() if self.engine_fuel_type is not None else '',
+            "-", self.engine_head_configuration_type if self.engine_head_configuration_type is not None else '',
+            "-", self.engine_boost_type.strip() if self.engine_boost_type is not None else '',
+            "-", self.engine_fuel_type.strip() if self.engine_fuel_type is not None else '',
+            "-", self.engine_fuel_system_configuration.strip() if self.engine_fuel_system_configuration is not None else '',
+        ]
+        engine_feature = "".join(
+            [field for field in fields if field is not None])
+        return engine_feature if engine_feature else "No available engine config cound."
+
     def save(self, *args, **kwargs):
         if self._state.adding:
             self.created_by = self.modified_by
@@ -499,15 +530,18 @@ class EnginesModel(models.Model):
         verbose_name = 'engine'
         verbose_name_plural = 'engines'
 
+    def __str__(self):
+        return self.get_engine_feature
+
 
 class TransmissionsModel(models.Model):
     transmission_id = models.AutoField(primary_key=True)
     transmission_type = models.CharField(max_length=100, blank=True, null=True)
-    tranmission_manufacturer_code = models.CharField(
+    transmission_manufacturer_code = models.CharField(
         max_length=100, blank=True, null=True)
     transmission_control_type = models.CharField(
         max_length=100, blank=True, null=True)
-    tranmission_is_electronic_controlled = models.BooleanField(default=False)
+    transmission_is_electronic_controlled = models.BooleanField(default=False)
     transmission_number_of_speed = models.IntegerField(null=True, blank=True)
     transmission_created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
@@ -516,6 +550,17 @@ class TransmissionsModel(models.Model):
         InternalUser, related_name='transmission_modified', on_delete=models.SET_NULL, null=True, blank=True)
     transmission_last_updated_date = models.DateTimeField(
         auto_now=True, null=True)
+
+    @property
+    def get_transmission_feature(self):
+        fields = [str(self.transmission_id), ": ", self.transmission_type.strip(
+        ),  "-", self.transmission_control_type, "-", self.transmission_manufacturer_code.strip(),
+            '-',
+            "electronic controlled" if str(self.transmission_is_electronic_controlled) else "not electronic controlled"]
+
+        transmission_feature = "".join(
+            [field for field in fields if field is not None])
+        return transmission_feature if transmission_feature else "No available drive type."
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -527,6 +572,9 @@ class TransmissionsModel(models.Model):
         ordering = ["-transmission_id"]
         verbose_name = 'transmission'
         verbose_name_plural = 'transmissions'
+
+    def __str__(self):
+        return self.get_transmission_feature
 
 
 class BrakesModel(models.Model):
@@ -545,11 +593,22 @@ class BrakesModel(models.Model):
             self.created_by = self.modified_by
         super().save(*args, **kwargs)
 
+    @property
+    def get_brake_feature(self):
+        fields = [str(self.brake_id), ": ", self.brake_system_type.strip()]
+
+        brake_feature = "".join(
+            [field for field in fields if field is not None])
+        return brake_feature if brake_feature else "No available brake system found."
+
     class Meta:
         db_table = 'brakes_new_03'
         ordering = ["-brake_id"]
         verbose_name = 'brake'
         verbose_name_plural = 'brakes'
+
+    def __str__(self):
+        return self.get_brake_feature
 
 
 class GVWsModel(models.Model):
@@ -558,6 +617,14 @@ class GVWsModel(models.Model):
     gvw_created_at = models.DateTimeField(auto_now_add=True)
     gvw_last_updated_date = models.DateTimeField(
         auto_now=True, null=True)
+
+    @property
+    def get_gvw_feature(self):
+        fields = [str(self.gvw_id), ": ", self.gvw_text.strip()]
+
+        gvw_feature = "".join(
+            [field for field in fields if field is not None])
+        return gvw_feature if gvw_feature else "No available brake system found."
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -569,6 +636,9 @@ class GVWsModel(models.Model):
         ordering = ["-gvw_id"]
         verbose_name = 'gvw'
         verbose_name_plural = 'gvws'
+
+    def __str__(self):
+        return self.get_gvw_feature
 
 
 class SubmodelsModel(models.Model):
@@ -583,6 +653,15 @@ class SubmodelsModel(models.Model):
     modified_by = models.ForeignKey(
         InternalUser, related_name='submodel_modified', on_delete=models.SET_NULL, null=True, blank=True)
 
+    @property
+    def get_sub_model_feature(self):
+        fields = [str(self.submodel_id),
+                  ": ", self.submodel_name.strip() if self.submodel_name is not None else ''
+                  ]
+        sub_model_feature = "".join(
+            [field for field in fields if field is not None])
+        return sub_model_feature if sub_model_feature else "No available sub model."
+
     def save(self, *args, **kwargs):
         if self._state.adding:
             self.created_by = self.modified_by
@@ -594,6 +673,9 @@ class SubmodelsModel(models.Model):
         verbose_name = 'submodel'
         verbose_name_plural = 'submodels'
 
+    def __str__(self):
+        return self.get_sub_model_feature
+
 
 class DrivesModel(models.Model):
     drive_id = models.AutoField(primary_key=True)
@@ -603,6 +685,16 @@ class DrivesModel(models.Model):
         InternalUser, related_name='drive_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='drive_modified', on_delete=models.SET_NULL, null=True, blank=True)
+
+    @property
+    def get_drive_type_feature(self):
+        fields = [str(self.drive_id), ": ", self.drive_type.strip()]
+        drive_type_feature = "".join(
+            [field for field in fields if field is not None])
+        return drive_type_feature if drive_type_feature else "No available drive type."
+
+    def __str__(self):
+        return self.get_drive_type_feature
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -624,6 +716,13 @@ class BodyStylesModel(models.Model):
         InternalUser, related_name='body_style_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='body_style_modified', on_delete=models.SET_NULL, null=True, blank=True)
+
+    @property
+    def get_body_style_feature(self):
+        fields = [str(self.body_style_id), ": ", self.body_style_name.strip()]
+        body_style_feature = "".join(
+            [field for field in fields if field is not None])
+        return body_style_feature if body_style_feature else "No available body style found."
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -720,7 +819,7 @@ class VehiclesNewSQL02Model(models.Model):
         BrakesModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_brakes', blank=True)
     vehicle_drive_type = models.ForeignKey(
         DrivesModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_drives', blank=True)
-    vehicle_GVW = models.ForeignKey(
+    vehicle_gvw = models.ForeignKey(
         GVWsModel, on_delete=models.SET_NULL, null=True, related_name='vehicle_gvws', blank=True)
     vehicle_odometer_1 = models.BigIntegerField(null=True, blank=True)
     vehicle_odometer_2 = models.BigIntegerField(null=True, blank=True)
@@ -737,7 +836,7 @@ class VehiclesNewSQL02Model(models.Model):
     vehicle_used_level = models.CharField(max_length=20, null=True, blank=True)
     vehicle_memo_01 = models.CharField(max_length=4000, null=True, blank=True)
     vehicle_memo_does_print_on_order = models.BooleanField(default=False)
-    vehicle_is_included_in_CRM_compaign = models.BooleanField(default=True)
+    vehicle_is_included_in_crm_compaign = models.BooleanField(default=True)
     vehicle_color = models.CharField(max_length=20, null=True, blank=True)
 
     vehicle_record_is_active = models.BooleanField(default=True)
@@ -753,6 +852,9 @@ class VehiclesNewSQL02Model(models.Model):
         PhonesNewSQL02Model, on_delete=models.SET_NULL, null=True, blank=True, related_name='vehicle_phones',)
     vehicle_contact_phone_main_new_uid = models.CharField(
         max_length=36, null=True, blank=True)
+
+    vehicle_authorized_customers = models.ManyToManyField(
+        'CustomersNewSQL02Model', related_name='authorized_vehicles', blank=True)
 
     vehicle_created_at = models.DateTimeField(auto_now_add=True)
 
@@ -807,6 +909,34 @@ class TextMessagesModel(models.Model):
         ordering = ['-text_message_id']
         verbose_name = 'textmessage'
         verbose_name_plural = 'textmessages'
+
+
+class VehicleNotesModel(models.Model):
+    vehicle_note_id = models.AutoField(primary_key=True)
+    vehicle_note_type_id = models.IntegerField()
+    vehicle = models.ForeignKey(
+        VehiclesNewSQL02Model, on_delete=models.SET_NULL, null=True, blank=True)
+    vehicle_note_text = models.CharField(max_length=400, null=True)
+
+    vehicle_note_last_updated_at = models.DateTimeField(
+        auto_now=True, null=True)
+    vehicle_note_created_at = models.DateTimeField(
+        auto_now_add=True, null=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='vehicle_note_created', on_delete=models.SET_NULL, null=True, blank=True)
+    modified_by = models.ForeignKey(
+        InternalUser, related_name='vehicle_note_modified', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.created_by = self.modified_by
+        super().save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'vehiclenotes_new_03'
+        ordering = ['-vehicle_note_id']
+        verbose_name = 'vehiclenote'
+        verbose_name_plural = 'vehiclenotes'
 
 
 class CannedJobsNewSQL02Model(models.Model):
@@ -1122,11 +1252,10 @@ class RepairOrdersNewSQL02Model(models.Model):
     # remove the `_id` from the field name. due to recent adding a foreign key.. by adding a foreign key field, Django will add '_id' for the field in the SQL data table.
     repair_order_customer = models.ForeignKey(
         CustomersNewSQL02Model, on_delete=models.SET_NULL, null=True)
-    # repair_order_customer_new_uid = models.CharField(max_length=20, null=True)
-    # models.ForeignKey(CustomersNewSQL01Model, on_delete=models.CASCADE, null=True,db_column='customer_new_uid_v01')
+
     repair_order_vehicle = models.ForeignKey(
         VehiclesNewSQL02Model, on_delete=models.SET_NULL, null=True, blank=True)
-    # repair_order_serviced_vehicle_new_uid = models.CharField(max_length=36, null=True, primary_key=False)
+
     repair_order_serviced_vehicle_location = models.CharField(
         max_length=36, null=True)
     repair_order_service_status = models.CharField(max_length=36, null=True)

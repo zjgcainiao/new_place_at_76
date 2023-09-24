@@ -1,13 +1,12 @@
 {% extends 'dashboard/00_dashboard_base.html' %}
-
+{% load crispy_forms_tags %}
 {% block content-main %}
 <div class="container my-1">
-    <h3> Create a new customer record </h3>
+    <h3> Create a new vehicle record </h3>
     <form  method="POST">
         {% csrf_token %}   
         
-        {{form.as_p}}
-
+        {% crispy form form.helper %}
         <button type="submit">SUBMIT</button>
     </form>
 </div>

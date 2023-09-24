@@ -1,6 +1,20 @@
 {% extends 'dashboard/00_dashboard_base.html' %}
-
+{% load humanize %}
+{% load core_operations.common_filters %}
+{% load crispy_forms_tags %}
 {% block content-main %}
+
+<div class="container container-fluid">
+    <!-- Breadcrumb-->
+    <nav  aria-label="Breadcrumb">
+        <ol class="breadcrumb breadcrumb-dark mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:main-dash' %}">Main Dash</a></li>
+            <li class="breadcrumb-item "><a href="{% url 'dashboard:vehicle-dash' %}">Vehicles</a></li>
+            <li class="breadcrumb-item active"><a href="{% url 'dashboard:vehicle-detail' pk=vehicle.vehicle_id %}">Vehicle Detail</a></li>
+        </ol>
+    </nav>
+</div>
 
 {% if messages %}
 <div class="container container-fluid">
@@ -16,38 +30,122 @@
 </div>
 {% endif %}
 
-<div class="container container-fluid " id ='vehicle-detail-container'>
-    <!-- Breadcrumb-->
-    <nav  aria-label="Breadcrumb">
-        <ol class="breadcrumb breadcrumb-dark mb-0">
-            <li class="breadcrumb-item"><a href="{% url 'dashboard:wip-dash' %}">Dashboard</a></li>
-            <li class="breadcrumb-item "><a href="{% url 'dashboard:vehicle-dash' %}">Vehicles</a></li>
-            <li class="breadcrumb-item active"><a href="{% url 'dashboard:vehicle-detail' pk=vehicle.vehicle_id %}">Vehicle Detail</a></li>
-        </ol>
-    </nav>
+<div class="container container-fluid mb-0" id ='vehicle-detail-container'>
+    <div class="card card-hover border border-secondary">
 
-    <h4>Detail - ID:{{vehcile.vehicle_id}}</h4>
-    <div class = 'row'>
-        <div class ='col col-12'>
-            <div class="card card-hover border border-light" >
-                <div class ='card-header text-dark'>Vehicle ID:{{vehicle.vehicle_id}}. Last recorded Odometer: {{vehicle.vehicle_odometer_1}}  </div>
-                <div class = 'card-body text-dark'>
-                    <p class="card-text"> VIN: {{vehicle.VIN_number}} </p>
-                    <p class="card-text"> License Plate: {{vehicle.vehicle_license_plate_nbr}}. State: {{vehicle.vehicle_license_state}}</p>
-                    <p class="card-text"> Vehicle Info:  {{vehicle.vehicle_year}} {{vehicle.vehicle_make.make_name}} {{vehicle.vehicle_sub_model.submodel_name}}. Bodystyle: {{vehicle.vehicle_body_style.body_style_name}}. Brakes: {{vehicle.vehicle_brake.brake_system_type}}. Weight: {{vehicle.vehicle_GVW.gvw_text}} </p>            
-                    <p class ='card-text'>Engine hours In: {{vehicle.vehicle_engine_hour_in}}</p>
-                    <p class ='card-text'>Customer First Name: {{vehicle.vehicle_cust.customer_first_name}}</p>
+        <div class = 'card-body text-dark'>
+            <h4 class="card-title fw-bold ">ID:{{vehicle.vehicle_id}}--Vehicle: {{vehicle.vehicle_year}} {{vehicle.vehicle_make.make_name}}--Customer: {{vehicle.vehicle_cust.get_customer_full_name}}</h4>
+            <div class="accordin" id="vehicleAccordion">
 
-                    
-                    <p class ='card-text'>Last visit on: {{vehicle.vehicle_last_in_date}} </p>
-                     <p class ='card-text'> Memo: {{vehicle.vehicle_memo_1}} </p>                   
-                    <p class ='card-text small'> Updated on: {{vehicle.vehicle_last_updated_datetime}}</p>
-                    <a href="{% url 'dashboard:vehicle-update' pk=vehicle.vehicle_id %}" class="btn btn-outline-info">Update</a>
+                 <!-- Basic Info Section -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingBasic">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasic" aria-expanded="true" aria-controls="collapseBasic">   
+                            <h5 class="card-text">I.Basic Info</h5>
+                            <p class ='card-text small text-left'> &nbsp;&nbsp;<em><u>Updated on: {{vehicle.vehicle_last_updated_datetime|date}}</u></em></p>
+                        </button>
+                    </h2>
+                    <div id="collapseBasic" class="accordion-collapse collapse show" aria-labelledby="headingBasic" >
+                        <div class="accordion-body my-1 px-1">
+                            <!-- Your Basic Information Fields Here -->
+                            <div class="row ">
+                                <div class="card-text col">Vehicle ID: {{vehicle.vehicle_id}} </div>
+                                <div class ='card-text col'> Last Recorded Odometer: {{vehicle.vehicle_odometer_1|intcomma}} </div>
+                                <div class ="card-text col">Last Visit Date: {{vehicle.vehicle_last_in_date}} </div>    
+                            </div>
+                        </div>
+                        <!-- end of accordion body  -->
+                    </div>
                 </div>
-            </div>
-        </div>
+                <!-- end of accordion-item  1-->
 
+                <!-- Technical Info Section -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTechnical">
+                        <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseTechnical" aria-expanded="false" aria-controls="collapseTechnical">
+                            <h5>II.Vehicle Technical Specifications</h5>
+                        </button>
+                    </h2>
+                    <div id="collapseTechnical" class="accordion-collapse collapse show" aria-labelledby="headingTechnical" >
+                        <div class="accordion-body my-1 px-1">
+                            <!-- Your Technical Specification Fields Here -->
+                            <div class="row ">
+                                <div class="card-text col-md-6">VIN: {{vehicle.VIN_number|bold_last_six_digit_in_vin}} </div>
+                                <div class="card-text col-3"> License Plate Number: {{vehicle.vehicle_license_plate_nbr}}</div>
+                                <div class="card-text col-3"> State: {{vehicle.vehicle_license_state}}</div>
+                                <div class="card-text col-2"> Year: {{vehicle.vehicle_year}} </div>    
+                                <div class="card-text col-2"> Make: {{vehicle.vehicle_make.make_name}}  </div>      
+                                <div class="card-text col-2"> Sub-model: {{vehicle.vehicle_sub_model.submodel_name}}</div>
+                                <div class="card-text col-2"> Body style: {{vehicle.vehicle_body_style.body_style_name}} </div>
+                                <div class="card-text col-2"> Brake : {{vehicle.vehicle_brake.brake_system_type}} </div>      
+                                <div class="card-text col-2"> Transmission Control Type {{vehicle.vehicle_transmission.transmission_control_type}} </div>      
+                                <div class="card-text col-2"> Brake : {{vehicle.vehicle_brake.transmission_manufacturer_code}} </div>      
+                                <div class="card-text col-2"> Gross Weight (lbs): {{vehicle.vehicle_gvw.gvw_text|intcomma}} </div>      
+                                <div class ="card-text col-2">Engine Hours In: {{vehicle.vehicle_engine_hour_in}}</div>
+
+                                <div class ="card-text col-md-5 col-12"> Memo: {{vehicle.vehicle_memo_1}} </div>    
+                            </div>
+                        </div>
+                        <!-- end of accordion body  -->
+                    </div>
+                </div>
+                <!-- end of accordion-item  2-->
+
+                <!-- Customer Information Section -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header fs-3 fw-bold" id="headingCustomer">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCustomer" aria-expanded="false" aria-controls="collapseCustomer">
+                            <h5 class="card-title">III. Customer Contact</h5>
+                        </button>
+                    </h2>
+                    <!-- omit the element data-bs-parent="#vehicleAccordion" to display all accordion items-->
+                    <div id="collapseCustomer" class="accordion-collapse collapse show" aria-labelledby="headingCustomer" >
+                        <div class="accordion-body my-1 px-1">
+                            <!-- Your Customer Specification Fields Here -->
+                            <div class="row">
+                                <div class ="col-mb-6 col-12 fw-normal">Cust. Name: {{vehicle.vehicle_cust.get_customer_full_name}}</div>
+                                <div class="col my-1">
+                                    <h6 class="card-title">Phones</h6>
+                                    {% for phone in vehicle.vehicle_cust.phones.all %}
+                                    <p>{{phone.phone_desc.phone_desc}}: {{phone.phone_number|format_phone_number_to_shop_standard}}</p>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="col my-1">
+                                    <h6 class="card-title">Emails</h6>
+                                    {% for email in vehicle.vehicle_cust.emails.all %}
+                                        {{email.email_address }}
+                                    {% endfor %}
+                                </div>
+
+                                <div class="col my-1">
+                                    <h6 class="card-title">Addresses</h6>
+                                    {% for address in vehicle.vehicle_cust.addresses.all %}
+                                    <table>{{ address.get_full_address }}</table>
+                                    <br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end of body accordion  -->
+                    </div>
+                </div>
+                <!-- end of accordion item 3  -->
+
+
+
+            </div>
+            <!-- end of accordin  -->
+
+            <div class="row my-1 px-1">
+                <div class="col text-left" ><a href="{% url 'dashboard:vehicle-update' pk=vehicle.vehicle_id %}" class="btn btn-outline-info btn-sm" >Update</a></div>
+            </div>
+            <!-- end of row  -->
+        </div>
+        <!-- end of card body  -->
     </div>
+    <!-- end of card  -->
+
 </div>
 
 <br>

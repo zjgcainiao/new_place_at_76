@@ -55,8 +55,7 @@ class RepairOrderModelForm(forms.ModelForm):
 
 
 RepairOrderFormSet = formset_factory(RepairOrderModelForm, extra=0)
-CustomerFormSet = formset_factory(CustomerModelForm, extra=0)
-AddressFormSet = formset_factory(AddressModelForm, extra=0)
+
 
 # class DashboardForm(forms.ModelForm):
 #     customer = forms.ModelChoiceField(queryset=CustomersNewSQL02Model.objects.all())
@@ -205,7 +204,6 @@ class LaborItemModelForm(forms.ModelForm):
 
         labels = {
             # 'labor_item_is_user_entered_labor_rate': 'Is this part has been confirmed? '
-
         }
 
 

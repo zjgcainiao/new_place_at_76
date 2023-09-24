@@ -26,19 +26,25 @@
 </div>
 <!-- The main content with 6 app portals -->
 <div class="container container-fluid ">
-  <div class="row align-items-center">
+  
+  <div class="row my-1 px-1">
+
     <!-- Each col represents a portal -->
-    <div class="col-md-3 col-lg-2 mb-0">
-      <div class="card widget-flat">
+
+    <!-- <div class="col col-md-3 col-lg-2 mb-0"> -->
+    <div class="col  mb-0">
+      <div class="card rounded">
         <a href="{% url 'dashboard:wip-dash' %}">
-          <img src="" class="card-img-top" alt="...">
+          <img src="" class="card-img-top rounded" alt="...">
         </a>
-        <div class="card-body">1. Work Orders</div>
+        <div class="card-body">
+          <p>1. Work Orders</p>
+        </div>
       </div>
     </div>
     <!-- end of column  -->
 
-    <div class="col-md-3 col-lg-2 mb-0">
+    <div class="col mb-0">
       <div class="card widget-flat">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
@@ -48,7 +54,7 @@
       </div>
     </div>
 
-    <div class="col-md-3 col-lg-2 mb-0">
+    <div class="col mb-0">
       <div class="card widget-flat">
         <a href="{% url 'dashboard:customer-dash' %}">
           <img src="" class="card-img-top" alt="...">
@@ -58,7 +64,7 @@
       </div>
     </div>
 
-    <div class="col-md-3 col-lg-2 mb-0">
+    <div class="col  mb-0">
       <div class="card card-h-100">
         <a href="{% url 'appointments:appointment_list' %}">
           <img src="" class="card-img-top" alt="...">
@@ -71,7 +77,7 @@
   <!-- end of row  -->
 
   <div class="row"> 
-    <div class="col-md-3 col-lg-2 mb-0">
+    <div class="col mb-0">
       <div class="card">
         <a href="{% url 'talent_management:talent_list' %}">
           <img src="" class="card-img-top" alt="...">
@@ -80,8 +86,8 @@
       </div>
     </div>
 
-    <div class="col-md-3 col-lg-2 mb-2">
-      <div class="card">
+    <div class="col mb-0">
+      <div class="card card-rounded">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
@@ -89,15 +95,15 @@
       </div>
     </div>
 
-    <div class="col-md-3 col-lg-2 mb-2">
-      <div class="card rounded">
+    <div class="col mb-0">
+      <div class="card card-rounded">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
         7. Accounting and Finance
       </div>
     </div>
-    <div class="col-md-3 col-lg-2 mb-2">
+    <div class="col mb-0">
       <div class="card rounded">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">

@@ -63,14 +63,24 @@ LIST_OF_STATES_IN_US = (
     ('WY', 'Wyoming'),
 )
 EMAIL_TYPES = [
-    (1, "Personal"),
-    (2, "Work"),
-    (3, "Other"),
-    (4, "Unassigned"),
+    (4, "4-Unassigned"),
+    (1, "1-Personal"),
+    (2, "2-Work"),
+    (3, "3-Other"),
+
 ]
 
 # custom field.
 # This field will format the phone number into a standard format "+18182234567"
+
+# VehicleNoteType is from old database's VehicleNoteType
+VEHICLE_NOTE_TYPES = [
+    (1, "Shop Warranty Notes"),
+    (2, "Customer Notes"),
+    (3, "Techninican Notes"),
+    (4, "Transmission Notes"),
+    (5, "GVW Notes"),
+]
 
 
 class FormattedPhoneNumberField(models.CharField):

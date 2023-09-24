@@ -57,12 +57,12 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     USER_LEVEL_1 = 1
     USER_LEVEL_2 = 2
     USER_LEVEL_3 = 3
-    USER_LEVEL_3 = 4
+    USER_LEVEL_4 = 4
     USER_PERMISSION_LEVELS = (
         (USER_LEVEL_1, 'Viewer'),
         (USER_LEVEL_2, 'Viewer'),
         (USER_LEVEL_3, 'Processor/Technican'),
-        (USER_LEVEL_3, 'Level 4 - not used'),
+        (USER_LEVEL_4, 'Level 4 - not used'),
     )
     AUTH_GROUP_LEVEL_0 = 0
     AUTH_GROUP_LEVEL_1 = 1

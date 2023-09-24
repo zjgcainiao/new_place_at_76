@@ -8,7 +8,7 @@
 
   <div class="container container-fluid">
     <!-- Breadcrumb-->
-    <nav aria-label="Breadcrumb mb-0">
+    <nav aria-label="breadcrumb mb-0">
         <ol class="breadcrumb breadcrumb-dark mb-0">
             <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
             <li class="breadcrumb-item"><a href="{% url 'dashboard:main-dash' %}">Main Dash</a></li>
@@ -18,21 +18,15 @@
     </nav>
     <div class ='row justify-content-between my-0'>
       <div class="col-8">
-        <h3>Repair Order Detail - ID:{{repair_order.repair_order_id}} - Status</h3>
+        <h4>ID:{{repair_order.repair_order_id}} - Customer:{{repair_order.repair_order_customer.get_customer_full_name}} - Status: {{repair_order.repair_order_phase.repair_order_phase_description}}</h4>
       </div>
       <div class ='col-2'>
-        <h4 class ='text-left'>Today is {{current_time|date}} </h4>
+        <h5 class ='text-left'>Today is {{current_time|date}} </h5>
       </div>
     </div>
     <!-- end of row  -->
   </div>
   
-<div class="container container-fluid">
-
-  
-</div>
-
-
 <div class="container container-fluid my-1">
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
@@ -48,21 +42,19 @@
 </div>
 
 <div class="container container-fluid">
-  <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active my-1" id="repair" role="tabpanel" aria-labelledby="repair-tab">
+  <div class="tab-content" id="wip-dashboard-tab-content">
+    <div class="tab-pane fade show active my-0" id="repair" role="tabpanel" aria-labelledby="work order dash detail">
         <!-- Placeholder content for repair order information -->
-        <div class="row my-1">
-
-            <div class="col-5">
+        <div class="row my-0">
+            <div class="col-12">
               <div class ='card card-hover border border-primary'>
-                <div class="row justify-content-between px-3 mt-1">
-                  <div class="col col-8"><h5 class="card-title text-primary">Repair Order ID: <u>{{repair_order.repair_order_id}}</u> </h5></div>
-                  <div class="col col-4"><small><em>Updated: {{repair_order.repair_order_last_updated_date|date}} </em></small></div>
-                </div>
-                <div class="card-body text-dark">    
+                <div class="card-body text-dark">
+                  <div class="row">
+                    <div class="col col-8"><h5 class="card-title text-primary">Repair Order ID: <u>{{repair_order.repair_order_id}}</u></a></h5></div>
+                    <div class="col col-4"><small><em><strong>Last Updated: {{repair_order.repair_order_last_updated_date|date}} </strong></em></small></div>
+                  </div>
                   <div class="row">               
                     <p class ='card-text col-4'>Status: {{repair_order.repair_order_phase.repair_order_phase_description}} </p>
-                    <p class ='card-text col-4'>Status: {{repair_order.repair_order_service_status}} </p>
                     <p class ='card-text col-4'>Service In: {{repair_order.repair_order_serviced_vehicle_in_datetime |date:"Y-m-d g:i A"}} </p>
                     <p class ='card-text col-4'>Service Out: {{repair_order.repair_order_serviced_vehicle_out_datetime |date:"Y-m-d g:i A"}} </p>
                     <p class ='card-text col-4'>Promised Datetime: {{repair_order.repair_order_promise_datetime|date:"Y-m-d g:i A"}} </p>
@@ -78,42 +70,73 @@
                     <p class ='card-text col-4'>Hazardous : {{repair_order.repair_order_snapshot_haz_waste_amount|intcomma}} </p>
                     <p class ='card-text col-4'>Tax Amount: {{repair_order.repair_order_snapshot_total_tax_amount|intcomma}} </p>
 
-                    <p class ='card-text col-12'>Aggr. Notes: {{repair_order.repair_order_aggr_notes}} </p>
+                    <p class ='card-text col-10'>Aggr. Notes: {{repair_order.repair_order_aggr_notes}} </p>
                     <hr>
-                    <p class='card-text col-9'>Customer ID: <u>{{ repair_order.repair_order_customer.customer_id }}</u> <a href="{% url 'dashboard:customer-detail' pk=customer_id %} " class="card-link">view more</a></p>
+                    <p class='card-text col-4'>Customer ID: <u>{{ repair_order.repair_order_customer.customer_id }}</u> <a href="{% url 'dashboard:customer-detail' pk=customer_id %} " class="card-link">view more</a></p>
                     <p class="card-text col-4">{{ repair_order.repair_order_customer.customer_first_name }} {{ repair_order.repair_order_customer.customer_last_name }} </p>
                     <p class="card-text col-4">{{ repair_order.repair_order_customer.phones.first.phone_number_digits_only |format_phone_number_to_shop_standard}}</p>
-                    <p class="card-text col-4">{{repair_order.repair_order_customer.addresses.first.get_full_address }}</p>
+                    <p class="card-text col-4">{{repair_order.repair_order_customer.addresses.first.get_full_address_with_ATTN }}</p>
                   </div>    
                 </div>
               </div>
             </div>
 
-            <div class ='col-7'>
-              <div class = 'card card-hover border border-primary' >
-                <h5 class="card-title text-primary px-3 mt-1">Vehicle ID: {{repair_order.repair_order_vehicle.vehicle_id }}</h5>
-                <div class="card-body text-dark">
+            <div class ='col-12'>
+              <div class = 'card card-hover border border-secondary' >
+
+                <div class="card-body text-dark my-0">
+                  <h5 class="card-title text-secondary">Vehicle ID: <a href="{% url 'dashboard:vehicle-detail' pk=repair_order.repair_order_vehicle.vehicle_id %}" class="card-link">{{repair_order.repair_order_vehicle.vehicle_id }}</a></h5>
+
                   <div class ='row'>
                     <p class="card-text col-4">Year: {{repair_order.repair_order_vehicle.vehicle_year}}</p>
                     <p class="card-text col-4">Make: {{repair_order.repair_order_vehicle.vehicle_make.make_name}}</p>
                     <p class="card-text col-4">Model: {{repair_order.repair_order_vehicle.vehicle_model.model_name}}</p>
-                    <p class="card-text col-4">Odometer:{{repair_order.repair_order_vehicle.vehicle_odometer_1|intcomma}}</p>
+                    <p class="card-text col-4">Submodel: {{repair_order.repair_order_vehicle.vehicle_sub_model.submodel_name}}</p>
+                    <p class="card-text col-4">Brake: {{repair_order.repair_order_vehicle.vehicle_brake.brake_system_type}}</p>
                     <p class="card-text col-4">GVW: {{repair_order.repair_order_vehicle.vehicle_GVW.gvw_text}}</p>
-                    <p class="card-text col-4">VIN: {{repair_order.repair_order_vehicle.VIN_number}}  <small><em>length:{{repair_order.repair_order_vehicle.VIN_number|length }}</em></small>
-                    </p>
-                    <p class="card-text col-4">License Plate Number: {{repair_order.repair_order_vehicle.vehicle_license_plate_nbr}}</p>
-                    <p class="card-text col-4">License State: {{repair_order.repair_order_vehicle.vehicle_license_state}}</p>
+                    <hr>
+                    <p class="card-text col-4">Trans. Type: {{repair_order.repair_order_vehicle.vehicle_transmission.transmission_type}}</p>
+                    <p class="card-text col-4">Trans. Manufactuer code: {{repair_order.repair_order_vehicle.vehicle_transmission.transmission_manufacturer_code}}</p>
+                    <p class="card-text col-4">Model: {{repair_order.repair_order_vehicle.vehicle_transmission.transmission_control_type}}</p>
+                    <p class="card-text col-4">Model: {{repair_order.repair_order_vehicle.vehicle_transmission.transmission_is_electronic_controlled}}</p>
+                    <p class="card-text col-4">Model: {{repair_order.repair_order_vehicle.vehicle_transmission.transmission_number_of_speed}}</p>
+                    <hr>
+                    <p class="card-text col-4">engine displacement CID: {{repair_order.repair_order_vehicle.engine_displacement_CID}}</p>
+                    <p class="card-text col-4">displacement liter: {{repair_order.repair_order_vehicle.engine_displacement_liter}}</p>
+                    <p class="card-text col-4">number of cylinder: {{repair_order.repair_order_vehicle.engine_number_of_cylinder}}</p>
+                    <p class="card-text col-4">valve per cyclinder: {{repair_order.repair_order_vehicle.engine_valve_per_cyclinder}}</p>
+                    <p class="card-text col-4">engine boost type: {{repair_order.repair_order_vehicle.engine_boost_type}}</p>
+                    <p class="card-text col-4">Model: {{repair_order.repair_order_vehicle.engine_head_configuration_type}}</p>
+                    <p class="card-text col-4">Model: {{repair_order.repair_order_vehicle.engine_vin_code}}</p>
+                    <p class="card-text col-4">Model: {{repair_order.repair_order_vehicle.engine_fuel_system}}</p>
+                    <p class="card-text col-4">Model: {{repair_order.repair_order_vehicle.engine_fuel_delivery_method_type}}</p>
+                    <p class="card-text col-4">Model: {{repair_order.repair_order_vehicle.engine_fuel_type}}</p>
+                    <p class="card-text col-4"> {{repair_order.repair_order_vehicle.engine_fuel_control_type}}</p>
+                    <p class="card-text col-4">engine block configuration: {{repair_order.repair_order_vehicle.engine_block_configuration}}</p>
+                    <p class="card-text col-4">fuel system configuration: {{repair_order.repair_order_vehicle.engine_fuel_system_configuration}}</p>
+
+
+                    <p class="card-text col-4">Odometer:{{repair_order.repair_order_vehicle.vehicle_odometer_1|intcomma}}</p>
+
                   </div>
+                  <!-- end of row  -->
+                  <div class="row">
+                    
+                    <div class="card-text col-8">VIN: {{repair_order.repair_order_vehicle.VIN_number}}</div>
+                    <p class="card text col-4"><small><em><u>length:{{repair_order.repair_order_vehicle.VIN_number|length }}</u></em></small></p>
+                    
+                    <p class="card-text col-6">License Plate Number: {{repair_order.repair_order_vehicle.vehicle_license_plate_nbr}}</p>
+                    <p class="card-text col-6">License State: {{repair_order.repair_order_vehicle.vehicle_license_state}}</p>
+                  </div>
+                  <!-- end of row  -->
                 </div>
               </div>
             </div>
 
         </div>
         <!-- end of row  -->
-        
         <hr>
-
-        <div class ='container my-1'>
+        <div class ='container container-fluid mb-0'>
           <div class ='row'>
             <div class="btn-group" role="group">
               <a class="btn btn-outline-primary">Canned Job List--ModelChoiceField</a>
@@ -126,7 +149,7 @@
         
 
         <div class="row">
-          <div class ='container my-2'>
+          <div class ='container my-0'>
             {% with line_items=line_items %}
               {% include 'dashboard/51_repair_order_line_items.html' %}
             {% endwith %}
@@ -134,7 +157,7 @@
         </div>
       
     </div>
-    <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+    <div class="tab-pane fade" id="wip-dashboard-text-messages-tab" role="tabpanel" aria-labelledby="messages-tab">
         <h3>Text History</h3>
         <!-- Placeholder content for customer information -->
         {% with text_messages=text_messages %}
@@ -143,12 +166,14 @@
     </div>
 
     <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
+      <div class="row">
         <h3>History of Repair Order related to the same customer</h3>
         <!-- Placeholder content for address information -->
         <p>Address_Line_01: {{repair_order.repair_order_customer.addresses.get.address_line_01 }} ,</p>
-        
-        </p>
+      </div>
+
     </div>
+    <!-- end of tab panel -->
   </div>
 </div>
 <br>

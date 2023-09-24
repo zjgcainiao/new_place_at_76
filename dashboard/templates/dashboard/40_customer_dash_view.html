@@ -42,7 +42,6 @@
             <tr>
                 <th>ID</th>
                 <th>first Name</th>
-                <th>Last Name</th>
                 <th>Email</th>
                 <th>Phone Nbr</th>      
                 <th>Updated at</th>
@@ -52,9 +51,8 @@
         <tbody>
             {% for customer in page_obj %}
                 <tr>
-                    <td><a href ="{% url 'dashboard:customer-detail' pk=customer.customer_id %} ">{{customer.customer_id}}</a></td>
-                    <td>{{ customer.customer_first_name}}</td>
-                    <td>{{ customer.customer_last_name }}</td>
+                    <td><a href ="{% url 'dashboard:customer-detail' pk=customer.customer_id %}">{{customer.customer_id}}</a></td>
+                    <td>{{ customer.get_customer_full_name}}</td>
                     <td>
                         {% for email in customer.emails.all %}
                         {{email.email_address|truncatechars:30 }}

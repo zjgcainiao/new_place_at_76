@@ -19,6 +19,8 @@ import pyodbc
 # from .serializers import EmailDataSerializer
 import json
 import os
+from dashboard.forms import CustomerUpdateForm
+
 # from .serializers import *
 
 from django.db.models import Count
@@ -121,7 +123,7 @@ class CustomerListView(ListView):
             Count('customer_is_deleted'))
         context['number_of_actives'] = number_of_actives
         # console.log(f'the context transftered here is {context}' )
-        context['form'] = CustomerModelForm()
+        context['form'] = CustomerUpdateForm()
         # Create any data and add it to the context
         context['addl'] = 'This is just some data'
         return context
