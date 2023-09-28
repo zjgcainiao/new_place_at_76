@@ -24,13 +24,13 @@ from homepageapp.models import CannedJobsNewSQL02Model as CannedJob, LineItemsNe
 from homepageapp.models import PartItemModel as PartItem, PartsModel as Part, LaborItemModel as LaborItem
 from homepageapp.models import lineItemTaxesNewSQL02Model as LineItemTax, NoteItemsNewSQL02Model as NoteItem
 from homepageapp.models import AccountClassModel as AccountClass, PaymentsModel as Payment, PaymentTransactionsModel as PaymentTransaction
-
+from homepageapp.models import VehicleNotesModel as VehicleNotes
 from talent_management.models import TalentsModel as Talent
 
+import pandas as pd
 from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
-import pandas as pd
 from django.utils import timezone
 import logging
 from django.db import transaction
@@ -672,7 +672,7 @@ with open(file_path, 'r') as f:
                 'vehicle_transmission': vehicle_transmission_obj,
                 'vehicle_brake': vehicle_brake_obj,
                 'vehicle_drive_type': vehicle_drive_obj,
-                'vehicle_GVW': vehicle_GVW_obj,
+                'vehicle_gvw': vehicle_GVW_obj,
                 'vehicle_odometer_1': aa['Odometer1'],
                 'vehicle_odometer_2': aa['Odometer2'],
                 'VIN_number': aa['Vin'],
@@ -784,6 +784,52 @@ with open(file_path, 'r') as f:
 
         #     )
         # aa_instance.save()
+
+# vehiclenotes_new_03
+model_name = 'VehicleNote'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    data = json.load(f)
+    # try:
+    with transaction.atomic():  # wrap in a transaction
+        for aa in data:
+            if 'VehicleId' not in aa:
+                logging.error(
+                    f"Skipping entry due to missing 'VehicleId': {aa}")
+                continue
+
+            # Debugging
+            # print(aa.get('VehicleId'), aa.get(
+            #     'BrakeId'), type(aa.get('BrakeId')))
+            # the .get() method will return None if the key is not found
+
+            # Retrieve objects from stored dictionaries instead of DB queries
+            vehicle_obj = vehicle_dict.get(aa.get('VehicleId'))
+
+            # use update_or_create
+            defaults = {
+                'vehicle': vehicle_obj,
+                'vehicle_note_text': aa['NoteText'],
+                'vehicle_note_last_updated_at ': aa['LastChangeDate'],
+            }
+            try:
+                vehicle_note_instance, created = VehicleNotes.objects.update_or_create(
+                    defaults=defaults
+                )
+                vehicle_note_instance.full_clean()
+                vehicle_note_instance.save()
+            except ValidationError as e:
+                logging.error(
+                    f"Validation error while adding notes for Vehicle ID {aa['VehicleId']}: {e}")
+                print(
+                    f"Validation error while adding notes for Vehicle ID {aa['VehicleId']}: {e}")
+
+                raise
+            except Exception as e:
+                logging.error(
+                    f"An error occurred while updating/creating a note for Vehicle with ID {aa['VehicleId']}: {e}")
+                print(
+                    f"An error occurred while updating/creating a note for Vehicle with ID {aa['VehicleId']}: {e}")
 
 # AccountClass model into the accountclassess_new_03 table.
 model_name = 'AccountClass'
@@ -1369,14 +1415,6 @@ def csv_to_json(csv_full_path):
 # read the
 json_data = csv_to_json(file_path)
 print(json_data)
-
-# with open(file_path, 'r') as f:
-# when the file becomes big, break down into 1000 records per piece
-# added on 2023-04-10
-# while True:
-#     chunk = f.read(1000)
-#     if not chunk:
-#         break
 
 
 def convert_date_format(date_string):

@@ -14,7 +14,7 @@ from django.db.models import Prefetch
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponseForbidden, JsonResponse
 from homepageapp.models import RepairOrdersNewSQL02Model, CustomerAddressesNewSQL02Model, CustomersNewSQL02Model, AddressesNewSQL02Model, CustomerEmailsNewSQL02Model
-from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model, VehiclesNewSQL02Model, EmailsNewSQL02Model, CustomerPhonesNewSQL02Model, PhonesNewSQL02Model
+from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model, VehiclesNewSQL02Model, EmailsNewSQL02Model, CustomerPhonesNewSQL02Model, PhonesNewSQL02Model, VehicleNotesModel
 # from homepageapp.forms import RepairOrderModelForm, CustomerModelForm, AddressModelForm, RepairOrderLineItemModelForm, PartItemModelForm, LaborItemModelForm
 from dashboard.forms import PartItemFormSet, LaborItemFormSet
 from django.forms.models import inlineformset_factory, modelformset_factory
@@ -783,6 +783,10 @@ class VehicleDetailView(DetailView, LoginRequiredMixin):
     context_object_name = 'vehicle'
     template_name = 'dashboard/61_vehicle_detail.html'
 
+    def get_queryset(self):
+        notes = VehicleNotesModel.objects.filter(vehicle_note_is_active=True)
+        return VehiclesNewSQL02Model.objects.prefetch_related(Prefetch('vehiclenotes_vehicle', queryset=notes))
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
@@ -837,6 +841,8 @@ class VehicleDeleteView(DeleteView, LoginRequiredMixin):
         self.object.save()
         messages.success(request, 'vehicle deactivated successfully.')
         return redirect(self.get_success_url())
+
+# this is used in Vehicle Update Form to return new customer record by a phone number search.
 
 
 def search_customer_by_phone(request):

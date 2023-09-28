@@ -81,7 +81,7 @@ class AppointmentRequest(models.Model):
 
     # appointment can either be created by anoymous user, a signed-in customer_user or created by an internal_user when a customer shows up on the physical store.
     appointment_created_by_internal_user = models.ForeignKey(
-        InternalUser, on_delete=models.SET_NULL, null=True)  # when null, it measn its created by customer user
+        InternalUser, on_delete=models.SET_NULL, null=True)  # when null, it means its created by customer user
     appointment_created_at = models.DateTimeField(auto_now_add=True)
     appointment_last_updated_date = models.DateTimeField(auto_now=True)
 
@@ -91,6 +91,7 @@ class AppointmentRequest(models.Model):
 
     class Meta:
         db_table = 'appointments'
+        ordering = ['-appointment_id']
 
     def __str__(self):
         return f"Name: {self.appointment_first_name} {self.appointment_last_name}-Time: {self.appointment_requested_datetime}"

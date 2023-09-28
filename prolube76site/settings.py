@@ -19,6 +19,7 @@ import requests
 import json
 import firebase_admin
 from firebase_admin import credentials
+from core_operations.log_filters import LocalTimezoneFilter
 
 load_dotenv()  # take environment variables from .env.
 
@@ -36,6 +37,120 @@ try:
 except KeyError as e:
     raise RuntimeError(
         "Could not find a Django SECRET_KEY in the environment variables.") from e
+
+# 'my_app_logs' directory is located at the base of my project
+LOGGING_DIR = os.path.join(BASE_DIR, 'my_app_logs')
+if not os.path.exists(LOGGING_DIR):
+    os.makedirs(LOGGING_DIR)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'local_time': {
+            '()': LocalTimezoneFilter,
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'django_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_DIR, 'django.log'),
+            'formatter': 'verbose',
+            'filters': ['local_time'],
+            'maxBytes': 5 * 1024 * 1024,
+            'backupCount': 3,
+        },
+        'request_file': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_DIR, 'requests.log'),
+            'formatter': 'verbose',
+            'filters': ['local_time'],
+            'maxBytes': 5 * 1024 * 1024,
+            'backupCount': 3,
+        },
+        'db_file': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_DIR, 'db.log'),
+            'formatter': 'verbose',
+            'filters': ['local_time'],
+            'maxBytes': 5 * 1024 * 1024,
+            'backupCount': 3,
+        },
+        'security_file': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_DIR, 'security.log'),
+            'formatter': 'verbose',
+            'filters': ['local_time'],
+            'maxBytes': 5 * 1024 * 1024,
+            'backupCount': 3,
+        },
+        'app_file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_DIR, 'app.log'),
+            'formatter': 'verbose',
+            'filters': ['local_time'],
+            'maxBytes': 5 * 1024 * 1024,
+            'backupCount': 3,
+        },
+        'external_api_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_DIR, 'external_api.log'),
+            'formatter': 'verbose',
+            'filters': ['local_time'],
+            'maxBytes': 5 * 1024 * 1024,
+            'backupCount': 3,
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['django_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['request_file'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.db': {
+            'handlers': ['db_file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['security_file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'talent_managment': {  # the name of your custom app `talent_management`
+            'handlers': ['app_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'external_api': {  # Logger for external API interactions
+            'handlers': ['external_api_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
@@ -263,9 +378,7 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-
 # use the django-mssql-backend
-
 # 2022-07-04- hide sensitivie environemnt variables such as the database url and login info.
 
 server = config("DB_SERVER", default=False)
@@ -276,11 +389,12 @@ if server:
     user = config("DB_USER")
     password = config("DB_PASSWORD")
     databaseName = config("DB_DATABASE1")
+    demoDatabaseName = config("DEMO_DB_DATABASE_NAME")
     # print('using the DB_SERVER database')
 
     # use the Microsoft provided MSSQL DRIVER for Django
     DATABASES = {
-        "default": {
+        "default_actual": {
             "ENGINE": "mssql",
             "NAME": databaseName,
             "USER": user,
@@ -291,6 +405,17 @@ if server:
                         "extra_params": "TrustServerCertificate=yes;Encrypt=yes"
                         },
         },
+        'default': {
+            'ENGINE': 'mssql',
+            "NAME": demoDatabaseName,
+            "USER": user,
+            "PASSWORD": password,
+            "HOST": server,
+            "PORT": "",
+            "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  # "ODBC Driver 18 for SQL Server",
+                        "extra_params": "TrustServerCertificate=yes;Encrypt=yes"
+                        },
+        }
     }
 
 elif az_server:
