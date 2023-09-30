@@ -1,11 +1,11 @@
 {% extends 'dashboard/00_dashboard_base.html' %}
-
+{% load crispy_forms_tags %}
 {% block content-main %}
-<h2>Delete Vehicle</h2>
+<h2>Delete Vehicle Record</h2>
 
 <form method="post">
   {% csrf_token %}
-  {{ form.as_p }}
+  {{ form|crispy }}
   <button type="submit">Delete</button>
 </form>
 {% endblock %}

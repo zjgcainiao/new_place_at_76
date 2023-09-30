@@ -13,7 +13,7 @@ from talent_management.models import TalentsModel as Talent
 
 class Command(BaseCommand):
     help = 'Imports talents from a given CSV file'
-    initial_data_filename = "2023-09-25-talent_management_init.csv"
+    initial_data_filename = "2023-09-30-talent-management-dummy-data.csv"
     initial_data_filepath = "/Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/New_site_database-data-migration-python-scripts"
     default_file_path = os.path.join(
         initial_data_filepath, initial_data_filename)
@@ -74,7 +74,8 @@ class Command(BaseCommand):
                             'talent_department': aa['talent_department'],
                             'talent_HR_remarks_json': aa['talent_HR_remarks_json'],
                             'talent_incident_record_json': aa['talent_incident_record_json'],
-                            'talent_is_active': self.convert_to_boolean(aa['talent_is_active']) or True,
+                            'talent_ssn': aa['talent_ssn'],
+                            # 'talent_is_active': self.convert_to_boolean(aa['talent_is_active']) or False,
                             'talent_pay_type': self.convert_to_int(aa['talent_pay_type']) or 0,
                             'talent_pay_rate': self.convert_to_decimal(aa['talent_pay_rate']) or Decimal(0.0),
                             'talent_pay_frequency': self.convert_to_int(aa['talent_pay_frequency']) or 0,

@@ -18,7 +18,7 @@
         <link rel="stylesheet" href="{% static 'dashboard/vendor/daterangepicker/daterangepicker.css' %}">
         <link href="{% static 'dashboard/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %} " rel="stylesheet" type="text/css">
 
-        <!-- App css -->
+        <!-- App app-creative css -->
         <link href="{% static 'dashboard/css/app-creative.min.css' %}" rel="stylesheet" type="text/css" id="app-style" />
 
         <!-- Icons css -->
@@ -27,14 +27,22 @@
         <!-- Theme Config Js -->
        <script src="{% static 'dashboard/js/hyper-config.js' %}"></script>        
 
-        <!-- Vendor js -->
-        <script src="{% static 'dashboard/js/vendor.min.js' %}"></script>
+        <!-- Datatables css -->
+        <link href="{% static 'dashboard/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'dashboard/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
+        
+        <!-- font-awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        
+        <!-- boostrap 5.2.3 css -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> 
         
         {% comment %}
         <!-- App js -->
         <script src="{% static 'dashboard/js/app.min.js' %}"></script>
         {% endcomment %}
-
+        <!-- Vendor js -->
+        <script src="{% static 'dashboard/js/vendor.min.js' %}"></script>
         <!-- Daterangepicker js -->
         <script src="{% static 'dashboard/vendor/daterangepicker/moment.min.js' %}"></script>
         <script src="{% static 'dashboard/vendor/daterangepicker/daterangepicker.js' %}"></script>
@@ -52,11 +60,9 @@
         <!-- JQuery -->
         <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        
 
-        <!-- Datatables css -->
-        <link href="{% static 'dashboard//vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
-        <link href="{% static 'dashboard//datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
+        
 
         {% include 'dashboard/01_additional_css_style.html' %}
     </head>
@@ -80,7 +86,6 @@
                                     <img src="assets/images/logo-sm.png" alt="small logo">
                                 </span> -->
                             </a>
-
                         </div>
 
                         <!-- Sidebar Menu Toggle Button -->
@@ -91,13 +96,6 @@
                     </div>
 
                     <ul class="topbar-menu d-flex align-items-center gap-3">
-                        <li class="nav-item">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <img src="{% static 'dashboard/images/flags/us.jpg' %}" alt="user-image" class="me-0 me-sm-1" height="12">
-                                <span class="align-middle d-none d-lg-inline-block">English</span> <i class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>
-                            </a>
-                        </li>
-
 
                         <li class="dropdown">
                             {% if user.is_authenticated %}
@@ -155,6 +153,25 @@
 
     <!-- Datatable Init js -->
     <script src="{% static 'dashboard/js/pages/demo.datatable-init.js' %}"></script>
+    
+    <!-- Vendor js -->
+    <script src="{% static 'dashboard/js/vendor.min.js' %}"></script>
+    <!-- Daterangepicker js -->
+    <script src="{% static 'dashboard/vendor/daterangepicker/moment.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/daterangepicker/daterangepicker.js' %}"></script>
+    
+    <!-- Apex Charts js -->
+    <script src="{% static 'dashboard/vendor/apexcharts/apexcharts.min.js' %}"></script>
 
-                                                
+    <!-- Vector Map js -->
+    <script src="{% static 'dashboard/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js' %}"></script>
+
+    <!-- Dashboard App js -->
+    <script src="{% static 'dashboard/js/pages/demo.dashboard.js' %}"></script>
+    
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+
+                                            
 </html> 

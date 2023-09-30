@@ -415,8 +415,8 @@ class VehicleUpdateForm(forms.ModelForm):
                            css_class='col-9'),
                     Column('vehicle_memo_does_print_on_order',
                            css_class='col-3'),
-                    Column('vehicle_is_included_in_crm_compaign',
-                           css_class='col-6'),
+                    Column(Field('vehicle_is_included_in_crm_compaign', css_class="form-check"),
+                           css_class='col-6 f'),
 
                 ),
             ),

@@ -6,8 +6,8 @@
 
 <div class="container container-fluid">
     <!-- Breadcrumb-->
-    <nav  aria-label="Breadcrumb">
-        <ol class="breadcrumb breadcrumb-dark mb-0">
+    <nav  aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-dark">
             <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
             <li class="breadcrumb-item"><a href="{% url 'dashboard:main-dash' %}">Main Dash</a></li>
             <li class="breadcrumb-item "><a href="{% url 'dashboard:vehicle-dash' %}">Vehicles</a></li>
@@ -30,7 +30,7 @@
 </div>
 {% endif %}
 
-<div class="container container-fluid mb-0" id ='vehicle-detail-container'>
+<div class="container container-fluid" id ='vehicle-detail-container'>
     <div class="card card-hover border border-secondary">
 
         <div class = 'card-body text-dark'>
@@ -159,7 +159,7 @@
             <!-- end of accordin  -->
 
             <div class="row my-1 px-1">
-                <div class="col text-left" ><a href="{% url 'dashboard:vehicle-update' pk=vehicle.vehicle_id %}" class="btn btn-outline-info btn-sm" >Update</a></div>
+                <div class="col text-left" ><a href="{% url 'dashboard:vehicle-update' pk=vehicle.vehicle_id %}" class="btn btn-outline-info btn-sm" >Edit</a></div>
             </div>
             <!-- end of row  -->
         </div>

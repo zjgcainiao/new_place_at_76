@@ -1,5 +1,7 @@
 {% extends 'talent_management/00_base.html' %}
 {% load crispy_forms_tags %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0v8FqFjcJ6pajs/rfdfs3SO+kD5tr5Szkbe5P/SFIIJdA2ybp" crossorigin="anonymous"></script>
+
 {% block content-main %}
 <div class ='container container-fluid'>
     <div class="row">
@@ -10,7 +12,7 @@
                     <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'dashboard:main-dash' %}">Main Dash</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'talent_management:talent_list' %}">Talents</a></li>
-                    <li class="breadcrumb-item active">Detail:{{ talent.talent_id }} </li>
+                    <li class="breadcrumb-item active">ID:{{ talent.talent_id }} </li>
                 </ol>
             </nav>
         </div>
@@ -24,22 +26,22 @@
           {% if messages %}
             {% for message in messages %}
           
-            <li{% if message.tags %} class="alert alert-dismissible alert-{{ message.tags }}"{% endif %}>
+            <div{% if message.tags %} class="alert alert-dismissible alert-{{ message.tags }}"{% endif %}>
               {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
               {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
             </button>
-            </li>
+            </div>
             
             {% endfor %}
           {% endif %}
         </div>
     </div>
+    <!-- end of row  -->
     <div class="row">
-            <h3 class="col">Talent Detail:{{ talent.talent_id }}<div><small><em>last updated: {{talent.talent_last_udpated_date|date:'m/d/y'}}</em></small></div></h3>
+        <h3 class="col">Talent ID: {{ talent.talent_id }}<h6><small>last updated: <em> {{talent.talent_last_udpated_date|date:'m/d/y'}}</em></small></h6></h3>
     
-    <div class="col text-right"><a href="{% url 'talent_management:talent_update' pk=talent.talent_id %}" class="btn btn-outline-primary btn-sm">Edit</a></div>
+        <div class="col text-right"><a href="{% url 'talent_management:talent_update' pk=talent.talent_id %}" class="btn btn-outline-primary btn">Edit</a></div>
     </div>
 
     <div class="row my-1">
@@ -57,11 +59,11 @@
                 <div class="col col-3 ">Last Name: {{ talent.talent_last_name }}</div>
                 <div class="col col-3 ">Middle Name: {{ talent.talent_middle_name }}</div>
                 <div class="col col-3 ">Preferred Name: {{ talent.talent_preferred_name }}</div>
-
-
-                <div class="col col-3 ">Phone Number: {{ talent.talent_phone_number_primary }}</div>
+                <div class="col col-3 ">Primary Phone Number: {{ talent.talent_phone_number_primary }}</div>
                 <div class="col col-3 ">Email: {{ talent.talent_email }}</div>
                 <div class="col col-12">Physical address: {{talent.talent_full_physical_address}}</div>
+                <div class="col col-12">is mailing the same as in physical address?: {{talent.talent_mailing_address_is_the_same_physical_address}}</div>
+                <div class="col col-12">Physical address: {{talent.talent_full_mailing_address}}</div>
             </div>
         
         </div>
@@ -80,6 +82,7 @@
                 <div class="col col-3 ">Pay Type: {{talent.talent_pay_type}}</div>
                 <div class="col col-3 ">Pay Rate: {{ talent.talent_pay_rate}}</div>
                 <div class="col col-3 ">Pay Frequency: {{ talent.get_talent_pay_frequency_display}}</div>
+                <div class="col col-3 ">Hire Date: {{ talent.talent_hire_date}}</div>
                 <div class="col col-3 ">Department: {{ talent.talent_department}}</div>
                 <div class="col col-3 ">Supervisor: {{ talent.talent_supervisor}}</div>
             </div>

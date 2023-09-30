@@ -240,13 +240,16 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # added CorsMiddleWare from django-cors-headers
-    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # added CorsMiddleWare from django-cors-headers
+    'corsheaders.middleware.CorsMiddleware',
+    # custom InternalUserMiddleware that applies to certain apps
+    "internal_users.middlewares.InternalUserMiddleware",
 ]
 
 # if os.environ.get('DJANGO_USE_DEBUG_TOOLBAR'):

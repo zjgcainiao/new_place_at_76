@@ -7,11 +7,12 @@ from talent_management.models import TalentsModel, TalentAudit
 from internal_users.models import InternalUser
 from django.utils import timezone
 from django.contrib import messages
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage, get_connection
 from django.template.loader import render_to_string
 from internal_users.token_generators import AccountActivationTokenGenerator, account_activation_token
+from internal_users.token_generators import create_activation_token
 import logging
 from urllib.parse import urljoin
 from django.conf import settings
@@ -60,8 +61,11 @@ def create_internal_user(sender, instance, created, **kwargs):
             # Send the user an email with the temporary password
             # Render the email content from the template
             mail_subject = 'Activate your employee user account'
-            # Generate token
-            token = account_activation_token.make_token(internal_user)
+
+            # Generate token using pyJWT
+            token = create_activation_token(internal_user)
+            # old token generation mehod: PasswordResetHashGenerator
+            # token = account_activation_token.make_token(internal_user)
 
             print(
                 f'the token just generated for new internal user id {internal_user.pk} and about to be sent via activation link is {token}')
@@ -80,9 +84,9 @@ def create_internal_user(sender, instance, created, **kwargs):
             # domain = get_current_site(None).domain
             protocol = get_protocol(domain)
             # code the primary key pk with base64
-            encoded_pk = urlsafe_base64_encode(force_bytes(internal_user.pk))
-            relative_link = reverse('internal_users:activate_internal_user_account', args=[
-                                    encoded_pk, token])
+            # encoded_pk = urlsafe_base64_encode(force_bytes(internal_user.pk))
+            relative_link = reverse_lazy(
+                'internal_users:activate_internal_user_account', args=[token])
             # activation_link = f"https://{domain}/{relative_link}"
             activation_link = urljoin(f"{protocol}://{domain}/", relative_link)
             print(f'the activation_link is {activation_link}.')

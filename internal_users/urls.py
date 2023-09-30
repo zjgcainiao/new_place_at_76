@@ -22,7 +22,7 @@ urlpatterns = [
          name='internal_user_logout'),
 
     # added on 2023-09-28 to allow a newly created internal_user (from talent model) and activate the user.
-    path('activate/<pkb64>/<token>/',
+    path('activate/<token>/',
          activate_internal_user_account, name='activate_internal_user_account'),
 
 

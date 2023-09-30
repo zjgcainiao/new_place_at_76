@@ -23,40 +23,22 @@
           <nav aria-label="breadcrumb mb-0">
               <ol class="breadcrumb breadcrumb-dark mb-0">
                   <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
-                  <li class="breadcrumb-item">Talent Dash</a></li>
+                   <li class="breadcrumb-item"><a href="{% url 'dashboard:main-dash' %}">Main Dash</a></li>
+                  <li class="breadcrumb-item active">Talents</a></li>
               </ol>
           </nav>
       </div>
 
   </div>
-  <h2>Talent Management Dash</h2>
+  <h2>Talent Dash</h2>
 
   <div class='row'>
     <p>User: {{user.user_first_name}}. User Auth Group: {{user.user_auth_group}}-{{user.get_user_auth_group_display}}. User has_perm Status{{user.has_perm}}</p>
   </div>
-  <div class ='row'>
-    <form method="GET" action="{% url 'talent_management:talent_list' %}">
-      <div class="input-group">
-          <input type="search" class="form-control dropdown-toggle" name="q" placeholder="Search by first name, last name, email or phone number" id="talent-search" value="{{ request.GET.q}}">
-          <button class="input-group-text btn btn-primary" type="submit"><span class="mdi mdi-magnify search-icon"></span>Search</button>
-      </div>
-    </form>
-  </div>
-  <!-- <div class="row my-1">
-    <div class="col-md-6">
-      <form method="GET">
-        <div class="form-group">
-          <label for="search">Search:</label>
-          <input type="text" class="form-control" id="search" name="search" value="{{ request.GET.search }}">
-        </div>
-      </form>
-      <button type="submit" class="btn btn-primary">Filter</button>
-    </div>
-  </div> -->
 
-  <div class='row'>
+  <div class='row d-flex justify-content-center my-1'>
     <div class="col my-1">
-      <a type="button" class="btn btn-outline-dark" href="{% url 'talent_management:talent_create' %}"> <i class="uil-focus-add"></i>Create Record</a>
+      <a type="button" class="btn btn-outline-dark" href="{% url 'talent_management:talent_create' %}"> <i class="uil-focus-add"></i> Create Record</a>
     </div>
     <div class="col my-1">
       <a type="button" class="btn btn-outline-dark" href="{% url 'talent_management:send_sample_report_view' %}"> <i class="uil-clipboard-alt"></i> Send a sample report</a>
@@ -65,7 +47,16 @@
       <a type="button" class="btn btn-outline-dark" href="{% url 'talent_management:talent_create' %}"> <i class="uil-calendar-alt"></i> Request Time-off</a>
     </div>
   </div>
-
+  <!-- end of row  -->
+  <div class ='row'>
+    <form method="GET" action="{% url 'talent_management:talent_list' %}">
+      {% csrf_token %}
+      <div class="input-group">
+          <input type="search" class="form-control dropdown-toggle" name="q" placeholder="Search by first name, last name, email or phone number" id="talent-search" value="{{ request.GET.q}}">
+          <button class="input-group-text btn btn-primary" type="submit"><span class="mdi mdi-magnify search-icon"></span>Search</button>
+      </div>
+    </form>
+  </div>
 
 </div>
 <!-- end of container -->
@@ -93,7 +84,7 @@
               <td><a href="{% url 'talent_management:talent_detail' pk=talent.talent_id  %}">{{ talent.talent_id }}</a></td>
               <td>{{ talent.talent_full_name|truncatechars:30 }}</td>
               <td>{{ talent.talent_full_address|truncatechars:30 }}</td>
-              <td>{{ talent.talent_phone_number_primary }}</td>
+              <td>{{ talent.talent_phone_number_primary |truncatechars:30}}</td>
               <td>{{ talent.talent_email|truncatechars:30 }}</td>
               <td>{{talent.talent_last_udpated_date|date:'m/d/y'}}</td>
               <td class="table-action"><a class="action-icon" href="{% url 'talent_management:talent_update' pk=talent.talent_id %}"><i class="uil uil-edit"></i></a><a class="action-icon" href="{% url 'talent_management:talent_delete' pk=talent.talent_id %}"><i class="uil uil-trash-alt"></i></a></td>

@@ -1,12 +1,12 @@
 {% extends 'dashboard/00_dashboard_base.html' %}
-
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 {% block content-main %}
 <div class="container container-fluid">
   <!-- Breadcrumb-->
-  <nav aria-label="Breadcrumb">
+  <nav aria-label="breadcrumb">
       <ol class="breadcrumb breadcrumb-dark mb-0">
           <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
-          <li class="breadcrumb-item active"><a href="{% url 'dashboard:main-dash' %}">Main Dash</a></li>
+          <li class="breadcrumb-item active">Main Dash</li>
       </ol>
   </nav>
 </div>
@@ -17,10 +17,9 @@
   <div class="row">
     <div class="col">
       Welcome. {{ user.user_first_name }}. Logged in as {{user.email}}
-      
     </div>
     <div class="col">
-        <p><strong>Date:</strong> {{ current_time |date}}</p>
+        <p>Today is: {{ current_time |date}}</p>
     </div>
   </div>
 </div>
@@ -32,19 +31,19 @@
     <!-- Each col represents a portal -->
 
     <!-- <div class="col col-md-3 col-lg-2 mb-0"> -->
-    <div class="col  mb-0">
+    <div class="col col-md-3 col-lg-2 mb-0">
       <div class="card rounded">
-        <a href="{% url 'dashboard:wip-dash' %}">
+        <a href="{% url 'dashboard:repair-order-dash' %}">
           <img src="" class="card-img-top rounded" alt="...">
         </a>
         <div class="card-body">
-          <p>1. Work Orders</p>
+          <p>1. Repair Orders</p>
         </div>
       </div>
     </div>
     <!-- end of column  -->
 
-    <div class="col mb-0">
+    <div class="col col-md-3 col-lg-2 mb-0">
       <div class="card widget-flat">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
@@ -54,22 +53,22 @@
       </div>
     </div>
 
-    <div class="col mb-0">
+    <div class="col col-md-3 col-lg-2 mb-0">
       <div class="card widget-flat">
         <a href="{% url 'dashboard:customer-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        <div class="card-body">3. Customers</div>
+        <div class="card-body"><p>3. Customers</p></div>
         
       </div>
     </div>
 
-    <div class="col  mb-0">
-      <div class="card card-h-100">
+    <div class="col col-md-3 col-lg-2 mb-0">
+      <div class="card ">
         <a href="{% url 'appointments:appointment_list' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-                <div class="card-body">4. Appointments</div>
+            <div class="card-body">4. Appointments</div>
 
       </div>
     </div>
@@ -77,40 +76,46 @@
   <!-- end of row  -->
 
   <div class="row"> 
-    <div class="col mb-0">
+    <div class="col col-md-3 col-lg-2 mb-0">
       <div class="card">
         <a href="{% url 'talent_management:talent_list' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        5. Talent Managements
+        
+          <div class="card-body">5. Talent Managements</div>
       </div>
     </div>
 
-    <div class="col mb-0">
+    <div class="col col-md-3 col-lg-2 mb-0">
       <div class="card card-rounded">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        6. Payments
+                  <div class="card-body">6. Payments</div>
+        
       </div>
     </div>
 
-    <div class="col mb-0">
+    <div class="col col-md-3 col-lg-2 mb-0">
       <div class="card card-rounded">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        7. Accounting and Finance
+        
+          <div class="card-body">7. Accounting and Finance</div>
       </div>
     </div>
-    <div class="col mb-0">
-      <div class="card rounded">
+
+    <div class="col col-md-3 col-lg-2 mb-0">
+      <div class="card widget-flat">
         <a href="{% url 'dashboard:vehicle-dash' %}">
           <img src="" class="card-img-top" alt="...">
         </a>
-        8. User Management and IT
+        
+          <div class="card-body">8. User Management and IT</div>
       </div>
     </div>
+
   </div>
 </div>
 

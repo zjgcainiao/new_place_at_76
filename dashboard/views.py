@@ -2,10 +2,9 @@
 # 2023-04-02 created to display the index page of the main workstation page.
 # representing a modern version of old mitchell1 dashboard
 # WIP, search, etc.
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic import DetailView  # ,UpdateView
 from django.views.generic.edit import CreateView, UpdateView,  DeleteView
@@ -26,7 +25,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from internal_users.models import InternalUser
 from appointments.models import AppointmentRequest
-from dashboard.forms import SearchForm, CustomerUpdateForm, RepairOrderUpdateForm, VehicleUpdateForm, AddressUpdateForm, LineItemUpdateForm, PartItemUpdateForm, LaborItemUpdateForm
+from dashboard.forms import SearchForm, CustomerUpdateForm, RepairOrderUpdateForm, VehicleUpdateForm, AddressUpdateForm, LineItemUpdateForm, PartItemUpdateForm, LaborItemUpdateForm, VehicleCreateForm
 from dashboard.forms import LiteEmailUpdateForm, CustomerCreateForm, CustomerEmailForm, CustomerAddressForm
 # from dashboard.forms import LiteCustomerVehicleUpdateFormset
 from django.core.paginator import Paginator
@@ -34,7 +33,7 @@ from django.db.models import Max
 from django.views.generic import TemplateView
 from core_operations.models import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
 # You can do the same sort of thing manually by testing on request.user.is_authenticated, but the decorator is much more convenient!
-
+from internal_users.mixins import InternalUserRequiredMixin
 from django.core.serializers import serialize
 
 LiteVehicleUpdateFormset = inlineformset_factory(
@@ -77,23 +76,24 @@ def wip_dashboard(request):
         'repair_orders': repair_orders,
         'customer_addresses': customer_addresses,
         'all_in_one_set': all_in_one_set,
-        'current_time': CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
+        'current_time': CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE,
     }
-    return render(request, 'dashboard/11_WIP_dashboard.html', context)
+    return render(request, 'dashboard/11_repair_order_dash.html', context)
 
 # using listview to display the dashboarrd. version 2, dashboard list view.
 
 
-class WIPDashboardView(LoginRequiredMixin, ListView):
+class WIPDashboardView(InternalUserRequiredMixin, ListView):
     model = RepairOrdersNewSQL02Model
     context_object_name = 'repair_orders'
-    template_name = 'dashboard/12_WIP_dashboard_v2.html'
+    template_name = 'dashboard/12_repair_order_dash_v2.html'
     login_url = reverse_lazy('internal_users:internal_user_login')
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             if not isinstance(request.user, InternalUser):
-                return self.handle_no_permission()
+                messages.warning("you are not permitted to view this page.")
+                return redirect('homepageapp:homepage')
             else:
                 return super().dispatch(request, *args, **kwargs)
         else:
@@ -104,20 +104,28 @@ class WIPDashboardView(LoginRequiredMixin, ListView):
         # qs = qs.filter(Q(repair_order_phase=1) | Q(repair_order_phase=2) | Q(repair_order_phase=3) | Q(repair_order_phase=4) | Q(repair_order_phase=5))
         qs = RepairOrdersNewSQL02Model.objects.filter(
             repair_order_phase__gte=1,
-            repair_order_phase__lte=5).select_related('repair_order_customer'
-                                                      ).prefetch_related('repair_order_customer__addresses',
-                                                                         'repair_order_customer__phones',
-                                                                         'repair_order_customer__emails',
-                                                                         'repair_order_customer__taxes',
-                                                                         'payment_repairorders',
-                                                                         'repair_order_customer__payment_customers',
-                                                                         )
+            repair_order_phase__lte=5
+        ).select_related(
+            'repair_order_customer', 'repair_order_vehicle',
+        ).prefetch_related('repair_order_customer__addresses',
+                           'repair_order_customer__phones',
+                           'repair_order_customer__emails',
+                           'repair_order_customer__taxes',
+                           'payment_repairorders',
+                           'repair_order_customer__payment_customers',
+                           )
 
         return qs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_time'] = CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
+        return context
 
 # dashboard detail view. version 1
 # modified to prefetch emails, phones, taxes to each repair_order_customer object
+
+
 @login_required(login_url='internal_users:internal_user_login')
 def dashboard_detail_v1(request, pk):
     repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
@@ -126,7 +134,7 @@ def dashboard_detail_v1(request, pk):
         'repair_order_customer__emails',
         'repair_order_customer__taxes',
         'lineitems__lineitem_noteitem',
-        'repair_order_vehicle'
+        'repair_order_vehicle',
     ).get(pk=pk)
     # repair_order = RepairOrdersNewSQL02Model.objects.get(id=repair_order_id)
     repair_order_id = repair_order.repair_order_id
@@ -148,7 +156,7 @@ def dashboard_detail_v1(request, pk):
         if form.is_valid():
             form.save()
             messages.success('redirecting...')
-            return redirect('dashboard:wip-dash')
+            return redirect('dashboard:repair-order-dash')
     else:
         # Display the form for updating the record
         form = RepairOrderUpdateForm(instance=repair_order)
@@ -159,7 +167,7 @@ def dashboard_detail_v1(request, pk):
         'repair_order_id': repair_order_id,
         'customer_id': customer_id,
         'line_items': line_items,
-        'current_time': timezone.now().replace(microsecond=0),
+        'current_time': CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE,
         'text_messages': text_messages,
 
     }
@@ -604,10 +612,10 @@ class CustomerCreateView(CreateView, LoginRequiredMixin):
         self.object.modified_by = self.request.user  # assuming the user is logged in
         self.object.save()
         messages.success(self.request, 'Update success.')
-        return redirect('dashboard:customer-detail', pk=self.object.customer_id)
+        return redirect('dashboard:customer-detail', pk=self.object.pk)
 
     def get_success_url(self):
-        return reverse('dashboard:customer-detail', kwargs={'pk': self.object.customer_id})
+        return reverse('dashboard:customer-detail', kwargs={'pk': self.object.pk})
 
 
 class CustomerDetailView(DetailView, LoginRequiredMixin):
@@ -777,9 +785,27 @@ def get_vehicle_dash(request):
                                                                    })
 
 
+class VehicleCreateView(CreateView, InternalUserRequiredMixin):
+    model = VehiclesNewSQL02Model
+    form_class = VehicleCreateForm
+    template_name = 'dashboard/62_vehicle_create.html'
+    login_url = reverse_lazy('internal_users:internal_user_login')
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.vehicle_last_updated_datetime = timezone.now()
+        self.object.created_by = self.request.user  # assuming the user is logged in
+        self.object.save()
+        messages.success(self.request, 'Update success.')
+        return redirect('dashboard:vehicle-detail', pk=self.object.pk)
+
+    def get_success_url(self):
+        return reverse('dashboard:vehicle-detail', kwargs={'pk': self.object.pk})
+
+
 class VehicleDetailView(DetailView, LoginRequiredMixin):
     model = VehiclesNewSQL02Model
-    success_url = reverse_lazy('vehicle-dash')
+    success_url = reverse_lazy('dashboard:vehicle-dash')
     context_object_name = 'vehicle'
     template_name = 'dashboard/61_vehicle_detail.html'
 
@@ -821,8 +847,9 @@ class VehicleUpdateView(UpdateView, LoginRequiredMixin):
         self.object.vehicle_last_updated_datetime = timezone.now()
         self.object.modified_by = self.request.user  # assuming the user is logged in
         self.object.save()
-        messages.success(self.request, 'Update success.')
-        return redirect('dashboard:vehicle-update', pk=self.object.vehicle_id)
+        messages.success(
+            self.request, f'Vehicle ID: {self.object.pk} update success.')
+        return redirect('dashboard:vehicle-detail', pk=self.object.pk)
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))

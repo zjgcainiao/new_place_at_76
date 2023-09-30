@@ -246,9 +246,9 @@ class PersonalContactInfoForm(forms.ModelForm):
         required=True, label='Legal Last Name (as in driver license(DL) or passport)')
     talent_middle_name = forms.CharField(required=False, label='Middle Name')
     talent_email = forms.EmailField(widget=forms.EmailInput(
-        attrs={'placeholder': 'Email address will be used to create company user profile.', }), required=True, label='Email')
+        attrs={'placeholder': 'Email address will be used to create company user profile.', }), required=True, label='Email', help_text='email should be unique in each talent record.')
     talent_physical_address_state = forms.ChoiceField(
-        choices=LIST_OF_STATES_IN_US, required=False, label='state')
+        choices=LIST_OF_STATES_IN_US, required=False, label='State')
 
     class Meta:
         model = TalentsModel
@@ -259,6 +259,9 @@ class PersonalContactInfoForm(forms.ModelForm):
                   'talent_physical_address_city', 'talent_physical_address_state', 'talent_physical_address_zip_code',
                   'talent_physical_address_country',
                   'talent_mailing_address_is_the_same_physical_address',
+                  'talent_mailing_address_01', 'talent_mailing_address_02',
+                  'talent_mailing_address_city', 'talent_mailing_address_state', 'talent_mailing_address_zip_code',
+                  'talent_mailing_address_country',
                   'talent_education_level', 'talent_certifications',
                   ]  # Replace with the actual fields you want to display in the Personal Info section
         widgets = {
@@ -278,16 +281,13 @@ class PersonalContactInfoForm(forms.ModelForm):
             'talent_emergency_contact': forms.TextInput(attrs={'placeholder': 'we highly recommend our employee to enter emergency contact. John Cooper 203-029-0930. ', }),
             'talent_education_level': forms.TextInput(attrs={}),
             'talent_certifications': forms.TextInput(attrs={'type': 'text'}),
-            'talent_mailing_address_is_the_same_physical_address': forms.CheckboxInput(attrs={'class': 'form-check-input',
-                                                                                              'readonly': 'readyonly'}),
+            'talent_mailing_address_is_the_same_physical_address': forms.CheckboxInput(attrs={'class': 'form-check',
+                                                                                              'style': "display:inline-block;margin-right:20px;"}),
         }
         labels = {
-            'talent_first_name': 'Legal First Name (as in Driver License (DL) or passport)',
-            'talent_last_name': 'Legal Last Name (as in Driver License (DL)  or passport)',
-            'talent_middle_name': 'Middle Name',
             'talent_mailing_address_is_the_same_physical_address': 'Mailing address is the same as the physical address?',
             'talent_education_level': 'Highest Degree obtained',
-            'talent_certifications': 'accreditions and certifcations',
+            'talent_certifications': 'Accreditions and Certifcations',
             'talent_physical_address_country': 'Country',
             'talent_emergency_contact': 'Emergency Contact',
             'talent_physical_address_city': 'City',

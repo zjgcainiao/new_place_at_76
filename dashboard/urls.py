@@ -16,7 +16,7 @@ urlpatterns = [
     path('WIPs/old',  wip_dashboard, name='dashboard-testing-v1'),
 
     # dashboard v2. current version
-    path('WIPs/', WIPDashboardView.as_view(), name='wip-dash'),
+    path('WIPs/', WIPDashboardView.as_view(), name='repair-order-dash'),
 
     # the dashboard detail page. url starts wtih v2. it is confusing.
 
@@ -61,6 +61,8 @@ urlpatterns = [
          name='update_customer_assignment'),
 
     path('vehicles/', views.get_vehicle_dash, name='vehicle-dash'),
+    path('vehicles/create/', views.VehicleCreateView.as_view(),
+         name='vehicle-create'),
     path('vehicles/<int:pk>/', views.VehicleDetailView.as_view(),
          name='vehicle-detail'),
     path('vehicles/<int:pk>/update/', views.VehicleUpdateView.as_view(),

@@ -21,7 +21,7 @@ from internal_users.internal_user_auth_backend import InternalUserBackend
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.contrib.auth.models import Group
-from internal_users.token_generators import account_activation_token
+from internal_users.token_generators import account_activation_token, decode_activation_token
 import logging
 # from internal_users.internal_user_auth_backend import authenticate
 
@@ -265,32 +265,22 @@ def return_current_internal_user_json(request):
     return JsonResponse(data)
 
 
-def activate_internal_user_account(request, pkb64, token):
-    print(f' the pkb64 received and before decoding is {pkb64}')
-    logger.info(f' the pk64 before decoding is {pkb64}')
-    print(f' the token received from activation link is {token}')
+def activate_internal_user_account(request, token):
+    logger.info(f' the JWT token received from activation link is {token}')
     try:
-
-        pk = force_str(urlsafe_base64_decode(pkb64))
-        print(f'the decoded pk is {pk or None}')
-        logger.info(f'the decoded pk is {pk or None}')
-        user = InternalUser.objects.get(pk=pk)
-        print(f'user {user.pk}  is {user}')
-        logger.info(f'user {user.pk} is {user}')
+        decoded_payload = decode_activation_token(token)
+        if decoded_payload:
+            logger.info(f'decoding user token scuccessfull')
+            user_id = decoded_payload['user_id']
+            logger.info(f'the decoded user_id is {user_id or None}')
+            user = InternalUser.objects.get(pk=user_id)
+            user.user_is_active = True
+            user.save()
+            messages.success(
+                f'user {user.user_first_name} (ID: {user.pk}) activation was successful.')
+            return redirect('internal_users:internal_user_dashboard')
     except (TypeError, ValueError, OverflowError, InternalUser.DoesNotExist):
         user = None
-
-    if user is not None and account_activation_token.check_token(user, token):
-        user.user_is_active = True
-        user.save()
-        # Optionally, log the user in
-        # ...
-        return redirect('internal_users:internal_user_dashboard')
-    else:
-        print(f'the token recieved via activation link is {token}.')
-        logger.info(f'the token recieved via activation link is {token}.')
-        print(
-            f'the result of check_token method is {account_activation_token.check_token(user, token)}')
         logger.info(
-            f'the result of check_token method is {account_activation_token.check_token(user, token)}')
+            f'activating user {user.user_first_name} (ID: {user.pk}) was unsuccessful. ')
         return render(request, 'internal_users/11_activation_invalid.html')

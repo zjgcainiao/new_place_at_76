@@ -21,7 +21,7 @@ from talent_management.forms import TALENT_CREATE_FORMS, PersonalContactInfoForm
 from talent_management.forms import TalentDocumentsForm
 from django.http import HttpResponse
 from talent_management.tasks import send_report_for_active_talents_with_pay_type_0
-from core_operations.models import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
+from core_operations.models import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE, CURRENT_TIME_SHOW_PRECISE_TIME_WITH_TIMEZONE
 from django.utils import timezone
 from internal_users.mixins import InternalUserRequiredMixin
 
@@ -192,7 +192,8 @@ class TalentCreationWizardView(SessionWizardView):
 
         # Add a success message
         messages.success(self.request, "Talent created successfully.")
-        redirect('talent_management:talent_detail', pk=self.kwargs['pk'])
+        # redirect('talent_management:talent_detail', pk=self.kwargs['pk'])
+        return redirect('talent_management:talent_detail', pk=talent.pk)
         # return render(self.request, 'talent_management/40_talent_creation.html', {
         #     'form_data': [form.cleaned_data for form in form_list],
         # })
@@ -244,21 +245,10 @@ class TalentUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('talent_management:talent_detail', kwargs={'pk': self.object.pk})
 
-    # talent object can be accessed in the template with `object`. the following block is redundant
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     if self.request.POST:
-    #         talent = self.get_object()
-    #         context['talent'] = talent
-    #     else:
-    #         context['talent'] = None
-
-    #     return context
-
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.talent_last_updated_date = timezone.now()
-        talent = self.object.save()
+        self.object.save()
         # After saving, compare the old and new state and log changes
         for field in TalentsModel.fields_to_track():
             old_value = self.object._initial_state[field]
@@ -286,15 +276,22 @@ class TalentDeleteView(DeleteView, LoginRequiredMixin):
     # Redirect to customer list after "deletion"
     success_url = reverse_lazy('talent_management:talent_list')
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def form_valid(self, form):
+        self.object = form.instance
         # Soft delete: mark as inactive
         self.object.talent_is_active = False
-        self.object.talent_incident_record_json = self.object.talent_incident_record_json.append({
-                                                                                                 '2023-09-29': 'deactivation'})
+        if self.object.talent_incident_record_json:
+            self.object.talent_incident_record_json.append(
+                {CURRENT_TIME_SHOW_PRECISE_TIME_WITH_TIMEZONE: f'this talent record {self.object.pk} is requested for a deletion. Deactivation.'})
+        else:
+            self.object.talent_incident_record_json = [
+                {CURRENT_TIME_SHOW_PRECISE_TIME_WITH_TIMEZONE:
+                    f'this talent record {self.object.pk} is requested for a deletion. Deactivation.'}
+            ]
+
         self.object.save()
         messages.success(
-            request, 'Talent record has been deleted successfully.')
+            self.request, 'Talent record has been deleted successfully.')
         return redirect(self.get_success_url())
 
 
