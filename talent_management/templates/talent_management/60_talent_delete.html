@@ -1,0 +1,36 @@
+{% extends 'talent_management/00_base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block content-main %}
+<div class="container container-fluid" >
+    <!-- Breadcrumb-->
+    <nav class="mb_0" aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-dark">
+            <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'talent_management:talent_list' %}">Talent Dash</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'talent_management:talent_detail' pk=object.talent_id %}">Detail</a></li>
+            <li class="breadcrumb-item active">Delete</li>
+        </ol>
+    </nav>
+</div>
+<div class="container container-fluid my-1" id='talent-delete-container'>
+  <h3>Delete record</h3>
+  <div class="card card-hover border border-50 my-1">
+    <form method="post" class="card-body" >
+      {% csrf_token %}
+      
+      {{form|crispy}}
+      <!-- <button class='btn btn-outline-primary' type="submit">Update</button> -->
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-outline-primary" type="submit">Apply</button>
+        </div>
+      </div>
+    
+    </form>
+
+      
+
+  </div>
+</div>
+{% endblock %}

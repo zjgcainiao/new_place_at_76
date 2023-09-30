@@ -9,7 +9,7 @@ from django.conf import settings
 from talent_management.models import TalentsModel
 from internal_users.models import InternalUser
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, UpdateView
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from talent_management.models import TalentDocuments, TalentAudit
 from django.db.models import Q
@@ -278,3 +278,18 @@ class TalentUpdateView(UpdateView):
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
+
+
+class TalentDeleteView(DeleteView, LoginRequiredMixin):
+    model = TalentsModel
+    template_name = 'talent_management/60_talent_delete.html'
+    # Redirect to customer list after "deletion"
+    success_url = reverse_lazy('talent_management:talent_lsit')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.customer_is_deleted = True  # Soft delete: mark as inactive
+        self.object.customer_is_active = False  # Soft delete: mark as inactive
+        self.object.save()
+        messages.success(request, 'Customer deactivated successfully.')
+        return redirect(self.get_success_url())
