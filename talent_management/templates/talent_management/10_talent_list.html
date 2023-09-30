@@ -38,7 +38,7 @@
     <form method="GET" action="{% url 'talent_management:talent_list' %}">
       <div class="input-group">
           <input type="search" class="form-control dropdown-toggle" name="q" placeholder="Search by first name, last name, email or phone number" id="talent-search" value="{{ request.GET.q}}">
-          <button class="input-group-text btn btn-primary" type="submit"><span class="mdi mdi-magnify search-icon"></span>Search Record</button>
+          <button class="input-group-text btn btn-primary" type="submit"><span class="mdi mdi-magnify search-icon"></span>Search</button>
       </div>
     </form>
   </div>
@@ -56,23 +56,16 @@
 
   <div class='row'>
     <div class="col my-1">
-      <a type="button" class="btn btn-outline-dark" href="{% url 'talent_management:talent_create' %}"> <i class="uil-focus-add"></i> Create Talent Record</a>
+      <a type="button" class="btn btn-outline-dark" href="{% url 'talent_management:talent_create' %}"> <i class="uil-focus-add"></i>Create Record</a>
+    </div>
+    <div class="col my-1">
+      <a type="button" class="btn btn-outline-dark" href="{% url 'talent_management:send_sample_report_view' %}"> <i class="uil-clipboard-alt"></i> Send a sample report</a>
+    </div>
+    <div class="col my-1">
+      <a type="button" class="btn btn-outline-dark" href="{% url 'talent_management:talent_create' %}"> <i class="uil-calendar-alt"></i> Request Time-off</a>
     </div>
   </div>
 
-
-  <div class ='row'>
-    <div class ='card'>
-      <h5>This is the sample long-processing report. click the submit button to manually trigger the report process. intended for celery beats.</h5>
-      <div class="col col-4">
-        <form method="POST" action ="{% url 'talent_management:sending_long_processing_report' %}">
-          {% csrf_token %}
-          <button class='btn btn-outline-light' type="submit"> Submit
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
 
 </div>
 <!-- end of container -->
@@ -84,24 +77,26 @@
         <thead>
           <tr>
             <th> TalentID 
-              <br><small>(not employee ID)</small>
+              <br><small>(not Employee ID)</small>
             </th>
-            <th>FullName</th>
-            <th>FullAddress</th>
+            <th>Name</th>
+            <th>Address</th>
             <th>PhoneNumber</th>
             <th>Email</th>
             <th>UpdatedAt</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {% for talent in talent_list %}
             <tr>
               <td><a href="{% url 'talent_management:talent_detail' pk=talent.talent_id  %}">{{ talent.talent_id }}</a></td>
-              <td>{{ talent.talent_full_name }}</td>
-              <td>{{ talent.talent_full_address }}</td>
+              <td>{{ talent.talent_full_name|truncatechars:30 }}</td>
+              <td>{{ talent.talent_full_address|truncatechars:30 }}</td>
               <td>{{ talent.talent_phone_number_primary }}</td>
-              <td>{{ talent.talent_email }}</td>
-              <td>{{talent.talent_last_udpated_date}}</td>
+              <td>{{ talent.talent_email|truncatechars:30 }}</td>
+              <td>{{talent.talent_last_udpated_date|date:'m/d/y'}}</td>
+              <td class="table-action"><a class="action-icon" href="{% url 'talent_management:talent_update' pk=talent.talent_id %}"><i class="uil uil-edit"></i></a><a class="action-icon" href="{% url 'talent_management:talent_delete' pk=talent.talent_id %}"><i class="uil uil-trash-alt"></i></a></td>
             </tr>
           {% empty %}
             <tr>

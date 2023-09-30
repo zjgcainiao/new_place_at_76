@@ -2,7 +2,7 @@ from django.urls import include, path
 from django.contrib.auth import views as auth_views
 from talent_management.views import TalentListView, TalentDetailView, TalentCreationWizardView, TalentCreationPreview, TalentUpdateView, TalentDeleteView
 from talent_management.forms import TALENT_CREATE_FORMS, PersonalContactInfoForm
-from talent_management.views import send_talent_report_task, talent_document_list, talent_document_soft_delete
+from talent_management.views import send_talent_report_task, talent_document_list, talent_document_soft_delete, SendSampleReportView
 
 app_name = 'talent_management'
 
@@ -26,6 +26,8 @@ urlpatterns = [
 
     path('documents/<int:document_id>/delete/',
          talent_document_soft_delete, name='talent_document_delete'),
+    path('tasks/sample-report-view/',
+         SendSampleReportView.as_view(), name='send_sample_report_view'),
     path('send-long-processing-report/', send_talent_report_task,
          name='sending_long_processing_report'),
 

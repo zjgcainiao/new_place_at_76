@@ -12,14 +12,14 @@ from django.utils.translation import gettext_lazy as _
 
 class TalentsCreationForm(forms.ModelForm):
     talent_first_name = forms.CharField(required=True, widget=forms.TextInput(
-        attrs={'class': 'form-control', }), label='Legal First Name (as in driver ID or passport)')
+        attrs={'class': 'form-control', }), label='Legal First Name (as in driver license (DL) or passport)')
     talent_last_name = forms.CharField(
-        required=True, label='Legal Last Name (as in driver ID or passport)')
+        required=True, label='Legal Last Name (as in driver license(DL) or passport)')
     talent_middle_name = forms.CharField(required=False, label='Middle Name')
     talent_email = forms.EmailField(widget=forms.EmailInput(
-        attrs={'placeholder': 'Email address will be used to create company user profile.', }), required=True, label='Email')
+        attrs={'placeholder': 'Email address will be used to create company user profile.', }), required=True, label='Email', help_text='email address should be unique to each talent record.')
     talent_physical_address_state = forms.ChoiceField(
-        choices=LIST_OF_STATES_IN_US, required=False, label='state')
+        choices=LIST_OF_STATES_IN_US, required=False, label='State')
 
     class Meta:
         model = TalentsModel
@@ -83,10 +83,11 @@ class TalentsCreationForm(forms.ModelForm):
             'talent_education_level': 'Highest degree obtained',
             'talent_certifications': 'Accreditions and Certifcations',
             'talent_physical_address_country': 'Country',
-            'talent_emergency_contact': 'emergency Contact',
+            'talent_emergency_contact': 'Emergency Contact',
             'talent_physical_address_city': 'City',
             'talent_physical_address_state': 'State',
             'talent_physical_zip_code': 'Zip Code',
+            'talent_phone_number_primary': 'Primary Phone Number'
 
         }
 
@@ -113,14 +114,58 @@ class TalentsCreationForm(forms.ModelForm):
         self.helper.label_class = 'col-3'
         self.helper.field_class = 'col-9'
         self.helper.layout = Layout(
+            Fieldset(_('Personal'),
+                     Row(Column(Field('talent_first_name', css_class='form-control'),
+                                css_class='col-mb-3',),
+                         Column(Field('talent_last_name', css_class='form-control'),  # style="background-color: #333"
+                                css_class='col-mb-3',),
+                         Column(Field('talent_middle_name', css_class='form-control'),  # style="background-color: #333"
+                                css_class='col-mb-3',),
+                         Column(Field('talent_email', css_class='form-control'),  # style="background-color: #333"
+                                css_class='col-mb-3',),
+                         Column(Field('talent_phone_number_primary', css_class='form-control'),  # style="background-color: #333"
+                                css_class='col-mb-3',),
+                         Column(Field('talent_date_of_birth', css_class='form-control'),  # style="background-color: #333"
+                                css_class='col-mb-3',),
+                         css_class=' mb-0'),
+                     Row(HTML("<hr>"),
+                         css_class='m-1 p-1'),
+                     Row(Column(Field('talent_physical_address_01'),
+                                css_class='col-mb-3',),
+                         Column(Field('talent_physical_address_02'),
+                                css_class='col-mb-3',),
+                         Column(Field('talent_physical_address_city'),
+                                css_class='col-mb-3',),
+                         Column(Field('talent_physical_address_state'),
+                                css_class='col-mb-2',),
+                         Column(Field('talent_physical_address_zip_code'),
+                                css_class='col-mb-2',),
+                         Column(Field('talent_physical_address_country'),
+                                css_class='col-mb-2',),
+                         css_class=' mb-0'),
+                     css_class='m-1'),
             Fieldset(_('HR Records'),
                      Row(Column(Field('talent_HR_remarks_json', css_class='form-control'),
-                                css_class='col-4',),
-                         Column(Field('talent_incident_record_json', css_class='form-control'),  # style="background-color: #333"
-                                css_class='col-4',),
+                                css_class='col-mb-6',),
+                         Column(Field('talent_incident_record_json', css_class='form-control'),
+                                css_class='col-mb-6',),
 
                          css_class='pt-1 mb-0'),
-                     css_class='p-1 m-1'),
+                     css_class=' m-1'),
+
+            ButtonHolder(
+                Row(Column(Submit('submit', 'Submit', css_class='btn btn-primary',
+                                  css_id='submit-button',),
+                           css_class='col col-mb-3',),
+                    Column(Button('cancel', 'Cancel', css_class='btn btn-secondary', ),
+                           css_class='col col-mb-3',),
+
+                    css_class='pt-1 mb-0'),
+
+
+
+            ),
+
         )
 
     def clean_talent_email(self):

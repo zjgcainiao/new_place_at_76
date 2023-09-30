@@ -9,7 +9,7 @@ from django.conf import settings
 from talent_management.models import TalentsModel
 from internal_users.models import InternalUser
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from talent_management.models import TalentDocuments, TalentAudit
 from django.db.models import Q
@@ -23,15 +23,16 @@ from django.http import HttpResponse
 from talent_management.tasks import send_report_for_active_talents_with_pay_type_0
 from core_operations.models import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
 from django.utils import timezone
+from internal_users.mixins import InternalUserRequiredMixin
 
 
-class TalentListView(LoginRequiredMixin, ListView):
+class TalentListView(InternalUserRequiredMixin, ListView):
     # the loginrequiredmixin is not added yet
     # class TalentListView(ListView):
     model = TalentsModel
     context_object_name = 'talent_list'
     template_name = 'talent_management/10_talent_list.html'
-    login_url = '/users/login'
+    login_url = reverse_lazy('internal_users:internal_user_login')
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(
@@ -94,11 +95,10 @@ class TalentListView(LoginRequiredMixin, ListView):
         return super().dispatch(request, *args, **kwargs)
 
 
-class TalentDetailView(LoginRequiredMixin, DetailView):
+class TalentDetailView(InternalUserRequiredMixin, DetailView):
     model = TalentsModel
     context_object_name = 'talent'
     template_name = 'talent_management/20_talent_detail.html'
-    login_url = '/users/login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -148,7 +148,6 @@ class TalentCreationWizardView(SessionWizardView):
     #     ('remarks_and_comments', RemarkAndCommentsForm),
     # ]
     form_list = TALENT_CREATE_FORMS
-
     template_name = 'talent_management/42_talent_creation_v2.html'
     preview_template = 'talent_management/41_talent_creation_preview.html'
 
@@ -245,15 +244,16 @@ class TalentUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('talent_management:talent_detail', kwargs={'pk': self.object.pk})
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            talent = self.get_object()
-            context['talent'] = talent
-        else:
-            context['talent'] = None
+    # talent object can be accessed in the template with `object`. the following block is redundant
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     if self.request.POST:
+    #         talent = self.get_object()
+    #         context['talent'] = talent
+    #     else:
+    #         context['talent'] = None
 
-        return context
+    #     return context
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -296,3 +296,8 @@ class TalentDeleteView(DeleteView, LoginRequiredMixin):
         messages.success(
             request, 'Talent record has been deleted successfully.')
         return redirect(self.get_success_url())
+
+
+class SendSampleReportView(TemplateView):
+
+    template_name = 'talent_management/71_send_sample_report.html'

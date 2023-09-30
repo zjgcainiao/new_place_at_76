@@ -62,7 +62,7 @@
             <td><a href="{% url 'dashboard:dashboard-detail' pk=repair_order.repair_order_id %}">{{ repair_order.repair_order_id }}</a></td>
             <td>{{repair_order.repair_order_phase.repair_order_phase_description }}</td>
             <!-- <td>repair_order.repair_order_customer.customer_id </td> -->
-            <td>{{ repair_order.repair_order_customer.customer_first_name }} {{ repair_order.repair_order_customer.customer_last_name }}</td>
+            <td>{{ repair_order.repair_order_customer.get_customer_full_name }}</td>
 
             <td>
               {% for phone in repair_order.repair_order_customer.phones.all %}
@@ -82,7 +82,7 @@
               {% endfor %}
             </td>
             <td>
-              {{repair_order.repair_order_last_updated_date |date:"Y-m-d" }}
+              {{repair_order.repair_order_last_updated_date |date:"m/d/y" }}
             </td>
           </tr>
           {% empty %}

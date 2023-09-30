@@ -18,14 +18,14 @@
   <div class="card card-hover border border-50 my-1">
     <form method="post" class="card-body" >
       {% csrf_token %}
-      
-      {{form|crispy}}
+            {% crispy form form.helper %}
+
       <!-- <button class='btn btn-outline-primary' type="submit">Update</button> -->
-      <div class="row">
+      <!-- <div class="row">
         <div class="col">
           <button class="btn btn-outline-primary" type="submit">Apply</button>
         </div>
-      </div>
+      </div> -->
     
     </form>
 

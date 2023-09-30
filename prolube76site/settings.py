@@ -419,10 +419,10 @@ if server:
     }
 
 elif az_server:
+    print('Using Azure SQL DB.')
     az_user = config("AZURE_DB_USER")
     az_password = config("AZURE_DB_PASSWORD")
     az_databaseName = config("AZURE_DB_DATABASE")
-    print('Using Azure SQL DB.')
     DATABASES = {
         "default": {
             "ENGINE": "mssql",
