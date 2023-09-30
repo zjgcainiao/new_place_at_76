@@ -4,7 +4,7 @@
 <!-- THIS app talent_management uses the same static and base file largely from dashboard app. The original html file is based on hyper v5.
 2023-05-22
 by Stephen Wang-->
-<html lang="en" data-layout="topnav" data-bs-theme="light" data-layout-mode="fluid" data-menu-color="dark" data-topbar-color="light" data-layout-position="fixed" stopthemadness-user-drag="true" stopthemadness-user-select="true" data-sidenav-size="default" stopthemadness-banners="true">
+<html lang="en" data-layout="topnav" data-bs-theme="light" data-layout-mode="fluid" data-menu-color="light" data-topbar-color="light" data-layout-position="fixed" stopthemadness-user-drag="true" stopthemadness-user-select="true" data-sidenav-size="default" stopthemadness-banners="true">
 
     <head>
         <meta charset="utf-8" />
@@ -26,44 +26,7 @@ by Stephen Wang-->
         <!-- Icons css -->
         <link href="{% static 'dashboard/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
        
-        <!-- Theme Config Js -->
-       <script src="{% static 'dashboard/js/hyper-config.js' %}"></script>        
-
-        <!-- Vendor js -->
-        <script src="{% static 'dashboard/js/vendor.min.js' %}"></script>
         
-        <!-- App js -->
-        <script src="{% static 'dashboard/js/app.min.js' %}"></script>
-
-
-        <!-- Daterangepicker js -->
-        <script src="{% static 'dashboard/vendor/daterangepicker/moment.min.js' %}"></script>
-        <script src="{% static 'dashboard/vendor/daterangepicker/daterangepicker.js' %}"></script>
-        
-        <!-- Apex Charts js -->
-        <script src="{% static 'dashboard/vendor/apexcharts/apexcharts.min.js' %}"></script>
-
-        <!-- Vector Map js -->
-        <script src="{% static 'dashboard/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
-        <script src="{% static 'dashboard/vendor/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js' %}"></script>
-
-        <!-- Dashboard App js -->
-        <script src="{% static 'dashboard/js/pages/demo.dashboard.js' %}"></script>
-
-        <!-- App js -->
-        <script src="{% static 'dashboard/js/app.min.js' %}"></script>
-
-        <!-- Include the inputmask library in your HTML template. You can either download the library and include it locally or use a CDN. For example, using the CDN: -->
-
-        <!-- 2023-05-23 -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
-
-        <!-- Add this script tag in your HTML template -->
-        <script>
-            $(function() {
-                $('[data-inputmask]').inputmask();
-            });
-        </script>
 
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> -->
         <!-- JQuery -->
@@ -116,16 +79,7 @@ by Stephen Wang-->
                             </div>
                         </button>
 
-                        <!-- Topbar Search Form -->
-                        <div class="app-search dropdown d-none d-lg-block">
-                            <form>
-                                <div class="input-group">
-                                    <input type="search" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
-                                    <span class="mdi mdi-magnify search-icon"></span>
-                                    <button class="input-group-text btn btn-primary" type="submit">Search</button>
-                                </div>
-                            </form>
-                        </div>
+
                     </div>
 
                     <ul class="topbar-menu d-flex align-items-center gap-3">
@@ -139,15 +93,6 @@ by Stephen Wang-->
                                 </form>
                             </div>
                         </li>
-
-                        <li class="dropdown">
-                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <img src="{% static 'dashboard/images/flags/us.jpg' %}" alt="user-image" class="me-0 me-sm-1" height="12">
-                                <span class="align-middle d-none d-lg-inline-block">English</span> <i class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>
-                            </a>
-                            
-                        </li>
-
 
                         <li class="dropdown">
                             <a class="nav-link dropdown-toggle arrow-none nav-user px-2" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
@@ -184,9 +129,53 @@ by Stephen Wang-->
         </div>
         <!-- end of wrapper -->
           
-          </div>
+    
         {% block content-main %}
         <h1>this is the main content block.</h1>
         {% endblock %}
+
+
+
+
+
+
+<!-- Theme Config Js -->
+       <script src="{% static 'dashboard/js/hyper-config.js' %}"></script>        
+
+        <!-- Vendor js -->
+        <script src="{% static 'dashboard/js/vendor.min.js' %}"></script>
+        
+        <!-- App js -->
+        <script src="{% static 'dashboard/js/app.min.js' %}"></script>
+
+
+        <!-- Daterangepicker js -->
+        <script src="{% static 'dashboard/vendor/daterangepicker/moment.min.js' %}"></script>
+        <script src="{% static 'dashboard/vendor/daterangepicker/daterangepicker.js' %}"></script>
+        
+        <!-- Apex Charts js -->
+        <script src="{% static 'dashboard/vendor/apexcharts/apexcharts.min.js' %}"></script>
+
+        <!-- Vector Map js -->
+        <script src="{% static 'dashboard/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
+        <script src="{% static 'dashboard/vendor/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js' %}"></script>
+
+        <!-- Dashboard App js -->
+        <script src="{% static 'dashboard/js/pages/demo.dashboard.js' %}"></script>
+
+        <!-- App js -->
+        <script src="{% static 'dashboard/js/app.min.js' %}"></script>
+
+        <!-- Include the inputmask library in your HTML template. You can either download the library and include it locally or use a CDN. For example, using the CDN: -->
+
+        <!-- 2023-05-23 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+
+        <!-- Add this script tag in your HTML template -->
+        <script>
+            $(function() {
+                $('[data-inputmask]').inputmask();
+            });
+        </script>        
     </body>
 </html> 

@@ -14,13 +14,13 @@
             <div class="button-close-fullsidebar">
                 <i class="ri-close-fill align-middle"></i>
             </div>
-            <div class="h-100" id="leftside-menu-container" data-simplebar>
+            <div  id="leftside-menu-container" data-simplebar>
                 <!--- Sidemenu -->
                 <ul class="side-nav">
                     <!-- Leftbar User -->
                     <div class ='container'>
                         <div class="row my-1">
-                            <img src="{% static 'homepageapp/img/avatars/avatar_new_02.png' %}" alt="internal-user-image" >
+                            <img src="{% static 'homepageapp/img/avatars/avatar_new_02.png' %}" alt="internal-user-image">
                         </div>
                         <div class="row my-3">
                             <h3> {{internal_user.user_first_name}} {{internal_user.user_middle_name}} {{internal_user.user_last_name}} </h3>
@@ -56,45 +56,15 @@
                         </a>
                     </li>
                     <!-- end of one side-nav-item -->
-                    
-                    <!-- <li class="side-nav-item">
-                        <a data-bs-toggle="collapse" href="#sidebarSettings" aria-expanded="false" aria-controls="sidebarSettings" class="side-nav-link">
-                            <i class="uil-folder-plus"></i>
-                            <span> Multi Level </span>
-                            <span class="menu-arrow"></span>
-                        </a>
-                        <div class="collapse" id="sidebarSettings">
-                            <ul class="side-nav-second-level">
-                                <li class="side-nav-item">
-                                    <a data-bs-toggle="collapse" href="#sidebarSecondLevel" aria-expanded="false" aria-controls="sidebarSecondLevel">
-                                        <span> Second Level </span>
-                                        <span class="menu-arrow"></span>
-                                    </a>
-                                    <div class="collapse" id="sidebarSecondLevel">
-                                        <ul class="side-nav-third-level">
-                                            <li>
-                                                <a href="javascript: void(0);">Item 1</a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript: void(0);">Item 2</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-
-                    </li> -->
-                    
+ 
                     <hr>
 
-                    <div class="p-1 m-1">
-                        <button class="btn btn-outline-primary"> <a class='nav-link' href="{% url 'dashboard:wip-dash' %}">Back to Work Station</a> </button>
+                    <div class="row p-1 m-1">
+                        <button class="col btn btn-outline-primary"> <a class='nav-link' href="{% url 'dashboard:wip-dash' %}">Back to Work Station</a> </button>
                     </div>
                 </ul>
                 <!--- End Sidemenu -->
 
-                <div class="clearfix"> </div>
             </div>
             
         </div>

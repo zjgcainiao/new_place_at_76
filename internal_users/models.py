@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password
+from talent_management.models import TalentsModel
 # from usermanagers import UserManager
 
 
@@ -58,11 +59,15 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     USER_LEVEL_2 = 2
     USER_LEVEL_3 = 3
     USER_LEVEL_4 = 4
+    USER_LEVEL_5 = 5
+    USER_LEVEL_15 = 15
     USER_PERMISSION_LEVELS = (
-        (USER_LEVEL_1, 'Viewer'),
-        (USER_LEVEL_2, 'Viewer'),
-        (USER_LEVEL_3, 'Processor/Technican'),
+        (USER_LEVEL_1, 'access level 1'),
+        (USER_LEVEL_2, 'access level 2'),
+        (USER_LEVEL_3, 'access level 3'),
         (USER_LEVEL_4, 'Level 4 - not used'),
+        (USER_LEVEL_5, 'Level 5 - not used.'),
+        (USER_LEVEL_15, 'Level 5.5 - not used.'),
     )
     AUTH_GROUP_LEVEL_0 = 0
     AUTH_GROUP_LEVEL_1 = 1
@@ -77,20 +82,24 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     AUTH_GROUP_LEVEL_11 = 11
     AUTH_GROUP_LEVEL_12 = 12
     AUTH_GROUP_LEVEL_13 = 13
+    AUTH_GROUP_LEVEL_21 = 21
     AUTH_GROUP_LEVEL_88 = 88
 
     USER_AUTH_GROUP = (
         (AUTH_GROUP_LEVEL_0, 'visitor: ready-only'),
-        (AUTH_GROUP_LEVEL_0, 'customer-group'),
-        (AUTH_GROUP_LEVEL_2, 'internal-user-group'),
+        (AUTH_GROUP_LEVEL_1, 'customer-group'),
+        (AUTH_GROUP_LEVEL_2, 'service-technican-group'),
         (AUTH_GROUP_LEVEL_3, 'talent-management-group'),
         (AUTH_GROUP_LEVEL_4, 'accounting-group'),
         (AUTH_GROUP_LEVEL_5, 'manager-group'),
         (AUTH_GROUP_LEVEL_6, 'boardmember-group'),
         # information strucuture group starts with "1x"
-        (AUTH_GROUP_LEVEL_11, 'external_developer-group'),
+        (AUTH_GROUP_LEVEL_11, 'external-developer-group'),
         (AUTH_GROUP_LEVEL_12, 'developer-group'),
         (AUTH_GROUP_LEVEL_13, 'user-management-group'),
+
+
+        (AUTH_GROUP_LEVEL_21, 'service-technican-group'),
         (AUTH_GROUP_LEVEL_88, 'master-shi-fu-group'),
     )
     user_id = models.AutoField(primary_key=True)
@@ -106,8 +115,9 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     # however, the model uses the following three fields to find the correct talent profile.
     # hence we skip the database foreign key linkage. I believe this provides additional isolation to protect employee information
     # that resides in the TalentsModel
-
-    user_talent_id = models.IntegerField(null=True)
+    user_talent = models.ForeignKey(
+        TalentsModel, on_delete=models.SET_NULL, null=True)
+    # user_talent_id = models.IntegerField(null=True)
     user_talent_profile_linkage_is_confirmed = models.BooleanField(
         default=False)
     user_talent_profile_last_linked_date = models.DateTimeField(

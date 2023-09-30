@@ -17,18 +17,28 @@
       </div>
   </div>
   <!-- end of display messages  -->
+  <div class="row">
+      <div class="col">
+          <!-- Breadcrumb-->
+          <nav aria-label="breadcrumb mb-0">
+              <ol class="breadcrumb breadcrumb-dark mb-0">
+                  <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+                  <li class="breadcrumb-item">Talent Dash</a></li>
+              </ol>
+          </nav>
+      </div>
 
-  <h2>Talent List Version 01</h2>
-  <div class='row my-1'><a href ="{% url 'homepageapp:homepage' %}">Go Back to Homepage</a>
   </div>
-  <div class='row my-1'>
-    <p>User: {{user.user_first_name}}. Auth Group: {{user.user_auth_group}}-{{user.get_user_auth_group_display}}-user has_perm {{user.has_perm}}</p>
+  <h2>Talent Management Dash</h2>
+
+  <div class='row'>
+    <p>User: {{user.user_first_name}}. User Auth Group: {{user.user_auth_group}}-{{user.get_user_auth_group_display}}. User has_perm Status{{user.has_perm}}</p>
   </div>
   <div class ='row'>
     <form method="GET" action="{% url 'talent_management:talent_list' %}">
       <div class="input-group">
           <input type="search" class="form-control dropdown-toggle" name="q" placeholder="Search by first name, last name, email or phone number" id="talent-search" value="{{ request.GET.q}}">
-          <button class="input-group-text btn btn-primary" type="submit"><span class="mdi mdi-magnify search-icon"></span>Search</button>
+          <button class="input-group-text btn btn-primary" type="submit"><span class="mdi mdi-magnify search-icon"></span>Search Record</button>
       </div>
     </form>
   </div>
@@ -44,12 +54,16 @@
     </div>
   </div> -->
 
-  <div class="app-search dropdown d-none d-sm-block">
+  <div class='row'>
+    <div class="col my-1">
+      <a type="button" class="btn btn-outline-dark" href="{% url 'talent_management:talent_creation_view' %}"> <i class="uil-focus-add"></i> Create Talent Record</a>
+    </div>
   </div>
 
-  <div class ='row my-1'>
+
+  <div class ='row'>
     <div class ='card'>
-      <h5>This is the sample long-processing report. manual triggered.</h5>
+      <h5>This is the sample long-processing report. click the submit button to manually trigger the report process. intended for celery beats.</h5>
       <div class="col col-4">
         <form method="POST" action ="{% url 'talent_management:sending_long_processing_report' %}">
           {% csrf_token %}
@@ -69,14 +83,14 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <th> Talent ID 
+            <th> TalentID 
               <br><small>(not employee ID)</small>
             </th>
-            <th>Full Name</th>
-            <th>Full Address</th>
-            <th>Phone Number</th>
+            <th>FullName</th>
+            <th>FullAddress</th>
+            <th>PhoneNumber</th>
             <th>Email</th>
-            <th>Last Updated at</th>
+            <th>UpdatedAt</th>
           </tr>
         </thead>
         <tbody>

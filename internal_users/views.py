@@ -20,10 +20,16 @@ from internal_users.forms import EmploymentInfoForm, InternalUserPasswordChangeF
 from internal_users.internal_user_auth_backend import InternalUserBackend
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
-
 from django.contrib.auth.models import Group
-
+from internal_users.token_generators import account_activation_token
+import logging
 # from internal_users.internal_user_auth_backend import authenticate
+
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+
+logger = logging.getLogger('django')
 
 # this is the register function to register a new user.
 # necessary validations are needed in the future.
@@ -207,12 +213,14 @@ def firebase_authenticate(request):
 
 
 @login_required(login_url='internal_users:internal_user_login')
-def InternalUserDashboard(request):
+def fetch_internal_user_dashboard(request):
     if isinstance(request.user, InternalUser) and request.user.is_authenticated:
         internal_user = request.user
         return render(request, 'internal_users/60_internal_user_dashboard.html', {'internal_user': internal_user})
     else:
-        return render(request, 'internal_users/90_pages_404.html', {'error': str(e)})
+        messages.error(
+            f'the current user does not have sufficient access to the page. Employee please login again')
+        return reverse_lazy('internal_users:internal_user_login')
 
 
 @login_required(login_url='internal_users:internal_user_login')
@@ -255,3 +263,34 @@ def return_current_internal_user_json(request):
         data['is_technician'] = False
 
     return JsonResponse(data)
+
+
+def activate_internal_user_account(request, pkb64, token):
+    print(f' the pkb64 received and before decoding is {pkb64}')
+    logger.info(f' the pk64 before decoding is {pkb64}')
+    print(f' the token received from activation link is {token}')
+    try:
+
+        pk = force_str(urlsafe_base64_decode(pkb64))
+        print(f'the decoded pk is {pk or None}')
+        logger.info(f'the decoded pk is {pk or None}')
+        user = InternalUser.objects.get(pk=pk)
+        print(f'user {user.pk}  is {user}')
+        logger.info(f'user {user.pk} is {user}')
+    except (TypeError, ValueError, OverflowError, InternalUser.DoesNotExist):
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.user_is_active = True
+        user.save()
+        # Optionally, log the user in
+        # ...
+        return redirect('internal_users:internal_user_dashboard')
+    else:
+        print(f'the token recieved via activation link is {token}.')
+        logger.info(f'the token recieved via activation link is {token}.')
+        print(
+            f'the result of check_token method is {account_activation_token.check_token(user, token)}')
+        logger.info(
+            f'the result of check_token method is {account_activation_token.check_token(user, token)}')
+        return render(request, 'internal_users/11_activation_invalid.html')

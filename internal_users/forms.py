@@ -143,7 +143,7 @@ class InternalUserPasswordResetForm(PasswordResetForm):
     class Meta:
         model = InternalUser
 
-# added on 2023-08-23 to customize internal user password chagne forms.
+# added on 2023-08-23 to customize internal user password change forms.
 
 
 class InternalUserPasswordChangeForm(PasswordChangeForm):

@@ -1,0 +1,20 @@
+<!-- templates/welcome_email.html -->
+
+{% extends 'talent_management/00_base.html' %}
+{% block content-main %}
+<div class ='container container-fluid'>
+    <div class="card card-body">
+        <h4 class="card-title">Welcome to Our Platform, {{ user_first_name }}!</h4>
+
+        <p>We're glad to have you on board.</p>
+        <p>Please click on the link below to set your password and activate your account:</p>
+        <a href="{{ activation_link }}">Activate your account</a>
+        <p>If you did not sign up for this account, please ignore this email.</p>
+        <p>Best regards,</p>
+        <p>Amazing Automan LLC Team</p>
+    </div>
+
+</div>
+
+
+{% endblock %}

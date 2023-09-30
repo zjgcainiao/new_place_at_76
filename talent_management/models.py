@@ -1,10 +1,10 @@
-from core_operations.models import US_COUNTRY_CODE, NUMBER_OF_DAYS_IN_A_YEAR
+from core_operations.models import US_COUNTRY_CODE, NUMBER_OF_DAYS_IN_A_YEAR, LIST_OF_STATES_IN_US
 from core_operations.models import FormattedPhoneNumberField, YearsOfWorkField
 from django.db import models
 import re
 from datetime import date
 from datetime import datetime
-from internal_users.models import InternalUser
+# from internal_users.models import InternalUser
 from django.utils import timezone
 from faker import Faker
 
@@ -82,14 +82,16 @@ PAY_FREQUENCY_LIST = ((PAY_FREQUENCY_UNDEFINED, 'pay frequency not defined'),
 
 
 class TalentsModel(models.Model):
-
     talent_id = models.BigAutoField(primary_key=True)
     talent_employee_id = models.IntegerField(unique=True)
-    talent_first_name = models.CharField(max_length=50, null=False)
-    talent_last_name = models.CharField(max_length=50, null=False)
-    talent_middle_name = models.CharField(max_length=50, null=True, blank=True)
+    talent_first_name = models.CharField(
+        max_length=50, null=False, verbose_name="Legal First Name (as in driver license (DL) or passport)")
+    talent_last_name = models.CharField(
+        max_length=50, null=False, verbose_name="Legal Last Name (as in driver license (DL) or passport)")
+    talent_middle_name = models.CharField(
+        max_length=50, null=True, blank=True, verbose_name="Middle Name")
     talent_preferred_name = models.CharField(
-        max_length=50, null=True, blank=True)
+        max_length=50, null=True, blank=True, verbose_name="Preferred Name")
     talent_email = models.EmailField(max_length=50, blank=True, null=True)
     # this custom field works with a glitch as of 2023-06-03.
     talent_phone_number_primary = FormattedPhoneNumberField()
@@ -100,18 +102,20 @@ class TalentsModel(models.Model):
     talent_emergency_contact = models.CharField(
         max_length=200, null=True, blank=True)
     talent_date_of_birth = models.DateField(
-        verbose_name='your date of birth', null=True)
+        verbose_name='Date of Birth (DOB)', null=True)
+    talent_ssn = models.CharField(max_length=15,
+                                  verbose_name='SSN or Tax ID (TIN)', null=True)
 
     talent_physical_address_01 = models.CharField(
         verbose_name='street address 01', max_length=100)
     talent_physical_address_02 = models.CharField(
-        verbose_name='street address 02(apt numbers, unit #, etc.)', max_length=100, blank=True, null=True)
+        verbose_name='street address 02 (apt numbers, unit #, etc.)', max_length=100, blank=True, null=True)
     talent_physical_address_city = models.CharField(max_length=50, null=True)
     talent_physical_address_state = models.CharField(max_length=2, null=True)
     talent_physical_address_zip_code = models.CharField(
         max_length=10, null=True)
-    talent_physical_address_country = models.CharField(
-        max_length=50, default='US')
+    talent_physical_address_country = models.CharField(verbose_name='Country',
+                                                       max_length=50, default='US')
     talent_mailing_address_is_the_same_physical_address = models.BooleanField(
         default=True)
     talent_mailing_address_01 = models.CharField(
@@ -158,12 +162,12 @@ class TalentsModel(models.Model):
     talent_is_active = models.BooleanField(default=True)
     talent_created_at = models.DateTimeField(auto_now_add=True)
     talent_last_udpated_date = models.DateTimeField(auto_now=True)
-    talent_created_by_user = models.ForeignKey(
-        InternalUser, null=True, on_delete=models.SET_NULL)
+    # talent_created_by_user = models.ForeignKey(
+    #     InternalUser, null=True, on_delete=models.SET_NULL)
 
     @property
     def talent_full_name(self):
-        return f"{self.talent_first_name} {self.talent_last_name} {self.talent_middle_name }"
+        return f"{self.talent_first_name} {self.talent_last_name} {self.talent_middle_name}"
 
     @property
     def talent_full_physical_address(self):
@@ -192,8 +196,21 @@ class TalentsModel(models.Model):
             full_address = full_address
         return full_address
 
-    def __str__(self):
-        return f"{self.talent_first_name} {self.talent_last_name} {self.talent_middle_name}"
+    def __init__(self, *args, **kwargs):
+        super(TalentsModel, self).__init__(*args, **kwargs)
+        self._initial_state = {field: getattr(
+            self, field) for field in self.fields_to_track()}
+
+    @classmethod
+    def fields_to_track(cls):
+        return ['talent_pay_rate', 'talent_pay_frequency', 'talent_date_of_birth', 'talent_email', 'talent_phone_number_primary']
+
+    def get_changed_fields(self):
+        changed_fields = {}
+        for field in self.fields_to_track():
+            if self._initial_state[field] != getattr(self, field):
+                changed_fields[field] = self._initial_state[field]
+        return changed_fields
 
     def save(self, *args, **kwargs):
         # if not self.pk:
@@ -216,15 +233,8 @@ class TalentsModel(models.Model):
 
         super(TalentsModel, self).save(*args, **kwargs)
 
-    @classmethod
-    def update_with_dummy_data(cls):
-        talents = cls.objects.all()
-        for user in talents:
-            talent.email = random_email()
-            user.first_name = fake.first_name()
-            user.last_name = fake.last_name()
-            user.phone_number = fake.phone_number()
-            user.save()
+    def __str__(self):
+        return f"{self.talent_first_name} {self.talent_last_name} {self.talent_middle_name}"
 
     class Meta:
         db_table = 'talent_managment'
@@ -245,3 +255,20 @@ class TalentDocuments(models.Model):
 
         db_table = 'talent_documents'
         ordering = ['-talent_id']
+
+
+class TalentAudit(models.Model):
+    talent_audit_id = models.BigAutoField(primary_key=True)
+    # Changed from OneToOneField to ForeignKey to allow multiple audit records per talent
+    talent = models.ForeignKey(TalentsModel, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(
+        'internal_users.InternalUser', related_name="created_audits", swappable=True, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    field_changed = models.CharField(max_length=50, null=True, blank=True)
+    old_value = models.CharField(max_length=255, null=True, blank=True)
+    new_value = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+
+        db_table = 'talent_audit'
+        ordering = ['-talent_audit_id']

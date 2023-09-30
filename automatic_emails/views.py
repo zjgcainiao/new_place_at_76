@@ -10,7 +10,6 @@ import json
 
 # load_dotenv()  # take environment variables from .env.
 
-
 # added on 2023-06-01 to validate if a receipent email is valid.
 # using abstractapi.com's email validation.
 # https://www.abstractapi.com/guides/django-send-email#:~:text=In%20order%20to%20send%20emails,and%20generate%20an%20app%20password.
@@ -40,7 +39,7 @@ def validate_email(email):
     return is_valid
 
 
-# Create your views here.
+# A sample view that allows me to enter an receiptent email
 def send_email_sample(request):
     if request.method == "POST":
         with get_connection(
@@ -59,7 +58,7 @@ def send_email_sample(request):
                                  f"email has been sent to {recipient_list}")
             EmailMessage(subject, message, email_from,
                          recipient_list, connection=connection).send()
-            # return redirect('automatic_mails/email_sent_success.html')
-            return render(request, 'automatic_mails/email_sent_success.html')
+            # return redirect('automatic_emails/email_sent_success.html')
+            return render(request, 'automatic_emails/email_sent_success.html')
 
-    return render(request, 'automatic_mails/send_an_email.html')
+    return render(request, 'automatic_emails/send_an_email.html')

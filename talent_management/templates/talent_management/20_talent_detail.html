@@ -1,50 +1,82 @@
 {% extends 'talent_management/00_base.html' %}
 {% load crispy_forms_tags %}
 {% block content-main %}
-<div class ='row m-1 p-1'>
-    <div class="col col-4">
-    <a href="{% url  'talent_management:talent_list' %}" class="btn btn-outline-dark">Go Back</a>
+<div class ='container container-fluid'>
+    <div class="row">
+        <div class="col">
+            <!-- Breadcrumb-->
+            <nav aria-label="breadcrumb mb-0">
+                <ol class="breadcrumb breadcrumb-dark mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'talent_management:talent_list' %}">Talent Dash</a></li>
+                    <li class="breadcrumb-item active">Detail</li>
+                </ol>
+            </nav>
+        </div>
+
     </div>
 </div>
+
 <div class ='container container-fluid'>
-
-        <div class="card card-hover">
-            <h3 class="card-header">Personal Information</h3>
-            <div class ='row m-1 p-1'>
-                <div class="col col-12 p-1">Employee ID:{{ talent.talent_employee_id }}</div>
-                <div class="col col-3 p-1">First Name: {{ talent.talent_first_name }}</div>
-                <div class="col col-3 p-1">Last Name:  {{ talent.talent_last_name }}</div>
-                <div class="col col-3 p-1">Middle Name: {{ talent.talent_middle_name }}</div>
-                <div class="col col-3 p-1">Preferred Name: {{ talent.talent_preferred_name }}</div>
-
-
-                <div class="col col-3 p-1">Phone Number: {{ talent.talent_phone_number_primary }}</div>
-                <div class="col col-3 p-1">Email: {{ talent.talent_email }}</div>
-                <div class="col col-12 p-1">Physical address: {{talent.talent_full_physical_address}}</div>
-            </div>
+    <div class ='row my-1'>  
+        <div class="col-md-4">
+          {% if messages %}
+            {% for message in messages %}
+          
+            <li{% if message.tags %} class="alert alert-dismissible alert-{{ message.tags }}"{% endif %}>
+              {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+              {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </li>
+            
+            {% endfor %}
+          {% endif %}
         </div>
-        <!-- end of personal information card  -->
+    </div>
+
+    <div class="row my-1 px-1">
+        <div class="col text-left"><a href="{% url 'talent_management:talent_update' pk=talent.talent_id %}" class="btn btn-outline-info btn-sm" >Update</a></div>
+    </div>
+    <div class="card card-hover">
+        <h3 class="card-header">Personal Information</h3>
+        <div class ='row m-1 p-1'>
+            <div class="col col-12 p-1">Employee ID:{{ talent.talent_employee_id }}</div>
+            <div class="col col-3 p-1">First Name: {{ talent.talent_first_name }}</div>
+            <div class="col col-3 p-1">Last Name:  {{ talent.talent_last_name }}</div>
+            <div class="col col-3 p-1">Middle Name: {{ talent.talent_middle_name }}</div>
+            <div class="col col-3 p-1">Preferred Name: {{ talent.talent_preferred_name }}</div>
+
+
+            <div class="col col-3 p-1">Phone Number: {{ talent.talent_phone_number_primary }}</div>
+            <div class="col col-3 p-1">Email: {{ talent.talent_email }}</div>
+            <div class="col col-12 p-1">Physical address: {{talent.talent_full_physical_address}}</div>
+        </div>
+    </div>
+    <!-- end of personal information card  -->
     <hr>
 
-        <div class="card card-hover">
-            <h3 class="card-header">Payroll Information</h3>
-            <div class ='row m-1 p-1'>  
-                <div class="col col-3 p-1">Pay Type: {{talent.talent_pay_type}}</div>
-                <div class="col col-3 p-1">Pay Rate: {{ talent.talent_pay_rate}}</div>
-                <div class="col col-3 p-1">Pay Frequency: {{ talent.get_talent_pay_frequency_display}}</div>
-                <div class="col col-3 p-1">Deparment: {{ talent.talent_department}}</div>
-                <div class="col col-3 p-1">Supervisor: {{ talent.talent_supervisor}}</div>
+    <div class="card card-hover">
+        <h3 class="card-header">Payroll Information</h3>
+        <div class ='row m-1 p-1'>  
+            <div class="col col-3 p-1">SSN: {{talent.talent_ssn}}</div>
+            <div class="col col-3 p-1">Pay Type: {{talent.talent_pay_type}}</div>
+            <div class="col col-3 p-1">Pay Rate: {{ talent.talent_pay_rate}}</div>
+            <div class="col col-3 p-1">Pay Frequency: {{ talent.get_talent_pay_frequency_display}}</div>
+            <div class="col col-3 p-1">Department: {{ talent.talent_department}}</div>
+            <div class="col col-3 p-1">Supervisor: {{ talent.talent_supervisor}}</div>
 
-            </div>
         </div>
-        <!-- end of payroll information card -->
+    </div>
+    <!-- end of payroll information card -->
 
 
     <hr>
     <div class ='row'>
         <p class="text-end"><a href="{% url 'talent_management:talent_document_list' pk=talent.talent_id %}">view uploaded docs </a></p>
-        <div class="card card-hover">    
-            <h3>Upload Payroll Forms</h3>
+        <div class="card card-hover card-body">    
+            <h3 class="card-title">Upload Payroll Forms</h3>
             <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form |crispy }}
@@ -52,20 +84,7 @@
             </form>
         </div>
     </div>
-    <div class ='row my-1'>  
-        <div class="col-md-12">
-          {% if messages %}
-            {% for message in messages %}
-          
-            <li{% if message.tags %} class="alert alert-dismissible alert-{{ message.tags }}"{% endif %}>
-              {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
-              {{ message }}
-            </li>
-            
-            {% endfor %}
-          {% endif %}
-        </div>
-    </div>
+
 </div>
 
 
