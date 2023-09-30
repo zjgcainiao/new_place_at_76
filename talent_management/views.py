@@ -284,12 +284,15 @@ class TalentDeleteView(DeleteView, LoginRequiredMixin):
     model = TalentsModel
     template_name = 'talent_management/60_talent_delete.html'
     # Redirect to customer list after "deletion"
-    success_url = reverse_lazy('talent_management:talent_lsit')
+    success_url = reverse_lazy('talent_management:talent_list')
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        self.object.customer_is_deleted = True  # Soft delete: mark as inactive
-        self.object.customer_is_active = False  # Soft delete: mark as inactive
+        # Soft delete: mark as inactive
+        self.object.talent_is_active = False
+        self.object.talent_incident_record_json = self.object.talent_incident_record_json.append({
+                                                                                                 '2023-09-29': 'deactivation'})
         self.object.save()
-        messages.success(request, 'Customer deactivated successfully.')
+        messages.success(
+            request, 'Talent record has been deleted successfully.')
         return redirect(self.get_success_url())
