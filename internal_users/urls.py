@@ -1,12 +1,14 @@
 from django.urls import include, path
 from django.contrib.auth import views as auth_views
-from internal_users.views import InternalUserLoginView, InternalUserLogoutView, InternalUserPasswordChangeView, InternalUserPasswordChangeDoneView, InternalUserPasswordResetView
+from internal_users.views import InternalUserLoginView, InternalUserLogoutView, InternalUserPasswordChangeView, InternalUserPasswordChangeDoneView, InternalUserPasswordResetView, UserInfoView
 from internal_users.views import fetch_internal_user_dashboard, internal_user_view_employement, activate_internal_user_account
 from internal_users.views import register, firebase_authenticate, internal_user_login, return_current_internal_user_json
 app_name = 'internal_users'
 urlpatterns = [
 
-    path('profile/', fetch_internal_user_dashboard,
+    #     path('profile/', fetch_internal_user_dashboard,
+    #          name='internal_user_dashboard'),
+    path('profile/', UserInfoView.as_view(),
          name='internal_user_dashboard'),
     path('profile/employment',  internal_user_view_employement,
          name='employement_info'),

@@ -24,10 +24,11 @@ from django.contrib.auth.models import Group
 from internal_users.token_generators import account_activation_token, decode_activation_token
 import logging
 # from internal_users.internal_user_auth_backend import authenticate
-
+from django.views.generic import TemplateView, DetailView
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
+from internal_users.mixins import InternalUserRequiredMixin
 
 logger = logging.getLogger('django')
 
@@ -62,7 +63,7 @@ def register(request):
             login(
                 request, user, backend='internal_users.intenral_user_auth_backend.InternalUserBackend')
             # form.save()
-            return redirect('dashboard:dashboard-v2')
+            return redirect('dashboard:main-dash')
         # 2023-04-30- added a function to list all error values when there are errors.
         else:
             for error in list(form.errors.values()):
@@ -146,8 +147,6 @@ class InternalUserPasswordChangeView(PasswordChangeView):
     # form_class = InternalUserPasswordChangeForm
     success_url = reverse_lazy('internal_users:password_change_done')
 
-#
-
 
 class InternalUserPasswordChangeDoneView(PasswordChangeDoneView):
     template_name = 'internal_users/41_password_change_done.html'
@@ -219,8 +218,18 @@ def fetch_internal_user_dashboard(request):
         return render(request, 'internal_users/60_internal_user_dashboard.html', {'internal_user': internal_user})
     else:
         messages.error(
-            f'the current user does not have sufficient access to the page. Employee please login again')
+            f'the current user does not have sufficient access to the page. Our employees need to login in.')
         return reverse_lazy('internal_users:internal_user_login')
+
+
+class UserInfoView(TemplateView, InternalUserRequiredMixin):
+
+    template_name = 'internal_users/72_internal_user_view_user_info.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['request'] = self.request.user
+        return context
 
 
 @login_required(login_url='internal_users:internal_user_login')
@@ -231,7 +240,7 @@ def internal_user_view_employement(request):
         # grab the talent record based on email
         # next step is allow user to enter the birthday so that he can confirm the real employee information before displaying it.
         talent = TalentsModel.objects.filter(
-            talent_email=email)  # "15@gmail.com"
+            talent_email=email)
         if talent.exists():
             talent_instance = talent.get()
             form = EmploymentInfoForm(instance=talent_instance)
@@ -249,8 +258,8 @@ def return_current_internal_user_json(request):
     data = {
         'is_authenticated_user': request.user.is_authenticated,
         'is_internal_user': isinstance(request.user, InternalUser),
-
     }
+
     # Add other user details as needed
     if request.user.is_authenticated:
         data['email'] = request.user.email

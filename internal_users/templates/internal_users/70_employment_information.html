@@ -2,15 +2,16 @@
 {% block content-submain %}
 <div class ='content'>
   
-    <div class="card card-hover p1- m-1">
+    <div class="card card-hover card-body p-1 m-1">
+      <h3 calss="card-title">Personal Information</h3>
       <div class = 'row m-1'>
-        <h3 calss="card-title">Personal Information</h3>
-        <h5 class ='col-12 my-2'>
-          <p class ='card-text'>Your Email: {{ talent.talent_email  }}</p>
-          <small>This email will be used as your employee username for company-wide access. Do not share with others.</small>
-        </h5>
+        
+        <div class ='col-12 my-2'>
+          <h5 class ='card-text'>Email {{ talent.talent_email}}<small> This email will be used as your employee username for company-wide access. Do not share with others.</small></h5>
+          
+        </div>
         <div class ='col-4 my-1'>
-          <p class ='card-text'>Your Legal Name: {{ talent.talent_full_name }}</p>
+          <p class ='card-text'>Your Legal Name:{{ talent.talent_full_name  }}</p>
         </div>
         <div class ='col-4 my-1'>
           <p class ='card-text'>Phone Number: {{ talent.talent_phone_number_primary }}</p>

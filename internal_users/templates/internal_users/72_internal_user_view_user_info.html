@@ -1,0 +1,27 @@
+{% extends 'internal_users/60_internal_user_dashboard.html' %}
+{% block content-submain %}
+<div class ='content'>
+
+    <div class="card card-hover p-1 m-1">
+      <div class = 'row m-1'>
+        <h3 calss="card-title">User Info</h3>
+        <h5 class ='col-12 my-2'>
+          <p class ='card-text'>username: {{ user.email}}</p>
+          <small>This email will be your login username for company-wide access. Do not share with others.</small>
+        </h5>
+        <div class ='col-4 my-1'>
+          <p class ='card-text'>Name: {{ user }}</p>
+        </div>
+        <div class ='col-4 my-1'>
+          <p class ='card-text'>Last Login {{user.last_login}}</p>
+        </div>
+      </div>
+      <!-- end of row -->
+
+    </div>
+    <!-- end of first card - user info -->
+  
+</div>
+
+
+{% endblock %}

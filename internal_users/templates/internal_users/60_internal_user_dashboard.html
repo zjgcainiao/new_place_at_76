@@ -22,24 +22,27 @@
                         <div class="row my-1">
                             <img src="{% static 'homepageapp/img/avatars/avatar_new_02.png' %}" alt="internal-user-image">
                         </div>
-                        <div class="row my-3">
+                        <div class="row my-1">
                             <h3> {{internal_user.user_first_name}} {{internal_user.user_middle_name}} {{internal_user.user_last_name}} </h3>
                         </div>
                         
                     </div>    
-
+                    <div class="row p-1 m-1">
+                        <div class="col">
+                            <button class="btn btn-outline-primary"> <a class='nav-link' href="{% url 'dashboard:repair-order-dash' %}">Back to Work Station</a> </button>
+                        </div>
+                    </div>
                     <li class="side-nav-title">Personal</li>
 
                     <li class="side-nav-item">
-                        <a  href="#" class="side-nav-link">
+                        <a  href="" class="side-nav-link">
                             <i class="uil-copy-alt"></i>
                             <span> User Info</span>
-                            <span class="menu-arrow"></span>
+
                         </a>
                         <a href="{% url 'internal_users:employement_info' %}"  class="side-nav-link">
-                            <i class="uil-copy-alt"></i>
-                            <span> Employment Docs</span>
-                            <span class="menu-arrow"></span>
+                            <i class="uil-file-lock-alt"></i>
+                            <span> Employment Information</span>
                         </a>
                         
                     </li>
@@ -52,16 +55,18 @@
                         <a  href="{% url 'internal_users:password_change'%}"  class="side-nav-link">
                             <i class="uil-folder-plus"></i>
                             <span>Change Password</span>
-                            <span class="menu-arrow"></span>
                         </a>
                     </li>
                     <!-- end of one side-nav-item -->
- 
-                    <hr>
 
-                    <div class="row p-1 m-1">
-                        <button class="col btn btn-outline-primary"> <a class='nav-link' href="{% url 'dashboard:wip-dash' %}">Back to Work Station</a> </button>
-                    </div>
+                     <li class="side-nav-item">
+                        <a  href="{% url 'internal_users:internal_user_logout'%}"  class="side-nav-link">
+                            <i class="mdi mdi-logout"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                    <!-- end of one side-nav-item -->
+                    <hr>
                 </ul>
                 <!--- End Sidemenu -->
 

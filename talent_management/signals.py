@@ -59,6 +59,7 @@ def create_internal_user(sender, instance, created, **kwargs):
             logger.info(
                 f'creating new internal user profile. Using new talent_email: {internal_user.email}. Internal User ID is: {internal_user.pk}')
             # Send the user an email with the temporary password
+
             # Render the email content from the template
             mail_subject = 'Activate your employee user account'
 

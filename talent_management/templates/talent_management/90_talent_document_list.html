@@ -1,15 +1,27 @@
 
 {% extends 'talent_management/00_base.html' %}
 {% block content-main %}
-<div class ='container container-fluid'>
-<div class="row my-1">
-    <div clas="col">
-        <buttn class="btn btn-outline-primary" ><a href="{% url 'talent_management:talent_detail' pk=talent.talent_id %}">Appointment</a></buttn>
-    </div>
 
+<div class ='container container-fluid'>
+    <div class="row my-1">
+        <div class="col">
+            <!-- Breadcrumb-->
+            <nav aria-label="breadcrumb ">
+                <ol class="breadcrumb breadcrumb-dark">
+                    <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard:main-dash' %}">Main Dash</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'talent_management:talent_list' %}">Talents</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'talent_management:talent_detail' pk=talent.pk %}">Talent ID:{{talent.talent_id}}</a></li>
+                    <li class="breadcrumb-item active">Uploaded Docs (up to 5)</li>
+                </ol>
+            </nav>
+        </div>
+
+    </div>
 </div>
 
-    <h1>Uploaded Documents for {{talent.talent_id}}-{{talent.talent_full_name}}</h1>
+<div class ='container container-fluid'>
+    <h2>Uploaded Documents for Talent ID: {{talent.talent_id}}-{{talent.talent_full_name}}</h2>
 
     <table class="table table-hover">
         <thead>

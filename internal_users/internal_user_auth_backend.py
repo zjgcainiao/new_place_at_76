@@ -2,6 +2,7 @@
 from django.contrib.auth.backends import BaseBackend
 from internal_users.models import InternalUser
 
+
 class InternalUserBackend(BaseBackend):
 
     def authenticate(self, request, email, password=None, **kwargs):
@@ -17,8 +18,6 @@ class InternalUserBackend(BaseBackend):
             elif internal_user.is_active:
                 return internal_user
         return None
-
-        
 
     def get_user(self, user_id):
         try:
