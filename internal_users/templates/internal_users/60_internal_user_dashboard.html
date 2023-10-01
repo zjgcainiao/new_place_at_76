@@ -11,7 +11,7 @@
                 <i class="ri-checkbox-blank-circle-line align-middle"></i>
             </div>
             <!-- Full Sidebar Menu Close Button -->
-            <div class="button-close-fullsidebar">
+            <div class="button-close-sidebar">
                 <i class="ri-close-fill align-middle"></i>
             </div>
             <div  id="leftside-menu-container" data-simplebar>
@@ -59,14 +59,21 @@
                     </li>
                     <!-- end of one side-nav-item -->
 
-                     <li class="side-nav-item">
+                    <li class="side-nav-item">
+                        <a  href="{% url 'shift_management:schedule_shift'%}"  class="side-nav-link">
+                            <i class="mdi mdi-logout"></i>
+                            <span>Schedule Shift</span>
+                        </a>
+                    </li>
+                    <!-- end of one side-nav-item -->
+                    <hr>
+                    <li class="side-nav-item">
                         <a  href="{% url 'internal_users:internal_user_logout'%}"  class="side-nav-link">
                             <i class="mdi mdi-logout"></i>
                             <span>Logout</span>
                         </a>
                     </li>
                     <!-- end of one side-nav-item -->
-                    <hr>
                 </ul>
                 <!--- End Sidemenu -->
 

@@ -19,6 +19,7 @@ urlpatterns = [
     path('accounts/', include('customer_users.urls')),  # customer_users
     path('dashboard/', include('dashboard.urls')),
     path('appts/', include('appointments.urls')),
+    path('shifts/', include('shift_management.urls')),
     path('admin/', admin.site.urls),
     # path('admin/', my_admin_site.urls),
     # added on 2023-05-26. 3d model creating app.

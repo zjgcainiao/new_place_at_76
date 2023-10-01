@@ -32,3 +32,6 @@ class TimeClock(models.Model):
         if self.clock_in_time and self.clock_out_time:
             self.hours_worked = self.clock_out_time - self.clock_in_time
         super().save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'timeclocks_new_03'

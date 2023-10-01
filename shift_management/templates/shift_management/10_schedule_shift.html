@@ -1,0 +1,85 @@
+
+
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load humanize %}
+
+{% block content-main %}
+
+<div class="container my-1">
+    <h3>schedule a shift</h3>
+
+    <!-- The div where FullCalendar will render the calendar -->
+
+
+    <!-- The form used to schedule shifts -->
+    <form id="scheduleShiftForm" method="post" action="{% url 'shift_management:schedule_shift' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="date" id="selectedDate">
+        
+        <button type="submit">Submit</button>
+    </form>
+
+</div>
+
+
+
+<!-- this is the script needed to acgivate standard bundle version of FullCalendar at FullCalendar.io.  -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js" integrity="sha256-alsi6DkexWIdeVDEct5s7cnqsWgOqsh2ihuIZbU6H3I=" crossorigin="anonymous"></script>
+<!-- <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.9/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.9/index.global.min.js'></script> -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+
+        events: [
+            {% for date, name in us_holidays %}
+            {
+            title: "{{ name }}",
+            start: "{{ date }}",
+            color: 'red' // Color for US holidays
+            },
+            {% endfor %}
+            {% for holiday in custom_holidays %}
+            {
+            title: "{{ holiday.name }}",
+            start: "{{ holiday.date }}",
+            color: 'blue' // Color for custom holidays
+            },
+            {% endfor %}
+        ],
+        dateClick: function(info) {
+            document.getElementById('selectedDate').value = info.dateStr;
+            // Show a modal or other UI for shift scheduling, then submit the form
+            
+            // Display the form. This could be done using a modal, for example.
+            // If using Bootstrap, you'd initialize and show the modal here.
+            // For simplicity, we can just display the form by un-hiding it
+            document.getElementById("scheduleShiftForm").style.display = "block";
+        },
+    });
+    calendar.render();
+    });
+
+</script>
+<script>
+    $("#scheduleShiftForm").on("submit",function(event) {
+    event.preventDefault();  // Prevent the form from submitting the traditional way
+    
+    $.ajax({
+        url: $(this).attr('action'),
+        type: $(this).attr('method'),
+        data: $(this).serialize(),
+        success: function(response) {
+            // Handle success, such as adding the new shift to the calendar or displaying a success message
+        },
+        error: function(error) {
+            // Handle errors, such as displaying an error message or highlighting invalid form fields
+        }
+    });
+});
+
+</script>
+{% endblock %}

@@ -231,6 +231,7 @@ INSTALLED_APPS = [
     # 'social_django',
     # 'firebase_auth', # google firebase-auth
     'we_have_ai_helpers',
+    'shift_management',
 ]
 
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.
