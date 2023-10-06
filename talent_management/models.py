@@ -161,7 +161,7 @@ class TalentsModel(models.Model):
 
     talent_is_active = models.BooleanField(default=True)
     talent_created_at = models.DateTimeField(auto_now_add=True)
-    talent_last_udpated_date = models.DateTimeField(auto_now=True)
+    talent_last_udpated_at = models.DateTimeField(auto_now=True)
     # talent_created_by_user = models.ForeignKey(
     #     InternalUser, null=True, on_delete=models.SET_NULL)
 

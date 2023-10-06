@@ -5,17 +5,33 @@ from talent_management.models import TalentsModel
 
 class Shift(models.Model):
     shift_id = models.AutoField(primary_key=True)
-    talent = models.ForeignKey(
+    shift_talent = models.ForeignKey(
         TalentsModel, on_delete=models.CASCADE, related_name='shifts')
-    internal_user = models.ForeignKey(
+    shift_internal_user = models.ForeignKey(
         InternalUser, on_delete=models.CASCADE, related_name="shift_changes")
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    shift_start_time = models.DateTimeField()
+    shift_end_time = models.DateTimeField()
     scheduled_hours = models.DurationField()
-    note = models.TextField(blank=True)
+    shift_note = models.TextField(blank=True)
+
+    shift_created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='shift_created', on_delete=models.SET_NULL, null=True, blank=True)
+
+    shift_last_updated_at = models.DateTimeField(
+        null=True, auto_now=True)
+
+    modified_by = models.ForeignKey(
+        InternalUser, related_name='shift_modified', on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         db_table = 'shfts_new_03'
+        ordering = ['-shift_id']
+
+    def ends_next_day(self):
+        if self.shift_end_time < self.shift_start_time:
+            return True
+        return False
 
 
 class TimeClock(models.Model):

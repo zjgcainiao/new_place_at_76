@@ -151,7 +151,7 @@ with open(file_path, 'r') as f:
             address_city=aa['City'],
             address_state=aa['State'],
             address_zip_code=aa['ZipCode'],
-            address_last_updated_date=aa['LastChangeDate'],
+            address_last_updated_at=aa['LastChangeDate'],
         )
         aa_instance.save()
 
@@ -201,7 +201,7 @@ with open(file_path, 'r') as f:
                 'customer_is_created_from_appointments': aa['IsFromSchedule'],
                 'customer_does_allow_SMS': aa['SMSAllowed'],
                 'customer_email_address_in_json': aa['EmailAddress'],
-                'customer_last_updated_date': aa['LastChangeDate'],
+                'customer_last_updated_at': aa['LastChangeDate'],
                 'customer_fleet_vendor_id': aa['FleetVendorId'],
             }
             try:
@@ -240,7 +240,7 @@ with open(file_path, 'r') as f:
             #     customer_is_created_from_appointments=aa['IsFromSchedule'],
             #     customer_does_allow_SMS=aa['SMSAllowed'],
             #     customer_email_address_in_json=aa['EmailAddress'],
-            #     customer_last_updated_date=aa['LastChangeDate'],
+            #     customer_last_updated_at=aa['LastChangeDate'],
             #     customer_fleet_vendor_id=aa['FleetVendorId'],
             #     # customer_memo_1 = '' # empty string for the field.
             # )
@@ -256,7 +256,7 @@ with open(file_path, 'r') as f:
             email_type_id=aa['EmailTypeId'],
             email_address=aa['Email'],
             email_description=aa['Description'],
-            email_last_updated_date=aa['LastChangeDate']
+            email_last_updated_at=aa['LastChangeDate']
         )
         aa_instance.save()
 
@@ -271,7 +271,7 @@ with open(file_path, 'r') as f:
             phone_desc=aa['Description'],
             phone_order=aa['PhoneOrder'],
             phone_desc_default_type=aa['DefaultType'],
-            phone_desc_last_updated_date=aa['LastChangeDate'],
+            phone_desc_last_updated_at=aa['LastChangeDate'],
         )
         aa_instance.save()
 
@@ -291,7 +291,7 @@ with open(file_path, 'r') as f:
             category_id=aa['CategoryId'],
             category_description=aa['Description'],
             category_display=aa['Display'],
-            category_last_updated_date=aa['LastChangeDate'],
+            category_last_updated_at=aa['LastChangeDate'],
         )
         aa_instance.save()
 
@@ -316,7 +316,7 @@ with open(file_path, 'r') as f:
             phone_number_ext=aa['Ext'],
             phone_displayed_name=aa['Display'],
             phone_memo_01=aa['Note'],
-            phone_last_updated_date=aa['LastChangeDate'],
+            phone_last_updated_at=aa['LastChangeDate'],
         )
         aa_instance.save()
 
@@ -329,7 +329,7 @@ with open(file_path, 'r') as f:
         aa_instance = CustomerPhones(
             phone_id=aa['PhoneId'],
             customer_id=aa['CustId'],
-            customerphone_last_updated_date=aa['LastChangeDate'],
+            customerphone_last_updated_at=aa['LastChangeDate'],
         )
         aa_instance.save()
 
@@ -344,7 +344,7 @@ with open(file_path, 'r') as f:
             customer_id=aa['CustId'],
             email_id=aa['EmailId'],
             customeremail_is_selected=aa['IsSelected'],
-            customeremail_last_updated_date=aa['LastChangeDate'],
+            customeremail_last_updated_at=aa['LastChangeDate'],
         )
         aa_instance.save()
 
@@ -357,7 +357,7 @@ with open(file_path, 'r') as f:
         aa_instance = CustomerAddress(
             address_id=aa['AddressId'],
             customer_id=aa['CustID'],
-            customeraddress_last_updated_date=aa['LastChangeDate'],
+            customeraddress_last_updated_at=aa['LastChangeDate'],
 
         )
         aa_instance.save()
@@ -694,7 +694,7 @@ with open(file_path, 'r') as f:
                 'vehicle_engine_hour_out': aa['EngineHoursOut'],
                 'vehicle_active_recall_counts': aa['ActiveRecallCount'],
                 'vehicle_recall_last_checked_datetime': make_timezone_aware(aa['ActiveRecallLastChecked']),
-                'vehicle_last_updated_datetime': aa['LastChangeDate'],
+                'vehicle_last_updated_at': aa['LastChangeDate'],
             }
             try:
                 vehicle_instance, created = Vehicle.objects.update_or_create(
@@ -780,7 +780,7 @@ with open(file_path, 'r') as f:
         #         vehicle_engine_hour_out=aa['EngineHoursOut'],
         #         vehicle_active_recall_counts=aa['ActiveRecallCount'],
         #         vehicle_recall_last_checked_datetime=aa['ActiveRecallLastChecked'],
-        #         vehicle_last_updated_datetime=aa['LastChangeDate'],
+        #         vehicle_last_updated_at=aa['LastChangeDate'],
 
         #     )
         # aa_instance.save()
@@ -848,7 +848,7 @@ with open(file_path, 'r') as f:
         aa_instance = AccountClass(
             account_class_id=aa['AccountClassId'],
             account_type=aa['AccountType'],
-            account_last_updated_date=aa['LastChangeDate'],
+            account_last_updated_at=aa['LastChangeDate'],
         )
         # data_list.append(aa_instance)
         # Bulk create the repairorderLineItemSequence objects in the database
@@ -895,7 +895,7 @@ with open(file_path, 'r') as f:
             canned_job_applied_make_id=aa['MakeId'],
             canned_job_applied_submodel_id=aa['SubModelId'],
             canned_job_vehicle_class=aa['VehicleClass'],
-            canned_job_last_updated_date=aa['LastChangeDate'],
+            canned_job_last_updated_at=aa['LastChangeDate'],
         )
         aa_instance.save()
 
@@ -925,7 +925,7 @@ with open(file_path, 'r') as f:
             line_item_package_sale=Decimal(aa['PackageSale']),
             line_item_tire_fee=Decimal(aa['TireFee']),
             line_item_parent_line_item_id=aa['ParentLineItemId'],
-            line_item_last_updated_date=aa['LastChangeDate'],
+            line_item_last_updated_at=aa['LastChangeDate'],
         )
         aa_instance.save()
 
@@ -940,7 +940,7 @@ with open(file_path, 'r') as f:
             line_item_tax_id=aa['TaxId'],
             line_item_tax_charged=Decimal(aa['TaxCharged']),
             line_item_tax_rate=Decimal(aa['TaxRate']),
-            line_item_tax_last_updated_date=aa['LastChangeDate'],
+            line_item_tax_last_updated_at=aa['LastChangeDate'],
         )
         aa_instance.save()
 
@@ -957,7 +957,7 @@ with open(file_path, 'r') as f:
             note_text=(aa['NoteText']).strip(),
             is_printed_on_order=aa['PrintOnOrder'],
             tech_observation=aa['TechObservation'],
-            note_item_last_updated_date=aa['LastChangeDate'],
+            note_item_last_updated_at=aa['LastChangeDate'],
         )
         aa_instance.save()
 
@@ -990,7 +990,7 @@ with open(file_path, 'r') as f:
             part_is_deleted=aa['IsDeleted'],
             part_size=aa['Size'],
             part_is_tire=aa['IsTire'],
-            part_last_updated_date=aa['LastChangeDate'],
+            part_last_updated_at=aa['LastChangeDate'],
         )
         aa_instance.save()
 
@@ -1031,7 +1031,7 @@ with open(file_path, 'r') as f:
             part_item_part_type=aa['PartType'],
             part_item_size=aa['Size'],
             part_item_is_tire=aa['IsTire'],
-            part_item_last_updated_date=aa['LastChangeDate'],
+            part_item_last_updated_at=aa['LastChangeDate'],
             part_item_meta=aa['Metadata'],
             part_item_added_from_supplier=aa['AddedFromSupplier'],
             part_item_purchased_from_vendor=aa['PurchasedFromVendor'],
@@ -1075,7 +1075,7 @@ with open(file_path, 'r') as f:
             labor_item_parts_estimate=aa['PartsEstimate'],
             labor_item_is_MPlg_item=aa['IsMPlgItem'],
             labor_item_is_Changed_MPlg_item=aa['IsChangedMPlgItem'],
-            labor_item_last_updated_date=aa['LastChangeDate'],
+            labor_item_last_updated_at=aa['LastChangeDate'],
         )
         aa_instance.save()
 
@@ -1205,7 +1205,7 @@ with open(file_path, 'r') as f:
                 aa['EngineHoursIn']),
             repair_order_serviced_vehcle_engine_hours_out=Decimal(
                 aa['EngineHoursOut']),
-            repair_order_last_updated_date=parse_time(aa['LastChangeDate']),
+            repair_order_last_updated_at=parse_time(aa['LastChangeDate']),
             repair_order_appointment_request_uid=aa['AppointmentRequestUid'],
         )
         aa_instance.save()
@@ -1230,7 +1230,7 @@ with open(file_path, 'r') as f:
             repair_order_id=aa['RepairOrderId'],
             line_item_id=aa['LineItemId'],
             sequence=aa['Sequence'],
-            ro_line_item_sequence_last_updated_date=aa['LastChangeDate'],
+            ro_line_item_sequence_last_updated_at=aa['LastChangeDate'],
         )
         # data_list.append(aa_instance)
         # Bulk create the repairorderLineItemSequence objects in the database
@@ -1253,7 +1253,7 @@ with open(file_path, 'r') as f:
     for aa in data:
         aa_instance = PaymentTransaction(
             payment_transaction_id=aa['PaymentTransactionId'],
-            payment_last_updated_date=aa['LastChangeDate'],
+            payment_last_updated_at=aa['LastChangeDate'],
         )
         # data_list.append(aa_instance)
         # Bulk create the repairorderLineItemSequence objects in the database
@@ -1351,7 +1351,7 @@ with open(file_path, 'r') as f:
             payment_receipt_one=aa['ReceiptOne'],
             payment_receipt_two=aa['ReceiptTwo'],
             payment_receipt_three=aa['ReceiptThree'],
-            payment_last_updated_date=aa['LastChangeDate'],
+            payment_last_updated_at=aa['LastChangeDate'],
         )
         # data_list.append(aa_instance)
         # Bulk create the repairorderLineItemSequence objects in the database
@@ -1391,7 +1391,7 @@ with open(file_path, 'r') as f:
             text_error_code=aa['ErrorCode'],
             text_datetime=aa['Date'],
             text_body_size=aa['BodySize'],
-            text_last_updated_date=aa['LastChangeDate'],
+            text_last_updated_at=aa['LastChangeDate'],
         )
         # data_list.append(aa_instance)
         # Bulk create the repairorderLineItemSequence objects in the database

@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden, JsonRespons
 from homepageapp.models import RepairOrdersNewSQL02Model, CustomerAddressesNewSQL02Model, CustomersNewSQL02Model, AddressesNewSQL02Model, CustomerEmailsNewSQL02Model
 from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model, VehiclesNewSQL02Model, EmailsNewSQL02Model, CustomerPhonesNewSQL02Model, PhonesNewSQL02Model, VehicleNotesModel
 # from homepageapp.forms import RepairOrderModelForm, CustomerModelForm, AddressModelForm, RepairOrderLineItemModelForm, PartItemModelForm, LaborItemModelForm
-from dashboard.forms import PartItemFormSet, LaborItemFormSet
+from dashboard.forms import PartItemInlineFormSet, LaborItemInlineFormSet
 from django.forms.models import inlineformset_factory, modelformset_factory
 from datetime import datetime, timedelta
 from django.contrib import messages
@@ -92,12 +92,13 @@ class WIPDashboardView(InternalUserRequiredMixin, ListView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             if not isinstance(request.user, InternalUser):
-                messages.warning("you are not permitted to view this page.")
+                messages.error("you are not permitted to view this page.")
                 return redirect('homepageapp:homepage')
             else:
                 return super().dispatch(request, *args, **kwargs)
         else:
-            return self.handle_no_permission()
+            messages.error("you have to login first.")
+            return redirect('internal_users:internal_user_login')
 
     def get_queryset(self):
         # repair order phase defines the WIP (work-in-progress) caegory. 6 means invoice.
@@ -167,6 +168,7 @@ def dashboard_detail_v1(request, pk):
         'repair_order_id': repair_order_id,
         'customer_id': customer_id,
         'line_items': line_items,
+        'vehicle': vehicle,
         'current_time': CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE,
         'text_messages': text_messages,
 
@@ -179,11 +181,11 @@ def dashboard_detail_v1(request, pk):
 @login_required(login_url='internal_users:internal_user_login')
 def dashboard_detail_v2(request, pk):
     repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
-        Prefetch('repair_order_customer__addresses'),
+        'repair_order_customer__addresses',
         'repair_order_customer__phones',
         'repair_order_customer__emails',
         'repair_order_customer__taxes',
-        'repair_order_customer__vehicle_customers',
+        # 'repair_order_customer__vehicle_customers',
     ).get(pk=pk)
     # repair_order = RepairOrdersNewSQL02Model.objects.get(id=repair_order_id)
     repair_order_customer = repair_order.repair_order_customer
@@ -193,7 +195,8 @@ def dashboard_detail_v2(request, pk):
     customer_form = CustomerUpdateForm(instance=repair_order_customer)
     address_form = AddressUpdateForm(instance=customer_address)
 
-    return render(request, 'dashboard/22_dashboard_detail_v2.html', {
+    #  'dashboard/22_dashboard_detail_v2.html'
+    return render(request, 'dashboard/24_dashboard_update_as_whole_via_inlineform.html', {
         'repair_order': repair_order,
         'repair_order_form': repair_order_form,
         'customer_form': customer_form,
@@ -211,11 +214,11 @@ class DashboardDetailView(DetailView, LoginRequiredMixin):
     # slug_url_kwarg = 'isbn'
     # model = RepairOrdersNewSQL02Model
 
-    # whenever visiting a repair order, update the `repair_order_last_updated_date``
+    # whenever visiting a repair order, update the `repair_order_last_updated_at``
     # def get_object(self):
     #         obj = super().get_object()
     #         # Record the last accessed date
-    #         obj.repair_order_last_updated_date = timezone.now()
+    #         obj.repair_order_last_updated_at = timezone.now()
     #         obj.save()
     #         return obj
     def dispatch(self, request, *args, **kwargs):
@@ -260,7 +263,7 @@ class RepairOrderUpdateView(UpdateView, LoginRequiredMixin):
             RepairOrdersNewSQL02Model, pk=self.kwargs['pk'])
         form = RepairOrderUpdateForm(request.POST, instance=self.object)
         if form.is_valid():
-            # self.object.repair_order_last_updated_date = timezone.now()
+            # self.object.repair_order_last_updated_at = timezone.now()
             form.save()
             # return HttpResponseRedirect(self.get_success_url())
             return redirect(reverse_lazy('dashboard:dashboard-detail', pk=self.kwargs['pk']))
@@ -316,9 +319,9 @@ def repair_order_and_line_items_detail(request, repair_order_id):
     formset_dict = {}
     formsets = []
     for line_item in line_items:
-        formset = PartItemFormSet(instance=line_item)
+        formset = PartItemInlineFormSet(instance=line_item)
         if formset.total_form_count() == 0:
-            formset = LaborItemFormSet(instance=line_item)
+            formset = LaborItemInlineFormSet(instance=line_item)
         formsets.append(formset)
         formset_dict.append({formset: line_item.line_item_id})
     context = {
@@ -333,7 +336,7 @@ def repair_order_and_line_items_detail(request, repair_order_id):
 
 
 class RepairOrderLineItemListView(ListView):
-    template_name = 'dashboard/02-repair_order_line_items.html'
+    template_name = 'dashboard/51_repair_order_line_items.html'
     model = RepairOrderLineItemSquencesNewSQL02Model
     context_object_name = 'repair_order'
 
@@ -381,7 +384,7 @@ class PartItemUpdateView(UpdateView, LoginRequiredMixin):
         # qs = qs.prefetch_related('repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
         #        ).prefetch_related('repair_order_customer__taxes').prefetch_related('lineitems__parts_lineitems').prefetch_related('lineitems__lineitem_laboritem')
         qs = LineItemsNewSQL02Model.objects.prefetch_related(
-            'parts_lineitems').prefetch_related('lineitem_laboritem')
+            'partitems_lineitems').prefetch_related('lineitem_laboritem')
         # repair order phase defines the WIP (work-in-progress) category. 6 means invoice.  7 counter sale. 8 deleted. 9 scheduled.
         # qs = qs.filter(Q(repair_order_phase=1) | Q(repair_order_phase=2) | Q(repair_order_phase=3) | Q(repair_order_phase=4) | Q(repair_order_phase=5))
         return qs
@@ -391,8 +394,8 @@ class PartItemUpdateView(UpdateView, LoginRequiredMixin):
         line_item = get_object_or_404(
             LineItemsNewSQL02Model, pk=self.kwargs['line_item_id'])
         if line_item is not None:
-            part_item_formset = PartItemFormSet(instance=line_item)
-            labor_item_formset = LaborItemFormSet(instance=line_item)
+            part_item_formset = PartItemInlineFormSet(instance=line_item)
+            labor_item_formset = LaborItemInlineFormSet(instance=line_item)
             if labor_item_formset.empty_form:
                 selected_formset = part_item_formset
             else:
@@ -425,49 +428,46 @@ class PartItemUpdateView(UpdateView, LoginRequiredMixin):
 
 
 def line_item_labor_and_part_item_update_view(request, pk, line_item_id):
-    repair_order_id = pk
+    repair_order_id = pk  # pk is repair_order_id in repairorder model.
     line_item = LineItemsNewSQL02Model.objects.prefetch_related(
-        'parts_lineitems',
-        'lineitem_laboritem').filter(line_item_id=line_item_id).get()
+        'partitems_lineitems',
+        'lineitem_laboritem').filter(line_item_id=line_item_id).first()  # to handle not found error by returning None
+
+    # use .all() instead of .exists() to reduce the queries into DB.
+    if line_item.partitems_lineitems.all():
+        Formset = PartItemInlineFormSet
+    elif line_item.lineitem_laboritem.all():
+        Formset = LaborItemInlineFormSet
+    else:
+        Formset = None
+        messages.error(
+            f'error fetching information for line item {line_item_id}. data not found or corrupted.')
+        return redirect('repair_order_detail', pk=pk)
 
     # in one single line item, some data is from lineitem table, some is either from partitem or laboritem table.
     if request.method == 'POST':
-        form = LineItemUpdateForm(request.POST, instance=line_item)
-        formset = PartItemFormSet(
-            request.POST, instance=line_item, prefix='partitems')
-        if formset.total_form_count() == 0:
-            formset = LaborItemFormSet(
-                request.POST, instance=line_item, prefix='laboritems')
 
-        if form.is_valid() and formset.is_valid():
+        form = LineItemUpdateForm(request.POST, instance=line_item)
+        formset = Formset(request.POST, instance=line_item)
+
+        if formset.is_valid() and form.is_valid():
             formset.save()
             form.save()
             messages.success(
                 request, 'Line items have been updated successfully!')
             return redirect('repair_order_detail', pk=pk)
     else:
-        if line_item:
-            part_item_formset = PartItemFormSet(instance=line_item)
-            labor_item_formset = LaborItemFormSet(instance=line_item)
-            form = LineItemUpdateForm(instance=line_item)
-            if labor_item_formset.total_form_count() == 0:
-                selected_formset = part_item_formset
-                is_labor_item = 0
-            elif part_item_formset.total_form_count() == 0:
-                selected_formset = labor_item_formset
-                is_labor_item = 1
-            else:
-                selected_formset = None
-                form = None
+        formset = Formset(instance=line_item)
+        form = LineItemUpdateForm(instance=line_item)
 
-        context = {
-            'selected_formset': selected_formset,
-            'form': form,
-            'repair_order_id': repair_order_id,
-            'line_item_id': line_item_id,
-            'line_item': line_item,
-        }
-        return render(request, 'dashboard/93_part_labor_item_update_view_v2.html', context)
+    context = {
+        'formset': formset,
+        'form': form,
+        'repair_order_id': repair_order_id,
+        'line_item_id': line_item_id,
+        'line_item': line_item,
+    }
+    return render(request, 'dashboard/93_part_labor_item_update_view_v2.html', context)
 
 
 class LaborItemUpdateView(UpdateView):
@@ -504,7 +504,7 @@ def chat_sidebar_view(request, customer_id):
 
 # added on 2023-06-03. ChatGPT generated.
 # search form page --- the first step before creating an repair order.
-class SearchView(LoginRequiredMixin, View):
+class SearchView(View, InternalUserRequiredMixin):
 
     login_url = reverse_lazy('internal_users:internal_user_login')
 
@@ -608,7 +608,7 @@ class CustomerCreateView(CreateView, LoginRequiredMixin):
         form.instance.customer_id = new_customer_id
 
         self.object = form.save(commit=False)
-        self.object.customer_last_updated_date = timezone.now()
+        self.object.customer_last_updated_at = timezone.now()
         self.object.modified_by = self.request.user  # assuming the user is logged in
         self.object.save()
         messages.success(self.request, 'Update success.')
@@ -657,7 +657,7 @@ class CustomerDetailView(DetailView, LoginRequiredMixin):
         form = CustomerUpdateForm(request.POST, instance=self.object)
 
         if form.is_valid():
-            self.object.customer_last_updated_date = timezone.now()
+            self.object.customer_last_updated_at = timezone.now()
             form.save()
 
             return HttpResponseRedirect(self.get_success_url())
@@ -738,7 +738,7 @@ class CustomerUpdateView(UpdateView, LoginRequiredMixin):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.customer_last_updated_date = timezone.now()
+        self.object.customer_last_updated_at = timezone.now()
         self.object.modified_by = self.request.user  # assuming the user is logged in
         self.object.save()
         messages.success(self.request, 'Update success.')
@@ -793,7 +793,7 @@ class VehicleCreateView(CreateView, InternalUserRequiredMixin):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.vehicle_last_updated_datetime = timezone.now()
+        self.object.vehicle_last_updated_at = timezone.now()
         self.object.created_by = self.request.user  # assuming the user is logged in
         self.object.save()
         messages.success(self.request, 'Update success.')
@@ -826,7 +826,7 @@ class VehicleDetailView(DetailView, LoginRequiredMixin):
         self.object = self.get_object()
         form = VehicleUpdateForm(request.POST, instance=self.object)
         if form.is_valid():
-            self.object.vehicle_last_updated_datetime = timezone.now()
+            self.object.vehicle_last_updated_at = timezone.now()
             form.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
@@ -844,7 +844,7 @@ class VehicleUpdateView(UpdateView, LoginRequiredMixin):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.vehicle_last_updated_datetime = timezone.now()
+        self.object.vehicle_last_updated_at = timezone.now()
         self.object.modified_by = self.request.user  # assuming the user is logged in
         self.object.save()
         messages.success(
@@ -904,7 +904,7 @@ def update_customer_assignment(request):
         try:
             vehicle = VehiclesNewSQL02Model.objects.get(id=vehicle_id)
             vehicle.vehicle_cust = selected_customer
-            vehicle.vehicle_last_updated_datetime = timezone.now()
+            vehicle.vehicle_last_updated_at = timezone.now()
             vehicle.modified_by = request.user  # assuming the user is logged in
             vehicle.save()
             return JsonResponse({'status': 'success', 'message': 'Customer assignment updated successfully.'})
@@ -955,6 +955,6 @@ def technician_dash_view(request, technician_id):
     line_items = LineItemsNewSQL02Model.objects.filter(LineItemTech__id=technician_id).prefetch_related(
         'lineitems__lineitem_noteitem',
         'lineitems__lineitem_laboritem',
-        'lineitems__parts_lineitems',
+        'lineitems__partitems_lineitems',
     )
     return render(request, 'dashboard/technician_workstation.html', {'line_items': line_items})

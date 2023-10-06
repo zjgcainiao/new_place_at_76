@@ -9,7 +9,7 @@ from django.db.models import Prefetch
 from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model, LaborItemModel, EmailsNewSQL02Model
 from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model, AddressesNewSQL02Model, CustomerAddressesNewSQL02Model, PhonesNewSQL02Model, CustomerEmailsNewSQL02Model, CustomerPhonesNewSQL02Model
 
-from homepageapp.models import GVWsModel, SubmodelsModel, BrakesModel, EnginesModel, TransmissionsModel, BodyStylesModel
+from homepageapp.models import GVWsModel, SubmodelsModel, BrakesModel, EnginesModel, TransmissionsModel, BodyStylesModel, CategoryModel
 from django.urls import reverse, reverse_lazy
 # using crispy_forms to control the search form.
 from core_operations.models import EMAIL_TYPES, LIST_OF_STATES_IN_US
@@ -450,70 +450,73 @@ class VehicleCreateForm(VehicleUpdateForm):
 
 
 class PartItemUpdateForm(forms.ModelForm):
-    part_item_quantity = forms.IntegerField(min_value=0, max_value=100)
-    part_item_is_confirmed = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': 'form-check'}), label='is item confirmed?')
+    part_item_quantity = forms.IntegerField(
+        min_value=0, max_value=100, widget=forms.NumberInput(attrs={'type': 'text', }), label='quantity', required=False)
     part_item_is_quantity_confirmed = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': 'form-check-input'}), label='is quantity confirmed?')
+        attrs={'class': ''}), label='quantity confirmed?', required=False)
+
+    part_item_is_confirmed = forms.BooleanField(widget=forms.CheckboxInput(
+        attrs={'class': ''}), label='part confirmed?', required=False)
+
     part_item_is_user_entered_unit_sale = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': 'form-check'}), label='is user entered unit sale?')
+        attrs={'class': ''}), label='unit sale entered manually?', required=False)
     part_item_is_user_entered_unit_cost = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': 'form-check'}), label='is quantity confirmed?')
+        attrs={'class': ' '}), label='unit cost entered manually?', required=False)
 
     class Meta:
         model = PartItemModel
         fields = [
-            'line_item',
+            # 'line_item',
             'part_item_part_no',
             'part_discount_description_id',
-            'part_item_is_user_entered_unit_sale',
-            'part_item_is_user_entered_unit_cost',
             'part_item_quantity',
+            'part_item_confirmed_quantity',
+            'part_item_is_quantity_confirmed',
             'part_item_unit_cost',
+            'part_item_is_user_entered_unit_cost',
             'part_item_unit_price',
             'part_item_unit_list',
             'part_item_unit_sale',
-
+            'part_item_is_user_entered_unit_sale',
             # 'part_item_part_id',
+            'part_item_is_part_ordered',
+            'part_item_is_core',
+            'part_item_is_bundled_kit',
             'part_item_is_confirmed',
             'part_item_is_committed',
-            # 'part_item_vendor_code',
-            # 'part_item_vendor_id',
-            # 'part_item_manufacture_id',
-            # 'part_item_invoice_number',
-            # 'part_item_commission_amount',
+            'part_item_vendor_code',
+            'part_item_vendor_id',
+            'part_item_manufacture_id',
+            'part_item_invoice_number',
+            'part_item_commission_amount',
 
-            # 'part_item_is_quantity_confirmed',
-            # 'part_item_confirmed_quantity',
-            # 'part_item_is_part_ordered',
-            # 'part_item_is_core',
-            # 'part_item_is_bundled_kit',
+
             # 'part_item_is_MPlg_item',
             # 'part_item_is_changed_MPlg_item',
             # 'part_item_part_type',
             # 'part_item_size',
             # 'part_item_is_tire',
-            # 'part_item_vendor_id',
             # 'part_item_meta',
             # 'part_item_added_from_supplier',
             # 'part_item_purchased_from_vendor',
             # 'part_item_purchased_from_supplier',
-            # 'part_item_shipping_description',
-            # 'part_item_shipping_cost'
+            'part_item_shipping_description',
+            'part_item_shipping_cost',
         ]
         widgets = {
-            'part_item_quantity': forms.NumberInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'part_item_unit_price': forms.NumberInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'part_item_unit_list': forms.NumberInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'part_item_unit_sale': forms.NumberInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'part_item_unit_cost': forms.NumberInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'part_item_unit_price': forms.NumberInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'part_item_unit_price': forms.NumberInput(attrs={'type': 'text', 'class': 'form-control', }),
+            'part_item_quantity': forms.NumberInput(attrs={'type': 'text', }),
+            'part_item_confirmed quantity': forms.NumberInput(attrs={'type': 'text', }),
+            'part_item_unit_price': forms.NumberInput(attrs={'type': 'text', }),
+            'part_item_unit_list': forms.NumberInput(attrs={'type': 'text', }),
+            'part_item_unit_sale': forms.NumberInput(attrs={'type': 'text', }),
+            'part_item_unit_cost': forms.NumberInput(attrs={'type': 'text', }),
+            'part_item_unit_price': forms.NumberInput(attrs={'type': 'text', }),
+            'part_item_unit_price': forms.NumberInput(attrs={'type': 'text', }),
             'part_item_shipping_description': forms.TextInput(attrs={}),
         }
 
         labels = {
-            'part_item_is_confirmed': 'Is this part has been confirmed? ',
+            # 'part_item_is_confirmed': 'Is this part has been confirmed? ',
 
         }
 
@@ -528,17 +531,25 @@ class PartItemUpdateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['part_item_unit_price'].validators.append(
             self.clean_unit_price)
-        for name in self.fields.keys():
-            self.fields[name].widget.attrs.update({
-                'class': 'form-control',
-            })
+
+        for name, field in self.fields.items():
+            # check widget type
+            if isinstance(field.widget, (forms.TextInput, forms.Textarea, forms.Select)):
+                field.widget.attrs.update({'class': 'form-control'})
+
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.form_tag = False
+        self.helper.form_method = "post"
+        self.helper.label_class = 'col-3'
+        self.helper.field_class = 'col-9'
 
 
 class LaborItemUpdateForm(forms.ModelForm):
-    # part_item_quantity = forms.IntegerField(min_value=0,max_value=100)
-    # labor_item_work_performed = forms.CharField(max_length=500, null=True)
+    labor_item_symptom = forms.CharField(widget=forms.TextInput(
+        attrs={"placeholder": 'include the noise, the incident that customer mentions'}), label='Symtoms')
     labor_item_is_user_entered_labor_rate = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': 'form-check'}), label='use manual labor rate?')
+        attrs={'class': 'form-check'}), label='is manual labor rate?')
     labor_item_hours_charged = forms.FloatField(widget=forms.NumberInput())
     labor_item_work_performed = forms.CharField(
         widget=forms.Textarea(), label='work performed (labor)')
@@ -547,12 +558,10 @@ class LaborItemUpdateForm(forms.ModelForm):
         model = LaborItemModel
         fields = [
             'labor_item_id',
-            'line_item',
+            # 'line_item',
             'labor_item_symptom',
             'labor_item_work_performed',
-
             'labor_item_hours_charged',
-
             'labor_item_is_come_back_invoice',
             'labor_item_parts_estimate',
             'labor_rate_description_id',
@@ -562,17 +571,18 @@ class LaborItemUpdateForm(forms.ModelForm):
             # 'labor_item_is_Changed_MPlg_item',
         ]
         widgets = {
+
+            # 'line_item': forms.TextInput(attrs={'class': 'form-control',
+            #                                     'readonly': 'readonly'}),
             'labor_item_hours_charged': forms.NumberInput(attrs={'class': 'form-control', }),
             'labor_item_symptom': forms.TextInput(attrs={'class': 'form-control', }),
             'labor_item_parts_estimate': forms.NumberInput(attrs={'class': 'form-control', }),
-
-            'line_item': forms.TextInput(attrs={'class': 'form-control',
-                                                'readonly': 'readonly'}),
-            'labor_item_symptom': forms.Textarea(attrs={}),
+            'labor_item_is_come_back_invoice': forms.CheckboxInput(attrs={'class': 'form-check'})
         }
 
         labels = {
             # 'labor_item_is_user_entered_labor_rate': 'Is this part has been confirmed? '
+            'labor_item_is_come_back_invoice': 'as come-back invoice?',
 
         }
 
@@ -581,50 +591,95 @@ class LaborItemUpdateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # add a "form-control" class to each form input
         # for enabling bootstrap
-        for name in self.fields.keys():
-            self.fields[name].widget.attrs.update({
-                'class': 'form-control',
-            })
+        for name, field in self.fields.items():
+            # check widget type
+            if isinstance(field.widget, (forms.TextInput, forms.Textarea, forms.Select)):
+                field.widget.attrs.update({'class': 'form-control'})
 
         # self.fields['appointment_vehicle_make'].choices = [(make.pk, make.make_name) for make in MakesNewSQL02Model.objects.all()]
 
-        # self.helper = FormHelper()
-        # self.helper.form_class = 'form-horizontal'
-        # self.helper.form_method = "post"
-        # self.helper.label_class = 'col-3'
-        # self.helper.field_class = 'col-9'
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.form_tag = False
+        self.helper.form_method = "post"
+        self.helper.label_class = 'col-3'
+        self.helper.field_class = 'col-9'
 
 
-PartItemFormSet = inlineformset_factory(LineItemsNewSQL02Model, PartItemModel,
-                                        form=PartItemUpdateForm, extra=0,
-                                        )
-LaborItemFormSet = inlineformset_factory(LineItemsNewSQL02Model, LaborItemModel,
-                                         form=LaborItemUpdateForm,
-                                         extra=0,
-                                         )
+PartItemInlineFormSet = inlineformset_factory(LineItemsNewSQL02Model, PartItemModel,
+                                              form=PartItemUpdateForm, extra=0,
+                                              )
+LaborItemInlineFormSet = inlineformset_factory(LineItemsNewSQL02Model, LaborItemModel,
+                                               form=LaborItemUpdateForm,
+                                               extra=0,
+                                               )
 
 RepairOrderFormSet = formset_factory(RepairOrderUpdateForm, extra=0)
 CustomerFormSet = formset_factory(CustomerUpdateForm, extra=0)
 AddressFormSet = formset_factory(AddressUpdateForm, extra=0)
 
+# LineItem  UpdateForm. Parent formto PartItemUpdateForm and LaborItemUpdateForm.
+
 
 class LineItemUpdateForm(forms.ModelForm):
-    # line_item_category = forms.CharField(required=false)
+    line_item_category = forms.ModelChoiceField(
+        queryset=CategoryModel.objects.all(),
+        required=False,
+        label='category',
+        to_field_name="category_description",
+    )
+    line_item_description = forms.CharField(widget=forms.Textarea(
+        attrs={"type": "text", "class": "editable-field"}), label='Item Description:'),
+
     class Meta:
         model = LineItemsNewSQL02Model
-        fields = ['line_item_description',
-                  #  'line_item_category',
+        fields = [
+            'line_item_id',
+            'line_item_description',
+            'line_item_category',
+        ]
+        # exclude = [
+        #     'line_item_parent_line_item_id',]
 
-                  ]
-        exclude = ['line_item_last_updated_date',
-                   'line_item_parent_line_item_id',]
+    def __init__(self, *args, **kwargs):
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['line_item'].queryset = LineItem.objects.all()
+        super().__init__(*args, **kwargs)
+        # add a "form-control" class to each form input
+        # for enabling bootstrap
+        for name, field in self.fields.items():
+            # check widget type
+            if isinstance(field.widget, (forms.TextInput, forms.Textarea, forms.Select)):
+                field.widget.attrs.update({'class': 'form-control'})
+        # Set the queryset
+        # self.fields['line_item_category'].queryset = CategoryModel.objects.all()
 
+        # Modify the widget to display `category_desc`
+        self.fields['line_item_category'].widget = forms.Select(
+            choices=[(cat.pk, cat.category_description)
+                     for cat in CategoryModel.objects.all()]
+        )
+
+        for name, field in self.fields.items():
+            # check widget type
+            if isinstance(field.widget, (forms.TextInput, forms.Textarea, forms.Select)):
+                field.widget.attrs.update({'class': 'form-control'})
+
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.form_tag = False
+        self.helper.form_method = "post"
+
+
+class LineItemCreateForm(LineItemUpdateForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # exclude the line item id
+        del self.fields['line_item_id']
 
 # This liteEmailUpdateForm is used on the customer detail page. It allows users to edit
+
+
 class LiteEmailUpdateForm(forms.ModelForm):
     email_id = forms.IntegerField(required=False)
     email_type_id = forms.ChoiceField(choices=EMAIL_TYPES, label='type')

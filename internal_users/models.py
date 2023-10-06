@@ -15,14 +15,13 @@ class UserManager(BaseUserManager):
         """
         Creates and saves a User with the given email and password.
         """
-        if not email:
-            raise ValueError('The Email field must be set.')
+        if not email.strip():
+            raise ValueError('A valid email address is required.')
         # hash the password
         # hashed_password = make_password(password)
 
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        # the hashed_password was unncessary.
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -31,23 +30,13 @@ class UserManager(BaseUserManager):
         """
         Creates and saves a superuser with the given email and password.
         """
-        if password is None:
-            raise TypeError('Superusers must have a password.')
-
-        # option 1
-        # return self.create_user(email, password, **extra_fields)
-        # option 2
-        # create a user with the hashed password
-        user = self.create_user(email, password=password, **extra_fields)
+        if password is None or not password.strip():
+            raise TypeError('Superusers must have a non-empty password.')
 
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('user_is_admin', True)
-
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+        user = self.create_user(email, password=password, **extra_fields)
 
         user.save(using=self._db)
         return user
@@ -137,7 +126,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     user_created_at = models.DateTimeField(auto_now_add=True)
     # this field is track the internal user id that is used to create an user. usually should belong to IT group.
 
-    user_created_by = models.IntegerField(null=True)
+    # user_created_by = models.IntegerField(null=True)
     user_last_updated_at = models.DateTimeField(auto_now=True)
 
     # define the username for this internal_user module is email.

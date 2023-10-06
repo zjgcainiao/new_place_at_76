@@ -11,7 +11,7 @@ def schedule_shift(request):
         form = ScheduleShiftForm(request.POST)
         if form.is_valid():
             shift = form.save(commit=False)
-            shift.internal_user = request.user
+            shift.shift_internal_user = request.user
             shift.save()
             return redirect('shift_management:schedule_shift')
     else:

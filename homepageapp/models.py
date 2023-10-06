@@ -29,7 +29,7 @@ class CategoryModel(models.Model):
         InternalUser, related_name='category_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='category_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    category_last_updated_date = models.DateTimeField(auto_now=True, null=True)
+    category_last_updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         db_table = 'categories_new_03'
@@ -44,7 +44,7 @@ class CategoryModel(models.Model):
 class AccountClassModel(models.Model):
     account_class_id = models.AutoField(primary_key=True)
     account_type = models.CharField(max_length=30, null=True)
-    account_last_updated_date = models.DateTimeField(auto_now=True, null=True)
+    account_last_updated_at = models.DateTimeField(auto_now=True, null=True)
     account_created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='accountclass_created', on_delete=models.SET_NULL, null=True, blank=True)
@@ -71,7 +71,7 @@ class InvoiceStatusModel(models.Model):
         InternalUser, related_name='invoice_status_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='invoice_status_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    invoice_status_last_updated_date = models.DateTimeField(
+    invoice_status_last_updated_at = models.DateTimeField(
         auto_now=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -100,7 +100,7 @@ class AddressesNewSQL02Model(models.Model):
         InternalUser, related_name='address_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='address_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    address_last_updated_date = models.DateTimeField(auto_now=True, null=True)
+    address_last_updated_at = models.DateTimeField(auto_now=True, null=True)
 
     @property
     def get_full_address(self):
@@ -145,7 +145,7 @@ class EmailsNewSQL02Model(models.Model):
         InternalUser, related_name='email_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='email_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    email_last_updated_date = models.DateTimeField(auto_now=True, null=True)
+    email_last_updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -169,7 +169,7 @@ class PhoneDescModel(models.Model):
         InternalUser, related_name='phonedesc_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='phonedesc_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    phone_desc_last_updated_date = models.DateTimeField(
+    phone_desc_last_updated_at = models.DateTimeField(
         auto_now=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -199,7 +199,7 @@ class PhonesNewSQL02Model(models.Model):
         InternalUser, related_name='phone_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='phone_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    phone_last_updated_date = models.DateTimeField(auto_now=True)
+    phone_last_updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def get_phone_number_digit_only(self):
@@ -227,7 +227,7 @@ class TaxesModel(models.Model):
         InternalUser, related_name='tax_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='tax_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    tax_last_updated_date = models.DateTimeField(null=True, auto_now=True)
+    tax_last_updated_at = models.DateTimeField(null=True, auto_now=True)
 
     class Meta:
         db_table = 'taxes_new_03'
@@ -271,7 +271,7 @@ class CustomersNewSQL02Model(models.Model):
     customer_email_address_in_json = models.CharField(
         max_length=200, null=True, blank=True)
 
-    customer_last_updated_date = models.DateTimeField(auto_now=True)
+    customer_last_updated_at = models.DateTimeField(auto_now=True)
     customer_is_created_from_appointments = models.BooleanField(default=False)
     customer_fleet_vendor_id = models.CharField(
         max_length=100, null=True, blank=True)
@@ -318,7 +318,7 @@ class CustomersNewSQL02Model(models.Model):
         verbose_name_plural = 'customers'
 
     def __str__(self):
-        return self.customer_full_name
+        return self.get_customer_full_name
 
 
 class CustomerAddressesNewSQL02Model(models.Model):
@@ -333,7 +333,7 @@ class CustomerAddressesNewSQL02Model(models.Model):
         InternalUser, related_name='customeraddress_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='customeraddress_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    customeraddress_last_updated_date = models.DateTimeField(auto_now=True)
+    customeraddress_last_updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -359,7 +359,7 @@ class CustomerEmailsNewSQL02Model(models.Model):
         InternalUser, related_name='customeremail_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='customeremail_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    customeremail_last_updated_date = models.DateTimeField(auto_now=True)
+    customeremail_last_updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -378,7 +378,7 @@ class CustomerPhonesNewSQL02Model(models.Model):
     customer = models.ForeignKey(
         CustomersNewSQL02Model, on_delete=models.CASCADE)
     customerphone_created_at = models.DateTimeField(auto_now_add=True)
-    customerphone_last_updated_date = models.DateTimeField(auto_now=True)
+    customerphone_last_updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='customerphone_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
@@ -401,7 +401,7 @@ class RepairOrderPhasesNewSQL02Model(models.Model):
     repair_order_phase_id = models.AutoField(primary_key=True)
     repair_order_phase_description = models.CharField(max_length=50)
     repair_order_phase_created_at = models.DateTimeField(auto_now_add=True)
-    repair_order_phase_last_updated_date = models.DateTimeField(auto_now=True)
+    repair_order_phase_last_updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='repair_order_phase_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
@@ -452,7 +452,7 @@ class ModelsNewSQL02Model(models.Model):
         InternalUser, related_name='model_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='model_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    make_last_updated_date = models.DateTimeField(auto_now=True)
+    make_last_updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -499,7 +499,7 @@ class EnginesModel(models.Model):
         InternalUser, related_name='engine_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='engine_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    engine_last_updated_date = models.DateTimeField(auto_now=True, null=True)
+    engine_last_updated_at = models.DateTimeField(auto_now=True, null=True)
 
     @property
     def get_engine_feature(self):
@@ -548,7 +548,7 @@ class TransmissionsModel(models.Model):
         InternalUser, related_name='transmission_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='transmission_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    transmission_last_updated_date = models.DateTimeField(
+    transmission_last_updated_at = models.DateTimeField(
         auto_now=True, null=True)
 
     @property
@@ -585,7 +585,7 @@ class BrakesModel(models.Model):
         InternalUser, related_name='brake_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='brake_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    brake_last_updated_date = models.DateTimeField(
+    brake_last_updated_at = models.DateTimeField(
         auto_now=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -615,7 +615,7 @@ class GVWsModel(models.Model):
     gvw_id = models.AutoField(primary_key=True)
     gvw_text = models.CharField(max_length=150, null=True)
     gvw_created_at = models.DateTimeField(auto_now_add=True)
-    gvw_last_updated_date = models.DateTimeField(
+    gvw_last_updated_at = models.DateTimeField(
         auto_now=True, null=True)
 
     @property
@@ -862,7 +862,7 @@ class VehiclesNewSQL02Model(models.Model):
         InternalUser, related_name='vehicle_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='vehicle_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    vehicle_last_updated_datetime = models.DateTimeField(
+    vehicle_last_updated_at = models.DateTimeField(
         auto_now=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -897,7 +897,7 @@ class TextMessagesModel(models.Model):
         InternalUser, related_name='text_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='text_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    text_last_updated_date = models.DateTimeField(auto_now=True, null=True)
+    text_last_updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -952,7 +952,7 @@ class CannedJobsNewSQL02Model(models.Model):
     canned_job_applied_submodel_id = models.IntegerField(blank=True, null=True)
     canned_job_vehicle_class = models.CharField(
         max_length=50, null=True, blank=True)
-    canned_job_last_updated_date = models.DateTimeField(
+    canned_job_last_updated_at = models.DateTimeField(
         auto_now=True, null=True)
     canned_job_created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(
@@ -970,12 +970,22 @@ class CannedJobsNewSQL02Model(models.Model):
         ordering = ["-canned_job_id"]
 
 
+LINE_ITEM_TYPES = [
+    ('part', 'Part'),
+    ('labor', 'Labor'),
+    ('unknown', 'unknown')
+]
+
+
 class LineItemsNewSQL02Model(models.Model):
     line_item_id = models.AutoField(primary_key=True)
     line_item_account_class = models.ForeignKey(
         AccountClassModel, on_delete=models.SET_NULL, null=True, related_name='lineitem_accountclasses')
     line_item_category = models.ForeignKey(
-        CategoryModel, on_delete=models.SET_NULL, null=True)
+        CategoryModel, on_delete=models.SET_NULL, null=True, related_name='lineitem_category')
+    # 2023-10-01 newly added field
+    line_item_type = models.CharField(
+        max_length=10, choices=LINE_ITEM_TYPES, null=True)
     line_item_description = models.CharField(max_length=2000)
     line_item_cost = models.DecimalField(max_digits=9, decimal_places=2)
     line_item_sale = models.DecimalField(max_digits=9, decimal_places=2)
@@ -999,9 +1009,11 @@ class LineItemsNewSQL02Model(models.Model):
         max_digits=12, decimal_places=2)
     line_item_tire_fee = models.DecimalField(
         max_digits=12, decimal_places=2, default=0.00)
-    line_item_parent_line_item_id = models.IntegerField(null=True)
+    line_item_parent_line_item = models.ForeignKey(
+        'self', on_delete=models.SET_NULL, null=True, blank=True)
+
     line_item_created_at = models.DateTimeField(auto_now_add=True)
-    line_item_last_updated_date = models.DateTimeField(
+    line_item_last_updated_at = models.DateTimeField(
         null=True, auto_now=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='line_item_created', on_delete=models.SET_NULL, null=True, blank=True)
@@ -1032,7 +1044,7 @@ class NoteItemsNewSQL02Model(models.Model):
         InternalUser, related_name='note_item_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='note_item_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    note_item_last_updated_date = models.DateTimeField(
+    note_item_last_updated_at = models.DateTimeField(
         null=True, auto_now=True)
 
     def save(self, *args, **kwargs):
@@ -1053,7 +1065,7 @@ class CustomerTaxesModel(models.Model):
         CustomersNewSQL02Model, on_delete=models.CASCADE)
     customertaxes_created_at = models.DateTimeField(
         auto_now_add=True, null=True)
-    customertaxes_last_updated_date = models.DateTimeField(
+    customertaxes_last_updated_at = models.DateTimeField(
         null=True, auto_now=True)
 
     def save(self, *args, **kwargs):
@@ -1079,7 +1091,7 @@ class lineItemTaxesNewSQL02Model(models.Model):
         InternalUser, related_name='line_item_tax_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='line_item_tax_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    line_item_tax_last_updated_date = models.DateTimeField(
+    line_item_tax_last_updated_at = models.DateTimeField(
         null=True, auto_now=True)
 
     def save(self, *args, **kwargs):
@@ -1115,7 +1127,7 @@ class LaborItemModel(models.Model):
         InternalUser, related_name='labor_item_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='labor_item_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    labor_item_last_updated_date = models.DateTimeField(
+    labor_item_last_updated_at = models.DateTimeField(
         null=True, auto_now=True)
 
     def save(self, *args, **kwargs):
@@ -1158,7 +1170,7 @@ class PartsModel(models.Model):
         InternalUser, related_name='part_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='part_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    part_last_updated_date = models.DateTimeField(auto_now=True, null=True,)
+    part_last_updated_at = models.DateTimeField(auto_now=True, null=True,)
 
     def save(self, *args, **kwargs):
         if self._state.adding:
@@ -1173,7 +1185,7 @@ class PartsModel(models.Model):
 class PartItemModel(models.Model):
     part_item_id = models.AutoField(primary_key=True)
     line_item = models.ForeignKey(
-        LineItemsNewSQL02Model, on_delete=models.CASCADE, related_name='parts_lineitems')
+        LineItemsNewSQL02Model, on_delete=models.CASCADE, related_name='partitems_lineitems')
     part_discount_description_id = models.IntegerField(null=True)
     part_item_is_user_entered_unit_sale = models.BooleanField(default=False)
     part_item_is_user_entered_unit_cost = models.BooleanField(default=False)
@@ -1189,7 +1201,7 @@ class PartItemModel(models.Model):
         max_digits=12, decimal_places=2, null=True, blank=True)
     part_item_part_no = models.CharField(max_length=100, null=True, blank=True)
     part_item_part = models.ForeignKey(
-        PartsModel, on_delete=models.SET_NULL, null=True, related_name='parts_parts')
+        PartsModel, on_delete=models.SET_NULL, null=True, related_name='partitems_parts')
     part_item_is_confirmed = models.BooleanField(default=False)
     part_item_vendor_code = models.CharField(
         max_length=25, null=True, blank=True)
@@ -1230,7 +1242,7 @@ class PartItemModel(models.Model):
         InternalUser, related_name='part_item_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='part_item_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    part_item_last_updated_date = models.DateTimeField(
+    part_item_last_updated_at = models.DateTimeField(
         auto_now=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -1325,7 +1337,7 @@ class RepairOrdersNewSQL02Model(models.Model):
     repair_order_appointment_request_uid = models.CharField(
         max_length=50, null=True, blank=True)
 
-    repair_order_last_updated_date = models.DateTimeField(
+    repair_order_last_updated_at = models.DateTimeField(
         null=True, auto_now=True)
     repair_order_created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
@@ -1393,7 +1405,7 @@ class OrderRevisionNewSQL02Model(models.Model):
     order_revision_tire_fee_amount = models.DecimalField(
         max_digits=15, decimal_places=2)
     order_revision_created_at = models.DateTimeField(auto_now_add=True)
-    order_revision_last_updated_date = models.DateTimeField(
+    order_revision_last_updated_at = models.DateTimeField(
         auto_now=True, null=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='order_revision_created', on_delete=models.SET_NULL, null=True, blank=True)
@@ -1419,7 +1431,7 @@ class RepairOrderLineItemSquencesNewSQL02Model(models.Model):
     sequence = models.IntegerField(null=True)
 
     ro_line_item_sequence_created_at = models.DateTimeField(auto_now_add=True)
-    ro_line_item_sequence_last_updated_date = models.DateTimeField(
+    ro_line_item_sequence_last_updated_at = models.DateTimeField(
         null=True, auto_now=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='ro_line_item_sequence_created', on_delete=models.SET_NULL, null=True, blank=True)
@@ -1470,7 +1482,7 @@ class LineItemAssignedTechnicanModel(models.Model):
 
 class PaymentTransactionsModel(models.Model):
     payment_transaction_id = models.AutoField(primary_key=True)
-    payment_transcation_last_updated_date = models.DateTimeField(
+    payment_transcation_last_updated_at = models.DateTimeField(
         null=True, auto_now=True)
     payment_transcation_created_at = models.DateTimeField(
         auto_now_add=True, null=True)
@@ -1519,7 +1531,7 @@ class PaymentsModel(models.Model):
 
     payment_created_at = models.DateTimeField(
         auto_now_add=True, null=True)
-    payment_last_updated_date = models.CharField(
+    payment_last_updated_at = models.CharField(
         max_length=200, null=True, blank=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='payment_tech_created', on_delete=models.SET_NULL, null=True, blank=True)

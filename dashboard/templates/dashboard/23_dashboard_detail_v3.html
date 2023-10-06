@@ -22,7 +22,7 @@
             <li class="list-group-item">created_as_estimate: {{repair_order.repair_order_created_as_estimate}}</li>
             <li class="list-group-item">repair order posted at: {{repair_order.repair_order_posted_datetime }}</li>
             <li class="list-group-item">vehicle_odometer_in: {{repair_order.repair_order_serviced_vehicle_odometer_ins}}</li>
-            <li class="list-group-item">last_updated_date: {{repair_order.repair_order_last_updated_date}}</li>   
+            <li class="list-group-item">last_updated_date: {{repair_order.repair_order_last_updated_at}}</li>   
           </ul>
           <p><a href="{% url 'dashboard:repair-order-update' pk=repair_order.repair_order_id %}" class="btn btn-primary">Edit</a></p>
         </div>

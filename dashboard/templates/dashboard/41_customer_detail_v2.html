@@ -31,7 +31,7 @@
     <div class = 'row'>
         <div class ='col-4'>
             <div class="card card-hover border border-light" >
-                <div class ='card-header text-dark mb-0'>ID:{{customer.customer_id}}. customer since {{customer.customer_first_visit_date|date:'Y-m-d'}}  <p class="text-muted font-13">Updated on: {{customer.customer_last_updated_date}}</p></div>
+                <div class ='card-header text-dark mb-0'>ID:{{customer.customer_id}}. customer since {{customer.customer_first_visit_date|date:'Y-m-d'}}  <p class="text-muted font-13">Updated at: {{customer.customer_last_updated_at}}</p></div>
                 <div class = 'card-body text-dark'>
                     <div class="row">
                         <p class="col-6 card-text"> First Name: {{customer.customer_first_name}} </p>
@@ -227,13 +227,14 @@
                         <p class="col-6 card-text"> First Name: {{customer.customer_first_name}}</p>
                         <p class="col-6 card-text" style="font-weight: bold; text-transform: uppercase;"> Last Name: {{customer.customer_last_name}} </p>
                         <p class="col-6 card-text"> Spouse Name: {{customer.customer_spouse_name}} </p>
+                        <p class="col-6 card-text"> DOB: {{customer.customer_date_of_birth}} </p>
                         <p class ='col-6 '> Memo: {{customer.customer_memo_1}} </p>
                         <p class ='col-6 '> Okay to Charge: {{customer.customer_is_okay_to_charge}} </p>                  
                         <p class ='col-6 card-text'>is in Social CRM: {{customer.customer_is_in_social_crm}}</p>
                     </div>
 
                     <p class ='card-text'>Last visit on: {{customer.customer_last_visit_date}} </p>
-                    <p class ='card-text small'> Updated on: {{customer.customer_last_updated_date}}</p>
+                    <p class ='card-text small'> Updated at: {{customer.customer_last_updated_at}}</p>
                     <a href="{% url 'dashboard:customer-update' customer.customer_id %}" class="btn btn-outline-info">Update</a>
                 </div>
             </div>

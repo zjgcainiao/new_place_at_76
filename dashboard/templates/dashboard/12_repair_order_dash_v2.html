@@ -49,11 +49,16 @@
           <tr>
             <th>Order ID</th>
             <th>Order Status</th>
-            <th>Customer Name </th>
-            <th>Phone Nbr </th>
-            <th>Email Addresses</th>
+            <th>Name</th>
+            <th>Labor</th>
+            <th>Part</th>
+            <th>Discounts</th>
+            <th>Total</th>
+
+            <th>Phone </th>
+            <th>Email</th>
             <th>Customer Address</th>
-            <th>Updated Date</th>
+            <th>Updated</th>
           </tr>
         </thead>
         <tbody>
@@ -62,11 +67,15 @@
             <td><a href="{% url 'dashboard:dashboard-detail' pk=repair_order.repair_order_id %}">{{ repair_order.repair_order_id }}</a></td>
             <td>{{repair_order.repair_order_phase.repair_order_phase_description }}</td>
             <!-- <td>repair_order.repair_order_customer.customer_id </td> -->
-            <td>{{ repair_order.repair_order_customer.get_customer_full_name }}</td>
+            <td>{{ repair_order.repair_order_customer.get_customer_full_name |truncatechars:10 }}</td>
+            <td>{{ repair_order.repair_order_snapshot_labor_sale_amount }}</td>
+            <td>{{ repair_order.repair_order_snapshot_parts_sale_amount }}</td>
+            <td>{{ repair_order.repair_order_snapshot_tax_amount }}</td>
+            <td>{{ repair_order.repair_order_snapshot_order_total_amount }}</td>
 
             <td>
               {% for phone in repair_order.repair_order_customer.phones.all %}
-                <p>{{phone.phone_desc.phone_desc}}: {{phone.phone_number|phone2numeric }}</p>
+                <p>{{phone.phone_desc.phone_desc}}:{{phone.phone_number|phone2numeric |truncatechars:30 }}</p>
               {% endfor %}
             </td>
 
@@ -82,7 +91,7 @@
               {% endfor %}
             </td>
             <td>
-              {{repair_order.repair_order_last_updated_date |date:"m/d/y" }}
+              {{repair_order.repair_order_last_updated_at |date:"m/d/y" }}
             </td>
           </tr>
           {% empty %}

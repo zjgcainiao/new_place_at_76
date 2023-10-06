@@ -126,7 +126,7 @@ class InternalUserLoginForm(AuthenticationForm):
         label='Password',
     )
     remember_me = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={
-        'class': 'form-check-input',
+        'class': 'form-check',
     }))
 
     class Meta:

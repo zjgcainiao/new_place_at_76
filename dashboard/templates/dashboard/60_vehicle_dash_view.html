@@ -2,8 +2,8 @@
 {% load static %}
 {% block content-main %}
 
-{% if page_obj %}
-<div class="container container-fluid my-1">
+
+<div class="container container-fluid">
     <!-- Breadcrumb-->
     <nav aria-label="Breadcrumb">
         <ol class="breadcrumb breadcrumb-dark">
@@ -15,12 +15,12 @@
 </div>
 
 {% if messages %}
-<div class="container container-fluid my-1">
+<div class="container container-fluid ">
     {% for message in messages %}
     <li{% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show justify-content-center justify-content-between"{% endif %} role="alert">
         {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
         {{ message }}
-        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </li>
@@ -41,7 +41,7 @@
       </div>
     </div>
     <!-- end of an row of function buttons -->
-
+{% if page_obj %}
     <table class="table table-light table-hover mb-0">
         <thead>
             <tr>
@@ -72,7 +72,7 @@
                          {{vehicle.vehicle_year}}_{{vehicle.vehicle_make.make_name}}_{{vehicle.vehicle_sub_model.submodel_name}}_{{vehicle.vehicle_body_style.body_style_name}}_{{vehicle.vehicle_engine.engine_number_of_liter}}_{{vehicle.vehicle_tranmission.transmission_type}}
                     </td>
 
-                    <td>{{ vehicle.vehicle_last_updated_datetime }}</td>
+                    <td>{{ vehicle.vehicle_last_updated_at }}</td>
                     <td class="table-action"><a class="action-icon"><i class="uil uil-edit"></i></a><a><i class="uil uil-trash-alt"></i></a></td>
                     
                 </tr>

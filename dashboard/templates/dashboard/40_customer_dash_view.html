@@ -32,7 +32,7 @@
     <div class='row'>
       <div class="col-12 btn-group my-1">
         <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-dash' %}"> <i class="uil-home-alt"></i>Main Customer Dash</a>
-        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-create' %}"><i class ='uil-file-plus-alt' ></i> New Customer</a>
+        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-create' %}"><i class ='uil-file-plus-alt'></i>New Customer</a>
       </div>
     </div>
     <!-- end of an row of function buttons -->
@@ -64,7 +64,7 @@
                         {% endfor %}
                     </td>
 
-                    <td>{{ customer.customer_last_updated_date }}</td>
+                    <td>{{ customer.customer_last_updated_at  |date:"m/d/y"}}</td>
                     <td class="table-action"><a class="action-icon"><i class="uil uil-edit"></i></a><a><i class="uil uil-trash-alt"></i></a></td>
                     
                 </tr>
