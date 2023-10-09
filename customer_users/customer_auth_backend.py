@@ -4,6 +4,7 @@ from customer_users.models import CustomerUser
 
 
 class CustomerUserBackend(BaseBackend):
+
     # default authenticate. via phone number
     def authenticate(self, request, phone_number=None, password=None, **kwargs):
         try:
@@ -18,8 +19,8 @@ class CustomerUserBackend(BaseBackend):
                 customer_user = None
 
         return customer_user
-    #  secondary. via email
 
+    #  secondary. via email.
     def authenticate_via_email(self, request, email=None, password=None, **kwargs):
         try:
             customer_user = CustomerUser.objects.get(cust_user_email=email)

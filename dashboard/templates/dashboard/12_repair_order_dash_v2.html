@@ -54,7 +54,6 @@
             <th>Part</th>
             <th>Discounts</th>
             <th>Total</th>
-
             <th>Phone </th>
             <th>Email</th>
             <th>Customer Address</th>
@@ -64,7 +63,7 @@
         <tbody>
           {% for repair_order in repair_orders %}
           <tr>
-            <td><a href="{% url 'dashboard:dashboard-detail' pk=repair_order.repair_order_id %}">{{ repair_order.repair_order_id }}</a></td>
+            <td><a href="{% url 'dashboard:repair_order_detail' pk=repair_order.repair_order_id %}">{{ repair_order.repair_order_id }}</a></td>
             <td>{{repair_order.repair_order_phase.repair_order_phase_description }}</td>
             <!-- <td>repair_order.repair_order_customer.customer_id </td> -->
             <td>{{ repair_order.repair_order_customer.get_customer_full_name |truncatechars:10 }}</td>

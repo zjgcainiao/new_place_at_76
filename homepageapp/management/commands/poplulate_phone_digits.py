@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from homepageapp.models import PhonesNewSQL02Model
 import re
+import logging
 
 
 class Command(BaseCommand):

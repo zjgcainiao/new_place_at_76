@@ -2,18 +2,19 @@
 {% block content-submain %}
 <div class ='content'>
 
-    <div class="card card-hover p-1 m-1">
+    <div class="card card-hover card-body p-1 m-1">
+     
       <div class = 'row m-1'>
-        <h3 calss="card-title">User Info</h3>
+         <h3 calss="card-title">User Info</h3>
         <h5 class ='col-12 my-2'>
-          <p class ='card-text'>username: {{ user.email}}</p>
-          <small>This email will be your login username for company-wide access. Do not share with others.</small>
+          <p class ='card-text'>Email: {{ user.email}}. <small> This email will be your login username for company-wide access. Do not share with others.</small></p>
+          
         </h5>
         <div class ='col-4 my-1'>
           <p class ='card-text'>Name: {{ user }}</p>
         </div>
         <div class ='col-4 my-1'>
-          <p class ='card-text'>Last Login {{user.last_login}}</p>
+          <p class ='card-text'>Last Login: {{user.last_login}}</p>
         </div>
       </div>
       <!-- end of row -->

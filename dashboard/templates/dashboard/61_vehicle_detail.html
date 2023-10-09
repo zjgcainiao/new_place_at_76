@@ -39,13 +39,13 @@
 
                  <!-- Basic Info Section -->
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingBasic">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasic" aria-expanded="true" aria-controls="collapseBasic">   
+                    <h2 class="accordion-header " id="headingBasic">
+                        <button class="accordion-button  collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasic" aria-expanded="false" aria-controls="collapseBasic">   
                             <h5 class="card-text">I.Basic Info</h5>
                             <p class ='card-text small text-left'> &nbsp;&nbsp;<em><u>Updated on: {{vehicle.vehicle_last_updated_at|date}}</u></em></p>
                         </button>
                     </h2>
-                    <div id="collapseBasic" class="accordion-collapse collapse show" aria-labelledby="headingBasic" >
+                    <div id="collapseBasic" class="accordion-collapse collapse shown" aria-labelledby="headingBasic" >
                         <div class="accordion-body my-1 px-1">
                             <!-- Your Basic Information Fields Here -->
                             <div class="row ">
@@ -62,7 +62,7 @@
                 <!-- Technical Info Section -->
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingTechnical">
-                        <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseTechnical" aria-expanded="false" aria-controls="collapseTechnical">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTechnical" aria-expanded="true" aria-controls="collapseTechnical">
                             <h5>II.Vehicle Technical Specifications</h5>
                         </button>
                     </h2>
@@ -93,7 +93,7 @@
                 <!-- Customer Information Section -->
                 <div class="accordion-item">
                     <h2 class="accordion-header fs-3 fw-bold" id="headingCustomer">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCustomer" aria-expanded="false" aria-controls="collapseCustomer">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCustomer" aria-expanded="true" aria-controls="collapseCustomer">
                             <h5 class="card-title">III. Customer Contact</h5>
                         </button>
                     </h2>
@@ -134,12 +134,12 @@
                 <!-- Vehicle Notes Section -->
                 <div class="accordion-item">
                     <h2 class="accordion-header fs-3 fw-bold" id="headingVehicleNotes">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVehicleNotes" aria-expanded="false" aria-controls="collapseVehicleNotes">
+                        <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseVehicleNotes" aria-expanded="true" aria-controls="collapseVehicleNotes">
                             <h5 class="card-title">IV. Vehicle Notes</h5>
                         </button>
                     </h2>
                     <!-- omit the element data-bs-parent="#vehicleAccordion" to display all accordion items-->
-                    <div id="collapseVehicleNotes" class="accordion-collapse collapse show" aria-labelledby="headingVehicleNotes" >
+                    <div id="collapseVehicleNotes" class="accordion-collapse collapse " aria-labelledby="headingVehicleNotes" >
                         <div class="accordion-body my-1 px-1">
                             <!-- Your Customer Specification Fields Here -->
                             <div class="row">

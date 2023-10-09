@@ -1,3 +1,4 @@
+from asgiref.sync import sync_to_async
 from core_operations.models import US_COUNTRY_CODE
 from homepageapp.models import ModelsNewSQL02Model
 from django.http import JsonResponse
@@ -15,6 +16,8 @@ import logging
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db import models
+from homepageapp.models import VinNhtsaAPISnapshots
+
 fake = Faker()
 
 #
@@ -185,8 +188,11 @@ logger = logging.getLogger('django')
 # default database is referred to as 'demo'. This function intends to be used orginally with "popluate_with_dummy_data.py" management script.
 # use 'demo' database as default input.
 
+# common function 10
+# this function udpate
 
-def update_with_dummy_data(model, databaseName='demo', chunk_size=1000):
+
+def update_model_with_dummy_data(model, databaseName='demo', chunk_size=1000):
     logger.info(f"Updating the model {model} in database {databaseName}...")
     updated_records_count = 0  # Counter for updated records
     # reference to the fake methods but not calling them yet.
@@ -233,3 +239,11 @@ def update_with_dummy_data(model, databaseName='demo', chunk_size=1000):
                     #     f"Updated record with ID: {obj.pk} in model {model.__name__}.")
 
     return updated_records_count
+
+
+def clean_string_in_dictionary_object(data):
+    for key, value in data.items():
+        if isinstance(value, str):
+            cleaned_value = value.strip()
+            data[key] = cleaned_value if cleaned_value else None
+    return data

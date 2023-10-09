@@ -5,36 +5,45 @@
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView
-from django.views.generic import DetailView  # ,UpdateView
+from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView,  DeleteView
-from django.db.models import Q
-from django.db.models import Prefetch
+from django.db.models import Q, Prefetch
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponseForbidden, JsonResponse
-from homepageapp.models import RepairOrdersNewSQL02Model, CustomerAddressesNewSQL02Model, CustomersNewSQL02Model, AddressesNewSQL02Model, CustomerEmailsNewSQL02Model
-from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model, VehiclesNewSQL02Model, EmailsNewSQL02Model, CustomerPhonesNewSQL02Model, PhonesNewSQL02Model, VehicleNotesModel
+from homepageapp.models import RepairOrdersNewSQL02Model, CustomerAddressesNewSQL02Model, CustomersNewSQL02Model, AddressesNewSQL02Model, CustomerEmailsNewSQL02Model, RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model
+from homepageapp.models import VehiclesNewSQL02Model, EmailsNewSQL02Model, CustomerPhonesNewSQL02Model, PhonesNewSQL02Model, VehicleNotesModel, LicensePlateSnapShotsPlate2Vin
 # from homepageapp.forms import RepairOrderModelForm, CustomerModelForm, AddressModelForm, RepairOrderLineItemModelForm, PartItemModelForm, LaborItemModelForm
 from dashboard.forms import PartItemInlineFormSet, LaborItemInlineFormSet
 from django.forms.models import inlineformset_factory, modelformset_factory
 from datetime import datetime, timedelta
 from django.contrib import messages
-from homepageapp.models import TextMessagesModel
+from homepageapp.models import TextMessagesModel, VinNhtsaAPISnapshots
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from internal_users.models import InternalUser
 from appointments.models import AppointmentRequest
 from dashboard.forms import SearchForm, CustomerUpdateForm, RepairOrderUpdateForm, VehicleUpdateForm, AddressUpdateForm, LineItemUpdateForm, PartItemUpdateForm, LaborItemUpdateForm, VehicleCreateForm
-from dashboard.forms import LiteEmailUpdateForm, CustomerCreateForm, CustomerEmailForm, CustomerAddressForm
+from dashboard.forms import LiteEmailUpdateForm, CustomerCreateForm, CustomerEmailForm, CustomerAddressForm, VINSearchForm, LicensePlateSearchForm
 # from dashboard.forms import LiteCustomerVehicleUpdateFormset
 from django.core.paginator import Paginator
 from django.db.models import Max
 from django.views.generic import TemplateView
-from core_operations.models import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
+from core_operations.models import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE, LIST_OF_STATES_IN_US
 # You can do the same sort of thing manually by testing on request.user.is_authenticated, but the decorator is much more convenient!
 from internal_users.mixins import InternalUserRequiredMixin
 from django.core.serializers import serialize
+import aiohttp
+import asyncio
+from apis.views import fetch_single_vin_from_nhtsa_api, fetch_and_save_single_vin_from_nhtsa_api
+from django.db import models
+from asgiref.sync import sync_to_async
+from dashboard.async_functions import decrement_version_for_vin_async, update_or_create_vin_snapshots_async, fetch_single_plate_data_via_plate2vin_async
+from apis.api_vendor_urls import NHTSA_API_URL
+import logging
+import requests
+import json
+from decouple import config, UndefinedValueError, Csv
 
 LiteVehicleUpdateFormset = inlineformset_factory(
     CustomersNewSQL02Model, VehiclesNewSQL02Model, edit_only=True,
@@ -46,7 +55,7 @@ LiteVehicleUpdateFormset = inlineformset_factory(
 def get_main_dashboard(request):
     # Create the context with the current time.
     context = {
-        'current_time': timezone.now().replace(microsecond=0),
+        'current_time': CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE,
     }
 
     if request.user.is_authenticated:
@@ -252,11 +261,11 @@ class RepairOrderUpdateView(UpdateView, LoginRequiredMixin):
     # fields = '__all__'
     form_class = RepairOrderUpdateForm
     # success_url = reverse_lazy(
-    #     'dashboard:dashboard-detail', pk=self.kwargs['object.repair_order_id'])
+    #     'dashboard:repair_order_detail', pk=self.kwargs['object.repair_order_id'])
     login_url = reverse_lazy('internal_users:internal_user_login')
 
     def get_success_url(self):
-        return reverse('dashboard:dashboard-detail', kwargs={'pk': self.object.pk})
+        return reverse('dashboard:repair_order_detail', kwargs={'pk': self.object.pk})
 
     def post(self, request, *args, **kwargs):
         self.object = get_object_or_404(
@@ -266,7 +275,7 @@ class RepairOrderUpdateView(UpdateView, LoginRequiredMixin):
             # self.object.repair_order_last_updated_at = timezone.now()
             form.save()
             # return HttpResponseRedirect(self.get_success_url())
-            return redirect(reverse_lazy('dashboard:dashboard-detail', pk=self.kwargs['pk']))
+            return redirect(reverse_lazy('dashboard:repair_order_detail', pk=self.kwargs['pk']))
         else:
             # return self.form_invalid(form)
             return self.render_to_response(self.get_context_data(form=form))
@@ -431,7 +440,8 @@ def line_item_labor_and_part_item_update_view(request, pk, line_item_id):
     repair_order_id = pk  # pk is repair_order_id in repairorder model.
     line_item = LineItemsNewSQL02Model.objects.prefetch_related(
         'partitems_lineitems',
-        'lineitem_laboritem').filter(line_item_id=line_item_id).first()  # to handle not found error by returning None
+        'lineitem_laboritem',
+        'lineitem_noteitem').filter(line_item_id=line_item_id).first()  # to handle not found error by returning None
 
     # use .all() instead of .exists() to reduce the queries into DB.
     if line_item.partitems_lineitems.all():
@@ -440,9 +450,9 @@ def line_item_labor_and_part_item_update_view(request, pk, line_item_id):
         Formset = LaborItemInlineFormSet
     else:
         Formset = None
-        messages.error(
-            f'error fetching information for line item {line_item_id}. data not found or corrupted.')
-        return redirect('repair_order_detail', pk=pk)
+        messages.error(request,
+                       f'error fetching information for line item {line_item_id}. data not found or corrupted.')
+        return redirect('dashboard:repair_order_detail', pk=pk)
 
     # in one single line item, some data is from lineitem table, some is either from partitem or laboritem table.
     if request.method == 'POST':
@@ -958,3 +968,147 @@ def technician_dash_view(request, technician_id):
         'lineitems__partitems_lineitems',
     )
     return render(request, 'dashboard/technician_workstation.html', {'line_items': line_items})
+
+# this function searchs a vin number entered on the search form. save the most recent snapshot of vehicle info from NHTSA gov website
+# to VinNhtsaAPISnapshots model.
+
+
+async def fetch_single_vin_search_via_nhtsa_api_view(request):
+    vin_data_list = []
+    count = 0
+    logger = logging.getLogger('jjango')
+    if request.method == 'POST':
+        form = VINSearchForm(request.POST)
+        if form.is_valid():
+            vin = form.cleaned_data['vin']
+            year = form.cleaned_data['year']
+            logger.info(
+                f'performing a manual single vin search on webpage for vin {vin} and model year {year}...')
+
+            vin_data_list, number_of_downgraded_records, created = await fetch_and_save_single_vin_from_nhtsa_api(vin, year)
+            # data = asyncio.run(fetch_vin_nhtsa_api(vin, year))
+            # data = await fetch_single_vin_from_nhtsa_api(vin, year)
+            # print(
+            #     f'pulling data for vin {vin} and model year {year} successful. Source:{NHTSA_API_URL}')
+            # # Fetch the count and results
+            # count = data.get("Count", None)
+            # results = data.get("Results", None)
+            # message = data.get("Message", None)
+            # search_criteria = data.get("SearchCriteria", None)
+            # # Decrement `version` numbers for existing records related to this VIN.
+            # # VinNhtsaAPISnapshots.objects.filter(vin=vin).update(
+            # #     version=models.F('version') - 1)
+            # updated_records = await decrement_version_for_vin_async(vin)
+            # if updated_records:
+            #     logger.info(
+            #         f'decrementing the version number for existing records before pulling the latest data...')
+            # # Organize data in the desired structure and add/update to VINSearchSnapshots
+            # for item in results:
+            #     # Check the value of Value
+            #     value = item.get("Value", None)
+
+            #     # Ensure that value_id is a number, otherwise default to None
+            #     try:
+            #         value_id = int(item.get("ValueId") or 0)
+            #         if value_id == 0:
+            #             value_id = None
+            #     except ValueError:
+            #         value_id = None
+
+            #     # variable_id = int(item["VariableId"])
+            #     try:
+            #         # Converts None or '' to 0
+            #         variable_id = int(item.get("VariableId") or 0)
+            #         if variable_id == 0:
+            #             variable_id = None
+            #     except ValueError:
+            #         variable_id = None
+
+            #     # Check the value of Variable Name
+            #     variable_name = item.get("Variable", None)
+            #     if variable_name:
+            #         variable_name = variable_name.strip() or None
+
+            #     organized_data = {
+            #         'results_count': count,
+            #         'results_message': message,
+            #         'results_search_criteria': search_criteria,
+            #         "variable_id": variable_id,
+            #         "variable_name": variable_name,
+            #         "value": value,
+            #         "value_id": value_id,
+            #         "vin": vin,
+            #         "source": NHTSA_API_URL,
+            #         "version": 5  # Reset version to 5 for new data
+            #     }
+
+            #     # Update or create new records for any (new) variable IDs for any (new) vins
+            #     vin_data, created = await update_or_create_vin_snapshots_async(vin=vin, variable_id=variable_id, data=organized_data)
+            #     # vin_data_list.append(organized_data)
+            #     vin_data_list.append(vin_data)
+            #     # await update_or_create_vin_snapshots_async(vin=vin, variable_id=variable_id, data=organized_data)
+            #     # VinNhtsaAPISnapshots.objects.update_or_create(
+            #     #     vin=vin,
+            #     #     variable_id=variable_id,
+            #     #     defaults=organized_data
+            #     # )
+            # # one message for each vin search result. multiple records will be saved into the VinNhtsaAPISnapshots model.
+            # print(
+            #     f'saving the searched snapshot for vin {vin} is successful.')
+    else:
+        form = VINSearchForm()
+
+    if vin_data_list:
+        count = vin_data_list[0].results_count
+    else:
+        count = None
+
+    context = {
+        'form': form,
+        'vin_data_list': vin_data_list,
+        'count': count
+    }
+    return render(request, 'dashboard/65_vehicle_vin_search.html', context)
+
+
+async def search_license_plat_via_plate2vin(request):
+    form = LicensePlateSearchForm(request.POST or None)
+    api_url = 'https://platetovin.com/api/convert'
+
+    async def fetch_plate_data_async(license_plate, state, headers):
+        url = api_url
+        payload = {
+            "state": state,
+            "plate": license_plate
+        }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, headers=headers, json=payload) as response:
+                return await response.json()
+
+    if request.method == 'POST':
+        if form.is_valid():
+            license_plate = form.cleaned_data['license_plate']
+            state = form.cleaned_data['state'].upper()
+            try:
+                plate2vin_api_key = config("PLATE2VIN_API_KEY")
+            except UndefinedValueError:
+                raise ValueError(
+                    "The required environment variable PLATE2VIN_API_KEY is not set.")
+
+            headers = {
+                'Authorization': plate2vin_api_key,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+
+            try:
+                plate_data, success = await fetch_single_plate_data_via_plate2vin_async(license_plate, state, headers)
+                if not success:
+                    form.add_error(
+                        None, 'Failed to fetch VIN for the given License Plate.')
+            except Exception as e:
+                form.add_error(
+                    None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
+
+    return render(request, 'dashboard/66_vehicle_license_plate_search.html', {'form': form, 'plate_data_list': plate_data})

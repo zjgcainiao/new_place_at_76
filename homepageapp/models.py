@@ -9,6 +9,7 @@ import os
 from dotenv import load_dotenv
 from internal_users.models import InternalUser
 import re
+from apis.api_vendor_urls import NHTSA_API_URL
 # documentation for py-mssql is https://pymssql.readthedocs.io/en/stable/pymssql_examples.html#basic-features-strict-db-api-compliance
 # import pymssql
 
@@ -1361,7 +1362,7 @@ class RepairOrdersNewSQL02Model(models.Model):
         verbose_name_plural = 'repairorders'
 
     def get_absolute_url(self):
-        return reverse('dashboard-detail', kwargs={'pk': self.pk})
+        return reverse('repair_order_detail', kwargs={'pk': self.pk})
 
 
 class OrderRevisionNewSQL02Model(models.Model):
@@ -1534,7 +1535,7 @@ class PaymentsModel(models.Model):
     payment_last_updated_at = models.CharField(
         max_length=200, null=True, blank=True)
     created_by = models.ForeignKey(
-        InternalUser, related_name='payment_tech_created', on_delete=models.SET_NULL, null=True, blank=True)
+        InternalUser, related_name='payment_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
         InternalUser, related_name='payment_modified', on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -1543,3 +1544,123 @@ class PaymentsModel(models.Model):
         ordering = ["-payment_id",]
         verbose_name = 'payment'
         verbose_name_plural = 'payments'
+
+# this model stores each snapshot pulled for each vin from NHTSA gov website.
+
+
+class VinNhtsaAPISnapshots(models.Model):
+    # Assuming standard VIN length of 17 characters. NHTSA website
+    id = models.BigAutoField(primary_key=True)
+    vin = models.CharField(
+        max_length=17, verbose_name="Vehicle Identification Number (VIN)")
+    variable_id = models.IntegerField(null=True, blank=True)
+    variable_name = models.CharField(max_length=255, null=True, blank=True)
+    value = models.TextField(null=True, blank=True)
+    value_id = models.IntegerField(null=True, blank=True)
+
+    source = models.CharField(
+        max_length=300, default=NHTSA_API_URL, null=True, blank=True)
+    results_count = models.IntegerField(null=True, blank=True)
+    results_message = models.CharField(max_length=800, null=True, blank=True)
+    results_search_criteria = models.CharField(
+        max_length=300, null=True, blank=True)
+    # keeps 5 versions of vin info pulled from nhtsa.gov
+    version = models.IntegerField(default=5, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'vin_snapshots_nhtsa_new_03'
+        ordering = ['-id', '-created_at', 'vin', 'variable_id']
+        indexes = [
+            # Index to speed up searches based on created at, VIN and VariableID
+            models.Index(fields=['-created_at', 'vin', 'variable_id']),
+        ]
+
+    def __str__(self):
+        return f"{self.vin} - {self.variable_name}: {self.value}"
+
+
+# this model tracks the repair status of each line item.
+class LineItemCompletionTracking(models.Model):
+
+    LINE_ITEM_TYPE_CHOICES = (
+        ('unassigned_type', 'Unassigned Line Item Type'),
+        ('part', 'Part'),
+        ('labor', 'Labor'),
+    )
+    # the intention is to have all line items with status_choice=completed
+    LINE_ITEM_STATUS_CHOICES = (
+        ('not started', 'Not Started'),
+        ('starting', 'Starting'),
+        ('in_progress', 'In Progress'),
+        ('initial_completion', 'Initial Completion'),
+        ('repair_verifying', 'Repair Verifyng'),
+        ('completed', 'Completed'),
+    )
+    id = models.BigAutoField(primary_key=True)
+    line_item = models.ForeignKey(
+        LineItemsNewSQL02Model, on_delete=models.CASCADE, related_name='lineitem_completiontracking')
+
+    line_item_assigned_technician = models.ForeignKey(
+        InternalUser, on_delete=models.SET_NULL, null=True)
+    line_item_technican_notes = models.TextField(null=True, blank=True)
+    line_item_before_images = models.ImageField(
+        upload_to='line_item_before_images/')
+    line_item_after_images = models.ImageField(
+        upload_to='line_item_after_images/')
+    line_item_type = models.CharField(
+        max_length=30, choices=LINE_ITEM_TYPE_CHOICES, default="unassigned_type")
+    line_item_status = models.CharField(
+        max_length=30, choices=LINE_ITEM_STATUS_CHOICES, default='not started')
+
+    line_item_estimated_completion_at = models.DateTimeField(
+        null=True, blank=True)
+
+    # For tracking when this record was created.
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    udpated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'line_item_completion_tracking_new_03'
+        ordering = ['-id', '-created_at']
+
+
+# model stores reponses of api calls to plate2vin by entering a combo of plate and state.
+# use the combo of plate and state to determine if newer information need to be pulled.
+class LicensePlateSnapShotsPlate2Vin(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    api_url = models.URLField(max_length=500, null=True)
+    api_response = models.JSONField(verbose_name="API Response")
+    license_plate = models.CharField(
+        max_length=10, null=True, db_index=True)
+    state = models.CharField(max_length=2, null=True)
+    vin = models.CharField(max_length=17, db_index=True)
+    year = models.PositiveIntegerField(null=True, blank=True)
+    make = models.CharField(max_length=50, null=True)
+    model = models.CharField(max_length=50, null=True)
+    trim = models.CharField(max_length=50, blank=True)
+    name = models.CharField(max_length=100)
+    engine = models.CharField(max_length=50, null=True)
+    style = models.CharField(max_length=50, null=True)
+    transmission = models.CharField(max_length=50, null=True)
+    driveType = models.CharField(max_length=20)
+    fuel = models.CharField(max_length=20, null=True)
+    color_name = models.CharField(max_length=50, null=True, blank=True)
+    color_abbreviation = models.CharField(max_length=15, null=True)
+    # keeps 5 versions of any license plates
+    version = models.IntegerField(default=5)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(InternalUser, on_delete=models.SET_NULL,
+                                   null=True, related_name='license_plate_searches')
+    # added to fresh anytime a new api is called for the same license plate and state
+    last_checked_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.license_plate
+
+    class Meta:
+        db_table = 'licenseplate_snapshots_plate2vin'
+        ordering = ["-id", '-created_at', "license_plate", '-version']
+        indexes = [
+            models.Index(fields=['-created_at', 'license_plate', 'state']),
+        ]

@@ -8,11 +8,12 @@ from django.forms import inlineformset_factory
 from django.db.models import Prefetch
 from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model, LaborItemModel, EmailsNewSQL02Model
 from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model, AddressesNewSQL02Model, CustomerAddressesNewSQL02Model, PhonesNewSQL02Model, CustomerEmailsNewSQL02Model, CustomerPhonesNewSQL02Model
-
+from datetime import datetime
 from homepageapp.models import GVWsModel, SubmodelsModel, BrakesModel, EnginesModel, TransmissionsModel, BodyStylesModel, CategoryModel
 from django.urls import reverse, reverse_lazy
 # using crispy_forms to control the search form.
 from core_operations.models import EMAIL_TYPES, LIST_OF_STATES_IN_US
+from django.core.exceptions import ValidationError
 
 
 class SearchForm(forms.Form):
@@ -710,3 +711,57 @@ class LiteEmailUpdateForm(forms.ModelForm):
 LiteCustomerVehicleUpdateFormset = inlineformset_factory(
     CustomersNewSQL02Model, VehiclesNewSQL02Model, edit_only=True,
     fields=('vehicle_id', 'VIN_number', 'vehicle_license_plate_nbr'), fk_name='vehicle_cust')
+
+
+# this form was created on 2023-10-09. used in `vehicles/fetch-single-vin-search-nhtsa-api`.
+# takes a vin and model year and returns an json response with detailed vehicle info from NHTSA gov.
+# the form validates the vin to be 17-digit long and model year to be equal or less than this year plus 1.
+class VINSearchForm(forms.Form):
+    vin = forms.CharField(label='vin', widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholer': 'enter full vin number.'}))
+    year = forms.IntegerField(label='Model Year', widget=forms.NumberInput(
+        attrs={'class': 'form-control', 'placeholder': 'enter model year'}))
+
+    def clean_vin(self):
+        vin = self.cleaned_data['vin']
+
+        # Strip spaces
+        vin = vin.replace(" ", "")
+
+        # Check if it has 17 digits
+        if len(vin) != 17:
+            raise ValidationError(
+                'VIN must have 17 non-empty digits')
+
+        # Capitalize the VIN
+        return vin.upper()
+
+    def clean_year(self):
+        year = self.cleaned_data['year']
+        current_year = datetime.now().year
+
+        # Check if year is valid
+        if year > current_year + 1 or year < 1900:  # Assuming no vehicle will be from before 1900
+            raise forms.ValidationError(
+                f'Model year must be between 1900 and {current_year + 1}')
+        return year
+
+
+class LicensePlateSearchForm(forms.Form):
+    license_plate = forms.CharField(max_length=10, widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter license plate number.'}))
+    state = forms.ChoiceField(choices=LIST_OF_STATES_IN_US, widget=forms.Select(
+        attrs={'class': 'form-control'}))
+
+    def clean_license_plate(self):
+        license_plate = self.cleaned_data['license_plate']
+        if len(license_plate) > 10:
+            raise ValidationError(
+                'License plate number must not be more than 10 characters long.')
+        return license_plate.strip().upper()
+
+    def clean_state(self):
+        state = self.cleaned_data['state']
+        if state not in dict(LIST_OF_STATES_IN_US):
+            raise ValidationError('Invalid US state abbreviation.')
+        return state

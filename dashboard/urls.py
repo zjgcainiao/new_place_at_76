@@ -20,7 +20,7 @@ urlpatterns = [
 
     # the dashboard detail page. url starts wtih v2. it is confusing.
 
-    path('v2/detail/<int:pk>/', dashboard_detail_v1, name='dashboard-detail'),
+    path('v2/detail/<int:pk>/', dashboard_detail_v1, name='repair_order_detail'),
     path('chats/customers/<int:customer_id>/',
          chat_sidebar_view, name='dashboard-chats'),
 
@@ -61,6 +61,8 @@ urlpatterns = [
          name='update_customer_assignment'),
 
     path('vehicles/', views.get_vehicle_dash, name='vehicle-dash'),
+    path('vehicles/fetch-single-vin-search-nhtsa-api',
+         views.fetch_single_vin_search_via_nhtsa_api_view, name='fetch-single-vin-search-nhtsa-api'),
     path('vehicles/create/', views.VehicleCreateView.as_view(),
          name='vehicle-create'),
     path('vehicles/<int:pk>/', views.VehicleDetailView.as_view(),
