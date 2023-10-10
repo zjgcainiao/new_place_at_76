@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from homepageapp.models import VinNhtsaAPISnapshots
 import logging
 
-logger = logging.getLogger('django')
+logger = logging.getLogger('management_script')
 
 
 class Command(BaseCommand):

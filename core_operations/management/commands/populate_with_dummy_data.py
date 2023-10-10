@@ -5,7 +5,7 @@ from core_operations.common_functions import update_with_dummy_data
 import logging
 from django.utils import timezone
 
-logger = logging.getLogger('django')
+logger = logging.getLogger('management_script')
 
 
 class Command(BaseCommand):

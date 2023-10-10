@@ -176,14 +176,15 @@ async def fetch_single_vin_from_nhtsa_api(vin, vehicle_year):
             return await response.json()
 
 # return and save result for one vin
+# return three variables.
 
 
 async def fetch_and_save_single_vin_from_nhtsa_api(vin, year):
     url = f"https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/{vin}?format=json&modelyear={year}"
     # url_extended = https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}format=json&modelyear={year}
     logger = logging.getLogger('external_api')
-    logger.info('initiating an api call to NHTSA.gov. url: %s', url)
-    print('initiating an api call to NHTSA.gov. url: %s', url)
+    logger.info('initiating an api call to NHTSA.gov. url: ', url)
+    print('initiating an api call to NHTSA.gov. url: ', url)
     vin_data_list = []
     number_of_downgraded_records = 0
     try:
@@ -209,15 +210,17 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year):
         results = data.get("Results")
 
         if results:
+            logger.info(
+                f'pulling result for vin {vin} and model year {year} was successful. Source:{ NHTSA_API_URL}')
+            print(
+                f'pulling result for vin {vin} and model year {year} was successful. Source: {NHTSA_API_URL}')
+
             updated_records = await decrement_version_for_vin_async(vin)
             number_of_downgraded_records = updated_records
             if updated_records:
                 logger.info(
                     f'decrementing the version number for existing records with the same vin and variable_id before pulling the latest data...')
-            logger.info(
-                f'pulling result for vin {vin} and model year {year} was successful. Source:{NHTSA_API_URL}')
-            print(
-                f'pulling result for vin {vin} and model year {year} was successful. Source:{NHTSA_API_URL}')
+
             for item in results:
                 item = clean_string_in_dictionary_object(item)
 
@@ -259,7 +262,8 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year):
                 vin_data, created = await update_or_create_vin_snapshots_async(vin=vin, variable_id=variable_id, data=organized_data)
                 vin_data_list.append(vin_data)
 
-        logger.info(f'new vin {vin} data has been saved.')
+        logger.info(
+            f'Vin data has been saved for {vin}. Created?:{created}.')
         # return the data, the number of records downgraded, and if new records are created in the VinNhtsaSnapshots
         return vin_data_list, number_of_downgraded_records, created
 

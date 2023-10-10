@@ -116,6 +116,16 @@ LOGGING = {
             'maxBytes': 5 * 1024 * 1024,
             'backupCount': 3,
         },
+
+        'management_script_file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_DIR, 'management_scripts.log'),
+            'formatter': 'verbose',
+            'filters': ['local_time'],
+            'maxBytes': 5 * 1024 * 1024,  # Adjust size as needed
+            'backupCount': 3,  # Adjust backup count as needed
+        },
     },
     'loggers': {
         'django': {
@@ -146,6 +156,12 @@ LOGGING = {
         'external_api': {  # Logger for external API interactions
             'handlers': ['external_api_file'],
             'level': 'INFO',
+            'propagate': False,
+        },
+
+        'management_script': {  # Logger for management scripts
+            'handlers': ['management_script_file'],
+            'level': 'DEBUG',
             'propagate': False,
         },
     },
