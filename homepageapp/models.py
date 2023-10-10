@@ -1629,27 +1629,27 @@ class LineItemCompletionTracking(models.Model):
 # use the combo of plate and state to determine if newer information need to be pulled.
 class LicensePlateSnapShotsPlate2Vin(models.Model):
     id = models.BigAutoField(primary_key=True)
-    api_url = models.URLField(max_length=500, null=True)
-    api_response = models.JSONField(verbose_name="API Response")
+    api_url = models.URLField(max_length=500, null=True, blank=True)
+    api_response = models.JSONField(null=True, verbose_name="api_response")
     license_plate = models.CharField(
         max_length=10, null=True, db_index=True)
-    state = models.CharField(max_length=2, null=True)
+    state = models.CharField(max_length=2, null=True, db_index=True)
     vin = models.CharField(max_length=17, db_index=True)
     year = models.PositiveIntegerField(null=True, blank=True)
     make = models.CharField(max_length=50, null=True)
     model = models.CharField(max_length=50, null=True)
-    trim = models.CharField(max_length=50, blank=True)
-    name = models.CharField(max_length=100)
+    trim = models.CharField(max_length=50, blank=True, null=True)
+    name = models.CharField(max_length=100, null=True, blank=True)
     engine = models.CharField(max_length=50, null=True)
     style = models.CharField(max_length=50, null=True)
     transmission = models.CharField(max_length=50, null=True)
-    driveType = models.CharField(max_length=20)
+    drive_type = models.CharField(max_length=20)
     fuel = models.CharField(max_length=20, null=True)
     color_name = models.CharField(max_length=50, null=True, blank=True)
     color_abbreviation = models.CharField(max_length=15, null=True)
     # keeps 5 versions of any license plates
     version = models.IntegerField(default=5)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     created_by = models.ForeignKey(InternalUser, on_delete=models.SET_NULL,
                                    null=True, related_name='license_plate_searches')
     # added to fresh anytime a new api is called for the same license plate and state

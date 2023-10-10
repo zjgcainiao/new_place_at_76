@@ -61,8 +61,14 @@ urlpatterns = [
          name='update_customer_assignment'),
 
     path('vehicles/', views.get_vehicle_dash, name='vehicle-dash'),
+    path('vehicles/latest-vin-snapshot/',
+         views.fetch_or_save_latest_vin_snapshot_async, name='fetch_or_save_latest_vin_snapshot'),
     path('vehicles/fetch-single-vin-search-nhtsa-api',
-         views.fetch_single_vin_search_via_nhtsa_api_view, name='fetch-single-vin-search-nhtsa-api'),
+         views.search_single_vin_via_nhtsa, name='search_single_vin_via_nhtsa'),
+    path('vehicles/single-plate-search',
+         views.search_single_plate_via_plate2vin, name='search_single_plate_via_plate2vin'),
+
+
     path('vehicles/create/', views.VehicleCreateView.as_view(),
          name='vehicle-create'),
     path('vehicles/<int:pk>/', views.VehicleDetailView.as_view(),

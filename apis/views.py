@@ -27,7 +27,13 @@ from internal_users.internal_user_auth_backend import InternalUserBackend
 from apis.serializers import AddressSerializer, PhoneSerializer, EmailSerializer, CustomerSerializer, RepairOrderSerializer, PaymentSerializer
 from apis.api_vendor_urls import NHTSA_API_URL
 from core_operations.common_functions import clean_string_in_dictionary_object
-from dashboard.async_functions import decrement_version_for_vin_async, update_or_create_vin_snapshots_async
+from dashboard.async_functions import decrement_version_for_vin_async, update_or_create_vin_snapshots_async, database_sync_to_async
+from decouple import config, UndefinedValueError, Csv
+from homepageapp.models import LicensePlateSnapShotsPlate2Vin
+from homepageapp.models import VinNhtsaAPISnapshots
+from django.db import models
+# from asgiref.sync import sync_to_async
+from apis.api_vendor_urls import PLATE2VIN_API_URL
 
 
 class RepairOrderViewSet(viewsets.ModelViewSet):
@@ -275,3 +281,70 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year):
         logger.error(
             f"Failed to process and save VIN data for {vin} and model year {year}. Error: {e}")
         return None, None, None
+
+# async function that fetchs a result for a single combo of license plate and state. Vendor: plate2vin
+
+
+async def fetch_single_plate_data_via_plate2vin_async(license_plate, state, api_url=PLATE2VIN_API_URL):
+    logger = logging.getLogger('external_api')
+    url = api_url.strip()
+    payload = {
+        "state": state,
+        "plate": license_plate
+    }
+    logger.info('perform async single plate search using plate2vin api...')
+    logger.info('attempting to read any api key stored in the .env...')
+    try:
+        plate2vin_api_key = config("PLATE2VIN_API_KEY")
+    except UndefinedValueError:
+        logger.error(
+            'Error: The required environment variable PLATE2VIN_API_KEY is not set.')
+        raise ValueError(
+            "The required environment variable PLATE2VIN_API_KEY is not set.")
+
+    headers = {
+        'Authorization': plate2vin_api_key,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, headers=headers, json=payload) as response:
+            data = await response.json()
+
+            success = data.get('success')
+            vin_data = data.get('vin', {})
+            if success:
+                vin_data = clean_string_in_dictionary_object(vin_data)
+
+                # first need to check if there are any existing records with the same license plate and state. this model deos not check the unique on vin field.
+                # whenever there is a new
+                exists = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(license_plate=license_plate, state=state).exists)()
+                if exists:
+                    await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(
+                        license_plate=license_plate, state=state
+                    ).update)(version=models.F('version') - 1)
+                # update or create
+                await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.update_or_create)(
+                    license_plate=license_plate,
+                    state=state,
+                    defaults={
+                        'vin': vin_data.get('vin'),
+                        'api_url': api_url,
+                        'api_response': data,
+                        'year': vin_data.get('year'),
+                        'make': vin_data.get('make'),
+                        'model': vin_data.get('model'),
+                        'trim': vin_data.get('trim'),
+                        'name': vin_data.get('name'),
+                        'engine': vin_data.get('engine'),
+                        'style': vin_data.get('style'),
+                        'transmission': vin_data.get('transmission'),
+                        'drive_type': vin_data.get('driveType'),
+                        'fuel': vin_data.get('fuel'),
+                        'color_name': vin_data.get('color', {}).get('name'),
+                        'color_abbreviation': vin_data.get('color', {}).get('abbreviation'),
+                        'version': 5,
+                    }
+                )
+            return vin_data, success

@@ -54,12 +54,10 @@
             isSearchVisible = true;
         }
     
-
-
     if ($("#search-container").length === 0) { // Check if the search container already exists
         // Create a search bar dynamically and insert it into the DOM
-        var searchContainer = $('<div id="search-container" class="row my-1"><h3>what is the new customer`s phone number? Enter below. </h3></div>');
-        var searchBar = $('<input type="search" id="customer-search-bar" placeholder="search a customer by entering the new phone number" class="form-control col-auto my-1 form-control">');
+        var searchContainer = $('<div id="search-container" class="row my-1"><h3>what is the new customers phone number? Enter below. </h3></div>');
+        var searchBar = $('<input type="search" id="customer-search-bar" placeholder="search a customer by entering the new phone number." class="form-control col-auto my-1 form-control">');
         var spinnerIcon =$('<div class="spinner-border" role="status" id="customer-search-bar-spinner" style="display:none;"><span class="visually-hidden">Loading...</span></div>')
         searchContainer.append(searchBar).append(spinnerIcon);;
         searchContainerRow.append(searchContainer);          

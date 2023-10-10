@@ -266,7 +266,7 @@ class VehicleUpdateForm(forms.ModelForm):
 
     # Override the default vehicle_license_state field
     vehicle_license_state = forms.ChoiceField(
-        choices=LIST_OF_STATES_IN_US, required=False)
+        choices=LIST_OF_STATES_IN_US, required=False, label='state')
 
     class Meta:
         model = VehiclesNewSQL02Model
@@ -291,26 +291,53 @@ class VehicleUpdateForm(forms.ModelForm):
         widgets = {
             'vehicle_cust': forms.Select(attrs={'class': ' form-select', 'disabled': 'True'}),
             'vehicle_memo_01': forms.TextInput(attrs={'class': 'form-control', }),
-            'vehicle_recall_last_checked_datetime': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control', "disabled": "True"}),
+            'vehicle_recall_last_checked_datetime': forms.DateTimeInput(attrs={'type': 'datetime-local', "disabled": "True"}),
+            'vehicle_is_included_in_crm_compaign': forms.CheckboxInput(attrs={'type': 'checkbox'}),
+            "vehicle_memo_does_print_on_order": forms.CheckboxInput(attrs={'type': 'checkbox'})
         }
         # forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
         labels = {
+            'vehicle_cust': 'customer',
             'vehicle_drive_type': 'drive type',
+            'vehicle_sub_model': 'sub model',
+            'vehicle_year': 'year',
             'vehicle_make': 'make',
             'vehicle_gvw': 'gross weight (lbs)',
+            'vehicle_transmission': 'transmission',
             'vehicle_body_style': "body style",
             'vehicle_license_plate_nbr': 'license plate',
-            'vehicle_license_state': 'state',
             'vehicle_memo_01': 'memo',
             'vehicle_memo_does_print_on_order': 'does print on order?',
             'vehicle_active_recall_counts': 'active recall counts',
-            'vehicle_recall_last_checked_datetime': 'recall last checked at',
+            'vehicle_recall_last_checked_datetime': 'recall last checked',
 
         }
+
+    def clean_VIN_number(self):
+        vin = self.cleaned_data['VIN_number']
+
+        # Strip spaces
+        vin = vin.replace(" ", "")
+
+        # Check if it has 17 digits
+        if len(vin) != 17:
+            raise ValidationError(
+                'VIN must have 17 non-empty digits')
+
+        # Capitalize the VIN
+        return vin.upper()
 
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            # check widget type
+            if isinstance(field.widget, (forms.TextInput, forms.Textarea, forms.Select)):
+                field.widget.attrs.update({'class': 'form-control'})
+            # Add form-check for any boolean values (typically CheckboxInput in Django)
+            elif isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs.update({'class': 'form-check-input'})
+        # Set the queryset
 
         # dynamically update the choices for the vhicle_license_state_field
 
@@ -350,38 +377,54 @@ class VehicleUpdateForm(forms.ModelForm):
         self.fields['vehicle_id'].widget.attrs.update(
             {'data-url': search_customer_by_phone_url})
 
-        # add a "form-control" class to each form input
-        for name in self.fields.keys():
-            self.fields[name].widget.attrs.update({
-                'class': 'form-control',
-            })
-
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
         self.helper.form_method = "post"
         self.helper.label_class = 'col-3'
-        self.helper.field_class = 'col-8'
+        self.helper.field_class = 'col-9'
         # self.helper.error_text_inline = True
         # self.helper.use_custom_control = True  # for Bootstrap custom controls
 
+        # Custom popover button
+        popover_html = """
+        <button type="button" class="btn btn-danger" onclick="searchVIN();" data-bs-toggle="popover" title="Popover title" data-bs-content="">
+            Fetch latest Vin info (Source:NHTSA)
+        </button>
+        <script>
+            function searchVIN() {
+                // Make an AJAX request to your Django backend to get the content based on VIN_number
+                let vin = document.querySelector('[name="VIN_number"]').value;
+
+                fetch('/dashboard/vehicles/fetch_or_save_latest_vin_snapshot/?vin=' + vin)
+                .then(response => response.text())
+                .then(data => {
+                    let popoverBtn = document.querySelector('[data-bs-toggle="popover"]');
+                    popoverBtn.setAttribute('data-bs-content', data.data);
+                });
+            }
+        </script>
+        """
+
         self.helper.layout = Layout(
             Fieldset(_('Linked Customer'),
-                     Row(
-                Column('vehicle_id', css_class='col-6'),
+                     #          Row(
+                     #     Column('vehicle_id', css_class='col-6'),
 
-            ),
-                Row(Column('vehicle_cust', css_class='col-6'),
-                    Column(Button('reassign new customer',
-                                  'reassign customer', css_class='col-6 btn btn-primary'),
-                           css_class='col-6'),
-                    ),
-                Row(css_id='vehicle_customer_search_container'),
-            ),
+                     # ),
+                     Row(Column('vehicle_cust', css_class='col-6'),
+                         Column(Button('reassign new customer',
+                                       'reassign customer', css_class='btn btn-primary'),
+                                css_class='col-6'),
+                         ),
+                     Row(css_id='vehicle_customer_search_container'),
+                     ),
             Row(HTML("<hr>"), css_class='m-1 p-1'),
             Fieldset(
                 _('Vehicle Info'),
                 Row(
                     Column('VIN_number', css_class='col-6'),
+                    # Adding the popover button
+                    Column(HTML(popover_html), css_class='col-6'),
                 ),
 
                 Row(
@@ -402,9 +445,9 @@ class VehicleUpdateForm(forms.ModelForm):
 
                 ),
                 Row(
-                    Column('vehicle_active_recall_counts', css_class='col-8'),
+                    Column('vehicle_active_recall_counts', css_class='col-6'),
                     Column('vehicle_recall_last_checked_datetime',
-                           css_class='col-4'),
+                           css_class='col-5'),
                 ),
 
             ),
@@ -416,8 +459,8 @@ class VehicleUpdateForm(forms.ModelForm):
                            css_class='col-9'),
                     Column('vehicle_memo_does_print_on_order',
                            css_class='col-3'),
-                    Column(Field('vehicle_is_included_in_crm_compaign', css_class="form-check"),
-                           css_class='col-6 f'),
+                    Column(Field('vehicle_is_included_in_crm_compaign', css_class=""),
+                           css_class='col-6'),
 
                 ),
             ),
@@ -645,8 +688,7 @@ class LineItemUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
-        # add a "form-control" class to each form input
-        # for enabling bootstrap
+        # add a "form-control" class to certain input types
         for name, field in self.fields.items():
             # check widget type
             if isinstance(field.widget, (forms.TextInput, forms.Textarea, forms.Select)):
@@ -707,6 +749,9 @@ class LiteEmailUpdateForm(forms.ModelForm):
             'email_type_id': 'email type',
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
 
 LiteCustomerVehicleUpdateFormset = inlineformset_factory(
     CustomersNewSQL02Model, VehiclesNewSQL02Model, edit_only=True,
@@ -746,12 +791,16 @@ class VINSearchForm(forms.Form):
                 f'Model year must be between 1900 and {current_year + 1}')
         return year
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # exclude the line item id
+
 
 class LicensePlateSearchForm(forms.Form):
     license_plate = forms.CharField(max_length=10, widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Enter license plate number.'}))
-    state = forms.ChoiceField(choices=LIST_OF_STATES_IN_US, widget=forms.Select(
-        attrs={'class': 'form-control'}))
+    state = forms.ChoiceField(choices=[('', '--- None ---')] + list(LIST_OF_STATES_IN_US), widget=forms.Select(
+        attrs={'class': 'form-select'}))
 
     def clean_license_plate(self):
         license_plate = self.cleaned_data['license_plate']
@@ -762,6 +811,10 @@ class LicensePlateSearchForm(forms.Form):
 
     def clean_state(self):
         state = self.cleaned_data['state']
-        if state not in dict(LIST_OF_STATES_IN_US):
+        if state and state not in dict(LIST_OF_STATES_IN_US):
             raise ValidationError('Invalid US state abbreviation.')
         return state
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # exclude the line item id

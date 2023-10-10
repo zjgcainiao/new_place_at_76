@@ -1,4 +1,6 @@
+
 {% load static %}
+{% load humanize %}
 {% load crispy_forms_tags %}
 {% load core_operations.common_filters %}
 <!DOCTYPE html>
@@ -68,10 +70,12 @@
         <!-- Begin page -->
         <div class="wrapper">
 
+            {% include 'dashboard/03_dashboard_navbar_sector.html' %}
+            {% comment %}
+            <!-- ========== Topbar Start ========== -->   
             <div class="navbar-custom">
                 <div class="topbar container-fluid">
                     <div class="d-flex align-items-center gap-lg-2 gap-1">
-
                         <!-- Topbar Brand Logo -->
                         <div class="logo-topbar">
                             <!-- Logo light -->
@@ -87,13 +91,12 @@
 
                         <!-- Sidebar Menu Toggle Button -->
                         <button class="button-toggle-menu">
-                            <i class="mdi mdi-menu">this is the toggle menu??</i>
-                        </button>
-
+                            <i class="mdi mdi-menu"></i>
+                        </button>  
                     </div>
+                    <!-- end of d-flex  -->
 
                     <ul class="topbar-menu d-flex align-items-center gap-3">
-
                         <li class="dropdown">
                             {% if user.is_authenticated %}
                             <a class="nav-link dropdown-toggle arrow-none nav-user px-2" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
@@ -102,8 +105,8 @@
                                 </span>
                                 
                                 <span class="d-lg-flex flex-column gap-1 d-none">
-                                    <h5 class="my-0">Hi {{user.user_first_name}}</h5>
-                                    <h6 class="my-0 fw-normal">Email: {{user.email}}</h6>
+                                    <p class="my-0 fw-normal">Hi {{user.user_first_name}} (Email: {{user.email |truncatechars:15}})</p>
+                                    <h6 class="my-0 fw-normal">Auth Group: {{user.user_auth_group}}</h6>
                                 </span>
                                 
                             </a>
@@ -131,9 +134,10 @@
                         </li>
                     </ul>
                 </div>
+                <!-- end of topbar container-fluid -->
             </div>
             <!-- ========== Topbar End ========== -->
-
+            {% endcomment %}
         </div>
         <!-- end of wrapper -->
         {% block content-main %}

@@ -10,7 +10,7 @@ import os
 class InternalUserMiddleware:
     # Define apps that need to pass through the middleware check
     PROTECTED_APPS = ['talents', 'apis',
-                      'dashboard', 'admin', 'talent_management', 'appointments']
+                      'dashboard', 'admin', 'talent_management', 'appointments', 'customer_users']
 
     # login_url = reverse('internal_users:internal_user_login')
 
@@ -34,13 +34,14 @@ class InternalUserMiddleware:
         # Check if the request path resolves to any of the protected apps
         if current_app in self.PROTECTED_APPS:
             print(
-                f'url visit to protected app(s). Implement the custom InternalUserMiddleware rules...')
-            if not (request.user.is_authenticated and isinstance(request.user, InternalUser)):
-                print('redirecting to the employee login url...')
+                f'url visit to protected app(s). Implementing custom rules in InternalUserMiddleware...')
+            if not request.user.is_authenticated or (request.user.is_authenticated and not isinstance(request.user, InternalUser)):
+                print('incorrect redirecting to the employee login url...')
                 return redirect(self.employee_login_url)
-            # Additional check for CustomerUser, you can adjust based on your requirements
-            if not (request.user.is_authenticated and isinstance(request.user, CustomerUser)):
-                # Redirect to the customer user login or any other view as needed
+
+            # Additional check for CustomerUser when visiting the customer_users app
+            if current_app in ['customer_users'] and (not request.user.is_authenticated or (request.user.is_authenticated and not isinstance(request.user, CustomerUser))):
+                # Redirect to the customer user login
                 print('redirecting to the customer login url...')
                 return redirect(self.customer_login_url)
 

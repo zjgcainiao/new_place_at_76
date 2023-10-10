@@ -12,7 +12,7 @@ import time
 from asgiref.sync import sync_to_async
 from django.db import models
 
-logger = logging.getLogger('external_api')
+logger = logging.getLogger('management_script')
 
 # Get the base name of the current script
 script_name = os.path.basename(__file__)

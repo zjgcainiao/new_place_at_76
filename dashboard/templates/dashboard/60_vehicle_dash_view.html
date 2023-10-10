@@ -38,7 +38,8 @@
       <div class=" btn-group my-1">
         <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:vehicle-dash' %}"> <i class="uil-home-alt"></i>Main Vehicle Dash</a>
         <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:vehicle-create' %}"><i class ='uil-file-plus-alt' ></i>Create Vehicle Record</a>
-        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:fetch-single-vin-search-nhtsa-api' %}"><i class ='mid mdi-barcode' ></i>Vin Search Form</a>
+        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search_single_vin_via_nhtsa' %}"><i class ='mdi mdi-barcode' ></i>Vin Search</a>
+        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search_single_plate_via_plate2vin' %}"><i class ='mdi mdi-car-info' ></i>License Plate Search</a>
       </div>
     </div>
     <!-- end of an row of function buttons -->

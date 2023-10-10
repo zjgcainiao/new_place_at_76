@@ -35,15 +35,16 @@ from internal_users.mixins import InternalUserRequiredMixin
 from django.core.serializers import serialize
 import aiohttp
 import asyncio
-from apis.views import fetch_single_vin_from_nhtsa_api, fetch_and_save_single_vin_from_nhtsa_api
+from apis.views import fetch_single_vin_from_nhtsa_api, fetch_and_save_single_vin_from_nhtsa_api, fetch_single_plate_data_via_plate2vin_async
 from django.db import models
 from asgiref.sync import sync_to_async
-from dashboard.async_functions import decrement_version_for_vin_async, update_or_create_vin_snapshots_async, fetch_single_plate_data_via_plate2vin_async
+from dashboard.async_functions import decrement_version_for_vin_async, update_or_create_vin_snapshots_async, fetch_latest_vin_data_from_snapshots
 from apis.api_vendor_urls import NHTSA_API_URL
 import logging
 import requests
 import json
 from decouple import config, UndefinedValueError, Csv
+from django.db.models.query import QuerySet
 
 LiteVehicleUpdateFormset = inlineformset_factory(
     CustomersNewSQL02Model, VehiclesNewSQL02Model, edit_only=True,
@@ -973,7 +974,7 @@ def technician_dash_view(request, technician_id):
 # to VinNhtsaAPISnapshots model.
 
 
-async def fetch_single_vin_search_via_nhtsa_api_view(request):
+async def search_single_vin_via_nhtsa(request):
     vin_data_list = []
     count = 0
     logger = logging.getLogger('jjango')
@@ -986,75 +987,6 @@ async def fetch_single_vin_search_via_nhtsa_api_view(request):
                 f'performing a manual single vin search on webpage for vin {vin} and model year {year}...')
 
             vin_data_list, number_of_downgraded_records, created = await fetch_and_save_single_vin_from_nhtsa_api(vin, year)
-            # data = asyncio.run(fetch_vin_nhtsa_api(vin, year))
-            # data = await fetch_single_vin_from_nhtsa_api(vin, year)
-            # print(
-            #     f'pulling data for vin {vin} and model year {year} successful. Source:{NHTSA_API_URL}')
-            # # Fetch the count and results
-            # count = data.get("Count", None)
-            # results = data.get("Results", None)
-            # message = data.get("Message", None)
-            # search_criteria = data.get("SearchCriteria", None)
-            # # Decrement `version` numbers for existing records related to this VIN.
-            # # VinNhtsaAPISnapshots.objects.filter(vin=vin).update(
-            # #     version=models.F('version') - 1)
-            # updated_records = await decrement_version_for_vin_async(vin)
-            # if updated_records:
-            #     logger.info(
-            #         f'decrementing the version number for existing records before pulling the latest data...')
-            # # Organize data in the desired structure and add/update to VINSearchSnapshots
-            # for item in results:
-            #     # Check the value of Value
-            #     value = item.get("Value", None)
-
-            #     # Ensure that value_id is a number, otherwise default to None
-            #     try:
-            #         value_id = int(item.get("ValueId") or 0)
-            #         if value_id == 0:
-            #             value_id = None
-            #     except ValueError:
-            #         value_id = None
-
-            #     # variable_id = int(item["VariableId"])
-            #     try:
-            #         # Converts None or '' to 0
-            #         variable_id = int(item.get("VariableId") or 0)
-            #         if variable_id == 0:
-            #             variable_id = None
-            #     except ValueError:
-            #         variable_id = None
-
-            #     # Check the value of Variable Name
-            #     variable_name = item.get("Variable", None)
-            #     if variable_name:
-            #         variable_name = variable_name.strip() or None
-
-            #     organized_data = {
-            #         'results_count': count,
-            #         'results_message': message,
-            #         'results_search_criteria': search_criteria,
-            #         "variable_id": variable_id,
-            #         "variable_name": variable_name,
-            #         "value": value,
-            #         "value_id": value_id,
-            #         "vin": vin,
-            #         "source": NHTSA_API_URL,
-            #         "version": 5  # Reset version to 5 for new data
-            #     }
-
-            #     # Update or create new records for any (new) variable IDs for any (new) vins
-            #     vin_data, created = await update_or_create_vin_snapshots_async(vin=vin, variable_id=variable_id, data=organized_data)
-            #     # vin_data_list.append(organized_data)
-            #     vin_data_list.append(vin_data)
-            #     # await update_or_create_vin_snapshots_async(vin=vin, variable_id=variable_id, data=organized_data)
-            #     # VinNhtsaAPISnapshots.objects.update_or_create(
-            #     #     vin=vin,
-            #     #     variable_id=variable_id,
-            #     #     defaults=organized_data
-            #     # )
-            # # one message for each vin search result. multiple records will be saved into the VinNhtsaAPISnapshots model.
-            # print(
-            #     f'saving the searched snapshot for vin {vin} is successful.')
     else:
         form = VINSearchForm()
 
@@ -1071,9 +1003,11 @@ async def fetch_single_vin_search_via_nhtsa_api_view(request):
     return render(request, 'dashboard/65_vehicle_vin_search.html', context)
 
 
-async def search_license_plat_via_plate2vin(request):
+async def search_single_plate_via_plate2vin(request):
     form = LicensePlateSearchForm(request.POST or None)
     api_url = 'https://platetovin.com/api/convert'
+    plate_data = []
+    success = False
 
     async def fetch_plate_data_async(license_plate, state, headers):
         url = api_url
@@ -1090,20 +1024,9 @@ async def search_license_plat_via_plate2vin(request):
         if form.is_valid():
             license_plate = form.cleaned_data['license_plate']
             state = form.cleaned_data['state'].upper()
-            try:
-                plate2vin_api_key = config("PLATE2VIN_API_KEY")
-            except UndefinedValueError:
-                raise ValueError(
-                    "The required environment variable PLATE2VIN_API_KEY is not set.")
-
-            headers = {
-                'Authorization': plate2vin_api_key,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
 
             try:
-                plate_data, success = await fetch_single_plate_data_via_plate2vin_async(license_plate, state, headers)
+                plate_data, success = await fetch_single_plate_data_via_plate2vin_async(license_plate, state)
                 if not success:
                     form.add_error(
                         None, 'Failed to fetch VIN for the given License Plate.')
@@ -1111,4 +1034,31 @@ async def search_license_plat_via_plate2vin(request):
                 form.add_error(
                     None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
 
-    return render(request, 'dashboard/66_vehicle_license_plate_search.html', {'form': form, 'plate_data_list': plate_data})
+    return render(request, 'dashboard/66_vehicle_license_plate_search.html', {'form': form, 'plate_data': plate_data, 'api_success': success})
+
+
+async def fetch_or_save_latest_vin_snapshot_async(request):
+    vin = request.GET.get('vin', None)
+    if not vin:
+        return JsonResponse({'error': 'No VIN provided'}, status=400)
+
+    # Fetch the details based on VIN (you can modify this as per your logic)
+    latest_vin_data = await fetch_latest_vin_data_from_snapshots(vin)
+    # Convert to list of dictionaries if it's a QuerySet
+    if isinstance(latest_vin_data, QuerySet):
+        latest_vin_data = list(latest_vin_data.values())
+
+    if not latest_vin_data:
+        return JsonResponse({'error': 'No vehicle found for this VIN'}, status=404)
+
+    # Format for presentation
+    formatted_content = ""
+    for entry in latest_vin_data:
+        formatted_content += f"""
+        <strong>Snapshot {entry['variable_name']}</strong>: {entry['value']}<br>
+        """
+    if not formatted_content:
+        formatted_content = "No snapshots found for this VIN."
+
+    # Return the data you want to show in popover
+    return JsonResponse({'data': formatted_content})
