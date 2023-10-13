@@ -4,8 +4,8 @@ import uuid
 
 # Create your models here.
 class FirebaseUser(models.Model):
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    firebase_user_id = models.BigIntegerField(null=False)
+    # uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    firebase_user_id = models.BigIntegerField(primary_key=True)
     firebase_user_uid = models.CharField(max_length=100, null=True)
     firebase_user_display_name = models.CharField(max_length=200, null=True)
     firebase_user_email = models.EmailField(null=True)
@@ -15,8 +15,9 @@ class FirebaseUser(models.Model):
     firebase_user_password = models.CharField(max_length=254, null=True)
     firebase_user_disabled  = models.BooleanField(default=False)
     firebase_user_providers = models.CharField(max_length=200, null=True)
+
     firebase_user_created_at = models.DateTimeField(auto_now_add=True)
-    firebase_user_at_updated_at = models.DateTimeField(auto_now=True)
+    firebase_user_updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         # if not self.pk:

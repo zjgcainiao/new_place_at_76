@@ -14,7 +14,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsNewSQL02Model, TextMessagesModel, VinNhtsaAPISnapshots
+from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsNewSQL02Model, TextMessagesModel, VinNhtsaApiSnapshots
 from apis.serializers import CustomerSerializer, RepairOrderSerializer
 from django.core.paginator import Paginator
 from django.http import JsonResponse
@@ -30,7 +30,7 @@ from core_operations.common_functions import clean_string_in_dictionary_object
 from dashboard.async_functions import decrement_version_for_vin_async, update_or_create_vin_snapshots_async, database_sync_to_async
 from decouple import config, UndefinedValueError, Csv
 from homepageapp.models import LicensePlateSnapShotsPlate2Vin
-from homepageapp.models import VinNhtsaAPISnapshots
+from homepageapp.models import VinNhtsaApiSnapshots
 from django.db import models
 # from asgiref.sync import sync_to_async
 from apis.api_vendor_urls import PLATE2VIN_API_URL
@@ -184,13 +184,13 @@ async def fetch_single_vin_from_nhtsa_api(vin, vehicle_year):
 # return and save result for one vin
 # return three variables.
 
-
 async def fetch_and_save_single_vin_from_nhtsa_api(vin, year):
     url = f"https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/{vin}?format=json&modelyear={year}"
     # url_extended = https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}format=json&modelyear={year}
     logger = logging.getLogger('external_api')
-    logger.info('initiating an api call to NHTSA.gov. url: ', url)
-    print('initiating an api call to NHTSA.gov. url: ', url)
+    logger.info(f'Initiating an api request to NHTSA.DOT.GOV:{ NHTSA_API_URL}.')
+    print(f'Initiating an api request to NHTSA.DOT.GOV:{ NHTSA_API_URL}.')
+    # print(url)
     vin_data_list = []
     number_of_downgraded_records = 0
     try:
@@ -217,9 +217,9 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year):
 
         if results:
             logger.info(
-                f'pulling result for vin {vin} and model year {year} was successful. Source:{ NHTSA_API_URL}')
+                f'pulling result for vin {vin} and model year {year} was successful.')
             print(
-                f'pulling result for vin {vin} and model year {year} was successful. Source: {NHTSA_API_URL}')
+                f'pulling result for vin {vin} and model year {year} was successful.')
 
             updated_records = await decrement_version_for_vin_async(vin)
             number_of_downgraded_records = updated_records
@@ -269,7 +269,13 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year):
                 vin_data_list.append(vin_data)
 
         logger.info(
-            f'Vin data has been saved for {vin}. Created?:{created}.')
+            f'Vin data has been saved for {vin} and model year {year}. Created?:{created}.')
+        if created:
+            print(f'saving new vin data? {created}?')
+        else:
+            print('no new vin data saved.')
+        
+        print('func completed.')
         # return the data, the number of records downgraded, and if new records are created in the VinNhtsaSnapshots
         return vin_data_list, number_of_downgraded_records, created
 
@@ -285,7 +291,7 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year):
 # async function that fetchs a result for a single combo of license plate and state. Vendor: plate2vin
 
 
-async def fetch_single_plate_data_via_plate2vin_async(license_plate, state, api_url=PLATE2VIN_API_URL):
+async def fetch_single_plate_data_via_plate2vin_api(license_plate, state, api_url=PLATE2VIN_API_URL):
     logger = logging.getLogger('external_api')
     url = api_url.strip()
     payload = {
@@ -325,7 +331,7 @@ async def fetch_single_plate_data_via_plate2vin_async(license_plate, state, api_
                         license_plate=license_plate, state=state
                     ).update)(version=models.F('version') - 1)
                 # update or create
-                await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.update_or_create)(
+                plate_data, created = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.update_or_create)(
                     license_plate=license_plate,
                     state=state,
                     defaults={
@@ -347,4 +353,4 @@ async def fetch_single_plate_data_via_plate2vin_async(license_plate, state, api_
                         'version': 5,
                     }
                 )
-            return vin_data, success
+            return plate_data, success

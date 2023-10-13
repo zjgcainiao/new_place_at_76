@@ -14,11 +14,41 @@ from core_operations.models import LIST_OF_STATES_IN_US
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox
 
+
 class CustomerUserRegistrationForm(UserCreationForm):
+    customer_user_last_name = forms.CharField(
+        max_length=30, required=False, help_text='Optional.', label='Last Name')
+    customer_user_middle_name = forms.CharField(
+        max_length=30, required=False, help_text='Optional.', label='Middle Name')
+
+    class Meta:
+        model = CustomerUser
+        fields = ['cust_user_email', 'cust_user_phone_number', 'cust_user_first_name',
+                  'cust_user_last_name', 'password1', 'password2']  # 'username',
+        # required = ['cust_user_phone_number', 'cust_user_first_name', 'password1', 'password2']
+        widgets = {
+            'cust_user_phone_number': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', 'placeholder:': 'ex. 213-445-9990 or 2134459990.', }),
+            'cust_user_email': forms.EmailInput(attrs={'type': 'email', 'class': 'form-control', }),
+            'cust_user_first_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
+            'cust_user_last_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
+            'password1': forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', }),
+            'password2': forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', }),
+        }
+        labels = {
+            'cust_user_phone_number': 'Enter a US valid phone number.',
+            'cust_user_email': 'Enter your email',
+            'cust_user_first_name': 'First Name',
+            'cust_user_last_name': 'Last Name',
+            'password1': 'Password',
+            'password2': 'Repeat Password',
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Enter Password'})
-        self.fields['password2'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Confirm Password'})
+        self.fields['password1'].widget.attrs.update(
+            {'class': 'form-control', 'placeholder': 'Enter Password'})
+        self.fields['password2'].widget.attrs.update(
+            {'class': 'form-control', 'placeholder': 'Confirm Password'})
     # cust_user_phone_number = forms.CharField(required=True, max_length=20,
     #                                           help_text='enter your phone number. Support US-only numbers. We will not spam you. ')
     # cust_user_email = forms.EmailField(help_text='Enter a valid email address. Recommended.')
@@ -29,29 +59,31 @@ class CustomerUserRegistrationForm(UserCreationForm):
 
     # Regular expression pattern for valid zip code
     ZIP_CODE_REGEX = r'^\d{5}(?:[-\s]\d{4})?$'
-    zip_code_validator = RegexValidator(regex=ZIP_CODE_REGEX, message='Enter a valid ZIP code.')
+    zip_code_validator = RegexValidator(
+        regex=ZIP_CODE_REGEX, message='Enter a valid ZIP code.')
 
-    # format customer_user_first_name  
+    # format customer_user_first_name
     def clean_cust_user_first_name(self):
         first_name = self.cleaned_data.get('cust_user_first_name').strip()
         if first_name:
             first_name = first_name.capitalize()
         return first_name
 
-    # format customer_user_last_name  
+    # format customer_user_last_name
     def clean_cust_user_last_name(self):
         last_name = self.cleaned_data.get('cust_user_last_name')
         if last_name:
             last_name = last_name.capitalize()
         return last_name
-    
+
     def clean_cust_user_phone_number(self):
         phone_number = self.cleaned_data.get('cust_user_phone_number')
         # remove any non-digit input
         phone_number = re.sub(r'\D', '', phone_number)
 
         if not is_valid_us_phone_number(phone_number):
-            raise forms.ValidationError('Please enter a valid US phone number.')
+            raise forms.ValidationError(
+                'Please enter a valid US phone number.')
         return phone_number
 
     # Validate state abbreviation
@@ -60,7 +92,8 @@ class CustomerUserRegistrationForm(UserCreationForm):
         state = state.upper() if state else None
 
         if state not in [abbr for abbr, _ in LIST_OF_STATES_IN_US]:
-            raise forms.ValidationError('Enter a valid state abbreviation. For example, enter CA for California, TX for Texas. ')
+            raise forms.ValidationError(
+                'Enter a valid state abbreviation. For example, enter CA for California, TX for Texas. ')
         return state
 
     # Validate zip code
@@ -69,7 +102,6 @@ class CustomerUserRegistrationForm(UserCreationForm):
         if zip_code:
             self.zip_code_validator(zip_code)
         return zip_code
-
 
     def clean_customer_user_email(self):
         email = self.cleaned_data['cust_user_email']
@@ -89,9 +121,10 @@ class CustomerUserRegistrationForm(UserCreationForm):
         # email = self.clean_email()
 
         if not phone_number and not email:
-            raise forms.ValidationError("Please provide either a phone number or an email address.")
+            raise forms.ValidationError(
+                "Please provide either a phone number or an email address.")
         return cleaned_data
-    
+
     # save a user by the phone number when this RegistrationForm is saved
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -99,39 +132,16 @@ class CustomerUserRegistrationForm(UserCreationForm):
             user.save()
         return user
     # this function will have to expand for employee email verifications.
-    # a customer user. 
+    # a customer user.
     # def clean_email(self):
     #     email = self.cleaned_data['email'].lower()
     #     new = CustomerUser.objects.filter(email=email)
     #     if new.count():
     #         raise ValidationError(" Email Already Exists.")
     #     return email
-    
-    class Meta:
-        model = CustomerUser
-        fields = ['cust_user_email','cust_user_phone_number', 'cust_user_first_name', 'cust_user_last_name', 'password1', 'password2'] #'username',
-        # required = ['cust_user_phone_number', 'cust_user_first_name', 'password1', 'password2']
-        widgets = {
-            'cust_user_phone_number': forms.TextInput(attrs={'type': 'text', 'class':'form-control','placeholder:':'ex. 213-445-9990 or 2134459990.',}),
-            'cust_user_email': forms.EmailInput(attrs={'type': 'text', 'class':'form-control',}),
-            'cust_user_first_name': forms.TextInput(attrs={'type': 'text', 'class':'form-control',}),
-            'cust_user_last_name': forms.TextInput(attrs={'type': 'text', 'class':'form-control',}),
-            'password1': forms.TextInput(attrs={'type': 'text', 'class':'form-control',}),
-            'password2': forms.PasswordInput(attrs={'type': 'text', 'class':'form-control',}),
-        }
-        labels = {
-            'cust_user_phone_number': 'Enter a US valid phone number.',
-            'cust_user_email': 'Enter your email',
-            'cust_user_first_name': 'First Name',
-            'cust_user_last_name': 'Last Name',
-            'password1': 'Password',
-            'password2': 'Repeat Password',
-        }
-
-    
 
 
-# the default login requires a phone number and a password 
+# the default login requires a phone number and a password
 class CustomerUserLoginForm(AuthenticationForm):
     # phone_number = forms.CharField(
     #     widget=forms.TextInput(attrs={
@@ -152,11 +162,12 @@ class CustomerUserLoginForm(AuthenticationForm):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'type':'text',
+            'type': 'text',
             'placeholder': 'Enter your password.'
         }),
         label='Password',
     )
+
     class Meta:
         model = CustomerUser
 
@@ -168,7 +179,7 @@ class CustomerUserChangeForm(forms.Form):
     def save(self, instance):
         field_name = self.cleaned_data['field_name']
         new_value = self.cleaned_data['new_value']
-        
+
         setattr(instance, field_name, new_value)
         instance.save()
 
@@ -184,7 +195,8 @@ class AddressForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        address = f"{cleaned_data['address_line_1']} {cleaned_data['address_line_2']}".strip()
+        address = f"{cleaned_data['address_line_1']} {cleaned_data['address_line_2']}".strip(
+        )
         city = cleaned_data['city'].strip()
         state = cleaned_data['state'].strip()
         zip_code = cleaned_data['zip_code'].strip()

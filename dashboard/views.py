@@ -17,7 +17,7 @@ from dashboard.forms import PartItemInlineFormSet, LaborItemInlineFormSet
 from django.forms.models import inlineformset_factory, modelformset_factory
 from datetime import datetime, timedelta
 from django.contrib import messages
-from homepageapp.models import TextMessagesModel, VinNhtsaAPISnapshots
+from homepageapp.models import TextMessagesModel, VinNhtsaApiSnapshots
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
@@ -35,16 +35,17 @@ from internal_users.mixins import InternalUserRequiredMixin
 from django.core.serializers import serialize
 import aiohttp
 import asyncio
-from apis.views import fetch_single_vin_from_nhtsa_api, fetch_and_save_single_vin_from_nhtsa_api, fetch_single_plate_data_via_plate2vin_async
+from apis.views import fetch_single_vin_from_nhtsa_api, fetch_and_save_single_vin_from_nhtsa_api, fetch_single_plate_data_via_plate2vin_api
 from django.db import models
 from asgiref.sync import sync_to_async
-from dashboard.async_functions import decrement_version_for_vin_async, update_or_create_vin_snapshots_async, fetch_latest_vin_data_from_snapshots
-from apis.api_vendor_urls import NHTSA_API_URL
+from dashboard.async_functions import fetch_latest_vin_data_from_snapshots, database_sync_to_async
+from apis.api_vendor_urls import NHTSA_API_URL, PLATE2VIN_API_URL
 import logging
 import requests
 import json
 from decouple import config, UndefinedValueError, Csv
 from django.db.models.query import QuerySet
+
 
 LiteVehicleUpdateFormset = inlineformset_factory(
     CustomersNewSQL02Model, VehiclesNewSQL02Model, edit_only=True,
@@ -72,7 +73,7 @@ def get_main_dashboard(request):
 # dashboard listview via function. Version 1
 
 
-def wip_dashboard(request):
+def repair_order_dashboard(request):
     repair_orders = RepairOrdersNewSQL02Model.objects.filter(
         repair_order_phase__gte=1, repair_order_phase__lte=5).prefetch_related('repair_order_customer')
     # repair_orders_v2 = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer_id', 'repair_order_customer_id__addresses').filter(repair_order_phase_id__in=[1,2,3,4,5])
@@ -81,7 +82,7 @@ def wip_dashboard(request):
     # the alternative way to grab repair orders, as well as the address information
     # __gte means great than or equal; __lte means less than equal
     all_in_one_set = RepairOrdersNewSQL02Model.objects.filter(
-        repair_order_phase__gte=1, repair_order_phase__lte=5).prefetch_related(Prefetch('repair_order_customer__addresses'))
+        repair_order_phase__gte=1, repair_order_phase__lte=5).prefetch_related('repair_order_customer__addresses')
     context = {
         'repair_orders': repair_orders,
         'customer_addresses': customer_addresses,
@@ -517,33 +518,50 @@ def chat_sidebar_view(request, customer_id):
 # search form page --- the first step before creating an repair order.
 class SearchView(View, InternalUserRequiredMixin):
 
-    login_url = reverse_lazy('internal_users:internal_user_login')
+    # login_url = reverse_lazy('internal_users:internal_user_login')
 
-    def get(self, request):
+    async def get(self, request):
         form = SearchForm()
+        context = {'appointments': None,
+                   'repair_orders': None,
+                   'form': form,  # re-render the form with its data.
+                   }
         return render(request, 'dashboard/30_search.html', {'form': form})
 
-    def post(self, request):
+    async def post(self, request):
         form = SearchForm(request.POST)
+
         if form.is_valid():
+
             search_query = form.cleaned_data['search_query']
+
+            # using sync_to_async to wrap around a search query processing in both appointments and repairorders models.
+            appointments = await sync_to_async(self._get_appointments, thread_sensitive=True)(search_query)
+            repair_orders = await sync_to_async(self._get_repair_orders, thread_sensitive=True)(search_query)
             # Perform the search query in the appointments or other relevant models
-            appointments = AppointmentRequest.objects.filter(Q(appointment_phone_number__icontains=search_query) |
-                                                             Q(appointment_email__icontains=search_query)).order_by('appointment_id')
+            # appointments = AppointmentRequest.objects.filter(Q(appointment_phone_number__icontains=search_query) |
+            #                                                  Q(appointment_email__icontains=search_query)).order_by('appointment_id')
 
-            repair_orders = RepairOrdersNewSQL02Model.objects.prefetch_related(
-                Prefetch('repair_order_customer__addresses')).prefetch_related(
-                'repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
-                                                                  )
+            # repair_orders = RepairOrdersNewSQL02Model.objects.prefetch_related(
+            #     Prefetch('repair_order_customer__addresses')).prefetch_related(
+            #     'repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
+            #                                                       )
 
-            repair_orders = repair_orders.filter(
-                repair_order_customer__emails__email_address__icontains=search_query
-            ).filter(repair_order_customer__phones__phone_number__icontains=search_query)
+            # repair_orders = repair_orders.filter(
+            #     repair_order_customer__emails__email_address__icontains=search_query
+            # ).filter(repair_order_customer__phones__phone_number__icontains=search_query)
 
             context = {'appointments': appointments,
                        'repair_orders': repair_orders,
+                       'form': form,  # re-render the form with its data.
                        }
-            return render(request, 'dashboard/30_search.html', context)
+
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+
+                return render(request, 'dashboard/31_search_results.html', context)
+            else:
+                print('using 30_search.html')
+                return render(request, 'dashboard/30_search.html', context)
             # if appointments.exists():
             #     return render(request, 'dashboard/20_search.html', {'appointments': appointments})
             # else:
@@ -551,28 +569,30 @@ class SearchView(View, InternalUserRequiredMixin):
         else:
             return render(request, 'dashboard/30_search.html', {'form': form})
 
+    def _get_appointments(self, search_query):
+        return list(AppointmentRequest.objects.filter(
+            Q(appointment_phone_number__icontains=search_query) |
+            Q(appointment_email__icontains=search_query)
+        ).order_by('appointment_id'))
 
-# def dashboard_search(request):
-#     form = SearchForm(request.GET)
-#     if form.is_valid():
-#         query = form.cleaned_data['searchquery']
-#         # Search in AppointmentRequest
-#         appointment_requests_phone = AppointmentRequest.objects.filter(phone_number__icontains=query)
-#         appointment_requests_email = AppointmentRequest.objects.filter(email_address__icontains=query)
+    def _get_repair_orders(self, search_query):
+        print('search any matched repair order records before creating one...')
+        queryset = RepairOrdersNewSQL02Model.objects.prefetch_related(
+            'repair_order_customer__addresses',
+            'repair_order_customer__phones',
+            'repair_order_customer__emails'
+            # filtering out only active repair orders
+        ).filter(
+            repair_order_phase__gte=1,
+            repair_order_phase__lte=5
+        ).filter(
+            Q(repair_order_customer__emails__email_address__icontains=search_query) |
+            Q(repair_order_customer__phones__phone_number__icontains=search_query)
+        )
 
-#         # Search in RepairOrder
-#         repair_orders_phone = RepairOrdersNewSQL02Model.objects.filter(phone_number__icontains=query)
-#         repair_orders_email = RepairOrdersNewSQL02Model.objects.filter(email__icontains=query)
-
-#         return render(request, 'search_results.html', {
-#             'form': form,
-#             'appointment_requests_phone': appointment_requests_phone,
-#             'appointment_requests_email': appointment_requests_email,
-#             'repair_orders_phone': repair_orders_phone,
-#             'repair_orders_email': repair_orders_email,
-#         })
-#     else:
-#         return render(request, '80_search.html', {'form': form})
+        # .filter() calls in Django ORM does not get executed unless the queryset is evaluated.
+        # when calling list() on the queset, the sql server executes the script
+        return list(queryset)
 
 
 def get_customer_dash(request):
@@ -971,7 +991,7 @@ def technician_dash_view(request, technician_id):
     return render(request, 'dashboard/technician_workstation.html', {'line_items': line_items})
 
 # this function searchs a vin number entered on the search form. save the most recent snapshot of vehicle info from NHTSA gov website
-# to VinNhtsaAPISnapshots model.
+# to VinNhtsaApiSnapshots model.
 
 
 async def search_single_vin_via_nhtsa(request):
@@ -1005,20 +1025,8 @@ async def search_single_vin_via_nhtsa(request):
 
 async def search_single_plate_via_plate2vin(request):
     form = LicensePlateSearchForm(request.POST or None)
-    api_url = 'https://platetovin.com/api/convert'
     plate_data = []
     success = False
-
-    async def fetch_plate_data_async(license_plate, state, headers):
-        url = api_url
-        payload = {
-            "state": state,
-            "plate": license_plate
-        }
-
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, headers=headers, json=payload) as response:
-                return await response.json()
 
     if request.method == 'POST':
         if form.is_valid():
@@ -1026,7 +1034,7 @@ async def search_single_plate_via_plate2vin(request):
             state = form.cleaned_data['state'].upper()
 
             try:
-                plate_data, success = await fetch_single_plate_data_via_plate2vin_async(license_plate, state)
+                plate_data, success = await fetch_single_plate_data_via_plate2vin_api(license_plate, state)
                 if not success:
                     form.add_error(
                         None, 'Failed to fetch VIN for the given License Plate.')
@@ -1046,7 +1054,7 @@ async def fetch_or_save_latest_vin_snapshot_async(request):
     latest_vin_data = await fetch_latest_vin_data_from_snapshots(vin)
     # Convert to list of dictionaries if it's a QuerySet
     if isinstance(latest_vin_data, QuerySet):
-        latest_vin_data = list(latest_vin_data.values())
+        latest_vin_data = await database_sync_to_async(list)(latest_vin_data.values())
 
     if not latest_vin_data:
         return JsonResponse({'error': 'No vehicle found for this VIN'}, status=404)
@@ -1055,10 +1063,11 @@ async def fetch_or_save_latest_vin_snapshot_async(request):
     formatted_content = ""
     for entry in latest_vin_data:
         formatted_content += f"""
-        <strong>Snapshot {entry['variable_name']}</strong>: {entry['value']}<br>
+        {entry['variable_name']}: {entry['value']}; 
         """
     if not formatted_content:
         formatted_content = "No snapshots found for this VIN."
-
+    print(f'the content of the popover is {formatted_content}.')
     # Return the data you want to show in popover
+    # return JsonResponse(formatted_content, safe=False)  #
     return JsonResponse({'data': formatted_content})

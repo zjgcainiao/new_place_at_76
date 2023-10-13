@@ -2,56 +2,73 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<section class="bg-top-center  p-5 m-5">
+  <section class="bg-light p-5 mt-5">
 
-  <div class="container">
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="email-tab" data-bs-toggle="tab" data-bs-target="#emailtab" role="tab">Email</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="google-tab" data-bs-toggle="tab" data-bs-target="#googletab" role="tab">Google</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="twitter-tab" data-bs-toggle="tab" data-bs-target="#twittertab" role="tab">Twitter</a>
-        </li>
-    </ul>
+    <div class="container">
+      <div class="card shadow-lg">
+        <div class="card-body">
 
-      <div class="tab-content">
-          <div id="emailtab" class="tab-pane fade show active" role="tabpanel">
-            <h3>Register Form (Email) Firebase Authentication</h3>
-            <form id="email-signup-form" >
-                <label for="email">Email:</label><br>
-                <input type="text" id="email" name="email"><br>
-                <label for="password">Password:</label><br>
-                <input type="password" id="password" name="password"><br>
-                <label for="display-name">Display Name:</label><br>
-                <input type="text" id="display-name" name="display-name"><br>
-                <button id="email-signup-button">Sign up with Email</button>
-            </form>
+          <!-- Nav tabs -->
+          <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="email-tab" data-bs-toggle="pill" href="#emailtab" role="tab">Email</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="google-tab" data-bs-toggle="pill" href="#googletab" role="tab">Google</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="twitter-tab" data-bs-toggle="pill" href="#twittertab" role="tab">Twitter</a>
+            </li>
+          </ul>
+
+          <!-- Tab panes -->
+          <div class="tab-content mt-3">
+            <div id="emailtab" class="tab-pane fade show active" role="tabpanel">
+              <h3 class="text-center">Register Form (Email) Firebase Authentication</h3>
+              <form id="email-signup-form" class="mt-4">
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email:</label>
+                  <input type="text" id="email" name="email" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="password" class="form-label">Password:</label>
+                  <input type="password" id="password" name="password" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="display-name" class="form-label">Display Name:</label>
+                  <input type="text" id="display-name" name="display-name" class="form-control">
+                </div>
+                <button id="email-signup-button" class="btn btn-primary">Sign up with Email</button>
+              </form>
+            </div>
+            <div id="googletab" class="tab-pane fade" role="tabpanel">
+              <h3 class="text-center">Register Form (Google)</h3>
+              <div class="d-flex justify-content-center mt-4">
+                <button id="google-signup-button" class="btn btn-danger">Sign up with Google</button>
+              </div>
+            </div>
+            <div id="twittertab" class="tab-pane fade" role="tabpanel">
+              <h3 class="text-center">Register Form (Twitter)</h3>
+              <div class="d-flex justify-content-center mt-4">
+                <button id="twitter-signup-button" class="btn btn-info">Sign up with Twitter</button>
+              </div>
+            </div>
           </div>
-          <div id="googletab" class="tab-pane fade" role="tabpanel">
-            <h3>Register Form (Google)</h3>
-            <button id="google-signup-button">Sign up with Google</button>
-          </div>
-          <div id="twittertab" class="tab-pane fade" role="tabpanel">
-            <h3>Register Form (Twitter)</h3>
-            <button id="twitter-signup-button">Sign up with Twitter</button>
-          </div>
+
+        </div>
       </div>
+    </div>
+    <!-- end of container -->
+  </section>
 
-  </div>
-  <!-- end of container  -->
-  
-</section> 
-
-<!-- firebase authentication functions in javascript -->
-<script type="module" src="{% static 'customer_users/js/firebase_auth_register_and_sign_in_with_django.js' %}">
-
-</script>
-
+  <!-- firebase authentication functions in javascript -->
+  <script>
+    window.csrfToken = '{{ csrf_token }}';
+  </script>
+  <script type='module' src="{% static 'customer_users/js/firebase_auth_register_and_sign_in_with_django.js' %}">
+  </script>
+{% endblock %}
 <!-- <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
@@ -201,4 +218,3 @@
   
 </script> -->
 
-{% endblock %}

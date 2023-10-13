@@ -1,0 +1,61 @@
+{% extends 'appointments/00_appointment_base.html' %}
+{% load static %}
+{% block content-main %}
+<div class ='container'>
+  <!-- nav Breadcrumb-->
+  <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-dark">
+          <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'appointments:appointment_list' %}">Appointments</a></li>
+          <li class="breadcrumb-item active">Detail</a></li>
+      </ol>
+  </nav>
+</div>
+<div class ='container'>
+    <h2>Appointment Detail-{{appointment.appointment_id}}</h2>
+    
+    <div class="card card-hover border border-primary my-3">
+        <h4 class="card-header">Status: {{ appointment.get_appointment_status_display }}</h4>
+        <div class="card-body">
+            <div class ='row my-1'>
+                <div class="col-3"><p>Confirmed Time: {{appointment.appointment_confirmed_datetime}}</p></div>
+                <div class="col-3"><p>Requested Time: {{appointment.appointment_requested_datetime}}</p></div>
+                <div class="col-3"><p>Reason for visit: {{ appointment.get_appointment_reason_for_visit_display }}</p></div>
+                <div class="col-3"><p>Customer Name: {{appointment.appointment_full_name}}</p></div>
+                <div class="col-3"><p>Phone Number: {{ appointment.appointment_phone_number }}</p></div>
+                <div class="col-3"><p>Email: {{ appointment.appointment_email }}</p></div>
+                <div class="col-12"><p>Concern Description: {{ appointment.appointment_concern_description }}</p></div>
+            </div>
+            <!-- end of row  -->
+
+            <div class="row my-1">
+                <div class="col-12"><p>Vehicle Detail: {{appointment.appointment_vehicle_detail}}</p></div>
+            </div>
+        </div>
+        <!-- end of card-body -->
+        
+
+    </div>
+    <!-- end of card  -->
+
+
+    <div class ='card card-hover border border-50 border-outline-secondary my-3'>
+
+        <p ><a class='card-link' href="{% url 'appointments:appointment_image_list' pk=appointment.appointment_id %}">view uploaded images </a></p>
+        <div class="card-body">
+            <h5 class="'card-title">Upload Images (jpgs, jpegs, pngs)</h5>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+        <!-- end of card-body  -->
+        
+    </div>
+    <!-- end of card  -->
+</div>
+<!-- end of container-fluid  -->
+
+
+{% endblock %}

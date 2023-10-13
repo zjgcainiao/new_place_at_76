@@ -76,8 +76,8 @@ class CustomerUser(AbstractBaseUser):
     cust_user_linkage_is_confirmed = models.BooleanField(default=False)
     cust_user_last_linked_date = models.DateTimeField(null=True)
 
-    cust_user_linked_firebaseuser = models.ForeignKey(
-        FirebaseUser, on_delete=models.SET_NULL, null=True)
+    # cust_user_linked_firebaseuser = models.ForeignKey(
+    #     FirebaseUser, on_delete=models.SET_NULL, null=True,related_name='cust_user_firebaseuser')
 
     customer_user_lastest_ip_address = models.GenericIPAddressField(null=True)
 
@@ -120,5 +120,6 @@ class CustomerUser(AbstractBaseUser):
 
     class Meta:
         db_table = 'customerusers_new_03'
+        ordering = ['-cust_user_id']
         verbose_name = 'customeruser'
         verbose_name_plural = 'customerusers'

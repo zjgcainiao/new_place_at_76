@@ -15,7 +15,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 import json
 from django.contrib.auth.mixins import LoginRequiredMixin
-from appointments.forms import AppointmentRequestForm, AppointmentRequestFormV2, AppointmentImagesForm
+from appointments.forms import AppointmentCreationForm, AppointmentImagesForm
 from appointments.forms import AppointmentImagesForm, AppointmentImageFormSet
 from appointments.models import AppointmentRequest, AppointmentImages
 from django.views.generic import CreateView, FormView, TemplateView
@@ -31,15 +31,15 @@ from appointments.models import APPT_STATUS_CANCELLED, APPT_STATUS_NOT_SUBMITTED
 # 2023-04-10
 
 def appointment_create_view_for_customer(request):
-    # form = AppointmentRequestForm(request.POST or None)
+    # form = AppointmentCreationForm(request.POST or None)
     if request.method == 'POST':
-        # form = AppointmentRequestForm(request.POST)
-        form = AppointmentRequestForm(request.POST, request.FILES)
+        # form = AppointmentCreationForm(request.POST)
+        form = AppointmentCreationForm(request.POST, request.FILES)
         image_formset = AppointmentImageFormSet(
             request.POST, request.FILES, user=request.user)
         image_form = AppointmentImagesForm(
             request.POST, request.FILES, user=request.user)
-    # form = AppointmentRequestForm(request.POST)
+    # form = AppointmentCreationForm(request.POST)
         if form.is_valid():  # and image_formset.is_valid()
             # form.save()
             form.save(commit=False)
@@ -61,7 +61,7 @@ def appointment_create_view_for_customer(request):
             print(form.errors)  # print out the form errors
             # return redirect('appointment_preview', args=[appointment.appointment_id])
     else:
-        form = AppointmentRequestForm
+        form = AppointmentCreationForm
         image_formset = AppointmentImageFormSet(
             queryset=AppointmentImages.objects.none())
         image_form = AppointmentImagesForm()
@@ -84,7 +84,7 @@ def appointment_preview_view(request):
     appointment_data = json.loads(appointment_data)
     images = json.loads(images)
 # if request.method == 'GET':
-    form = AppointmentRequestForm(appointment_data)
+    form = AppointmentCreationForm(appointment_data)
     appointment = AppointmentRequest(**appointment_data)
     context = {'form': form,
                'appointment': appointment,
@@ -98,7 +98,7 @@ def appointment_preview_view(request):
         return redirect('appointments:appointment-success-view')
     return render(request, 'appointments/20_appointment_preview.html', context)
 
-    # form = AppointmentRequestForm(request.POST)
+    # form = AppointmentCreationForm(request.POST)
     # if form.is_valid():
     #     appointment = AppointmentRequest(form.fields)
     #     appointment.save()
@@ -107,10 +107,10 @@ def appointment_preview_view(request):
     # # send_appointment_confirmation_email(appointment)
     #     return redirect('appointments:appointment-success')
     # return redirect('appointment_success')
-    # form = AppointmentRequestForm(initial=kwargs)
+    # form = AppointmentCreationForm(initial=kwargs)
     # return render(request, 'appointments/02-appointment-preview.html', {'form': form})
     # elif 'confirm' in request.POST:
-    #     form = AppointmentRequestForm(request.POST)
+    #     form = AppointmentCreationForm(request.POST)
     #     if form.is_valid():
     #         appointment = form.save(commit=False)
     #         appointment.appointment_status = 'C'
@@ -126,7 +126,7 @@ def appointment_preview_view(request):
 
     # # else:
     # #     return redirect('appointment-create-view')
-    # # form = AppointmentRequestForm()
+    # # form = AppointmentCreationForm()
 
     # context = {'form': form}
     # return render(request, 'appointments/02-appointment-preview.html', context)
@@ -149,7 +149,7 @@ class AppointmentCreateView(SessionWizardView):
         settings.DEFAULT_FILE_STORAGE, 'appointment_images'))
     form_list = [
         ('upload images', AppointmentImageFormSet),
-        ('new_appointment', AppointmentRequestForm),
+        ('new_appointment', AppointmentCreationForm),
     ]
 
     success_url = reverse_lazy('appointments:appointment-preview-view')
@@ -177,7 +177,7 @@ class AppointmentCreateView(SessionWizardView):
 
 class AppointmentPreviewView(FormView):
     template_name = 'appointments/20_appointment_preview.html'
-    # form_class = AppointmentRequestForm
+    # form_class = AppointmentCreationForm
     success_url = reverse_lazy('appointments:appointment-success-view')
 
     def form_valid(self, form):
@@ -221,11 +221,11 @@ class AppointmentListView(LoginRequiredMixin, ListView):
         return qs
 
 
-class AppointmentDetailView(LoginRequiredMixin, DetailView):
+class AppointmentDetailView(DetailView):
     model = AppointmentRequest
     context_object_name = 'appointment'
-    template_name = 'appointments/60_appointment_detail_view.html'
-    login_url = '/users/login'
+    template_name = 'appointments/60_appointment_detail.html'
+    # login_url = '/users/login'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -253,6 +253,13 @@ class AppointmentDetailView(LoginRequiredMixin, DetailView):
     # def get_queryset(self):
     #     queryset = super().get_queryset()
     #     return queryset.filter(user=self.request.user)
+
+
+class AppointmentDetailByConfirmationIdView(AppointmentDetailView):
+    def get_queryset(self):
+        queryset = AppointmentRequest.objects.filter(
+            appointment_confirmation_id=self.args['appointment_confirmation_id'])
+        return queryset.filter(user=self.request.user)
 
 
 def appointment_get_vehicle_models(request, make_id):

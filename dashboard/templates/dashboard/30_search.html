@@ -2,45 +2,35 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content-main %}
-<div class ='container'>
-    <h3 >Creating a new work order. Step 01</h3>
+<div class ='container-fluid '>
+    <h3 >Creating a new work order: </h3>
     <!-- This is the step by step guide for our employees. -->
-    <div class ='p-1'>Steps:                                       
+    <div class='p-3 m-1'>
         <ol>
-            <li>
-                The first step is to search any existing appointment that the customer has booked before this in-person visit.
-            </li>
-            <li>
-                Use the search button below to search. Enter phone number,email address. Examples: 2234445555,  info@gmail.com.
-            </li>
-            <li>
-                If there are any existing appointments, confirm with the customer and select the right one if there is more than one. Click the "new repair order with appointment" button
-            </li>
-            <li>
-                If there is no result found, click "new appointment" button. Even a customer shows up in person, it is required to create a new appointment.
-            </li>
+            <li>Search for any existing appointment that the customer has booked before this in-person visit.</li>
+            <li>Use the search button below to search. Enter phone number, email address. Examples: 2234445555,  info@gmail.com.</li>
+            <li>If there are any existing appointments, confirm with the customer and select the right one if there's more than one. Click the "new repair order with appointment" button.</li>
+            <li>If no results are found, click the "new appointment" button. Even if a customer shows up in person, it is required to create a new appointment.</li>
         </ol>
-        
-        
     </div>
-        <form method="post" action="{% url 'dashboard:search' %}">
-            {% csrf_token %}
-            <div class ='row '> 
-                <!-- justify-content-center -->
-                <div class="col col-9">
-                    {{form.search_query }}
-                    
-                </div>
-                <div class="col col-3">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </div>
+    <form id='searchExistingsForm' method="post" action="{% url 'dashboard:search-appointments' %}">
+        {% csrf_token %}
+        <div class ='row '> 
+            <!-- justify-content-center -->
+            <div class="col col-lg-9">
+                {{form.search_query}}
                 
             </div>
-        </form>
+            <div class="col col-lg-3">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+            
+        </div>
+    </form>
 
-    <!-- Search Form -->
+    <!--  Search Form -- Backup -->
     <!-- <div class="app-search d-lg-block">
-        <form method="post" action="{% url 'dashboard:search' %}">
+        <form method="post" action="{% url 'dashboard:search-appointments' %}">
             {% csrf_token %}
             <div class="input-group">
                 <input type="search" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
@@ -51,36 +41,37 @@
     </div> -->
     <!-- end of search form -->
 </div>
-    
+<!-- end of container for the form -->   
 
-    {% if appointments %}
-        <hr>
-        <div class ='container'>
-            
-            <h3>Search Results: </h3>
-            <small>first step before creating a repair order</small>
-            
-            {% for appointment in appointments %}
-            <div class="card border-secondary border">
-                <div class="row p-1">
-                    <div class="col col-3">Appointment Time: {{ appointment.appointment_requested_datetime}}</div>
-                    <div class="col col-3">Name:{{ appointment.appointment_full_name }}</div>
-                    <div class="col col-3">Tel: {{ appointment.appointment_phone_number }}</div>
-                    <div class="col col-3">Email: {{ appointment.appointment_email }}</div>
-                    <div class="col col-12">Vehicle: {{ appointment.appointment_vehicle_year}} {{ appointment.appointment_vehicle_make}} {{appointment.appointment_vehicle_model}}</div>
-                    <div class="col col-12">Concern Description: {{appointment.appointment_concern_description}}</div>
-                </div>
-            </div>
+<hr>
+<div id='resultsSection'  class ='container-fluid my-1' style="display:none;">
 
-                
-            {% endfor %}
-            
-            {% elif no_match %}
-            <p>No match found.</p>
+    {% include 'dashboard/31_search_results.html' %}
+</div>
 
-            <button href="{% url 'appointments:appointment-create-view' %}">Create New Appointment</button>
+<script>
+    $(function(){
+    $("#searchExistingsForm").submit(function(event){
+        event.preventDefault();  // Prevent the form from submitting the traditional way
+        console.log($(this).attr('action'))
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),  // Assuming the form's action is set to the search view's URL
+            data: $(this).serialize(),
+            success: function(response){
 
-        </div>
-    {% endif %}
+                // Load the response into the resultsSection and display it
+                $('#resultsSection').css("display", "block");
+                $('#resultsSection').html(response)
+            },
+            error: function(){
+
+            }
+        });
+    });
+});
+
+</script>
+
 
 {% endblock %}

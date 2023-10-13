@@ -1,4 +1,5 @@
 from django import forms
+import re
 from appointments.models import AppointmentRequest, AppointmentImages
 from datetime import date, datetime
 from crispy_forms.helper import FormHelper
@@ -12,47 +13,52 @@ from core_operations.common_functions import get_latest_vehicle_make_list, get_l
 from homepageapp.models import MakesNewSQL02Model
 from django.db.models import Q
 from django.core.validators import FileExtensionValidator
-import re
+
 from internal_users.models import InternalUser
 from customer_users.models import CustomerUser
 from django.contrib.contenttypes.models import ContentType
 from core_operations.models import US_COUNTRY_CODE
 from core_operations.common_functions import format_phone_number_to_shop_standard, deformat_phone_numbers
-
-# custom validator 01
-
-
-def validate_vehicle_year(value):
-    # Check if value is a 4-digit number
-    if not isinstance(value, int) or value < 1000 or value > 9999:
-        raise ValidationError("The year must be a 4-digit number. Ex: 2022")
-    # Check if value is greater than today().year + 1
-    if value > date.today().year+1:
-        raise ValidationError(
-            f"The year can't be greater than {date.today().year+1}.")
-
-# custom validator 02
+from appointments.custom_validators import validate_vehicle_year, validate_file_size, validate_phone_number
 
 
-def validate_file_size(value):
-    filesize = value.size
-    if filesize > 1024 * 1024 * 8:   # 8MB in bytes
-        raise ValidationError(
-            "The maximum file size that can be uploaded is 8MB.")
+class AppointmentCreationForm(forms.ModelForm):
+    # Add your custom fields
+    appointment_vehicle_year = forms.IntegerField(validators=[validate_vehicle_year],
+                                                  widget=forms.TextInput(
+                                                      attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'the year of vehicle, 2022, 2021 etc.', }),
+                                                  label='Year',
 
-# custom validator 03
+                                                  )
 
+    appointment_vehicle_make = forms.ChoiceField(
+        choices=get_latest_vehicle_make_list, label='Make')
+    appointment_vehicle_model = forms.ChoiceField(
+        choices=get_latest_vehicle_model_list, label='Model')
 
-def validate_phone_number(value):
-    # javacript based script will format the user's input as (800)234-0690.
-    value = deformat_phone_numbers(value)
-    # Check if value has exactly 10 digits. US phone number. no country codde 1, or +1 is needed.
-    if not re.match(r'^\d{10}$', value):
-        raise ValidationError(
-            'The phone number should have 10digits. Ex: 2223334444, or (222)333-4444.')
+    appointment_phone_number = forms.CharField(validators=[validate_phone_number],
+                                               widget=forms.TextInput(
+                                                   attrs={'type': 'text', 'placeholder': 'Enter a US phone number. Ex.: (231)456-9809.'}),
+                                               label='Phone', help_text="we send important updates and reminders to this number.")
 
+    appointment_email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={'type': 'text', 'placeholder': 'example: johnson.goku@gmail.com.'}),
+        label='Phone', help_text="we send important appointment info and updates to this email.")
+    appointment_concern_description = forms.CharField(widget=forms.Textarea(attrs={'type': 'text', 'placeholder': 'Examples: 1. I want to do a oil change for 2020 Toyota Sienna. Full Synthetic as usual. 2. My A/C system does not cool enough during a hot day. Last week, i drove to ... 3. The engine acted weird this morning, the car suddenly lost power on a freeway ramp...'}),
+                                                      label='Desribe your issue as detailed as you can.')
 
-class AppointmentRequestForm(forms.ModelForm):
+    # appointment_requested_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'datetime-local','class':'form-control'}))
+    # appointment_requested_time = forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control datetimepicker-input'}))
+    # attrs={'type': 'datetime-local', }
+
+    # Add the image field from AppointmentImages
+    appointment_images = forms.ImageField(
+        required=False,
+        label="Upload Image",
+        widget=forms.ClearableFileInput(attrs={'multiple': True})
+    )
+
     class Meta:
         model = AppointmentRequest
         exclude = ('appointment_created_at', 'appointment_last_updated_date',)
@@ -67,8 +73,6 @@ class AppointmentRequestForm(forms.ModelForm):
             'appointment_vehicle_make',
             'appointment_vehicle_model',
             'appointment_concern_description',
-            # 'appointment_requested_date',
-            # 'appointment_requested_time',
 
             # 'appointment_vehicle_detail',
             # 'appointment_vehicle_detail_in_json',
@@ -81,8 +85,6 @@ class AppointmentRequestForm(forms.ModelForm):
             'appointment_last_name': forms.TextInput(attrs={'type': 'text', 'placeholder': 'last name', 'class': 'form-control'}),
             # 'appointment_reason_for_visit': forms.TextInput(attrs={'type': 'text','class': 'form-control'}),
             # 'appointment_vehicle_detail': forms.TextInput(attrs={'type': 'text','placeholder':'for example: 2020 Toyota Tocoma SE, or 2021 Mercedez C300 AWD.'}),
-            'appointment_email': forms.EmailInput(attrs={'type': 'text', 'placeholder': 'enter your contact email'}),
-            'appointment_phone_number': forms.TextInput(attrs={'type': 'text', 'placeholder': 'enter your contact phone number'}),
             'appointment_concern_description': forms.Textarea(attrs={'type': 'text', 'class': 'form-control'}),
         }
 
@@ -99,40 +101,10 @@ class AppointmentRequestForm(forms.ModelForm):
             'appointment_vehicle_make': _('Make'),
             'appointment_vehicle_model': _('Model'),
         }
-    # Add your custom fields
-    appointment_vehicle_year = forms.IntegerField(validators=[validate_vehicle_year],
-                                                  widget=forms.TextInput(
-                                                      attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'the year of vehicle, 2022, 2021 etc.', }),
-                                                  label='Year',
 
-                                                  )
-
-    appointment_vehicle_make = forms.ChoiceField(
-        choices=get_latest_vehicle_make_list, label='Make')
-    appointment_vehicle_model = forms.ChoiceField(
-        choices=get_latest_vehicle_model_list, label='Model')
-
-    appointment_phone_number = forms.CharField(validators=[validate_phone_number],
-                                               widget=forms.TextInput(
-                                                   attrs={'type': 'text', 'placeholder': 'Enter a US phone number.'}),
-                                               label='Phone', help_text="we won't spam you.")
-    appointment_concern_description = forms.CharField(widget=forms.Textarea(attrs={'type': 'text', 'placeholder': 'Examples: 1. I want to do a oil change for 2020 Toyota Sienna. Full Synthetic as usual. 2. My A/C system does not cool enough during a hot day. Last week, i drove to ... 3. The engine acted weird this morning, the car suddenly lost power on a freeway ramp...'}),
-                                                      label='Desribe your issue as detailed as you can.')
-
-    # appointment_requested_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'datetime-local','class':'form-control'}))
-    # appointment_requested_time = forms.TimeField(widget=forms.TimeInput(attrs={'class':'form-control datetimepicker-input'}))
-    # attrs={'type': 'datetime-local', }
-
-    # Add the image field from AppointmentImages
-    appointment_images = forms.ImageField(
-        required=False,
-        label="Upload Image (ChatGPT 2023-08-08)",
-        widget=forms.ClearableFileInput(attrs={'multiple': True})
-    )
-
-    def save(self, commit=True):
+    def save(self, commit=False):
         # First save the appointment instance
-        appointment = super(AppointmentRequestForm, self).save(commit)
+        appointment = super(AppointmentCreationForm, self).save(commit)
 
         # If image data exists, save them
         for img_file in self.files.getlist('appointment_images'):

@@ -16,7 +16,6 @@ import logging
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db import models
-from homepageapp.models import VinNhtsaAPISnapshots
 
 fake = Faker()
 

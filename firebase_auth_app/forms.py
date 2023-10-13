@@ -10,5 +10,4 @@ class FirebaseUserCreationForm(forms.ModelForm):
             'firebase_user_email',
             'firebase_user_phone_number',
             'firebase_user_photo_url',
-            'firebase_user_password',
         ]

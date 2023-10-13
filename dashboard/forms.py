@@ -18,15 +18,7 @@ from django.core.exceptions import ValidationError
 
 class SearchForm(forms.Form):
     search_query = forms.CharField(label='Search', widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholer': 'enter phone number, license plate to search.'}))
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.helper = FormHelper()
-    #     self.helper.form_id = 'id-SearchForm'
-    #     self.helper.form_class = 'blueForms'
-    #     self.helper.form_method = 'post'
-    #     self.helper.form_action = 'submit_survey'
-    #     self.helper.add_input(Submit('submit', 'Submit'))
+        attrs={'class': 'form-control', 'placeholer': 'enter a phone number, license plate to search.'}))
 
 
 class CustomerEmailForm(forms.ModelForm):
@@ -386,22 +378,49 @@ class VehicleUpdateForm(forms.ModelForm):
         # self.helper.use_custom_control = True  # for Bootstrap custom controls
 
         # Custom popover button
+        # updated with jQuery popover udpate
         popover_html = """
-        <button type="button" class="btn btn-danger" onclick="searchVIN();" data-bs-toggle="popover" title="Popover title" data-bs-content="">
+        <button type="button" class="btn btn-danger" id='latest-vin-snapshot-button' data-bs-trigger="focus" data-bs-toggle="popover" data-bs-title="VIN Online" data-bs-content="some content">
             Fetch latest Vin info (Source:NHTSA)
         </button>
         <script>
-            function searchVIN() {
-                // Make an AJAX request to your Django backend to get the content based on VIN_number
-                let vin = document.querySelector('[name="VIN_number"]').value;
+        $(function(){
+        
+            // id=latest-vin-snapshot-button
+            $("#latest-vin-snapshot-button").popover();
 
-                fetch('/dashboard/vehicles/fetch_or_save_latest_vin_snapshot/?vin=' + vin)
-                .then(response => response.text())
-                .then(data => {
-                    let popoverBtn = document.querySelector('[data-bs-toggle="popover"]');
-                    popoverBtn.setAttribute('data-bs-content', data.data);
+            $("#latest-vin-snapshot-button").on('click', function() {
+                var vin = $('[name="VIN_number"]').val();
+                $.ajax({
+                    url: "{% url 'dashboard:fetch_or_save_latest_vin_snapshot' %}",  
+                    data: {
+                        'vin': vin,
+                    },
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        // console.log(response);
+                        console.log(response.data);
+                        // console.log(response.status);
+                        $("#latest-vin-snapshot-button").popover('dispose'); // Destroy the current popover 
+                        $("#latest-vin-snapshot-button").attr('data-bs-content', response.data);
+                        $("#latest-vin-snapshot-button").popover('update');
+                        $("#latest-vin-snapshot-button").popover(); // Reinitialize the popover
+                        // $("#latest-vin-snapshot-button").popover('hide');
+                        $("#latest-vin-snapshot-button").popover('show');
+                        
+
+                        //$("#latest-vin-snapshot-button").prop('data-bs-content', response);
+                        // Update the popover content
+                        //$("#latest-vin-snapshot-button").popover('update');
+
+                    },
+                    error: function(error) {
+                        console.error("Error fetching VIN data:", error);
+                    }
                 });
-            }
+            });
+        });
         </script>
         """
 

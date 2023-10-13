@@ -1,5 +1,5 @@
 from django.urls import include, path
-from dashboard.views import wip_dashboard, dashboard_detail_v1, dashboard_detail_v2
+from dashboard.views import repair_order_dashboard, dashboard_detail_v1, dashboard_detail_v2
 from dashboard.views import WIPDashboardView, get_main_dashboard
 from dashboard.views import DashboardDetailView, RepairOrderUpdateView, PartItemUpdateView, LaborItemUpdateView
 from dashboard.views import repair_order_update, repair_order_and_line_items_detail, line_item_labor_and_part_item_update_view
@@ -10,10 +10,12 @@ app_name = 'dashboard'
 urlpatterns = [
 
     path('', get_main_dashboard, name='main-dash'),
-    path('search/', SearchView.as_view(), name='search'),
+    path('search/', SearchView.as_view(), name='search-appointments'),
+
+
     # dashboard -- repair order plus customer info and customer information. Phone numbers are not included yet.
     # dashboard v1
-    path('WIPs/old',  wip_dashboard, name='dashboard-testing-v1'),
+    path('WIPs/old',  repair_order_dashboard, name='dashboard-testing-v1'),
 
     # dashboard v2. current version
     path('WIPs/', WIPDashboardView.as_view(), name='repair-order-dash'),

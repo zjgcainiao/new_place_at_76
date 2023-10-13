@@ -34,7 +34,7 @@
 </div>
 
 <script>
-  $(document).ready(function(e) {
+$(function() {
     // e.preventuDefaults();
     $('#go-back-btn').click(function() {
       window.history.back();
@@ -170,9 +170,15 @@
                 }
             })
         }, 1500);  // 1000 milliseconds = 1 second.
+      });
+      // end of customer search bar 
     });
+    // end of #button-id-reassign-new-customer
+  
+  
 
-  });
+
+
 });
 </script>
 {% endblock %}

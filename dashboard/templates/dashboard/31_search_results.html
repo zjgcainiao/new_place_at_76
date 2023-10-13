@@ -1,0 +1,45 @@
+
+    <div class="card card-hover card-body my-1">
+                
+            <h3 class="card-header">Search Results: </h3>
+            <p class='text-muted'>returns any active appoinments and acive repair orders that match with the entered criteria.</p>
+            
+            {% for appointment in appointments %}
+            <div class="card card-hover border-secondary border">
+                <div class="row p-1">
+                    <div class="col-3">Time requested: {{ appointment.appointment_requested_datetime}}</div>
+                    <div class="col-3">Name:{{ appointment.appointment_full_name }}</div>
+                    <div class="col-3">Tel: {{ appointment.appointment_phone_number }}</div>
+                    <div class="col-3">Email: {{ appointment.appointment_email }}</div>
+                    <div class="col-10">Vehicle: {{ appointment.appointment_vehicle_year}} {{ appointment.appointment_vehicle_make}} {{appointment.appointment_vehicle_model}}</div>
+                    <div class="col-12">Concern Description: {{appointment.appointment_concern_description}}</div>
+                    <div class="col " ><a class='card-link' href="{% url 'appointments:appointment_detail' pk=appointment.pk %}">View Detail </a></div>
+                </div>
+            </div>
+                
+            {% endfor %}
+
+            {% for order in repair_orders %}
+                <div class="card card-hover border-secondary border">
+                    <div class="row p-1">
+                        <div class="col col-3">Repair Order ID: {{ order.repair_order_id}}</div>
+                        <div class="col col-3">Order Customer:{{ order.repair_order_cust}}</div>
+                        <div class="col col-3">Tel: {{ order.appointment_phone_number }}</div>
+                        <div class="col col-3">Email: {{ order.appointment_email }}</div>
+                        <div class="col col-12">Vehicle: {{ order.appointment_vehicle_year}} </div>
+                        <div class="col col-12">Concern Description: {{order.appointment_concern_description}}</div>
+                    </div>
+                </div>
+                    
+            {% endfor %}
+
+            {% if not appointments and not repair_orders %}
+                <p>No match found.</p>
+
+                <button href="{% url 'appointments:appointment-create-view' %}">Create New Appointment</button>
+            {% endif %}
+                
+
+            
+        
+    </div>

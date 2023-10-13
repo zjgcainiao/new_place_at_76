@@ -1548,7 +1548,7 @@ class PaymentsModel(models.Model):
 # this model stores each snapshot pulled for each vin from NHTSA gov website.
 
 
-class VinNhtsaAPISnapshots(models.Model):
+class VinNhtsaApiSnapshots(models.Model):
     # Assuming standard VIN length of 17 characters. NHTSA website
     id = models.BigAutoField(primary_key=True)
     vin = models.CharField(

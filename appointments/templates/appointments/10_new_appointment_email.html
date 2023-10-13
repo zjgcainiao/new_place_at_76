@@ -1,0 +1,53 @@
+
+{% extends 'homepageapp/10_homepageapp_base.html' %}
+
+{% block content-main %}
+<div class ='container-fluid'>
+    <div class="card card-hover card-body text-center"> <!-- Aligning text to the center for emphasis -->
+
+        <!-- Header greeting -->
+        <h4 class="card-title">Hello {{ appointment.appointment_first_name }}!</h4>
+        
+        <p>You've successfully created a service appointment scheduled for {{ appointment.appointment_requested_datetime}}.</p>
+        
+        <p>Your confirmation ID is:</p>
+        
+        <!-- Make the confirmation ID prominent -->
+        <h3>{{ appointment.appointment_confirmation_id }}</h3>
+
+        <div class="card border-dark shadow my-2">
+            <div class="card-body">
+                <p>Reason for visit: {{ appointment.appointment_reason_for_visit }}</p>
+                <p>Vehicle details: {{ appointment.appointment_vehicle_detail }}</p>
+                <p>Concern description: {{ appointment.appointment_concern_description }}</p>
+                <p>Appointment date: {{ appointment.appointment_requested_datetime }}</p>
+            </div>
+
+        </div>
+        <!-- If possible, create a view or page where users can see their appointment details using the confirmation ID -->
+        <a class="btn btn-primary" href="{% url 'appointment_detail_by_confirmation' appointment_confirmation_id=appointment.appointment_confirmation_id %}">View More Details</a>
+        
+        <!-- Encourage sign up -->
+        <div class="mt-4">
+            <h5>Want more benefits?</h5>
+            <p>Create a free customer account to access 100+ detailed data and other exclusive benefits.</p>
+            <a class="btn btn-success" href="{% url 'customer_users:customer_user_register' %}">Sign Up Now!</a>
+        </div>
+
+        <!-- Reminder for existing customers -->
+        <div class="mt-4">
+            <p>Already have an account? Sign in to manage your appointments and more.</p>
+            <a class="btn btn-secondary" href="{% url 'customer_users:customer_user_login' %}">Sign In</a>
+        </div>
+
+        <p class="mt-4">If this wasn't you, please ignore this email. Your security is our priority.</p>
+        
+        <!-- Footer section -->
+        <div class="footer mt-5">
+            <p>Best regards,</p>
+            <p>The Amazing Automan LLC Team</p>
+            <small>Contact us: <a href="mailto:automan001@amazingautoman.com">support email</a></small>
+        </div>
+    </div>
+</div>
+{% endblock %}

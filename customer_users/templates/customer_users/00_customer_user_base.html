@@ -97,11 +97,60 @@
       })();
       
     </script>
+
     <!-- Vendor Styles-->
     <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}"/>
     <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}"/>
     <!-- Main Theme Styles + Bootstrap-->
     <link rel="stylesheet" media="screen" href="{% static 'homepageapp/css/theme.min.css' %}">
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> 
+      
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
+    <!-- Vendor Styles-->
+    <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}"/>
+    <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}"/>
+    <!-- Main Theme Styles + Bootstrap-->
+    <link rel="stylesheet" media="screen" href="{% static 'homepageapp/css/theme.min.css' %}">
+
+    
+    <!-- jQuery 3.6.4 -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" ></script>
+    
+    <!-- Popper js 2.11.6 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" crossorigin="anonymous"></script>        -->
+    
+    <!-- Popper Js 2.9 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- Bootstrap Js 5.3.0 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha512-3dZ9wIrMMij8rOH7X3kLfXAzwtcHpuYpEgQg1OA4QAob1e81H8ntUQmQm3pBudqIoySO5j0tHN4ENzA6+n2r4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Vendor js -->
+    <!-- <script src="assets/js/vendor.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    
+    <!-- App js -->
+    <!-- <script src="assets/js/app.min.js"></script> -->
+    
+    <!-- Tempus Dominus JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/js/tempus-dominus.min.js" crossorigin="anonymous"></script>       
+
+
+    <!-- Vendor scrits: js libraries and plugins-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'homepageapp/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'homepageapp/vendor/simplebar/dist/simplebar.min.js' %}"></script>
+    <script src="{% static 'homepageapp/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js' %}"></script>
+    <script src="{% static 'homepageapp/vendor/tiny-slider/dist/min/tiny-slider.js' %}"></script>
+    <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax.min.js' %}"></script>
+    <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script>
+    
+    <!-- Main theme javascript-->
+    <script src="{% static 'homepageapp/js/theme.min.js' %}"></script>
+
   </head>
   <!-- Body-->
   <body class="bg-light">
@@ -119,7 +168,6 @@
           <img class="d-block" src="{% static '/homepageapp/2022-Logo-Transparent-small.png' %}" width="80" alt="New 76 Pro Lube Plus"></a>
           <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span></button>
-            <a class="btn btn-link btn-dark btn-sm d-none d-lg-block order-lg-3" href="{% url 'dashboard:dashboard-v2' %}" ><i class="fi-login me-2"></i>Employee </a>
             <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_login' %}"><i class="fi-users me-2"></i>Create an Account</a>
           <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
             <ul class="navbar-nav navbar-nav-scroll" style="max-height: 35rem;">
@@ -130,11 +178,11 @@
                   <li><a class="dropdown-item" href="{% url 'homepageapp:services' %}"><i class="fi-car me-2"></i>Service List</a></li>
                   <li class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="#"><i class="fi-friends fs-base me-2"></i>About Us</a></li>
+                  <li><a class="btn btn-link btn-dark btn-sm d-none d-lg-block order-lg-3" href="{% url 'dashboard:repair-order-dash' %}" ><i class="fi-login me-2"></i>Employee Portal</a></li>
                 </ul>
               </li>
               <!-- Menu items-->
-              <li class="nav-item active"><a class="nav-link" href="{% url 'appointments:appointment-create-view' %}">Service Appointment</a></li>
-              <li class="nav-item "><a class="nav-link" href="{% url 'appointments:appointment-create-view' %}">3D automotive Models</a></li>
+              <li class="nav-item active"><a class="nav-link" href="{% url 'appointments:create-appointment' %}">Service Appointment</a></li>
               
               <!-- <li class="nav-item"><a class="nav-link" href="#" role="button">Careers</a></li> -->
   
@@ -153,16 +201,6 @@
     <!-- Back to top button--><a class="btn-scroll-top" href="#top" data-scroll><span class="btn-scroll-top-tooltip text-muted fs-sm me-2">Top</span><i class="btn-scroll-top-icon fi-chevron-up">   </i></a>
     <!-- Back to top button-->
     <a class="btn-scroll-top" href="#top" data-scroll><span class="btn-scroll-top-tooltip text-muted fs-sm me-2">Top</span><i class="btn-scroll-top-icon fi-chevron-up">   </i></a>
-    <!-- Vendor scrits: js libraries and plugins-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="{% static 'homepageapp/vendor/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'homepageapp/vendor/simplebar/dist/simplebar.min.js' %}"></script>
-    <script src="{% static 'homepageapp/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js' %}"></script>
-    <script src="{% static 'homepageapp/vendor/tiny-slider/dist/min/tiny-slider.js' %}"></script>
-    <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax.min.js' %}"></script>
-    <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script>
-    <!-- Main theme script-->
-    <script src="{% static 'homepageapp/js/theme.min.js' %}"></script>
+
   </body>
 </html>

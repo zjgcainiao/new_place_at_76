@@ -5,17 +5,17 @@
 <section class="bg-top-center p-5 m-5">
   <div class="row">
     <div class="col-4">
-      Have an account? Sign in.
-      <button clas="btn btn-outline-primary"><a href=''></a></button>
+      <p>You can also directly sign in with your instagram, gmail or tiktok account here <a href="{% url 'customer_users:customer_user_register_firebaseauth' %}">soical media sign in</a></p>
     </div>
   </div>
-
+  <!-- end of row -->
 
   <div class='row'>
-    <div class="col-8">
+    <div class="col-12">
       <div class="card card-body card-dark border-primary shadow">
         <h3  class="text-dark">Register a new account with us. </h3>
-        <div class="card-text m-1"> We will be able to remind you for incoming service appointments, maintantence schedule and keep track of your vehicle's history. </div>
+        <div class="card-text m-1"> We will be able to remind you for incoming service appointments, maintantence schedule and keep track of your vehicle's history. Already have an account? 
+      <a href='{% url "customer_users:customer_user_login" %}'>Sign in</a>here.</div>
           <form class = 'form-floating' method="POST">
             {% csrf_token %}
             {{form |crispy}}

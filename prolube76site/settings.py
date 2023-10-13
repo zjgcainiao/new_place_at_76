@@ -422,7 +422,7 @@ if server:
             "HOST": server,
             "PORT": "",
             "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  # "ODBC Driver 18 for SQL Server",
-                        "extra_params": "TrustServerCertificate=yes;Encrypt=yes"
+                        "extra_params": "TrustServerCertificate=yes;Encrypt=no;"
                         },
         },
         'demo': {
@@ -433,7 +433,7 @@ if server:
             "HOST": server,
             "PORT": "",
             "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  # "ODBC Driver 18 for SQL Server",
-                        "extra_params": "TrustServerCertificate=yes;Encrypt=yes"
+                        "extra_params": "TrustServerCertificate=yes;Encrypt=no;"
                         },
         }
     }
