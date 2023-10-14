@@ -41,7 +41,7 @@ def generate_new_account_email(sender, instance, created, **kwargs):
                     return "https"
 
             # manul setup the domain for testing
-            domain = '127.0.0.1:8000'  # 'new76prolubeplus.com', '127.0.0.1:8000'
+            domain = 'new76prolubeplus.com' #'127.0.0.1:8000'  # 'new76prolubeplus.com', '127.0.0.1:8000'
             # Construct activation link
             # domain = get_current_site(None).domain
             protocol = get_protocol(domain)
