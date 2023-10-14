@@ -29,13 +29,13 @@ def create_customer_user_from_firebase_auth(firebase_user_id, password):
     }
 
 # @shared_task. use it when celery can be enabled on azure. recommend azure functions.  
-def create_firebase_auth_user(uid, email, display_name, password):
+def create_firebase_auth_user(uid, email, display_name):
     try:
         firebase_user = FirebaseUser.objects.create(firebase_user_uid=uid,
                                            firebase_user_email=email, 
                                            firebase_user_display_name=display_name)  # replace with your own fields as necessary
         # create_customer_user_from_firebase_auth.delay(user.uuid, password)  async function 
-        create_customer_user_from_firebase_auth(firebase_user.firebase_user_id, password)
+        create_customer_user_from_firebase_auth(firebase_user.firebase_user_id)
 
     except IntegrityError:
         raise ValueError('Cannot create a new FirebaseUser instance. There might be an existing user with the same uid or email.')

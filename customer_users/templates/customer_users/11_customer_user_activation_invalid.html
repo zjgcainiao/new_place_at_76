@@ -1,0 +1,28 @@
+{% extends 'homepageapp/10_homepageapp_base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load static %}
+
+{% block content-main %}
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card card-hover border mt-5">
+                    <div class="card-header">
+                        Account Activation
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">AhhOhh...Activation Failed</h5>
+                        <p class="card-text">
+                            We're sorry, but the activation link is invalid or has expired. If you're having trouble activating your account, please contact our support team or try registering again.
+                        </p>
+                        <a href="{% url 'customer_users:customer_user_register' %}" class="btn btn-primary">Register Again</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

@@ -19,18 +19,7 @@ from django.conf import settings
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 
-# @receiver(post_save, sender=TalentsModel)
-# def send_invite_email(sender, instance, created, **kwargs):
-#     if created:
-#         subject = 'Invitation to register as an InternalUser'
-#         message = f'Hi {instance.talent_first_name},\n\nYou have been invited to register as an InternalUser. Please click the following link to register:\n\n{settings.BASE_URL}/register/?email={instance.email}\n\nThanks,\nThe InternalUser team'
-#         send_mail(subject, message, settings.EMAIL_HOST_USER, [instance.email], fail_silently=False)
 
-
-# 2023-05-23 when creating a new employee record, a new internal_user shall be created
-# this one shall be tested after talent creation page is finished
-
-# account_activation_token = AccountActivationTokenGenerator()
 logger = logging.getLogger('django')
 
 

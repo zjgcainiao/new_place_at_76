@@ -171,8 +171,11 @@ LOGGING = {
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',  # or the domain where your React app is hosted
+    "http://localhost",
+    "http://127.0.0.1:8000"
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -257,14 +260,14 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-
+    # added CorsMiddleWare from django-cors-headers
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # added CorsMiddleWare from django-cors-headers
-    'corsheaders.middleware.CorsMiddleware',
+
     # custom InternalUserMiddleware that applies to certain apps
     "internal_users.middlewares.InternalUserMiddleware",
 ]
@@ -406,8 +409,10 @@ az_server = config("AZURE_DB_SERVER", default=False)
 
 if server:
     # load the environment variables
-    user = config("DB_USER")
-    password = config("DB_PASSWORD")
+    # user = config("DB_USER")
+    user = config("DB_APP_USR")
+    # password = config("DB_PASSWORD")
+    password = config("DB_APP_USER_PASSWORD")
     databaseName = config("DB_DATABASE1")
     demoDatabaseName = config("DEMO_DB_DATABASE_NAME")
     # print('using the DB_SERVER database')

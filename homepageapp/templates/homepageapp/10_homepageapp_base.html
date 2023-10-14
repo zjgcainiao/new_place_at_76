@@ -11,7 +11,7 @@
     <!-- Viewport-->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Favicon and Touch Icons-->
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'homepageapp/apple-touch-icon.png' %}">
+    <!-- <link rel="apple-touch-icon" sizes="180x180" href="{% static 'homepageapp/apple-touch-icon.png' %}"> -->
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'homepageapp/img/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'homepageapp/img/logo/logo-2022.svg' %}">
     <meta name="msapplication-TileColor" content="#ffffff">
@@ -151,7 +151,7 @@
           <img class="d-block" src="{% static '/homepageapp/2022-Logo-Transparent-small.png' %}" width="75" alt="Amazing Automan LLC"></a>
           <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span></button>
-            <a class="btn btn-link btn-dark btn-sm d-none d-lg-block order-lg-3" href="{% url 'internal_users:internal_user_login' %}" ><i class="fi-login me-2"></i>Employee</a>
+            <a class="btn btn-link btn-dark btn-sm d-none d-lg-block order-lg-3" href="{% url 'internal_users:internal_user_login' %}" ><i class="mdi mdi-search-web me-2"></i>VIN Search</a>
             <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}"><i class="fi-users me-2"></i>Create an Account</a>
           <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
             <ul class="navbar-nav navbar-nav-scroll" style="max-height: 20rem;">
@@ -162,12 +162,14 @@
                   <li><a class="dropdown-item" href="{% url 'homepageapp:services' %}"><i class="fi-car me-2"></i>Service List</a></li>
                   <li class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="{% url 'homepageapp:about-us' %}"><i class="fi-friends fs-base me-2"></i>About Us</a></li>
+                  <li class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'homepageapp:about-us' %}"><i class="fi-friends fs-base me-2"></i>Employee Portal</a></li>
                 </ul>
               </li>
               
               <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'appointments:create-appointment' %}">Service Appointment</a></li>
               {% comment %}
-              <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'appointments:create-appointment' %}">3D automotive Models</a></li>
+              <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'appointments:create-appointment' %}">VIN Search</a></li>
               {% endcomment %}
 
             </ul>

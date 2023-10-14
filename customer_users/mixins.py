@@ -5,7 +5,7 @@ from internal_users.models import InternalUser
 from django.shortcuts import redirect
 from django.contrib import messages
 
-
+# this middleware is not completed. 2023-10-13
 class CustomerUserRequiredMixin(AccessMixin):
     """Mixin to ensure that the current user is authenticated and an instance of CustomerUser"""
 

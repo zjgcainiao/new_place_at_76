@@ -1,4 +1,5 @@
 import json
+import logging
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
@@ -9,84 +10,171 @@ from customer_users.models import CustomerUser
 from formtools.preview import FormPreview
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from firebase_admin import auth
-from django.http import JsonResponse
 from customer_users.tasks import create_customer_user_from_firebase_auth, create_firebase_auth_user
 from firebase_auth_app.models import FirebaseUser
+from asgiref.sync import sync_to_async
+from dashboard.async_functions import database_sync_to_async
+
+from customer_users.token_generators import decode_activation_token_for_customer_user, create_activation_token_for_customer_user
 
 
 def customer_user_register(request):
     if request.method == 'POST':
         form = CustomerUserRegistrationForm(request.POST)
         if form.is_valid():
-            phone_number = form.cleaned_data.get('cust_user_phone_number')
-            # username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('cust_user_email')
             password = form.cleaned_data.get('password1')
-            user = form.save(commit=False)
-            user.save()
-            if isinstance(user, CustomerUser):
-                customer_user = CustomerUserBackend().authenticate(
-                    request, phone_number=phone_number, password=password)
-                # Log the user in
-                login(request, customer_user,
-                      backend='customer_users.customer_auth_backend.CustomerUserBackend')
-            else:
-                customer_user = None
-            # customer_user = CustomerUser.objects.get(cust_user_phone_number=user.cust_user_phone_number)
-            # Additional processing, such as creating a customer profile
-            # return render('customer_users/customer_user_registration_preview.html', {'form':form})
+            print(f'here is the password used to creating this customer email {email}:{password}....')
+            # Use the create_user method to create a new customer user. The proper way
+            customer_user = CustomerUser.objects.create_user(email=email, password=password)
+
+            print(f'saving the new customer user {customer_user.pk}...')
             return render(request, 'customer_users/60_customer_user_registration_success.html', {'customer_user': customer_user})
-            # return redirect('customer_users:dashboard',{'customer_user': user})
     else:
         form = CustomerUserRegistrationForm()
     return render(request, 'customer_users/10_customer_user_register.html', {'form': form})
 
 
-def customer_user_dashboard(request):
-    # Logic to fetch and display customer-specific dashboard data
-    if request.user.is_authenticated and isinstance(request.user, CustomerUser):
-        # customer_user = request.user
-        customer_user = CustomerUser.objects.get(
-            cust_user_id=request.user.cust_user_id)
-    return render(request, 'customer_users/80_customer_user_dashboard.html', {'customer_user': customer_user})
-    # return render(request, 'customer_users/51_dashboard_personal_info.html',{'customer_user': customer_user})
+
+# 2023-10-13 added to require a email verification:
+# prefer built-in login over FirebaseAuth login at this moment.
+
+def activate_customer_user_account(request, token):
+
+    logger = logging.getLogger('db_file')
+
+    logger.info(f' the JWT token received from activation link is {token}')
+    print(f'new customer user token recieved: {token}')
+    try:
+        decoded_payload = decode_activation_token_for_customer_user(token)
+
+        if not decoded_payload:
+            messages.error(request, f'Account activation failure. Invalid or Expired Token.')
+            return redirect('customer_users:customer_user_login')
+
+        user_id = decoded_payload['user_id']
+        email_verified = decoded_payload['email_verified']
+        user = CustomerUser.objects.get(pk=user_id)
+
+        logger.info(f'Decoding user token scuccessfull.')
+        print(f'Decoding customer user token scuccessfull.')
+        user_id = decoded_payload['user_id']
+        email_verified = decoded_payload['email_verified']
+        print(f'email_verified  decoded: {email_verified}')
+        print(f'user_id decoded: {user_id}')
+        print(f'current email_verified: {user.cust_user_email_verified}')
+
+        logger.info(f'the decoded user_id is {user_id or None}')
+        user = CustomerUser.objects.get(pk=user_id)
+        # If email was not verified at the time of token creation, verify now
+        if not email_verified and not user.cust_user_email_verified:
+            user.cust_user_email_verified = True
+            user.save()
+            logger.info(f'Activating customer user {user.pk}...')
+            print(f'Activating customer user {user.pk}...')
+            # url=redirect('customer_users:customer_user_login')
+            # print(f'redirecting url is {url}.....new email_verified: {user.cust_user_email_verified}')
+            messages.success(request, f'Account activation was successful. Thank you for your efforts. You can login now.')
+            return redirect('customer_users:customer_user_login')
+        elif not email_verified and user.cust_user_email_verified:
+            messages.warning(request, f'Account {user.pk} had been activated. Email verified.')
+            return redirect('customer_users:customer_user_login')
+        else:
+            messages.error(request, 'error activating account...')
+            return redirect('customer_users:customer_user_login')
+
+    except (TypeError, ValueError, OverflowError, CustomerUser.DoesNotExist):
+        user = None
+        logger.info(
+            f'activating customer user was unsuccessful.')
+        return render(request, 'customer_users/11_customer_user_activation_invalid.html')
+
 
 
 def customer_user_login(request):
-    if request.method == 'POST':
+    form = CustomerUserLoginForm()
+    logger = logging.getLogger('django.request')
+    print('running customer_user_login view function...')
+    if request.method == 'POST' or request.method == 'post':
+        print('login form posted.')
         # phone_number = request.POST['phone_number']
-        email = request.POST['username']
-        password = request.POST['password']
+        # email = request.POST['username']
+        # password = request.POST['password']
+        print(f'any email from request.POST["username"].. {request.POST["username"]}')
         form = CustomerUserLoginForm(request.POST)
         # two ways to authenticate, use the default authenticate or use the custom one in CustomerUserBackend()
         # if phone_number is None or len(phone_number)==0:
-        user = CustomerUserBackend().authenticate_via_email(
-            request, email=email, password=password)
-        # authenticate via email
-        # user = CustomerUserBackend().authenticate_via_email(request, email=email, password=password)
-        if user is not None:
-            login(
-                request, user, backend='customer_users.customer_auth_backend.CustomerUserBackend')
-            return redirect('customer_users:customer_user_dashboard')
+        print(f'login form form_valid() is {form.is_valid()}...')
+        # print(f'form in request.POST is {request.POST["form"]}...')
+        print(f'{form}')
+        if form.is_valid():
+            print(f'getting the login email for customer user: {email}')
+            email = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+
+            # Authenticate customer_user
+            user = CustomerUserBackend().authenticate(
+                request, email=email, password=password)
+            print(f'authenticating customer user {email} successful.logging in now...')   
+            if user:               
+                login(
+                    request, user, backend='customer_users.customer_auth_backend.CustomerUserBackend')
+                return redirect('customer_users:customer_user_profile')
+            else:
+                # Invalid credentials, handle error
+                logger.error(f'customer user login error detected. user email entered {email}')
+                messages.error(request, 'cannot authenticate the email and password combo.')
         else:
-            # Invalid credentials, handle error
-            pass
+            print(f'here are the error(s): {form.errors}')
+            messages.error(request, f'There seems to be an error in the form. Please check your inputs. {form.errors}')
+            # pass
+            email = request.POST['username']
+            password = request.POST['password']
+            # Authenticate customer_user
+            user = CustomerUserBackend().authenticate(
+                request, email=email, password=password)
+            print(f'authenticating customer user {email} successful.logging in now...')  
+            if user:               
+                login(
+                    request, user, backend='customer_users.customer_auth_backend.CustomerUserBackend')
+                return redirect('customer_users:customer_user_profile')
+            else:
+                # Invalid credentials, handle error
+                logger.error(f'customer user login error detected. user email entered {email}')
+                messages.error(request, 'cannot authenticate the email and password combo.')
     else:
         form = CustomerUserLoginForm()
         # if isinstance(request.user, CustomerUser):
         #     redirect('customer_users:customer_user_dashboard')
-    return render(request, 'customer_users/20_customer_user_login.html', {'form': form})
+    return render(request, 'customer_users/12_customer_user_login.html', {'form': form})
 
 
-@login_required
+def customer_user_profile(request):
+    customer_user = None
+    # Logic to fetch and display customer-specific dashboard data
+    if request.user.is_authenticated and isinstance(request.user, CustomerUser):
+        print(f'the user type is {isinstance(request.user, CustomerUser)}')
+        # customer_user = request.user
+        customer_user = CustomerUser.objects.get(
+            pk=request.user.cust_user_id)
+        if customer_user.cust_user_email_verified:
+            return render(request, 'customer_users/20_customer_user_dashboard.html', {'customer_user': customer_user})
+        else:
+            return render(request, 'customer_users/20_customer_user_dashboard.html', {'customer_user': customer_user})
+    else: 
+        print(f'The user type {request.user}is customerUser?:{isinstance(request.user, CustomerUser)}')
+        return redirect('customer_users:customer_user_login')
+    
+    # return render(request, 'customer_users/51_dashboard_personal_info.html',{'customer_user': customer_user})
+
 def customer_user_logout(request):
-    messages.info(request, "Hi %s, you have been signed out." %
-                  request.user.cust_user_email)
+    messages.info(request,
+                f"Hi {request.user.cust_user_email}, you have been signed out.")
     logout(request)
     return redirect('homepageapp:homepage')
-    # return redirect('login')
 
 
 def customer_user_change_field(request):
@@ -111,15 +199,13 @@ def customer_user_registration_success(request):
         customer_user = None
     return render(request, 'customer_users/60_customer_user_registration_success.html', {'customer_user': customer_user})
 
-# only renders the html template
-
-
+# only renders the html templates
 def customer_user_register_firebaseauth(request):
     return render(request, 'customer_users/11_customer_user_register_with_firebaseauth.html')
 
 
 def customer_user_login_firebaseauth(request):
-    return render(request, 'customer_users/21_customer_user_login_with_firebaseauth.html')
+    return render(request, 'customer_users/13_customer_user_login_with_firebaseauth.html')
 
 
 def firebase_auth_signin_precheck(request):
@@ -238,12 +324,13 @@ def get_service_history(request, vehicle_id):
     # Logic to fetch and display service history for a specific vehicle
     return render(request, 'customer_users/service_history.html')
 
-
+# 2023-10-13
 # defined to verify a token from authenticated user via firebase auth javscript script.
 # the script is defined in firebase_auth_register_and_sign_in_with_django.js that is serverd via static files via "{% static '' %}"
-def verify_token(request):
+async def verify_token(request):
     token = request.POST.get('token')
     user_data = request.POST.get('user_data')
+    new_user_flag=request.POST.get('newUserFlag')
 
     # Verify Firebase token
     try:
@@ -251,11 +338,18 @@ def verify_token(request):
         uid = decoded_token['uid']
     except:
         return JsonResponse({'success': False, 'error': 'Invalid token'})
-
-
-    firebase_user = FirebaseUser.objects.create(firebase_user_uid=uid, defaults=user_data)
+    
+    # added variable to check if the token verification is for login or registration.
+    if new_user_flag:
+        firebase_user = await sync_to_async(FirebaseUser.objects.create, 
+            thread_sensitive=True)(firebase_user_uid=uid, defaults=user_data)
+        
+    else:
+        firebase_user = await sync_to_async(FirebaseUser.objects.get, 
+            thread_sensitive=True)(firebase_user_uid=uid)
+    
     if firebase_user:
-        # You can set additional user fields here if needed
+    # You can set additional user fields here if needed
         pass
     login(request, firebase_user)
     

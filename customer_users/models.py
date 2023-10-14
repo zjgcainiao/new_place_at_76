@@ -21,9 +21,7 @@ class CustomerUserManager(BaseUserManager):
         """
         if not email:
             raise ValueError(
-                'At least one of email or phone number must be provided.')
-            # hash the password
-        hashed_password = make_password(password)
+                'The email field is required.')
 
         email = self.normalize_email(email)
         # if phone_number is not None:
@@ -32,7 +30,7 @@ class CustomerUserManager(BaseUserManager):
         #     phone_number is None
         customer_user = self.model(cust_user_email=email, **extra_fields)
         # customer_user.set_password(password)
-        customer_user.set_password(hashed_password)
+        customer_user.set_password(password)
         customer_user.save(using=self._db)
         return customer_user
 
@@ -44,7 +42,7 @@ class CustomerUser(AbstractBaseUser):
 
     cust_user_id = models.AutoField(primary_key=True)
     cust_user_first_name = models.CharField(_('first name'), max_length=50)
-    cust_user_last_name = models.CharField(_('last name'), max_length=50)
+    cust_user_last_name = models.CharField(_('last name'), max_length=50, null=True,blank=True)
     cust_user_middle_name = models.CharField(
         _('middle name'), max_length=50, null=True)
     cust_user_preferred_name = models.CharField(
@@ -53,7 +51,9 @@ class CustomerUser(AbstractBaseUser):
                                               help_text='enter a valid US phone number.', null=True)
     cust_user_country_code = models.CharField(max_length=10, default='+1')
     cust_user_email = models.EmailField(
-        verbose_name='email address', unique=True)
+        verbose_name='Email', unique=True)
+    cust_user_email_verified = models.BooleanField(
+        verbose_name='Email Verified?', default=False)
     password = models.CharField(max_length=128, blank=False, null=False)
     cust_user_start_date = models.DateTimeField(null=True)
     cust_user_discharge_date = models.DateTimeField(null=True, blank=True)
@@ -70,7 +70,7 @@ class CustomerUser(AbstractBaseUser):
     cust_user_address_zip = models.CharField(
         max_length=50, blank=False, null=False)
     cust_user_is_active = models.BooleanField(_('active'), default=True,
-                                              help_text=_('Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'))
+                                              help_text=_('Indicates the user active status.'))
     cust_user_linked_customer = models.ForeignKey(
         Customer, on_delete=models.SET_NULL, null=True, related_name='users_customers')
     cust_user_linkage_is_confirmed = models.BooleanField(default=False)
@@ -86,14 +86,16 @@ class CustomerUser(AbstractBaseUser):
 
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
+
+
     USERNAME_FIELD = 'cust_user_email'  # or 'email_address'
     # 'cust_user_phone_number','cust_user_email',
     REQUIRED_FIELDS = ['password']
 
     objects = CustomerUserManager()
 
-    # def __str__(self):
-    #     return f'{self.cust_user_first_name} {self.cust_user_last_name}-{self.cust_user_phone_number}'
+    def __str__(self):
+        return f'{self.cust_user_full_name}'
 
    # Full name property field
     @property

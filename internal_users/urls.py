@@ -27,7 +27,6 @@ urlpatterns = [
     path('activate/<token>/',
          activate_internal_user_account, name='activate_internal_user_account'),
 
-
     path('password_change/', InternalUserPasswordChangeView.as_view(),
          name='password_change'),
     # path('password_change/confirm/', UserPasswordChangeDoneView.as_view(), name='password_change_confirm'),

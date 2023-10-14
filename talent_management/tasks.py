@@ -29,7 +29,7 @@ from core_operations.common_functions import generate_today_date_format, format_
 #     task='proj.tasks.import_contacts',
 # )
 
-@shared_task
+# @shared_task
 def send_report_for_active_talents_with_pay_type_0():
     # Query talents that meet the conditions
     # a pay type mus be assigned before the talent's work day.

@@ -10,15 +10,15 @@ logger = logging.getLogger('external_api')
 
 
 @receiver(post_save, sender=VehiclesNewSQL02Model)
-def fetch_vin_data_on_new_vehicle(sender, instance, created, **kwargs):
+async def fetch_vin_data_on_new_vehicle(sender, instance, created, **kwargs):
 
     if created:  # Check if it's a newly created instance.
-        logging(
-            f'new vehicle record {instance.pk} created. trigger vin data fetching signal for vin {instance.VIN_number}.')
+        logging.info(
+            f'A new vehicle record {instance.pk} was created. Triggering vin data fetching signal for vin {instance.VIN_number} and model year {instance.vehicle_year}')
         try:
             # Convert our async function to synchronous for the signal.
-            sync_to_async(fetch_and_save_single_vin_from_nhtsa_api(
-                instance.VIN_number, instance.vehicle_year))()
+            await fetch_and_save_single_vin_from_nhtsa_api(
+                instance.VIN_number, instance.vehicle_year)
         except Exception as e:
             # Catch any general exception
             logger.error(

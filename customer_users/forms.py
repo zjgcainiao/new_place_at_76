@@ -16,46 +16,46 @@ from captcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox
 
 
 class CustomerUserRegistrationForm(UserCreationForm):
-    customer_user_last_name = forms.CharField(
-        max_length=30, required=False, help_text='Optional.', label='Last Name')
-    customer_user_middle_name = forms.CharField(
-        max_length=30, required=False, help_text='Optional.', label='Middle Name')
+    cust_user_email = forms.EmailField(help_text='We will important account updates and notifications to this email. Required.', widget=forms.EmailInput(attrs={'type': 'email', 'class': 'form-control', }),label='Email')
+    cust_user_phone_number = forms.CharField(
+        max_length=15, required=False,
+        widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control', 'placeholder:': 'ex. 213-445-9990 or 2134459990.'}),
+        help_text='We will text important updates to this phone number. Optional but recommended.', label='Phone Number')
+    cust_user_last_name = forms.CharField(
+        max_length=30, required=False, help_text='Optional.', label='Last Name',widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }))
 
+        
+    cust_user_middle_name = forms.CharField(
+        max_length=30, required=False, help_text='Optional.', label='Middle Name')
+    
+    # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
     class Meta:
         model = CustomerUser
-        fields = ['cust_user_email', 'cust_user_phone_number', 'cust_user_first_name',
+        fields = ['cust_user_email', 'cust_user_phone_number', 'cust_user_first_name','cust_user_middle_name',
                   'cust_user_last_name', 'password1', 'password2']  # 'username',
         # required = ['cust_user_phone_number', 'cust_user_first_name', 'password1', 'password2']
         widgets = {
-            'cust_user_phone_number': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', 'placeholder:': 'ex. 213-445-9990 or 2134459990.', }),
-            'cust_user_email': forms.EmailInput(attrs={'type': 'email', 'class': 'form-control', }),
+
             'cust_user_first_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'cust_user_last_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'password1': forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', }),
-            'password2': forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', }),
+
+            'password1': forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', 'placeholder': 'Enter Password'}),
+            'password2': forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control','placeholder': 'Confirm Password' }),
         }
         labels = {
-            'cust_user_phone_number': 'Enter a US valid phone number.',
-            'cust_user_email': 'Enter your email',
-            'cust_user_first_name': 'First Name',
-            'cust_user_last_name': 'Last Name',
             'password1': 'Password',
             'password2': 'Repeat Password',
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['password1'].widget.attrs.update(
-            {'class': 'form-control', 'placeholder': 'Enter Password'})
-        self.fields['password2'].widget.attrs.update(
-            {'class': 'form-control', 'placeholder': 'Confirm Password'})
+
     # cust_user_phone_number = forms.CharField(required=True, max_length=20,
     #                                           help_text='enter your phone number. Support US-only numbers. We will not spam you. ')
     # cust_user_email = forms.EmailField(help_text='Enter a valid email address. Recommended.')
 
     # password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     # password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
-    # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
+
 
     # Regular expression pattern for valid zip code
     ZIP_CODE_REGEX = r'^\d{5}(?:[-\s]\d{4})?$'
@@ -103,14 +103,14 @@ class CustomerUserRegistrationForm(UserCreationForm):
             self.zip_code_validator(zip_code)
         return zip_code
 
-    def clean_customer_user_email(self):
+    def clean_cust_user_email(self):
         email = self.cleaned_data['cust_user_email']
         email = email.strip()
         email = email.lower()
         if email:
             return email
         else:
-            raise ValidationError('email cannot be empty')
+            raise ValidationError('email cannot be empty.')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -131,6 +131,7 @@ class CustomerUserRegistrationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+    
     # this function will have to expand for employee email verifications.
     # a customer user.
     # def clean_email(self):
@@ -153,24 +154,35 @@ class CustomerUserLoginForm(AuthenticationForm):
     # )
     username = forms.EmailField(
         widget=forms.EmailInput(attrs={
+            'placeholder': 'Enter your email address...',
             'class': 'form-control',
             'type': 'text',
-            'placeholder': 'Enter the same email address as in your employee contact information',
         }),
         label='Email',
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
-            'class': 'form-control',
-            'type': 'text',
-            'placeholder': 'Enter your password.'
+            'type': 'password',
+            'placeholder': 'Enter your password...'
         }),
         label='Password',
     )
 
+    remember_me = forms.BooleanField(
+        required=False,
+        initial=True,
+        label="Remember Me",
+        help_text="Check this box if you want to stay logged in.",
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check',
+        })
+    )
+
+
     class Meta:
         model = CustomerUser
-
+        fields=['cust_user_email','password']
+        
 
 class CustomerUserChangeForm(forms.Form):
     field_name = forms.CharField(widget=forms.HiddenInput())

@@ -1,14 +1,14 @@
-{% extends 'customer_users/00_customer_user_base.html' %}
-
+{% extends 'homepageapp/10_homepageapp_base.html' %}
+{% load crispy_forms_tags %}
 {% load static %}
-{% block content %}
-<div class="bg-top-center bg-repeat-0 pt-5 m-1" style="background-image: url('{% static 'homepageapp/img/home/light_grey_background.jpg' %}'); background-size: cover; background-position: center center;">
+{% block content1-main %}
+<div class="bg-primary-lighten pt-5 m-1" >
   <div class="container m-1 mb-sm-2" >
       <!-- Breadcrumb-->
       <nav class="m-2 pt-md-3" aria-label="Breadcrumb">
         <ol class="breadcrumb breadcrumb-dark">
           <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Home</a></li>
-          <li class="breadcrumb-item active"><a href="{% url 'customer_users:customer_user_dashboard' %}">Account</a></li>
+          <li class="breadcrumb-item active"><a href="{% url 'customer_users:customer_user_profile' %}">Account</a></li>
         </ol>
       </nav>
       <!-- Page content-->

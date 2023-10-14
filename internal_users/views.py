@@ -77,7 +77,7 @@ class InternalUserLoginView(LoginView):
 
     # template_name = 'internal_users/loginv2.html'
     template_name = 'internal_users/20_login.html'
-    success_url = reverse_lazy('dashboard:dashboard-v2')
+    success_url = reverse_lazy('dashboard:repair-order-dash')
     authentication_form = InternalUserLoginForm
 
     # adding this line will allow users to skip login when the user has been logged in before.
@@ -118,7 +118,7 @@ def internal_user_login(request):
             login(
                 request, user, backend='internal_users.internal_user_auth_backend.InternalUserBackend')
             if not remember_me:  # if 'remember_me' box is not checked, then set the session to expire when the user closes the browser.
-                request.session.set_expiry(600)
+                request.session.set_expiry(60*60*24*14) # 14 days
             return redirect('internal_users:internal_user_dashboard')
         else:
             # Invalid credentials, handle error
@@ -250,7 +250,8 @@ def internal_user_view_employement(request):
         else:
             return HttpResponseForbidden('No talent found with the given email.')
     else:
-        return HttpResponseForbidden('You are not authorized to view this page. Employees have to login.')
+        messages.error('you are not authorized to view this page.')
+        return redirect('homepageapp:homepage')
 
 
 # @login_required(login_url='internal_users:internal_user_login')

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    {% load static %}
+<head>
+    <title>Account Activation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> 
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td style="padding: 20px 0 30px 0;">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
+                    <tr>
+                        <td align="center" bgcolor="#fd390e" style="padding: 40px 0 30px 0;">
+                            <h2 style="color: #ffffff;">Welcome to Automan Shop!<img scr='{% static "homepageapp/img/coolant-icon.png" %}'></h2>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="color: #153643; font-size: 24px;">
+                                        <b>Activate Your Account</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 20px 0 30px 0; color: #153643; font-size: 16px;">
+                                        Thank you for registering with us. Before you can start using your new account, you need to confirm your email address.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <a href="{{ activation_link }}" style="display: inline-block; padding: 10px 20px; font-size: 18px; color: #ffffff; background-color: #fd390e; text-decoration: none; border-radius: 5px;">Activate Account</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 30px 0 0 0; color: #153643; font-size: 16px;">
+                                        If you have any questions, please don't hesitate to <a href="mailto:uatoman001@76prolubeplus.com" style="color: #fd390e;">contact us</a>. 
+                                        <br><br>
+                                        Cheers, 
+                                        <br>
+                                        The Amazing Automan Team
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" style="padding: 30px 30px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td width="75%" style="color: #ffffff; font-size: 14px;">
+                                        &copy; 2023 Amazing Automan LLC. All rights reserved.
+                                    </td>
+                                    <td align="right">
+                                        <table border="0" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
+                                                <td>
+                                                    <!-- <a href="#">
+                                                        <img src="link_to_facebook_icon" alt="Facebook" width="38" height="38" style="display: block;" border="0" />
+                                                    </a> -->
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

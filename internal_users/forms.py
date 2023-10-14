@@ -26,6 +26,13 @@ class InternalUserCreationForm(forms.ModelForm):
         model = InternalUser
         fields = ('user_id', 'email', 'user_first_name', 'user_last_name',
                   )
+    
+    def clean_email(self):
+        email = self.cleaned_data['email'].lower().strip()
+        new = InternalUser.objects.filter(email=email)
+        if new.count():
+            raise ValidationError(" Email Already Exist.")
+        return email
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -58,7 +65,7 @@ class InternalUserRegistrationFormV2(UserCreationForm):
     # this function will have to expand for employee email verifications.
     # employee record shall be created first before a user can be added.
 
-    def email_clean(self):
+    def clean_email(self):
         email = self.cleaned_data['email'].lower().strip()
         new = InternalUser.objects.filter(email=email)
         if new.count():
@@ -125,9 +132,17 @@ class InternalUserLoginForm(AuthenticationForm):
         }),
         label='Password',
     )
-    remember_me = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={
-        'class': 'form-check',
-    }))
+    
+    remember_me = forms.BooleanField(
+        required=False,
+        initial=True,
+        label="Remember Me",
+        help_text="Check this box if you want to stay logged in.",
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check',
+        })
+    )
+
 
     class Meta:
         model = InternalUser

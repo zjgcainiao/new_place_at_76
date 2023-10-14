@@ -1,22 +1,22 @@
 {% extends 'homepageapp/10_homepageapp_base.html' %}
 {% load crispy_forms_tags %}
 {% block content1-main %}
-
+{% load static %}
 <section class="bg-top-center p-5 m-5">
-  <div class="row">
-    <div class="col-4">
-      <p>You can also directly sign in with your instagram, gmail or tiktok account here <a href="{% url 'customer_users:customer_user_register_firebaseauth' %}">soical media sign in</a></p>
-    </div>
-  </div>
+  <!-- <div class="row">
+    <p>You can also directly sign in with your instagram, gmail or tiktok account here <a href="{% url 'customer_users:customer_user_register_firebaseauth' %}">soical media sign in</a></p>
+  </div> -->
   <!-- end of row -->
 
   <div class='row'>
-    <div class="col-12">
+    <div class="col-auto">
       <div class="card card-body card-dark border-primary shadow">
         <h3  class="text-dark">Register a new account with us. </h3>
-        <div class="card-text m-1"> We will be able to remind you for incoming service appointments, maintantence schedule and keep track of your vehicle's history. Already have an account? 
-      <a href='{% url "customer_users:customer_user_login" %}'>Sign in</a>here.</div>
-          <form class = 'form-floating' method="POST">
+        <p class="fw-semibold my-1">Get premium, repair-shop-grade vehicle reports for your family, at no cost to you. Up to 3 Vehicles.       Already have an account? 
+          <a class="card-link" href='{% url "customer_users:customer_user_login" %}'>Sign in</a> here. 
+        </p>
+
+          <form method="POST">
             {% csrf_token %}
             {{form |crispy}}
             <button class = 'btn btn-outline-primary justify-content-center' type="submit">Register</button>

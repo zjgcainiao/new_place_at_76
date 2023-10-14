@@ -13,11 +13,11 @@ urlpatterns = [
     path('', include('homepageapp.urls')),
     path('talents/', include('talent_management.urls')),
     # add pilot ViewSet via django restframework
-    path('apis/', include('apis.urls')),
+    path('apis/', include('apis.urls')),    # external api vendor related.
     path('emails/', include('automatic_emails.urls')),
-    path('employees/', include('internal_users.urls')),
+    path('employees/', include('internal_users.urls')), # internal_users
     path('accounts/', include('customer_users.urls')),  # customer_users
-    path('dashboard/', include('dashboard.urls')),
+    path('dashboard/', include('dashboard.urls')),   # workstations
     path('appts/', include('appointments.urls')),
     path('shifts/', include('shift_management.urls')),
     path('admin/', admin.site.urls),
