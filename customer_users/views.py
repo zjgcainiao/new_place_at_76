@@ -114,7 +114,6 @@ def customer_user_login(request):
             print(f'getting the login email for customer user: {email}')
             email = form.cleaned_data['username']
             password = form.cleaned_data['password']
-
             # Authenticate customer_user
             user = CustomerUserBackend().authenticate(
                 request, email=email, password=password)
@@ -161,9 +160,27 @@ def customer_user_profile(request):
         customer_user = CustomerUser.objects.get(
             pk=request.user.cust_user_id)
         if customer_user.cust_user_email_verified:
-            return render(request, 'customer_users/20_customer_user_dashboard.html', {'customer_user': customer_user})
+            return render(request, 'customer_users/20_customer_user_profile.html', {'customer_user': customer_user})
         else:
-            return render(request, 'customer_users/20_customer_user_dashboard.html', {'customer_user': customer_user})
+            return render(request, 'customer_users/20_customer_user_profile.html', {'customer_user': customer_user})
+    else: 
+        print(f'The user type {request.user}is customerUser?:{isinstance(request.user, CustomerUser)}')
+        return redirect('customer_users:customer_user_login')
+    
+    # return render(request, 'customer_users/51_dashboard_personal_info.html',{'customer_user': customer_user})
+
+def customer_user_profile_new(request):
+    customer_user = None
+    # Logic to fetch and display customer-specific dashboard data
+    if request.user.is_authenticated and isinstance(request.user, CustomerUser):
+        print(f'the user type is {isinstance(request.user, CustomerUser)}')
+        # customer_user = request.user
+        customer_user = CustomerUser.objects.get(
+            pk=request.user.cust_user_id)
+        if customer_user.cust_user_email_verified:
+            return render(request, 'customer_users/20_customer_user_new_profile.html', {'customer_user': customer_user})
+        else:
+            return render(request, 'customer_users/20_customer_new_user_profile.html', {'customer_user': customer_user})
     else: 
         print(f'The user type {request.user}is customerUser?:{isinstance(request.user, CustomerUser)}')
         return redirect('customer_users:customer_user_login')

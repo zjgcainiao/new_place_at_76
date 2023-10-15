@@ -219,14 +219,12 @@ INSTALLED_APPS = [
     # "prolube76site.apps.MyAdminConfig",
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    'django.contrib.sessions', # allow sessions
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',  # humanize lib. so i can use to format phone numbers
-
     # 'polls.apps.PollsConfig',
     'corsheaders',
-    # 'polls',
     'homepageapp',
     'appointments',
     'apis',  # adding the apis.

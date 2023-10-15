@@ -38,7 +38,6 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('user_is_admin', True)
         user = self.create_user(email, password=password, **extra_fields)
 
-        user.save(using=self._db)
         return user
 
 

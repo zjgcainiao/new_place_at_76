@@ -12,8 +12,12 @@ urlpatterns = [
     path('register-success/', views.customer_user_registration_success, name='customer_user_registration_success'),
 
     path('login/', views.customer_user_login, name='customer_user_login'),
-
     path('logout/', views.customer_user_logout, name='customer_user_logout'),
+
+    path('profile/', views.customer_user_profile, name='customer_user_profile'),
+    path('profile_new/', views.customer_user_profile_new, name='customer_user_profile_new'),
+    path('get_personal_info/', views.get_personal_info, name='get_personal_info'),
+    # path('vehicles/<int:vehicle_id>/service-history/', views.service_history, name='service_history'),
 
     #firebase-related. not finished.
     path('login/firebase/', views.customer_user_login_firebaseauth, name='customer_user_login_firebaseauth'),
@@ -24,7 +28,5 @@ urlpatterns = [
     # path('preview/', views.customer_user_register, name='register'),
     # path('vehicles/', views.vehicle_list, name='vehicle_ list'),
     
-    path('profile/', views.customer_user_profile, name='customer_user_profile'),
-    path('get_personal_info/', views.get_personal_info, name='get_personal_info'),
-    # path('vehicles/<int:vehicle_id>/service-history/', views.service_history, name='service_history'),
+
 ]
