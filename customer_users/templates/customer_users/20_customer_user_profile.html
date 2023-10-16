@@ -30,12 +30,13 @@
             </div>
             <!-- end of d-flex -->
             <!-- customer user button group  -->
-            <div class="row btn-group" role="group" aria-label="customer user button group">
+            <div class="row btn-group" role="toolbar" aria-label="customer user button group">
                 <button class="btn btn-primary mb-1" href="{% url 'appointments:create-appointment' %}">
                   <i class="fi-plus me-2"></i>Service Appointment
                 </button>
-                <button class="btn btn-outline-dark mb-1" href="{% url 'customer_users:customer_user_new_dashboard' %}" data-bs-toggle="collapse">
-                  <i class="fi-align-justify me-2"></i>Try out new Dash</button>
+                <button class="btn btn-outline-dark mb-1" href="{% url 'customer_users:customer_user_profile_new' %}">
+                  <i class="fi-align-justify me-2"></i>Try out new Dash
+                </button>
             </div>
             <div class="collapse d-md-block mt-3" id="account-nav">
               <div class="card-nav">

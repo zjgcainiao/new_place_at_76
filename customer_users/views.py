@@ -178,11 +178,12 @@ def customer_user_profile_new(request):
         customer_user = CustomerUser.objects.get(
             pk=request.user.cust_user_id)
         if customer_user.cust_user_email_verified:
-            return render(request, 'customer_users/20_customer_user_new_profile.html', {'customer_user': customer_user})
+            return render(request, 'customer_users/20_customer_user_profile_new.html', {'customer_user': customer_user})
         else:
-            return render(request, 'customer_users/20_customer_new_user_profile.html', {'customer_user': customer_user})
+            return render(request, 'customer_users/20_customer_user_profile_new.html', {'customer_user': customer_user})
     else: 
         print(f'The user type {request.user}is customerUser?:{isinstance(request.user, CustomerUser)}')
+        messages.error(request, f'you are not authorized to view this page. please login first or try it again.')
         return redirect('customer_users:customer_user_login')
     
     # return render(request, 'customer_users/51_dashboard_personal_info.html',{'customer_user': customer_user})

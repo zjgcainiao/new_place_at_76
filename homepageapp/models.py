@@ -81,7 +81,7 @@ class InvoiceStatusModel(models.Model):
         super().save(*args, **kwargs)
 
     class Meta:
-        db_table = 'invoicestatuess_new_03'
+        db_table = 'invoicestatuses_new_03'
         ordering = ["invoice_status_id"]
         verbose_name = 'invoicestatus'
         verbose_name_plural = 'invoicestatuses'
