@@ -1414,11 +1414,11 @@ for aa in data:
 
 
 # 2023-10-16
-# adding CatelogLinks Data
-model_name = 'Vendor'
+# adding CatalogLinks Data
+model_name = 'CatalogLinks'
 file_path = os.path.join(module_dir, model_name + suffix_pattern)
 with open(file_path, 'r') as f:
-    primary_key_field = 'VendorId'
+    primary_key_field = 'CatalogLink'
     data = json.load(f)
     # added on 2023-10-16 to clean extra spaces and empty strings
     data = clean_string_in_dictionary_object(data)
@@ -1431,22 +1431,15 @@ with open(file_path, 'r') as f:
                 continue
 
             # Retrieve objects from dictionaries instead of DB queries
-            vendor_id = aa.get(primary_key_field)
+            catalog_link_id = aa.get(primary_key_field)
             vendor_type_obj = aa.get(aa.get('VendorTypeId'))
-            vendor_catelog_link_obj = aa.get(aa.get('CatalogLinkId'))
 
             # use update_or_create
             defaults = {
-                'vendor_name': aa.get('Name'),
-                'vendor_contact_persons': aa.get('Contact'),
-                'vendor_comment': aa.get('Comment'),
-                'vendor_contact_email_address': aa.get('EmailAddress'),
-                'vendor_code': aa.get('Code'),
-                'vendor_limit': aa.get('Limit'),
-                'vendor_terms': aa.get('Terms'),
-                'vendor_acctount_class':aa.get('AcctClass'),
-                'vendor_type vendor_type_obj':vendor_catelog_link_obj,
-                'vendor_catelog_link': aa.get('CatalogLinkId'),
+                'catelog_link_file_used': aa.get('Name'),
+                'catelog_vendor_display_name': aa.get('Contact'),
+                'catelog_vendor_[AuthCode]': aa.get('AuthCode'),
+
             }
             try:
                 vendor, created = Vendors.objects.update_or_create(

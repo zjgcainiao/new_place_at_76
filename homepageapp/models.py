@@ -151,11 +151,11 @@ class CatalogLinks(models.Model):
     catalog_link_id = models.AutoField(primary_key=True)
     catalog_link_file_used = models.CharField(
         max_length=50, blank=True, null=True)
-    catalog_vendor_display_name =models.CharField(
+    catalog_link_display_name =models.CharField(
         max_length=50, blank=True, null=True)
-    catalog_version = models.CharField(
+    catalog_link_interface_version = models.CharField(
         max_length=10, blank=True, null=True)
-    catalog_auth_code = models.CharField(
+    catalog_link_auth_code = models.CharField(
         max_length=50, blank=True, null=True)
 
     updated_at = models.DateTimeField(auto_now=True, null=True)
