@@ -1438,7 +1438,7 @@ with open(file_path, 'r') as f:
             defaults = {
                 'catelog_link_file_used': aa.get('Name'),
                 'catelog_vendor_display_name': aa.get('Contact'),
-                'catelog_vendor_[AuthCode]': aa.get('AuthCode'),
+                'catelog_link_auth_code': aa.get('AuthCode'),
 
             }
             try:
@@ -1635,8 +1635,8 @@ with open(file_path, 'r') as f:
 
             # Retrieve objects from dictionaries instead of DB queries
             vendor_id = aa.get(primary_key_field)
-            vendor_type_obj = aa.get(aa.get('VendorTypeId'))
-            vendor_catelog_link_obj = aa.get(aa.get('CatalogLinkId'))
+            vendor_type_obj = aa.get('VendorTypeId')
+            vendor_catalog_link_obj = aa.get('CatalogLinkId')
 
             # use update_or_create
             defaults = {
@@ -1647,9 +1647,9 @@ with open(file_path, 'r') as f:
                 'vendor_code': aa.get('Code'),
                 'vendor_limit': aa.get('Limit'),
                 'vendor_terms': aa.get('Terms'),
-                'vendor_acctount_class':aa.get('AcctClass'),
-                'vendor_type vendor_type_obj':vendor_catelog_link_obj,
-                'vendor_catelog_link': aa.get('CatalogLinkId'),
+                'vendor_account_class':aa.get('AcctClass'),
+                'vendor_type': vendor_type_obj,
+                'vendor_catalog_link': vendor_catalog_link_obj,
             }
             try:
                 vendor, created = Vendors.objects.update_or_create(

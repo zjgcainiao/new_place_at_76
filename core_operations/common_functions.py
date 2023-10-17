@@ -1,25 +1,27 @@
+import phonenumbers
+import re
+import random
+import logging
+from datetime import datetime
+from faker import Faker
 from asgiref.sync import sync_to_async
 from core_operations.models import US_COUNTRY_CODE
 from homepageapp.models import ModelsNewSQL02Model
 from django.http import JsonResponse
 from homepageapp.models import MakesNewSQL02Model
-import phonenumbers
+
 # from customer_users.forms import AddressForm
 from django.shortcuts import render
 from django.utils import timezone
 from django.db.models import Count
-import re
-from datetime import datetime
-from faker import Faker
-import random
-import logging
+
+from decimal import Decimal, InvalidOperation
+
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db import models
 
 fake = Faker()
-
-#
 
 
 def is_valid_us_phone_number(phone_number):
@@ -246,3 +248,102 @@ def clean_string_in_dictionary_object(data):
             cleaned_value = value.strip()
             data[key] = cleaned_value if cleaned_value else None
     return data
+
+
+def convert_date_to_yymmdd(date_string):
+    # def convert_date_to_yymmdd(self, date_str):
+    if not date_string:  # Handle empty strings
+        return None
+
+    date_formats = [
+        '%m/%d/%y',  # e.g. "5/25/87"
+        '%Y-%m-%d',  # e.g. "1987-05-25"
+        '%d-%m-%Y',  # e.g. "25-05-1987"
+        # ... you can add more popular date formats as needed
+    ]
+
+    for date_format in date_formats:
+        try:
+            parsed_date = datetime.strptime(date_string, date_format)
+            # Convert and return in desired format
+            # return parsed_date.strftime('%Y-%m-%d')
+            return timezone.make_aware(parsed_date)
+        except ValueError:
+            continue  # If this format fails, try the next one
+
+    # If all parsing attempts fail, handle the unparsable date (e.g., return None or raise an error)
+    return None  # Or you could raise a custom error if you want
+
+
+def convert_to_int(value_str, default=None):
+    # Convert a string to an integer. If it's empty or not valid, return the default value."""
+    try:
+        return int(value_str)
+    except (ValueError, TypeError):  # This handles both empty strings and other invalid values
+        return default
+
+
+def convert_to_decimal(value_str, default=None):
+    # Convert a string to an integer. If it's empty or not valid, return the default value."""
+    try:
+        return Decimal(str(value_str))
+    # This handles both empty strings and other invalid values
+    except (ValueError, TypeError, InvalidOperation):
+        return default
+
+
+def validate_decimal(value, max_digits=20, decimal_places=2):
+    # validates a input is a no more than 20 digit,2 decimal placed decimal.
+    integer_part = int(value)
+    decimal_part = value - integer_part
+    if len(str(integer_part)) > max_digits - decimal_places or len(str(decimal_part)[2:]) > decimal_places:
+        return False
+    return True
+
+
+def convert_to_boolean(value_str, default=None):
+    """Convert a string to a boolean. If it's empty or not recognized, return the default value."""
+    truthy_values = ["true", "yes", "1", "active"]
+    falsy_values = ["false", "no", "0", "inactive"]
+
+    value_str_lower = value_str.lower().strip()
+
+    if value_str_lower in truthy_values:
+        return True
+    elif value_str_lower in falsy_values:
+        return False
+    else:
+        return default
+
+
+def make_timezone_aware(input_datetime, datetime_formats=['%Y-%m-%d %H:%M:%S.%f', '%Y-%m-%dT%H:%M:%S.%f']):
+    """
+    Convert a naive datetime string or datetime object to a timezone-aware datetime object.
+
+    Parameters:
+    - input_datetime: The naive datetime string or datetime object.
+    - datetime_formats: A list of datetime formats to try for parsing. Defaults to include common formats.
+
+    Returns:
+    - A timezone-aware datetime object or None.
+    """
+    if input_datetime is None:
+        return None
+
+    if isinstance(input_datetime, datetime):
+        native_datetime = input_datetime
+    elif isinstance(input_datetime, str):
+        native_datetime = None
+        for fmt in datetime_formats:
+            try:
+                native_datetime = datetime.strptime(input_datetime, fmt)
+                break
+            except ValueError:
+                continue
+        if native_datetime is None:
+            return None
+    else:
+        raise TypeError(
+            "The input must be either a datetime object or a string.")
+
+    return timezone.make_aware(native_datetime)
