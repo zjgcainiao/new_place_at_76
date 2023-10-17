@@ -67,6 +67,26 @@ class AddressesNewSQL02Model(models.Model):
         verbose_name_plural = 'addresses'
 
 
+class AccountClassModel(models.Model):
+    account_class_id = models.AutoField(primary_key=True)
+    account_type = models.CharField(max_length=30, null=True)
+    account_last_updated_at = models.DateTimeField(auto_now=True, null=True)
+    account_created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='accountclass_created', on_delete=models.SET_NULL, null=True, blank=True)
+    modified_by = models.ForeignKey(
+        InternalUser, related_name='accountclass_modified', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.created_by = self.modified_by
+        super().save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'accountclasses_new_03'
+        ordering = ["-account_class_id"]
+        verbose_name = 'accountclass'
+        verbose_name_plural = 'accountclasses'
 
 class CategoryModel(models.Model):
     category_id = models.AutoField(primary_key=True)
@@ -90,27 +110,36 @@ class CategoryModel(models.Model):
             self.created_by = self.modified_by
         super().save(*args, **kwargs)
 
+class CatelogLinks(models.Model):
+    catelog_link_id = models.AutoField(primary_key=True)
+    catelog_link_file_used  = models.CharField(
+        max_length=50, blank=True, null=True)
+    catelog_vendor_display_name =models.CharField(
+        max_length=50, blank=True, null=True)
+    catelog_version = models.CharField(
+        max_length=10, blank=True, null=True)
+    catelog_auth_code= models.CharField(
+        max_length=50, blank=True, null=True)
 
-class AccountClassModel(models.Model):
-    account_class_id = models.AutoField(primary_key=True)
-    account_type = models.CharField(max_length=30, null=True)
-    account_last_updated_at = models.DateTimeField(auto_now=True, null=True)
-    account_created_at = models.DateTimeField(auto_now_add=True, null=True)
-    created_by = models.ForeignKey(
-        InternalUser, related_name='accountclass_created', on_delete=models.SET_NULL, null=True, blank=True)
-    modified_by = models.ForeignKey(
-        InternalUser, related_name='accountclass_modified', on_delete=models.SET_NULL, null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        if self._state.adding:
-            self.created_by = self.modified_by
-        super().save(*args, **kwargs)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by  = models.ForeignKey(
+        InternalUser, related_name='catelog_links_created_by', on_delete=models.SET_NULL, null=True, blank=True)
+    updated_by = models.ForeignKey(
+        InternalUser, related_name='catelog_links_updated_by', on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
-        db_table = 'accountclasses_new_03'
-        ordering = ["-account_class_id"]
-        verbose_name = 'accountclass'
-        verbose_name_plural = 'accountclasses'
+        db_table = 'catelog_links_new_03'
+        ordering = ['-catelog_link_id']
+        verbose_name = '(Vendor) Catelog Link'
+        verbose_name_plural = '(Vendor) Catelog Links'
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.created_by = self.updated_by
+        super().save(*args, **kwargs)
+
+
 
 class VendorTypes(models.Model):
     vendor_type_id = models.AutoField(primary_key=True)
@@ -126,8 +155,8 @@ class VendorTypes(models.Model):
     class Meta:
         db_table = 'vendor_types_new_03'
         ordering = ["-vendor_type_id"]
-        verbose_name = 'vendor type'
-        verbose_name_plural = 'vendor types'
+        verbose_name = 'Vendor Type'
+        verbose_name_plural = 'Vendor Types'
 
 # 2023-10-16 added new model Vendors (for vehicles)
 class Vendors (models.Model):
