@@ -64,6 +64,23 @@ class AccountClassModel(models.Model):
         verbose_name = 'accountclass'
         verbose_name_plural = 'accountclasses'
 
+class VendorTypes(models.Model):
+    vendor_type_id = models.AutoField(primary_key=True)
+    vendor_type_name = models.CharField(max_length=100, null=True, verbose_name='Vendor Type Name')
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='vendor_types_created_by', on_delete=models.SET_NULL, null=True, blank=True)
+    updated_at = models.DateTimeField(
+        auto_now=True, null=True)
+    updated_by = models.ForeignKey(
+        InternalUser, related_name='vendor_types_updated_by', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        db_table = 'vendor_types_new_03'
+        ordering = ["-vendor_type_id"]
+        verbose_name = 'vendor type'
+        verbose_name_plural = 'vendor types'
+
 # 2023-10-16 added new model Vendors (for vehicles)
 class Vendors (models.Model):
     vendor_id  = models.AutoField(primary_key=True)
@@ -97,6 +114,25 @@ class Vendors (models.Model):
         verbose_name = 'vendor'
         verbose_name_plural = 'vendors'
 
+# addded VendorLinks model that specified the link spec in 'vendor_link_value' field.
+class VendorLinks(models.Model):
+    vendor_link_id = models.AutoField(primary_key=True)
+    vendor_id = models.IntegerField(null=True, blank=True)
+    vendor_link_property = models.CharField(max_length=200, null=True)
+    vendor_link_value = models.CharField(max_length=4000, null=True)
+    updated_at = models.DateTimeField(
+        auto_now=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='vendor_links_created_by', on_delete=models.SET_NULL, null=True, blank=True)
+    updated_by = models.ForeignKey(
+        InternalUser, related_name='vendor_links_updated_by', on_delete=models.SET_NULL, null=True, blank=True)
+    
+    class Meta:
+        db_table = 'vendor_links_new_03'
+        ordering = ["-vendor_link_id"]
+        verbose_name = 'vendor link'
+        verbose_name_plural = 'vendor links'
 
 class InvoiceStatusModel(models.Model):
     invoice_status_id = models.AutoField(primary_key=True)
@@ -119,6 +155,8 @@ class InvoiceStatusModel(models.Model):
         ordering = ["invoice_status_id"]
         verbose_name = 'invoicestatus'
         verbose_name_plural = 'invoicestatuses'
+
+
 
 
 class AddressesNewSQL02Model(models.Model):
