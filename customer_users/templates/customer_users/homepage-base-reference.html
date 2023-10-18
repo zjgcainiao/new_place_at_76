@@ -18,8 +18,15 @@
     <meta name="theme-color" content="#ffffff">
     <!-- import jQuery js first -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-     <!-- Vendor scrits: js libraries and plugins-->
-  
+    
+    <!-- Vendor Styles-->
+    <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}"/>
+    <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}"/>
+    <!-- Main Theme Styles -->
+    <link rel="stylesheet" media="screen" href="{% static 'homepageapp/css/theme.min.css' %}">  
+
+    <!-- Vendor javascript libraries and plugins -->
+    <!-- Popover 2.9.2 js, bootstrap 5.3.0 js-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha512-3dZ9wIrMMij8rOH7X3kLfXAzwtcHpuYpEgQg1OA4QAob1e81H8ntUQmQm3pBudqIoySO5j0tHN4ENzA6+n2r4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{% static 'homepageapp/vendor/simplebar/dist/simplebar.min.js' %}"></script>
@@ -28,9 +35,10 @@
     <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax.min.js' %}"></script>
     <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script>
     
-    <!-- Main theme script-->
+    <!-- Main theme.min.js-->
     <script src="{% static 'homepageapp/js/theme.min.js' %}"></script>
     
+
     <!-- Page loading styles-->
     <style>
       .page-loading {
@@ -121,14 +129,6 @@
       });
     </script>
 
-    <!-- Vendor Styles-->
-    <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}"/>
-    <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}"/>
-    <!-- Main Theme Styles + Bootstrap-->
-    <link rel="stylesheet" media="screen" href="{% static 'homepageapp/css/theme.min.css' %}">
-
-
-
   </head>
   <!-- Body-->
   <body class="bg-light">
@@ -150,12 +150,12 @@
           <a class="navbar-brand me-1 me-xl-4" href="{% url 'homepageapp:homepage' %}">
           <img class="d-block" src="{% static '/homepageapp/2022-Logo-Transparent-small.png' %}" width="75" alt="Amazing Automan LLC"></a>
           <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span></button>
-            <a class="btn btn-dark btn-sm d-none d-lg-block order-lg-3" href="{% url 'shops:payment_checkout' %}" ><i class="mdi mdi-search-web me-2"></i>Vehicle Reports</a>
-           
+            <span class="navbar-toggler-icon"></span>
+          </button>
+            <a class="btn btn-link btn-dark btn-sm d-none d-lg-block order-lg-3" href="{% url 'shops:payment_checkout' %}" ><i class="mdi mdi-search-web me-2"></i>Our Shops</a>
             <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}"><i class="fi-users me-2"></i>Create an Account</a>
           <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
-            <ul class="navbar-nav navbar-nav-scroll" style="max-height: 25rem;">
+            <ul class="navbar-nav navbar-nav-scroll" style="max-height: 20rem;">
               <!-- Services -->
               <li class="nav-item dropdown py-2 me-lg-2">
                 <a class="nav-link dropdown-toggle align-items-center border-end-lg border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fi-layers me-2"></i>Services</a>
@@ -169,7 +169,6 @@
               </li>
               
               <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'appointments:create-appointment' %}">Service Appointment</a></li>
-               <li class="nav-item"><a class="nav-link" href="{% url 'shops:payment_checkout' %}">Our Shops</a></li>
               {% comment %}
               <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'shops:payment_checkout' %}">Our Shops</a></li>
               {% endcomment %}

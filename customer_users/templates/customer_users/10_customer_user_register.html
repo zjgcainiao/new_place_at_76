@@ -1,8 +1,9 @@
-{% extends 'homepageapp/10_homepageapp_base.html' %}
+
+{% extends 'customer_users/00_customer_user_base.html' %}
 {% load crispy_forms_tags %}
 {% block content1-main %}
 {% load static %}
-<section class="bg-top-center p-5 m-5">
+<div  class="container p-5 m-5">
   <!-- <div class="row">
     <p>You can also directly sign in with your instagram, gmail or tiktok account here <a href="{% url 'customer_users:customer_user_register_firebaseauth' %}">soical media sign in</a></p>
   </div> -->
@@ -27,5 +28,5 @@
   </div>
   <!-- end of div 'row' -->
   
-</section>  
+</div>  
 {% endblock %}

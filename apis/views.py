@@ -184,11 +184,13 @@ async def fetch_single_vin_from_nhtsa_api(vin, vehicle_year):
 # return and save result for one vin
 # return three variables.
 
+
 async def fetch_and_save_single_vin_from_nhtsa_api(vin, year):
     url = f"https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/{vin}?format=json&modelyear={year}"
     # url_extended = https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}format=json&modelyear={year}
     logger = logging.getLogger('external_api')
-    logger.info(f'Initiating an api request to NHTSA.DOT.GOV:{ NHTSA_API_URL}.')
+    logger.info(
+        f'Initiating an api request to NHTSA.DOT.GOV:{ NHTSA_API_URL}.')
     print(f'Initiating an api request to NHTSA.DOT.GOV:{ NHTSA_API_URL}.')
     # print(url)
     vin_data_list = []
@@ -274,7 +276,7 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year):
             print(f'saving new vin data? {created}?')
         else:
             print('no new vin data saved.')
-        
+
         print('func completed.')
         # return the data, the number of records downgraded, and if new records are created in the VinNhtsaSnapshots
         return vin_data_list, number_of_downgraded_records, created
