@@ -427,7 +427,7 @@ if server:
 
     # use the Microsoft provided MSSQL DRIVER for Django
     DATABASES = {
-        "default": {
+        "default_actual": {
             "ENGINE": "mssql",
             "NAME": databaseName,
             "USER": user,
@@ -438,7 +438,7 @@ if server:
                         "extra_params": "TrustServerCertificate=yes;Encrypt=no;"
                         },
         },
-        'demo': {
+        'default': {
             'ENGINE': 'mssql',
             "NAME": demoDatabaseName,
             "USER": user,

@@ -7,7 +7,7 @@ class VINSearchForm(forms.Form):
     vin = forms.CharField(label='vin', widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholer': 'enter full vin number.'}))
     year = forms.IntegerField(label='Model Year', widget=forms.NumberInput(
-        attrs={'class': 'form-control', 'placeholder': 'enter model year'}))
+        attrs={'class': 'form-control', 'placeholder': 'enter model year'}), help_text="Optional. Enter only if you cannot get the result with vin only.")
 
     def clean_vin(self):
         vin = self.cleaned_data['vin']
@@ -23,14 +23,26 @@ class VINSearchForm(forms.Form):
         # Capitalize the VIN
         return vin.upper()
 
+    # year is optional. clean it only when its entered
     def clean_year(self):
         year = self.cleaned_data['year']
         current_year = datetime.now().year
 
-        # Check if year is valid
+        # If year is not provided (or empty), return as is
+        if not year:
+            return year
+
+        # Ensure year is an integer
+        try:
+            year = int(year)
+        except ValueError:
+            raise forms.ValidationError('Model year must be a valid number.')
+
+        # Check if year is within valid range
         if year > current_year + 1 or year < 1900:  # Assuming no vehicle will be from before 1900
             raise forms.ValidationError(
                 f'Model year must be between 1900 and {current_year + 1}')
+
         return year
 
     def __init__(self, *args, **kwargs):

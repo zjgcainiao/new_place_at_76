@@ -135,6 +135,7 @@ webencodings==0.5.1
 Werkzeug==2.3.6
 whitenoise==6.4.0
 # wxPython==4.2.0
+xhtml2pdf==0.2.11
 yarl==1.9.2
 zict==2.1.0
 zipp==3.16.1
