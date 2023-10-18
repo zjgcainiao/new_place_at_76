@@ -1905,9 +1905,9 @@ class LicensePlateSnapShotsPlate2Vin(models.Model):
 class NhtsaVariableList(models.Model):
     id = models.AutoField(primary_key=True)
     variable_id = models.IntegerField(null=True, blank=True)
-    variable_name = models.CharField(max_length=50, null=True, blank=True)
+    variable_name = models.CharField(max_length=200, null=True, blank=True)
     variable_group_name = models.CharField(
-        max_length=50, null=True, blank=True)
+        max_length=200, null=True, blank=True)
     variable_description_html = models.CharField(
         max_length=4000, null=True, blank=True)
     variable_data_type = models.CharField(max_length=20, null=True, blank=True)
