@@ -144,12 +144,12 @@ LOGGING = {
             'level': 'WARNING',
             'propagate': False,
         },
-        'django.security': {
+        'django.security': {  # Logger for customer_users and internal_users and all future user types
             'handlers': ['security_file'],
             'level': 'WARNING',
             'propagate': False,
         },
-        'talent_managment': {  # the name of your custom app `talent_management`
+        'talent_management': {  # the name of your custom app `talent_management`
             'handlers': ['app_file'],
             'level': 'DEBUG',
             'propagate': False,

@@ -1900,3 +1900,20 @@ class LicensePlateSnapShotsPlate2Vin(models.Model):
         indexes = [
             models.Index(fields=['-created_at', 'license_plate', 'state']),
         ]
+
+
+class NhtsaVariableList(models.Model):
+    id = models.AutoField(primary_key=True)
+    variable_id = models.IntegerField(null=True, blank=True)
+    variable_name = models.CharField(max_length=50, null=True, blank=True)
+    variable_group_name = models.CharField(
+        max_length=50, null=True, blank=True)
+    variable_description_html = models.CharField(
+        max_length=4000, null=True, blank=True)
+    variable_data_type = models.CharField(max_length=20, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'nhtsa_variable_list'
+        ordering = ["-id", 'variable_id']

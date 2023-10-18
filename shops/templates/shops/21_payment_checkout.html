@@ -1,13 +1,15 @@
+
 {% extends 'customer_users/00_customer_user_base.html' %}
 {% load static %}
 {% block content1-main %}
 
 <div class="container pt-5 my-5">
-    <h3>Standard Payment Checkout</h3>
+    
         <div class="card">
+            <h3 class="card-header">Standard Payment Checkout</h3>
             <div class='card-body'>
                 <form  id="payment-form">
-                    <div  id="payment-element">
+                    <div id="payment-element">
                         <!-- Elements will create form elements here -->
                     </div>
 
@@ -29,7 +31,9 @@
     
   </script> -->
   
-<script src="https://js.stripe.com/v3/" async>
+<script src="https://js.stripe.com/v3/">
+</script>
+<script>
     $(function(){
         var stripe = Stripe('pk_test_51O27ZHJQdPkpRk8HuzWAElLfKatvTuF6cfeCloCfB4lumooZcazJhvZKETo4FE7NWxX73E1BqmhFwZH7b2i5RVS900ooTWV626');
         const appearance = {
@@ -37,19 +41,26 @@
         };
         const options = {
             mode: 'payment',
-            amount: 420.00,
+            amount: 200,
             currency: 'usd',
             // Fully customizable with appearance API.
             appearance: appearance,
             automatic_payment_methods:  {
             'enabled': true,
             },
+            
+            // fields: {
+            //     billingDetails: {
+            //     name: 'never',
+            //     email: 'never',
+            //     }
+            // },
             layout: {
-                    type: 'accordion',
-                    defaultCollapsed: false,
-                    radios: true,
-                    spacedAccordionItems: false
-                }
+                type: 'tab',
+                defaultCollapsed: false,
+                radios: true,
+                spacedAccordionItems: false
+            }
         };
 
         // Set up Stripe.js and Elements to use in checkout form

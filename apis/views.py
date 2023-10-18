@@ -5,26 +5,21 @@ from django.contrib.auth import authenticate, login
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.views.generic import ListView, FormView
-from django.views.generic.edit import ModelFormMixin
 from django.utils import timezone
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsNewSQL02Model, TextMessagesModel, VinNhtsaApiSnapshots
 from apis.serializers import CustomerSerializer, RepairOrderSerializer
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from rest_framework import viewsets
+from rest_framework.response import Response
 import json
 from apis.serializers import LineItemsSerializer, TextMessagesSerializer
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from internal_users.models import InternalUser
 from internal_users.internal_user_auth_backend import InternalUserBackend
-from apis.serializers import AddressSerializer, PhoneSerializer, EmailSerializer, CustomerSerializer, RepairOrderSerializer, PaymentSerializer
+from apis.serializers import AddressSerializer, PhoneSerializer, EmailSerializer, CustomerSerializer, RepairOrderSerializer, PaymentSerializer, VinNhtsaApiSnapshotsSerializer
 from apis.api_vendor_urls import NHTSA_API_URL
 from core_operations.common_functions import clean_string_in_dictionary_object
 from dashboard.async_functions import decrement_version_for_vin_async, update_or_create_vin_snapshots_async, database_sync_to_async
@@ -34,9 +29,41 @@ from homepageapp.models import VinNhtsaApiSnapshots
 from django.db import models
 # from asgiref.sync import sync_to_async
 from apis.api_vendor_urls import PLATE2VIN_API_URL
+from django.core.exceptions import ObjectDoesNotExist
+from core_operations.constants import POPULAR_NHTSA_VARIABLE_IDS
 
 
-class RepairOrderViewSet(viewsets.ModelViewSet):
+class VinNhtsaApiSnapshotViewSet(viewsets.ModelViewSet):
+    serializer_class = VinNhtsaApiSnapshotsSerializer
+
+    def get_queryset(self):
+        # List of variable IDs to filter. imported from core_operations.constants
+        variable_ids_list = POPULAR_NHTSA_VARIABLE_IDS
+        # vin = self.kwargs.get('vin')
+        vin = self.request.query_params.get('vin')
+        # print(f'fetched vin number is {vin}')
+
+        if vin:
+            qs = VinNhtsaApiSnapshots.objects.filter(
+                vin=vin,
+                version=5,
+                variable_id__in=variable_ids_list,
+            ).order_by('-created_at', 'variable_id')
+
+            # Sort based on the order of variable_ids_list
+            sorted_qs = sorted(
+                qs, key=lambda x: variable_ids_list.index(x.variable_id))
+            return sorted_qs
+        else:
+            return VinNhtsaApiSnapshots.objects.none()
+
+    def handle_exception(self, exc):
+        if isinstance(exc, ObjectDoesNotExist):
+            return Response({"Error": "VIN not found."}, status=status.HTTP_404_NOT_FOUND)
+        return super().handle_exception(exc)
+
+
+class ActiveRepairOrderViewSet(viewsets.ModelViewSet):
     serializer_class = RepairOrderSerializer
 
     def get_queryset(self):
