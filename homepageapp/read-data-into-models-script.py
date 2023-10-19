@@ -25,6 +25,7 @@ from homepageapp.models import PartItemModel as PartItem, PartsModel as Part, La
 from homepageapp.models import lineItemTaxesNewSQL02Model as LineItemTax, NoteItemsNewSQL02Model as NoteItem
 from homepageapp.models import AccountClassModel as AccountClass, PaymentsModel as Payment, PaymentTransactionsModel as PaymentTransaction
 from homepageapp.models import VehicleNotesModel as VehicleNotes
+from homepageapp.models import Vendors, VendorAdddresses, VendorLinks, VendorTypes, 
 from talent_management.models import TalentsModel as Talent
 
 import pandas as pd
@@ -34,6 +35,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 import logging
 from django.db import transaction
+from core_operations.common_functions import clean_string_in_dictionary_object
 
 # Initialize logging 2023-09-17
 logging.basicConfig(filename='data_import_v01.log', level=logging.ERROR)
@@ -716,74 +718,7 @@ with open(file_path, 'r') as f:
                 print(
                     f"An error occurred while updating/creating Vehicle with ID {aa['VehicleId']}: {e}")
 
-    # except Exception as e:
-    #     logging.error(f"An error occurred in transaction block: {e}")
-
-        # old repetitive way
-        # if Vehicle.objects.get(pk=aa['VehicleId']) is not None:
-        #     aa_instance = Vehicle.objects.get(pk=aa['VehicleId'])
-        #     if vehicle_cust_obj is not None:
-        #         aa_instance.vehicle_cust = vehicle_cust_obj
-        #     if vehicle_make_obj is not None:
-        #         aa_instance.vehicle_make = vehicle_make_obj
-
-        #     if vehicle_submodel_obj is not None:
-        #         aa_instance.vehicle_sub_model = vehicle_submodel_obj
-        #     if vehicle_bodystyle_obj is not None:
-        #         aa_instance.vehicle_body_style = vehicle_bodystyle_obj
-        #     if vehicle_brake_obj is not None:
-        #         aa_instance.vehicle_brake = vehicle_brake_obj
-        #     if vehicle_transmission_obj is not None:
-        #         aa_instance.vehicle_transmission = vehicle_transmission_obj
-        #     if vehicle_engine_obj is not None:
-        #         aa_instance.vehicle_engine = vehicle_engine_obj
-        #     if vehicle_GVW_obj is not None:
-        #         aa_instance.vehicle_GVW = vehicle_GVW_obj
-        #     if vehicle_drive_obj is not None:
-        #         aa_instance.vehicle_drive_type = vehicle_drive_obj
-        #     if vehicle_phone_obj is not None:
-        #         aa_instance.vehicle_phone = vehicle_phone_obj
-
-        #     # Flip the existing 'deleted' field to vehicle_is_active field.
-        #     aa_instance.vehicle_record_is_active = vehicle_is_active
-        # else:
-        #     aa_instance = Vehicle(
-        #         vehicle_id=aa['VehicleId'],
-        #         vehicle_cust_id=aa['CustId'],
-        #         vehicle_year=aa['Year'],
-        #         vehicle_make_id=aa['MakeId'],
-        #         vehicle_sub_model_id=aa['SubModelId'],
-        #         vehicle_body_style_id=aa['BodyId'],
-        #         vehicle_engine_id=aa['EngineId'],
-        #         vehicle_transmission_id=aa['TransmissionId'],
-        #         vehicle_brake_id=aa['BrakeId'],
-        #         vehicle_drive_type_id=aa['DriveTypeId'],
-        #         vehicle_GVW_id=aa['GVWId'],
-        #         vehicle_odometer_1=aa['Odometer1'],
-        #         vehicle_odometer_2=aa['Odometer2'],
-        #         VIN_number=aa['Vin'],
-        #         vehicle_inspection_datetime=aa['InspDate'],
-        #         vehicle_last_in_date=aa['LastInDate'],
-        #         vehicle_license_plate_nbr=aa['License'],
-        #         vehicle_license_state=aa['LicenseState'],
-        #         vehicle_part_level=aa['PartLevel'],
-        #         vehicle_labor_level=aa['LaborLevel'],
-        #         vehicle_used_level=aa['UseVehicleLevels'],
-        #         vehicle_memo_01=aa['VehicleMemo'],
-        #         vehicle_memo_does_print_on_order=aa['VehicleMemoPrintOnOrder'],
-        #         vehicle_is_included_in_CRM_compaign=aa['IncludeInCRMCampaign'],
-        #         vehicle_color=aa['Color'],
-        #         vehicle_record_is_active=vehicle_is_active,
-        #         vehicle_class_id=aa['VehicleClass'],
-        #         vehicle_phone_id=aa['DriverPhoneId'],
-        #         vehicle_engine_hour_in=aa['EngineHoursIn'],
-        #         vehicle_engine_hour_out=aa['EngineHoursOut'],
-        #         vehicle_active_recall_counts=aa['ActiveRecallCount'],
-        #         vehicle_recall_last_checked_datetime=aa['ActiveRecallLastChecked'],
-        #         vehicle_last_updated_at=aa['LastChangeDate'],
-
-        #     )
-        # aa_instance.save()
+   
 
 # vehiclenotes_new_03
 model_name = 'VehicleNote'
@@ -1404,7 +1339,6 @@ initial_data_filename = "2023-05-01-talent_management_init.csv"
 initial_data_filepath = "/Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/New_site_database-data-migration-python-scripts"
 file_path = os.path.join(initial_data_filepath, initial_data_filename)
 
-
 def csv_to_json(csv_full_path):
     with open(csv_full_path, 'r') as file:
         csv_data = csv.DictReader(file)
@@ -1415,7 +1349,6 @@ def csv_to_json(csv_full_path):
 # read the
 json_data = csv_to_json(file_path)
 print(json_data)
-
 
 def convert_date_format(date_string):
     if date_string:
@@ -1477,3 +1410,264 @@ for aa in data:
     # Bulk create the repairorderLineItemSequence objects in the database
     # RepairOrderLineItem.objects.bulk_create(data_list)
     aa_instance.save()
+
+
+
+# 2023-10-16
+# adding CatalogLinks Data
+model_name = 'CatalogLinks'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    primary_key_field = 'CatalogLink'
+    data = json.load(f)
+    # added on 2023-10-16 to clean extra spaces and empty strings
+    data = clean_string_in_dictionary_object(data)
+    # try:
+    with transaction.atomic():  # wrap in a transaction
+        for aa in data:
+            if primary_key_field not in aa:
+                logging.error(
+                    f"Skipping vendor entry due to missing 'VendorId': {aa}")
+                continue
+
+            # Retrieve objects from dictionaries instead of DB queries
+            catalog_link_id = aa.get(primary_key_field)
+            vendor_type_obj = aa.get(aa.get('VendorTypeId'))
+
+            # use update_or_create
+            defaults = {
+                'catelog_link_file_used': aa.get('Name'),
+                'catelog_vendor_display_name': aa.get('Contact'),
+                'catelog_link_auth_code': aa.get('AuthCode'),
+
+            }
+            try:
+                vendor, created = Vendors.objects.update_or_create(
+                    vendor_id=vendor_id,
+                    defaults=defaults
+                )
+                vendor.full_clean()
+                vendor.save()
+
+            except ValidationError as e:
+                logging.error(
+                    f"Validation error for Vendor ID {vendor_id}: {e}")
+                print(
+                    f"Validation error for Vendor ID {aa['VehicleId']}: {e}")
+
+                raise
+            except Exception as e:
+                logging.error(
+                    f"An error occurred while updating/creating Vendor with ID {vendor_id}: {e}")
+                print(
+                    f"An error occurred while updating/creating Vendor with ID {vendor_id}: {e}")
+
+
+# 2023-10-16
+# adding VendorType
+model_name = 'VendorType'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    primary_key_field = 'VendorTypeId'
+    data = json.load(f)
+    # added on 2023-10-16 to clean extra spaces and empty strings
+    data = clean_string_in_dictionary_object(data)
+    # try:
+    with transaction.atomic():  # wrap in a transaction
+        for aa in data:
+            if primary_key_field not in aa:
+                logging.error(
+                    f"Skipping vendor type entry due to missing '{primary_key_field}': {aa}")
+                continue
+
+            # Retrieve objects from dictionaries instead of DB queries
+            vendor_type_id = aa.get(primary_key_field)
+
+            # use update_or_create
+            defaults = {
+                'vendor_type_name': aa.get('Name'),
+            }
+
+            try:
+                vendor_type, created = VendorTypes.objects.update_or_create(
+                    vendor_type_id=vendor_type_id,
+                    defaults=defaults,
+                )
+                vendor_type.full_clean()
+                vendor_type.save()
+
+            except ValidationError as e:
+                logging.error(
+                    f"Validation error for vendor_type ID {vendor_type_id}: {e}")
+                print(
+                    f"Validation error for vendor_type ID {vendor_type_id}: {e}")
+
+                raise
+            except Exception as e:
+                logging.error(
+                    f"An error occurred while updating/creating vendor_type ID {vendor_type_id}: {e}")
+                print(
+                    f"An error occurred while updating/creating vendor_type ID {vendor_type_id}: {e}")
+
+# 2023-10-26 
+# adding VendorAddresses
+model_name = 'VendorAddresses'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+logger = logging.getLogger('django')
+
+logger.info(f'Reading VendorAddresses data. source file: {file_path}')
+with open(file_path, 'r') as f:
+    primary_key_field = 'VendorId'
+    data = json.load(f)
+    # added on 2023-10-16 to clean extra spaces and empty strings
+    data = clean_string_in_dictionary_object(data)
+    # try:
+    with transaction.atomic():  # wrap in a transaction
+        for aa in data:
+            if primary_key_field not in aa:
+                logger.error(
+                    f"Skipping vendor-address entry due to missing '{primary_key_field}': {aa}")
+                continue
+
+            # Retrieve objects from dictionaries instead of DB queries
+            vendor_id = aa.get(primary_key_field)
+            address_id = aa.get("AddressId")
+
+            # use update_or_create
+            # defaults = {
+            #     'vendor_type_name': aa.get('Name'),
+            # }
+
+            try:
+                vendor_address, created = VendorAdddresses.objects.update_or_create(
+                    vendor_id=vendor_id,
+                    address_id=address_id,
+
+                )
+                vendor_address.full_clean()
+                vendor_address.save()
+
+            except ValidationError as e:
+                logging.error(
+                    f"Validation error for vendor ID {vendor_id} and addresss ID {address_id}: {e}")
+                print(
+                    f"Validation error for vendoe ID {vendor_id} and addresss ID {address_id}: {e}")
+
+                raise
+            except Exception as e:
+                logging.error(
+                    f"An error occurred while updating/creating vendor ID {vendor_id} and addresss ID {address_id}: {e}")
+                print(
+                    f"An error occurred while updating/creating vendor ID {vendor_id} and addresss ID {address_id}: {e}")
+
+# 2023-10-26 
+# adding VendorLink
+model_name = 'VendorLink'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+logger = logging.getLogger('django')
+
+logger.info(f'Reading {model_name} data. source file: {file_path}')
+print(f'Reading {model_name} data. source file: {file_path}')
+
+with open(file_path, 'r') as f:
+    primary_key_field = 'VendorId'
+    data = json.load(f)
+    # added on 2023-10-16 to clean extra spaces and empty strings
+    data = clean_string_in_dictionary_object(data)
+    # try:
+    with transaction.atomic():  # wrap in a transaction
+        for aa in data:
+            if primary_key_field not in aa:
+                logger.error(
+                    f"Skipping vendor-address entry due to missing '{primary_key_field}': {aa}")
+                continue
+
+            vendor_id = aa.get(primary_key_field)
+            vendor_link_property = aa.get("Property")
+            vendor_link_value = aa.get("Value")
+
+            # use update_or_create
+            defaults = {
+                'vendor_link_property':vendor_link_property,
+                'vendor_link_value': vendor_link_value,
+            }
+
+            try:
+                vendor_link, created = VendorLinks.objects.update_or_create(
+                    vendor_id=vendor_id,
+                    defaults=defaults,
+
+                )
+                vendor_link.full_clean()
+                vendor_link.save()
+
+            except ValidationError as e:
+                logger.error(
+                    f"Validation error for vendor ID {vendor_id}: {e}")
+                print(
+                    f"Validation error for vendor ID {vendor_id}: {e}")
+
+                raise
+            except Exception as e:
+                logger.error(
+                    f"An error occurred while updating/creating vendor ID {vendor_id}: {e}")
+                print(
+                    f"An error occurred while updating/creating vendor ID {vendor_id}: {e}")
+
+
+
+# 2023-10-16
+# adding Vendor model data
+model_name = 'Vendor'
+file_path = os.path.join(module_dir, model_name + suffix_pattern)
+with open(file_path, 'r') as f:
+    primary_key_field = 'VendorId'
+    data = json.load(f)
+    # added on 2023-10-16 to clean extra spaces and empty strings
+    data = clean_string_in_dictionary_object(data)
+    # try:
+    with transaction.atomic():  # wrap in a transaction
+        for aa in data:
+            if primary_key_field not in aa:
+                logging.error(
+                    f"Skipping vendor entry due to missing 'VendorId': {aa}")
+                continue
+
+            # Retrieve objects from dictionaries instead of DB queries
+            vendor_id = aa.get(primary_key_field)
+            vendor_type_obj = aa.get('VendorTypeId')
+            vendor_catalog_link_obj = aa.get('CatalogLinkId')
+
+            # use update_or_create
+            defaults = {
+                'vendor_name': aa.get('Name'),
+                'vendor_contact_persons': aa.get('Contact'),
+                'vendor_comment': aa.get('Comment'),
+                'vendor_contact_email_address': aa.get('EmailAddress'),
+                'vendor_code': aa.get('Code'),
+                'vendor_limit': aa.get('Limit'),
+                'vendor_terms': aa.get('Terms'),
+                'vendor_account_class':aa.get('AcctClass'),
+                'vendor_type': vendor_type_obj,
+                'vendor_catalog_link': vendor_catalog_link_obj,
+            }
+            try:
+                vendor, created = Vendors.objects.update_or_create(
+                    vendor_id=vendor_id,
+                    defaults=defaults
+                )
+                vendor.full_clean()
+                vendor.save()
+
+            except ValidationError as e:
+                logging.error(
+                    f"Validation error for Vendor ID {vendor_id}: {e}")
+                print(
+                    f"Validation error for Vendor ID {aa['VehicleId']}: {e}")
+
+                raise
+            except Exception as e:
+                logging.error(
+                    f"An error occurred while updating/creating Vendor with ID {vendor_id}: {e}")
+                print(
+                    f"An error occurred while updating/creating Vendor with ID {vendor_id}: {e}")

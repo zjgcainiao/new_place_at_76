@@ -12,17 +12,15 @@ urlpatterns = [
     path('', get_main_dashboard, name='main-dash'),
     path('search/', SearchView.as_view(), name='search-appointments'),
 
-
     # dashboard -- repair order plus customer info and customer information. Phone numbers are not included yet.
-    # dashboard v1
-    path('WIPs/old',  repair_order_dashboard, name='dashboard-testing-v1'),
-
     # dashboard v2. current version
     path('WIPs/', WIPDashboardView.as_view(), name='repair-order-dash'),
+    # dashboard v1-- old
+    path('WIPs/old',  repair_order_dashboard, name='dashboard-testing-v1'),
 
-    # the dashboard detail page. url starts wtih v2. it is confusing.
-
+    # the dashboard detail page.
     path('v2/detail/<int:pk>/', dashboard_detail_v1, name='repair_order_detail'),
+
     path('chats/customers/<int:customer_id>/',
          chat_sidebar_view, name='dashboard-chats'),
 
@@ -63,6 +61,8 @@ urlpatterns = [
          name='update_customer_assignment'),
 
     path('vehicles/', views.get_vehicle_dash, name='vehicle-dash'),
+
+    # license plate and vin number search
     path('vehicles/latest-vin-snapshot/',
          views.fetch_or_save_latest_vin_snapshot_async, name='fetch_or_save_latest_vin_snapshot'),
     path('vehicles/fetch-single-vin-search-nhtsa-api',

@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from google.oauth2 import service_account
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv,  find_dotenv
 from pathlib import Path
 from decouple import config, Csv
 import requests
@@ -21,8 +21,9 @@ import firebase_admin
 from firebase_admin import credentials
 from core_operations.log_filters import LocalTimezoneFilter
 
-load_dotenv()  # take environment variables from .env.
-
+# The find_dotenv() function will search for the .env file starting from the current working directory and then going up each parent directory until it finds one.
+# So, even if your script isn't in the root of your project, find_dotenv() can still locate your .env file.
+load_dotenv(find_dotenv())
 # from .config.dev import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -143,12 +144,12 @@ LOGGING = {
             'level': 'WARNING',
             'propagate': False,
         },
-        'django.security': {
+        'django.security': {  # Logger for customer_users and internal_users and all future user types
             'handlers': ['security_file'],
             'level': 'WARNING',
             'propagate': False,
         },
-        'talent_managment': {  # the name of your custom app `talent_management`
+        'talent_management': {  # the name of your custom app `talent_management`
             'handlers': ['app_file'],
             'level': 'DEBUG',
             'propagate': False,
@@ -203,6 +204,14 @@ CSRF_TRUSTED_ORIGINS = config(
 # ADMINS=[]
 
 
+# 2023-10-17 added STRIPE two sets of keys.
+# test keys.
+STRIPE_PUBLIC_TEST_KEY = config("STRIPE_PUBLIC_TEST_KEY", default=None)
+STRIPE_SECRET_TEST_KEY = config("STRIPE_SECRET_TEST_KEY", default=None)
+# live keys. stripe
+STRIPE_PUBLIC_LIVE_KEY = config("STRIPE_PUBLIC_LIVE_KEY", default=None)
+STRIPE_SECRET_LIVE_KEY = config("STRIPE_SECRET_LIVE_KEY", default=None)
+
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
@@ -219,14 +228,12 @@ INSTALLED_APPS = [
     # "prolube76site.apps.MyAdminConfig",
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    'django.contrib.sessions',  # allow sessions
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',  # humanize lib. so i can use to format phone numbers
-
     # 'polls.apps.PollsConfig',
     'corsheaders',
-    # 'polls',
     'homepageapp',
     'appointments',
     'apis',  # adding the apis.
@@ -251,6 +258,9 @@ INSTALLED_APPS = [
     # 'firebase_auth', # google firebase-auth
     'we_have_ai_helpers',
     'shift_management',
+    'shops',
+    # added on 2023-10-18. provding dtc trouble codes reading..
+    'smart_diagnosis',
 ]
 
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.

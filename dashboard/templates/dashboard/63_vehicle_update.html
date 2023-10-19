@@ -78,7 +78,7 @@ $(function() {
             
             // Your AJAX call here
             $.ajax({
-                url: $("#id_vehicle_id").data("url"), //"{% url 'dashboard:search_customer_by_phone' %}", //'/dashboard/search_customer_by_phone/', //
+                url: $("#id_vehicle_id").data("url"), // through the VehicleUpdateForm, django assigns the vehicle_id field value of url and hence gets picked up by javascript at client side.
                 data: {
                     'phone_number_entered': phone_number_entered,
                 },

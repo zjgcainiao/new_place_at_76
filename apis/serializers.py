@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from homepageapp.models import CustomersNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsNewSQL02Model, TextMessagesModel
 from homepageapp.models import AddressesNewSQL02Model, PhonesNewSQL02Model, EmailsNewSQL02Model, CustomersNewSQL02Model, PhoneDescModel, PaymentsModel
+from homepageapp.models import VinNhtsaApiSnapshots
 from django.utils import timezone
 
 
@@ -132,3 +133,9 @@ class CustomerSerializer(serializers.ModelSerializer):
             representation['customer_created_at'] = timezone.make_aware(
                 customer_created_at).isoformat()
         return representation
+
+
+class VinNhtsaApiSnapshotsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VinNhtsaApiSnapshots
+        fields = '__all__'  # or specify the fields you want

@@ -997,7 +997,7 @@ def technician_dash_view(request, technician_id):
 async def search_single_vin_via_nhtsa(request):
     vin_data_list = []
     count = 0
-    logger = logging.getLogger('jjango')
+    logger = logging.getLogger('django')
     if request.method == 'POST':
         form = VINSearchForm(request.POST)
         if form.is_valid():

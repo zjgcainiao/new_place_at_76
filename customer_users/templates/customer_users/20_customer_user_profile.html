@@ -1,0 +1,107 @@
+{% extends 'customer_users/00_customer_user_base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content1-main %}
+<div class="container-fluid p-4 m-4" >
+  <!-- Breadcrumb-->
+  <div class="container">
+      <nav class="mt-3 pt-md-3" aria-label="Breadcrumb">
+        <ol class="breadcrumb breadcrumb-dark">
+          <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Home</a></li>
+          <li class="breadcrumb-item ">Account</li>
+        </ol>
+    </nav>
+  </div>
+
+  <!-- Page content-->
+  <div class="container">
+    <div class="row">
+        <!-- Sidebar-->
+        <div class="col-md-4" >
+          <!-- Account nav-->
+          <div class="card card-body border-dark pb-1" >
+            <div class="d-flex align-items-start">
+              <img class="rounded-circle me-3" src="{% static 'homepageapp/img/avatars/avatar_new_01.png' %}" width="48" alt="User Avator">
+              <div class="pt-md-2 pt-lg-0 ps-3 ps-md-0 ps-lg-3">
+                <h2 class="fs-lg text-dark mb-0">{{customer_user.cust_user_first_name}} {{customer_user.cust_user_last_name}}</h2>
+                <!-- <span class="star-rating"><i class="star-rating-icon fi-star-filled active"></i><i class="star-rating-icon fi-star-filled active"></i><i class="star-rating-icon fi-star-filled active"></i><i class="star-rating-icon fi-star-filled active"></i><i class="star-rating-icon fi-star-filled active"></i></span> -->
+                <ul class="list-unstyled fs-sm mt-3 mb-0">
+                  <li><a class="nav-link-dark fw-normal"><i class="fi-phone opacity-60 me-2"></i>{{customer_user.cust_user_phone_number}}</a></li>
+                  <li><a class="nav-link-dark fw-normal"><i class="fi-mail opacity-60 me-2"></i>{{customer_user.cust_user_email}}</a></li>
+                </ul>
+              </div>
+            </div>
+            <!-- end of d-flex -->
+            <!-- customer user button group  -->
+            <div class="mt-3" role="toolbar" aria-label="customer user button group">
+                <button class="btn btn-outline-primary btn-sm mb-1" href="{% url 'appointments:create-appointment' %}">
+                  <i class="fi-plus me-2"></i>Service Appointment
+                </button>
+                <button class="btn btn-outline-dark btn-sm mb-1" href="{% url 'customer_users:customer_user_profile_new' %}">
+                  <i class="fi-align-justify me-2"></i>Try out new Dash
+                </button>
+            </div>
+            <!-- sidebar menu -->
+            <div class="list-group list-group-flush mt-3" id="account-nav">
+              
+                <a class="list-group-item list-group-item-action" id='personal-info' href="{% url 'customer_users:get_personal_info' %}"><i class="fi-user me-2"></i>Personal Info </a>
+                <a class="list-group-item list-group-item-action" id='vehicle-search' href="{% url 'customer_users:get_vehicle_search_page' %}"><i class="fi-user me-2"></i>Vehicle Searches</a>
+                <a class="list-group-item list-group-item-action" href="#"><i class="fi-lock me-2"></i>Actice Repairs</a>
+                <a class="list-group-item list-group-item-action" id= 'my-vehicles' href="#"><i class="fi-car me-2"></i>My Vehicles<span class="badge bg-faded-light ms-2">2</span></a>
+                <a class="list-group-item list-group-item-action" href="#"><i class="fi-users me-2"></i> Linked to 76 Pro Lube Plus </a>
+                <a class="list-group-item list-group-item-action" href="{% url 'customer_users:customer_user_logout' %}"><i class="fi-logout me-2"></i>Sign Out</a></div>
+            
+          </div>
+        </div>
+
+        <!-- Customer user Sub Section-->
+        <div class="col-md-8" id="customer-user-sub-section">
+              {% block content-usersubsection %}
+              this is the main area
+              {% endblock %} 
+        </div>
+
+    </div>
+    <!-- end of row  -->
+  </div>
+  <!-- end of page content -->
+
+</div>
+<!-- end of container-fluid -->
+
+<!-- <script type="module">
+  $(function(){
+    $("#personal-info").click(function(e){
+      e.preventDefault();
+        // $.get("get_personal_info/", function(data, status){
+        //     $("#main-section").html("Name: " + data.name + "<br>Email: " + data.email);
+        // });
+
+        $.ajax({
+            url: 'get_personal_info/', // URL of the Django view that will generate the HTML
+            type: 'get',
+            success: function(response) {
+                // 'response' is the HTML returned from your Django view
+                $('#main-section').html(response);
+            },
+            error: function(error) {
+                console.error(error);
+            }
+        });
+
+
+
+
+      });
+      $("#my-vehicles").click(function(){
+          $.get("/get_vehicles", function(data, status){
+              $("#main-section").html("");
+              data.vehicles.forEach(function(vehicle) {
+                  $("#main-section").append(vehicle + "<br>");
+              });
+          });
+      });
+      // Similarly, add event handlers for other menu items
+  });
+  </script> -->
+{% endblock %}

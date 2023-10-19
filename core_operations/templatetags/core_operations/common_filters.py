@@ -26,3 +26,10 @@ def bold_last_six_digit_in_vin(vin):
     normal_part = vin[:-6]
 
     return mark_safe(f"{normal_part}<strong>{bold_part}</strong>")
+
+# check a User model's type CustomerUser or InternalUser
+
+
+@register.filter(name='has_group')
+def has_group(user, group_name):
+    return user.groups.filter(name=group_name).exists()

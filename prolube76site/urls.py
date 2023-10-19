@@ -15,11 +15,13 @@ urlpatterns = [
     # add pilot ViewSet via django restframework
     path('apis/', include('apis.urls')),    # external api vendor related.
     path('emails/', include('automatic_emails.urls')),
-    path('employees/', include('internal_users.urls')), # internal_users
+    path('employees/', include('internal_users.urls')),  # internal_users
     path('accounts/', include('customer_users.urls')),  # customer_users
-    path('dashboard/', include('dashboard.urls')),   # workstations
+    path('dashboard/', include('dashboard.urls')),   # workstation dash
     path('appts/', include('appointments.urls')),
     path('shifts/', include('shift_management.urls')),
+    # payment checkouts. stripe account
+    path('shops/', include('shops.urls')),
     path('admin/', admin.site.urls),
     # path('admin/', my_admin_site.urls),
     # added on 2023-05-26. 3d model creating app.

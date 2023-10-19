@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from internal_users.models import InternalUser
 import re
 from apis.api_vendor_urls import NHTSA_API_URL
+from core_operations.models import FormattedPhoneNumberField
 # documentation for py-mssql is https://pymssql.readthedocs.io/en/stable/pymssql_examples.html#basic-features-strict-db-api-compliance
 # import pymssql
 
@@ -17,74 +18,6 @@ from apis.api_vendor_urls import NHTSA_API_URL
 # uid takes too much space and storage.
 # revert back to the existing old id, such as customer_id, vehicle_id, repair_order_id, phone_id.
 # add majority of data tables for testing
-
-
-class CategoryModel(models.Model):
-    category_id = models.AutoField(primary_key=True)
-    category_description = models.CharField(
-        max_length=200, blank=True, null=True)
-    category_display = models.IntegerField(blank=True, null=True)
-    category_created_at = models.DateTimeField(auto_now_add=True)
-    # tracking fields
-    created_by = models.ForeignKey(
-        InternalUser, related_name='category_created', on_delete=models.SET_NULL, null=True, blank=True)
-    modified_by = models.ForeignKey(
-        InternalUser, related_name='category_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    category_last_updated_at = models.DateTimeField(auto_now=True, null=True)
-
-    class Meta:
-        db_table = 'categories_new_03'
-        ordering = ['-category_id']
-
-    def save(self, *args, **kwargs):
-        if self._state.adding:
-            self.created_by = self.modified_by
-        super().save(*args, **kwargs)
-
-
-class AccountClassModel(models.Model):
-    account_class_id = models.AutoField(primary_key=True)
-    account_type = models.CharField(max_length=30, null=True)
-    account_last_updated_at = models.DateTimeField(auto_now=True, null=True)
-    account_created_at = models.DateTimeField(auto_now_add=True, null=True)
-    created_by = models.ForeignKey(
-        InternalUser, related_name='accountclass_created', on_delete=models.SET_NULL, null=True, blank=True)
-    modified_by = models.ForeignKey(
-        InternalUser, related_name='accountclass_modified', on_delete=models.SET_NULL, null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if self._state.adding:
-            self.created_by = self.modified_by
-        super().save(*args, **kwargs)
-
-    class Meta:
-        db_table = 'accountclasses_new_03'
-        ordering = ["-account_class_id"]
-        verbose_name = 'accountclass'
-        verbose_name_plural = 'accountclasses'
-
-
-class InvoiceStatusModel(models.Model):
-    invoice_status_id = models.AutoField(primary_key=True)
-    invoice_status_description = models.CharField(max_length=30, null=True)
-    invoice_status_created_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(
-        InternalUser, related_name='invoice_status_created', on_delete=models.SET_NULL, null=True, blank=True)
-    modified_by = models.ForeignKey(
-        InternalUser, related_name='invoice_status_modified', on_delete=models.SET_NULL, null=True, blank=True)
-    invoice_status_last_updated_at = models.DateTimeField(
-        auto_now=True, null=True)
-
-    def save(self, *args, **kwargs):
-        if self._state.adding:
-            self.created_by = self.modified_by
-        super().save(*args, **kwargs)
-
-    class Meta:
-        db_table = 'invoicestatuess_new_03'
-        ordering = ["invoice_status_id"]
-        verbose_name = 'invoicestatus'
-        verbose_name_plural = 'invoicestatuses'
 
 
 class AddressesNewSQL02Model(models.Model):
@@ -133,6 +66,256 @@ class AddressesNewSQL02Model(models.Model):
         ordering = ["-address_id"]
         verbose_name = 'address'
         verbose_name_plural = 'addresses'
+
+
+class Alerts(models.Model):
+    id = models.AutoField(primary_key=True)
+    alert_connected_vehicle_provider_id = models.IntegerField(null=True)
+    alert_schedule_id = models.IntegerField(null=True)
+    alert_quick_close_id = models.IntegerField(null=True)
+    alert_longtitude = models.DecimalField(
+        max_digits=12, decimal_places=6, null=True, blank=True)
+
+    alert_latitude = models.DecimalField(
+        max_digits=12, decimal_places=6, null=True, blank=True)
+    alert_dtc = models.CharField(max_length=4000, null=True)
+    altert_status = models.IntegerField(null=True, blank=True)
+    alert_mileage = models.IntegerField(null=True, blank=True)
+    alert_mileage_units = models.IntegerField(null=True, blank=True)
+    alert_resolved_at = models.DateTimeField(null=True, blank=True)
+    alert_submitted_at = models.DateTimeField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    created_by = models.ForeignKey(
+        InternalUser, related_name='alerts_created_by', on_delete=models.SET_NULL, null=True, blank=True)
+    updated_by = models.ForeignKey(
+        InternalUser, related_name='alerts_updated_by', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        db_table = 'alerts_new_03'
+        ordering = ["-id", '-created_at']
+        verbose_name = 'Alert'
+        verbose_name_plural = 'Alerts'
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.created_by = self.updated_by
+        super().save(*args, **kwargs)
+
+
+class AccountClassModel(models.Model):
+    account_class_id = models.AutoField(primary_key=True)
+    account_type = models.CharField(max_length=30, null=True)
+    account_last_updated_at = models.DateTimeField(auto_now=True, null=True)
+    account_created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='accountclass_created', on_delete=models.SET_NULL, null=True, blank=True)
+    modified_by = models.ForeignKey(
+        InternalUser, related_name='accountclass_modified', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.created_by = self.modified_by
+        super().save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'accountclasses_new_03'
+        ordering = ["-account_class_id"]
+        verbose_name = 'accountclass'
+        verbose_name_plural = 'accountclasses'
+
+
+class CategoryModel(models.Model):
+    category_id = models.AutoField(primary_key=True)
+    category_description = models.CharField(
+        max_length=200, blank=True, null=True)
+    category_display = models.IntegerField(blank=True, null=True)
+    category_created_at = models.DateTimeField(auto_now_add=True)
+    # tracking fields
+    created_by = models.ForeignKey(
+        InternalUser, related_name='category_created', on_delete=models.SET_NULL, null=True, blank=True)
+    modified_by = models.ForeignKey(
+        InternalUser, related_name='category_modified', on_delete=models.SET_NULL, null=True, blank=True)
+    category_last_updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta:
+        db_table = 'categories_new_03'
+        ordering = ['-category_id']
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.created_by = self.modified_by
+        super().save(*args, **kwargs)
+
+# this model stores specs data related to vendors which provide catelog links. VendorLink stores the actual format of the link used.
+# could be outdated for future use.
+
+
+class CatalogLinks(models.Model):
+    catalog_link_id = models.AutoField(primary_key=True)
+    catalog_link_file_used = models.CharField(
+        max_length=50, blank=True, null=True)
+    catalog_link_display_name = models.CharField(
+        max_length=50, blank=True, null=True)
+    catalog_link_interface_version = models.CharField(
+        max_length=10, blank=True, null=True)
+    catalog_link_auth_code = models.CharField(
+        max_length=50, blank=True, null=True)
+
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='catelog_links_created_by', on_delete=models.SET_NULL, null=True, blank=True)
+    updated_by = models.ForeignKey(
+        InternalUser, related_name='catelog_links_updated_by', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        db_table = 'catalog_links_new_03'
+        ordering = ['-catalog_link_id']
+        verbose_name = '(Vendor) Catalog Link'
+        verbose_name_plural = '(Vendor) Catalog Links'
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.created_by = self.updated_by
+        super().save(*args, **kwargs)
+
+# 2023-10-16 added new model VendorType. It defines types of vehicle related whole sale vendors: tire shop, repair shop, dealerhip
+
+
+class VendorTypes(models.Model):
+    vendor_type_id = models.AutoField(primary_key=True)
+    vendor_type_name = models.CharField(
+        max_length=100, null=True, verbose_name='Vendor Type Name')
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='vendor_types_created_by', on_delete=models.SET_NULL, null=True, blank=True)
+    updated_at = models.DateTimeField(
+        auto_now=True, null=True)
+    updated_by = models.ForeignKey(
+        InternalUser, related_name='vendor_types_updated_by', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        db_table = 'vendor_types_new_03'
+        ordering = ["-vendor_type_id"]
+        verbose_name = 'Vendor Type'
+        verbose_name_plural = 'Vendor Types'
+
+# 2023-10-16 added new model Vendors (for vehicles)
+
+
+class Vendors(models.Model):
+    vendor_id = models.AutoField(primary_key=True)
+    vendor_name = models.CharField(
+        max_length=50, null=True, verbose_name='Business Name')
+    vendor_contact_persons = models.CharField(
+        max_length=50, null=True, blank=True, verbose_name='Contact Person (i.e. Kenny)')
+    vendor_contact_phone_number = FormattedPhoneNumberField(null=True)
+    vendor_comment = models.CharField(max_length=200, null=True, blank=True)
+    vendor_contact_email_address = models.CharField(
+        max_length=50, null=True, blank=True)
+    vendor_is_active = models.BooleanField(
+        default=True, null=True, blank=True)
+    vendor_email_verified = models.BooleanField(
+        default=False, null=True, blank=True)
+    vendor_last_email_verified_at = models.DateTimeField(blank=True, null=True)
+    vendor_email_verified_type = models.CharField(
+        max_length=100, null=True, blank=True)
+    vendor_code = models.CharField(max_length=15, null=True, blank=True)
+    vendor_limit = models.CharField(max_length=15, null=True, blank=True)
+    vendor_terms = models.CharField(max_length=50, null=True, blank=True)
+    vendor_account_class = models.CharField(
+        max_length=15, null=True, blank=True)
+    vendor_type = models.IntegerField(blank=True, null=True)
+    vendor_catalog_link = models.IntegerField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(
+        auto_now=True, null=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='vendors_created_by', on_delete=models.SET_NULL, null=True, blank=True)
+    updated_by = models.ForeignKey(
+        InternalUser, related_name='vendors_updated_by', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        db_table = 'vendors_new_03'
+        ordering = ["-vendor_id"]
+        verbose_name = 'Vendor'
+        verbose_name_plural = 'Vendors'
+
+# addded VendorLinks model that specified the link spec in 'vendor_link_value' field.
+
+
+class VendorLinks(models.Model):
+    vendor_link_id = models.AutoField(primary_key=True)
+    vendor_id = models.IntegerField(null=True, blank=True)
+    vendor_link_property = models.CharField(
+        max_length=200, null=True, blank=True)
+    vendor_link_value = models.CharField(
+        max_length=4000, null=True, blank=True)
+    updated_at = models.DateTimeField(
+        auto_now=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='vendor_links_created_by', on_delete=models.SET_NULL, null=True, blank=True)
+    updated_by = models.ForeignKey(
+        InternalUser, related_name='vendor_links_updated_by', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        db_table = 'vendor_links_new_03'
+        ordering = ["-vendor_link_id"]
+        verbose_name = 'vendor link'
+        verbose_name_plural = 'vendor links'
+
+
+class VendorAdddresses(models.Model):
+
+    id = models.AutoField(primary_key=True)
+    vendor = models.ForeignKey(Vendors, on_delete=models.CASCADE)
+    address = models.ForeignKey(
+        AddressesNewSQL02Model, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(
+        auto_now=True, null=True)
+    updated_by = models.ForeignKey(
+        InternalUser, related_name='vendor_addresses_updated_by', on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='vendor_addresses_created_by', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        db_table = 'vendor_addresses_new_03'
+        ordering = ["-id", '-created_at']
+        verbose_name = 'Vendor Address'
+        verbose_name_plural = 'Vendor Addresses'
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.created_by = self.updated_by
+        super().save(*args, **kwargs)
+
+
+class InvoiceStatusModel(models.Model):
+    invoice_status_id = models.AutoField(primary_key=True)
+    invoice_status_description = models.CharField(max_length=30, null=True)
+    invoice_status_created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='invoice_status_created', on_delete=models.SET_NULL, null=True, blank=True)
+    modified_by = models.ForeignKey(
+        InternalUser, related_name='invoice_status_modified', on_delete=models.SET_NULL, null=True, blank=True)
+    invoice_status_last_updated_at = models.DateTimeField(
+        auto_now=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.created_by = self.modified_by
+        super().save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'invoicestatuses_new_03'
+        ordering = ["invoice_status_id"]
+        verbose_name = 'invoicestatus'
+        verbose_name_plural = 'invoicestatuses'
 
 
 class EmailsNewSQL02Model(models.Model):
@@ -1258,6 +1441,59 @@ class PartItemModel(models.Model):
         verbose_name_plural = 'partitems'
 
 
+class Inventories(models.Model):
+
+    inventory_id = models.AutoField(primary_key=True)
+    inventory_part = models.ForeignKey(
+        PartsModel, on_delete=models.CASCADE, related_name='inventory_part')
+    inventory_on_hand = models.DecimalField(
+        max_digits=15, decimal_places=2, null=True, blank=True)
+    inventory_on_order = models.DecimalField(
+        max_digits=15, decimal_places=2, null=True, blank=True)
+    inventory_location = models.CharField(max_length=80, null=True, blank=True)
+    inventory_last_sold_at = models.DateTimeField(null=True, blank=True)
+    inventory_available_quantity = models.DecimalField(
+        max_digits=15, decimal_places=2, null=True, blank=True)
+    inventory_committed_quantity = models.DecimalField(
+        max_digits=15, decimal_places=2, null=True, blank=True)
+    ivnentory_condition_id = models.IntegerField(null=True, blank=True)
+    inventory_superceded_by = models.ForeignKey(
+        PartsModel, on_delete=models.CASCADE, related_name='inventory_part_superceded_by', null=True, blank=True)
+    inventory_restock_quantity = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True)
+    inventory_order_point = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True)
+    inventory_core_quantity = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True)
+    inventory_does_pay_comission = models.BooleanField(default=False)
+    inventory_total_cost_amount = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True)
+    inventory_last_cost_amount = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True)
+    inventory_prior_to_last_cost_amount = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True)
+    updated_at = models.DateTimeField(
+        auto_now=True, null=True)
+    updated_by = models.ForeignKey(
+        InternalUser, related_name='inventory_updated_by', on_delete=models.SET_NULL, null=True, blank=True)
+
+    created_at = models.DateTimeField(
+        auto_now_add=True, null=True)
+    created_by = models.ForeignKey(
+        InternalUser, related_name='inventory_created_by', on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        db_table = 'inventories_new_03'
+        ordering = ["-inventory_id", '-created_at']
+        verbose_name = 'Inventory'
+        verbose_name_plural = 'Inventories'
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.created_by = self.updated_by
+        super().save(*args, **kwargs)
+
+
 class RepairOrdersNewSQL02Model(models.Model):
     # repair_order_new_uid_v01 = models.UUIDField(primary_key=True)  # models.UUIDField(primary_key=True)  # models.CharField(editable=False, auto_created=True, primary_key=True, max_length=36)
     repair_order_id = models.AutoField(primary_key=True)
@@ -1545,9 +1781,26 @@ class PaymentsModel(models.Model):
         verbose_name = 'payment'
         verbose_name_plural = 'payments'
 
+
+# created 2023-10-18. store the variable_name info and its group name. updated by management script.
+class NhtsaVariableList(models.Model):
+    id = models.AutoField(primary_key=True)
+    variable_id = models.IntegerField(null=True, blank=True)
+    variable_name = models.CharField(max_length=200, null=True, blank=True)
+    variable_group_name = models.CharField(
+        max_length=200, null=True, blank=True)
+    variable_description_html = models.CharField(
+        max_length=4000, null=True, blank=True)
+    variable_data_type = models.CharField(max_length=20, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'nhtsa_variable_list'
+        ordering = ["-id", 'variable_id']
+
+
 # this model stores each snapshot pulled for each vin from NHTSA gov website.
-
-
 class VinNhtsaApiSnapshots(models.Model):
     # Assuming standard VIN length of 17 characters. NHTSA website
     id = models.BigAutoField(primary_key=True)

@@ -8,11 +8,10 @@ from firebase_auth_app.models import FirebaseUser
 from customer_users.models import CustomerUser
 
 
-
 class InternalUserMiddleware:
     # Define apps that need to pass through the middleware check
     PROTECTED_APPS = ['talents', 'apis',
-                      'dashboard', 'admin', 'talent_management', 'appointments',]
+                      'dashboard', 'admin', 'talent_management',]  # 'appointments'
 
     # login_url = reverse('internal_users:internal_user_login')
 
@@ -66,7 +65,7 @@ class MultipleUserModelMiddleware:
                 firebase_user = FirebaseUser.objects.get(uid=uid)
             except FirebaseUser.DoesNotExist:
                 pass
-            
+
             if firebase_user:
                 # Set base user
                 request.firebase_user = firebase_user
@@ -74,13 +73,14 @@ class MultipleUserModelMiddleware:
                 # Check each model to find the specific user
                 for user_model in [CustomerUser, InternalUser]:
                     try:
-                        specific_user = user_model.objects.get(firebase_user=firebase_user)
+                        specific_user = user_model.objects.get(
+                            firebase_user=firebase_user)
                         break
                     except user_model.DoesNotExist:
                         continue
 
                 if specific_user:
                     request.user = specific_user
-        
+
         response = self.get_response(request)
         return response

@@ -1,14 +1,14 @@
-{% extends 'homepageapp/10_homepageapp_base.html' %}
-{% load crispy_forms_tags %}
+{% extends 'customer_users/00_customer_user_base.html' %}
+
 {% load static %}
 {% block content1-main %}
-<div class="bg-primary-lighten pt-5 m-1" >
+<div class="bg-top-center bg-repeat-0 pt-5 m-1" style="background-image: url('{% static 'homepageapp/img/home/light_grey_background.jpg' %}'); background-size: cover; background-position: center center;">
   <div class="container m-1 mb-sm-2" >
       <!-- Breadcrumb-->
       <nav class="m-2 pt-md-3" aria-label="Breadcrumb">
         <ol class="breadcrumb breadcrumb-dark">
           <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Home</a></li>
-          <li class="breadcrumb-item active"><a href="{% url 'customer_users:customer_user_profile' %}">Account</a></li>
+          <li class="breadcrumb-item active"><a href="{% url 'customer_users:customer_user_dashboard' %}">Account</a></li>
         </ol>
       </nav>
       <!-- Page content-->
@@ -38,56 +38,23 @@
             </div>
           </div>
         </div>
-        <!-- Content-->
         
+        <!-- Content-->
+        <!-- main section  -->
         <div class="col col-7 p-1 m-1" id="main-section">
          
               {% comment %}
-              {% block content-javascript %}
-              this is the main area
-              {% endblock %} 
+                  {% block content-javascript %}
+                  this is the main area
+                  {% endblock %} 
               {% endcomment %} 
           
         </div>
+        <!-- end of main section  -->
 
       </div>
   </div>
 
 </div>
 
-<script type="module">
-  $(function(){
-    $("#personal-info").click(function(e){
-      e.preventDefault();
-        // $.get("get_personal_info/", function(data, status){
-        //     $("#main-section").html("Name: " + data.name + "<br>Email: " + data.email);
-        // });
-
-        $.ajax({
-            url: 'get_personal_info/', // URL of the Django view that will generate the HTML
-            type: 'get',
-            success: function(response) {
-                // 'response' is the HTML returned from your Django view
-                $('#main-section').html(response);
-            },
-            error: function(error) {
-                console.error(error);
-            }
-        });
-
-
-
-
-      });
-      $("#my-vehicles").click(function(){
-          $.get("/get_vehicles", function(data, status){
-              $("#main-section").html("");
-              data.vehicles.forEach(function(vehicle) {
-                  $("#main-section").append(vehicle + "<br>");
-              });
-          });
-      });
-      // Similarly, add event handlers for other menu items
-  });
-  </script>
 {% endblock %}
