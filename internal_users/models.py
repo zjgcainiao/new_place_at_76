@@ -123,9 +123,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
                                                        default=AUTH_GROUP_LEVEL_0,
                                                        )
     user_created_at = models.DateTimeField(auto_now_add=True)
-    # this field is track the internal user id that is used to create an user. usually should belong to IT group.
 
-    # user_created_by = models.IntegerField(null=True)
     user_last_updated_at = models.DateTimeField(auto_now=True)
 
     # define the username for this internal_user module is email.
@@ -138,6 +136,18 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
         first_name = self.user_first_name.strip().capitalize()
         last_name = self.user_last_name.strip().capitalize()
         return f'{first_name} {last_name}'
+
+    @property
+    def get_user_full_name(self):
+        first_name = self.user_first_name.capitalize(
+        ) if self.user_first_name else None
+        middle_name = self.user_middle_name.capitalize(
+        ) if self.user_middle_name else None
+        last_name = self.user_last_name.capitalize() if self.user_last_name else None
+        name_fields = [first_name, middle_name, last_name]
+        full_name = ' '.join(
+            [field for field in name_fields if field is not None])
+        return full_name.strip() if full_name.strip() else "No available user name."
 
     class Meta:
         db_table = 'internalusers_new_03'
