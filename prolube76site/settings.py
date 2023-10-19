@@ -259,7 +259,8 @@ INSTALLED_APPS = [
     'we_have_ai_helpers',
     'shift_management',
     'shops',
-    'smart_diagnosis',  # added on 2023-10-18
+    # added on 2023-10-18. provding dtc trouble codes reading..
+    'smart_diagnosis',
 ]
 
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.

@@ -3,13 +3,27 @@ from internal_users.models import InternalUser
 
 
 class DtcTroubleCodes(models.Model):
+
     dtc_touble_code_id = models.AutoField(primary_key=True)
     dtc_trouble_code = models.CharField(max_length=10, null=True, blank=True)
     dtc_trouble_code_description = models.CharField(
         max_length=500, null=True, blank=True)
     dtc_trouble_code_group_name = models.CharField(
         max_length=200, null=True, blank=True)
-    dtc_code_is_active = models.BooleanField(default=True)
+    dtc_trouble_code_is_active = models.BooleanField(default=True)
+    dtc_trouble_code_meaning_html = models.TextField(null=True, blank=True)
+    dtc_trouble_code_serverity_html = models.TextField(null=True, blank=True)
+    dtc_trouble_code_potential_symptoms_html = models.TextField(
+        null=True, blank=True)
+    dtc_trouble_code_potential_causes_html = models.TextField(
+        null=True, blank=True)
+    dtc_trouble_code_troupleshooting_steps_html = models.TextField(
+        null=True, blank=True)
+    dtc_trouble_code_potential_repairs_html = models.TextField(
+        null=True, blank=True)
+    # dtc_trouble_code_potential_repairs_html = models.CharField(
+    #     max_length=4000, null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
