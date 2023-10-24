@@ -156,7 +156,7 @@
           <img class="d-block" src="{% static '/homepageapp/2022-Logo-Transparent-small.png' %}" width="75" alt="Amazing Automan LLC"></a>
           <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span></button>
-            <a class="btn btn-dark btn-sm d-none d-lg-block order-lg-3" href="{% url 'shops:vehicle_search_product' %}" ><i class="mdi mdi-file-cog-outline me-2"></i>Vehicle Reports</a>
+            
            
             <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}"><i class="fi-users me-2"></i>Create an Account</a>
           <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
@@ -169,11 +169,11 @@
                   <li class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="{% url 'homepageapp:about-us' %}"><i class="fi-friends fs-base me-2"></i>About Us</a></li>
                   <li class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="{% url 'internal_users:internal_user_login' %}"><i class="fi-friends fs-base me-2"></i>Employee Portal</a></li>
+                  <li><a class="dropdown-item" href="{% url 'internal_users:internal_user_login' %}"><i class="fi-users fs-base me-2"></i>Employee Portal</a></li>
                   <li class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="{% url 'shops:payment_checkout' %}"><i class="fi-friends fs-base me-2"></i>Payment System</a></li>
+                  <li><a class="dropdown-item" href="{% url 'shops:payment_checkout' %}"><i class="fi-cash fs-base me-2"></i>Payment System</a></li>
                   <li class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="{% url 'shops:vehicle_search_product' %}"><i class="mdi mdi-file-cog-outline me-2"></i>Vehicle Reports</a></li>
+                  <li><a class="dropdown-item" href="{% url 'shops:vehicle_search_product' %}"><i class="fi-car fs-base me-2"></i>Vehicle Reports</a></li>
                 </ul>
               </li>
               
@@ -225,7 +225,7 @@
 
     <!-- Button to enable chatbot -->
     <button id="enableChatbot" class="btn btn-success position-fixed bottom-0 end-0 m-3" style="z-index: 1000;">
-        Talk to Pulido
+       Talk to  <i class="mdi mdi-assistant"></i>Pulido
     </button>
 
     <script>
