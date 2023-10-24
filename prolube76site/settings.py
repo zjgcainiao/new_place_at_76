@@ -20,7 +20,10 @@ import json
 import firebase_admin
 from firebase_admin import credentials
 from core_operations.log_filters import LocalTimezoneFilter
+import logging
 
+
+logger = logging.getLogger("django")
 # The find_dotenv() function will search for the .env file starting from the current working directory and then going up each parent directory until it finds one.
 # So, even if your script isn't in the root of your project, find_dotenv() can still locate your .env file.
 load_dotenv(find_dotenv())
@@ -167,7 +170,10 @@ LOGGING = {
         },
     },
 }
-
+# 2023-10-24 added OpenAI_API_key
+OPENAI_API_KEY = config("OPENAI_API_KEY", default=None)
+if OPENAI_API_KEY:
+    logger.info("there is no openai api key found during Django setting launch.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)

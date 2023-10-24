@@ -206,7 +206,7 @@
           <span class="float-end" id="closeChatbot" style="cursor:pointer;">
             <i class="fas fa-times"></i>
           </span>
-        <h5 class="mb-1">Ask Pulido</h5>
+        <h5 class="fi-woman fs-base me-2">Ask Pulido</h5>
         <p class="text-muted">Our virtual technican.</p>
 
       </div>
@@ -225,7 +225,7 @@
 
     <!-- Button to enable chatbot -->
     <button id="enableChatbot" class="btn btn-success position-fixed bottom-0 end-0 m-3" style="z-index: 1000;">
-       Talk to  <i class="mdi mdi-assistant"></i>Pulido
+       Talk to  Pulido <i class="fi-woman fs-base me-2"></i>
     </button>
 
     <script>
@@ -263,7 +263,7 @@
 
                       $("#botResponse").text(data.response);
                        $('#loadingMessage').hide();
-                       $('#askButtonId').prop('disabled', false);
+                       $('#askButton').prop('disabled', false);
                   },
                   error: function(error) {
                       $("#botResponse").text("Sorry, there was an error processing your request.");
