@@ -23,8 +23,8 @@ class InternalUserMiddleware:
     def __call__(self, request):
         # Resolve the current app name
         current_app = resolve(request.path_info).app_name
-        print(
-            F'The current_app name is {current_app}. url requeted is {request.path}. is_authenticated?:{request.user.is_authenticated}.')
+        # print(
+        #     F'The current_app name is {current_app}. url requseted is {request.path}. is_authenticated?:{request.user.is_authenticated}.')
 
         # print(request.path, request.user.is_authenticated)
 

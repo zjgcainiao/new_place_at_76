@@ -259,7 +259,7 @@ class AppointmentDetailByConfirmationIdView(AppointmentDetailView):
     def get_queryset(self):
         queryset = AppointmentRequest.objects.filter(
             appointment_confirmation_id=self.args['appointment_confirmation_id'])
-        return queryset.filter(user=self.request.user)
+        return queryset
 
 
 def appointment_get_vehicle_models(request, make_id):

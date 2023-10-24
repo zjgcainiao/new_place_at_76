@@ -9,12 +9,6 @@ urlpatterns = [
     # react app created in dashboard_react folder
     path('react/', views.GetReactAppView.as_view(),
          name='react-app'),
-    # path('customers/', views.CustomerListView.as_view(), name='customers-list'),
-    # path('customersv2/', views.customer_list, name='customers-list-v2'),
-    # path('customersv3/', views.active_customer_list, name='customers-list-v3'),
-    # path('customers/create', views.CustomerCreateView.as_view(), name='create-new-customer'),
-    # path('customers/<int:pk>/', views.CustomerDetailView.as_view(), name='customer-detail'),
-    # path('customers/<int:pk>/update/', views.CustomerUpdateView.as_view(), name='customer-update'),
     # path('repairorders/', views.RepairOrderListView.as_view(), name='repairorders-list'),
     # # path('repairorders/<int:repair_order_id>/lineitems/', views.repair_order_and_line_items_detail, name='repairorder-lineitem-detail'),
     # path('dataimport/email', views.EmailDataView.as_view(), name='import-email-data')

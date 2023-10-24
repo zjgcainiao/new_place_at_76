@@ -63,15 +63,6 @@ def send_appointment_confirmation_email(sender, instance, created, **kwargs):
                     logger.error(
                         f"failed to send email to {recipient_list}.")
 
-                # this is required because the main content is now HTML
-                #  email.content_subtype = "html"
-                # email.send()
-            # send_mail(
-            #     'Welcome to Amazing Automan company platform',
-            #     f'Hello {instance.talent_first_name}, your temporary password is: {random_password}. Please change it on your first login.',
-            #     settings.DEFAULT_FROM_EMAIL,
-            #     [instance.talent_email],
-            #     fail_silently=False,
             # )
         except Exception as e:
             # Handle email sending errors if needed, e.g., logging the error.

@@ -2,7 +2,7 @@
 {% block content-main %}
 
 <div class="container">
-    <a class = 'btn btn-secondary  my-4' href = "{% url 'dashboard:dashboard-detail' pk=repair_order_id %}"><i class="fa-solid fa-arrow-left"></i> Go Back</a>
+    <a class = 'btn btn-secondary  my-4' href = "{% url 'dashboard:repair_order_detail' pk=repair_order_id %}"><i class="fa-solid fa-arrow-left"></i> Go Back</a>
     <p class ='lead'>Description: {{line_item.line_item_description}}</p>
 </div>
 <div class = 'container container-fluid'>

@@ -164,12 +164,13 @@
                   <li class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="{% url 'homepageapp:about-us' %}"><i class="fi-friends fs-base me-2"></i>About Us</a></li>
                   <li class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="{% url 'homepageapp:about-us' %}"><i class="fi-friends fs-base me-2"></i>Employee Portal</a></li>
+                  <li><a class="dropdown-item" href="{% url 'internal_users:internal_user_login' %}"><i class="fi-friends fs-base me-2"></i>Employee Portal</a></li>
+                  <li><a class="dropdown-item" href="{% url 'shops:payment_checkout' %}"><i class="fi-friends fs-base me-2"></i>Payment System</a></li>
                 </ul>
               </li>
               
               <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'appointments:create-appointment' %}">Service Appointment</a></li>
-               <li class="nav-item"><a class="nav-link" href="{% url 'shops:payment_checkout' %}">Our Shops</a></li>
+               
               {% comment %}
               <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'shops:payment_checkout' %}">Our Shops</a></li>
               {% endcomment %}
@@ -187,6 +188,69 @@
 
     </main>
     {% include 'homepageapp/11_homepageapp_footer.html' %}
+    {% comment %}
+    {% include 'we_have_ai_helpers/20_chatbot.html' %}
+    {% endcomment %}
+
+    
+    <div id="chatbotUI" class="card position-fixed bottom-0 end-0 m-3" style="display:none; max-width: 300px;">
+        <div class="card-body">
+            <h5 class="card-title">Ask Pulido</h5>
+            <textarea id="userInput" class="form-control mb-2"></textarea>
+            <button id="askButton" class="btn btn-primary">Ask</button>
+            <div id="botResponse" class="mt-2"></div>
+        </div>
+    </div>
+
+    <!-- Button to enable chatbot -->
+    <button id="enableChatbot" class="btn btn-success position-fixed bottom-0 end-0 m-3">
+        Talk to Pulido
+    </button>
+
+    <script>
+
+      $(document).ready(function(){
+          // $("#enableChatbot").click(function(){
+          //     $("#chatbotUI").show(); // Show the chatbot UI
+          //     $(this).hide(); // Hide the enable chatbot button
+          // });
+
+          $(document).on('click', '#enableChatbot', function() {
+              $("#chatbotUI").show();
+              $(this).hide();
+          });
+
+          var chatbotEndpoint = "{% url 'we_have_ai_helpers:chatbot_response' %}";
+          $("#askButton").click(function(){
+              let userText = $("#userInput").val();
+              
+              $.ajax({
+                  url: chatbotEndpoint,
+                  type: "POST",
+                  dataType: "json",
+                  data: { "user_input": userText },
+                  headers: {
+                      "X-Requested-With": "XMLHttpRequest",
+                      "X-CSRFToken": getCookie("csrftoken")
+                  },
+                  success: function(data) {
+                      $("#botResponse").text(data.response);
+                  },
+                  error: function() {
+                      $("#botResponse").text("Sorry, there was an error processing your request.");
+                  }
+              });
+          });
+      });
+
+      function getCookie(name) {
+          let value = "; " + document.cookie;
+          let parts = value.split("; " + name + "=");
+          if (parts.length === 2) return parts.pop().split(";").shift();
+      }
+    </script>
+
+
   </body>
 
   <!-- Back to top button-->
