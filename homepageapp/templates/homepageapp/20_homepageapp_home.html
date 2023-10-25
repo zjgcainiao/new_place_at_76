@@ -20,12 +20,12 @@
 </style>
 
 <!-- Page header-->
-<section class="bg-top-center bg-repeat-0 pt-5" style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); background-size: cover;">
+<section class="bg-top-center bg-repeat-0 mt-5" style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); background-size: cover;">
   {% if messages %}
-  <div class="container pt-5">
+  <div class="container m-1">
 
       {% for message in messages %}
-      <li{% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show justify-content-center justify-content-between"{% endif %} role="alert">
+      <li {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show justify-content-center justify-content-between"{% endif %} role="alert">
           {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
           {{ message }}
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">

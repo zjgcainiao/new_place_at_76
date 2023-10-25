@@ -126,6 +126,7 @@
 
     <!-- font-awesome 6.4.2 css  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <!-- Vendor Styles-->
     <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}"/>
     <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}"/>
@@ -202,32 +203,48 @@
 
     
     <div id="chatbotUI" class="card card-hover position-fixed bottom-0 end-0 m-3" style="display:none; max-width: 300px; z-index:1000;">
-      <div class="card-header bg-secondary fw-bold">
+      <div class="card-header bg-secondary ">
           <span class="float-end" id="closeChatbot" style="cursor:pointer;">
             <i class="fas fa-times"></i>
           </span>
-        <h5 >Ask Pulido</h5>
+        <h5 class="card-title">Ask Pulido</h5>
         <p class="text-muted">Our virtual technican.</p>
 
       </div>
         <div class="card-body">
             
-            
-            <textarea id="userInput" class="form-control" type="text">
+            <textarea id="userInput" class="form-control" type="text" value="">
 
             </textarea>
-            <button id="askButton" class="btn btn-primary">Ask</button>
-            <div id="botResponse" class="mt-2">
+            <button id="askButton" class="btn btn-primary mt-2">Ask</button>
+            <div id="botResponse"  class="mt-2">
               <div id="loadingMessage" style="display:none;">Hmmm...Let me think...</div>
             </div>
         </div>
     </div>
 
     <!-- Button to enable chatbot -->
-    <button id="enableChatbot" class="btn btn-success position-fixed bottom-0 end-0 m-2" style="z-index: 1000;">
-       Talk to Pulido <i class="fi-woman  me-3"></i>
+    <button id="enableChatbot" class="btn btn-success btn-sm position-fixed bottom-0 end-0 m-2 fab-icon" style="z-index: 1000;"  aria-label="Talk to Pulido">
+        <i class="fas fa-robot"></i> 
     </button>
 
+    <!-- 2023-10-24; style for the fab-icon used in the Chatbot  -->
+    <style>
+      .fab-icon {
+        border-radius: 50%;  /* Makes the button circular */
+        width: 60px;         /* Set width of the button */
+        height: 60px;        /* Set height of the button */
+        text-align: center;  /* Center the robot icon */
+        padding: 0;          /* Remove padding */
+        font-size: 24px;     /* Set icon size */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);  /* Optional: Add a little shadow for depth */
+        transition: transform 0.3s;  /* Optional: Smooth transition for hover effect */
+    }
+
+    .fab-icon:hover {
+        transform: scale(1.1);  /* Optional: Slightly enlarge button when hovered */
+    }
+</style>
     <script>
 
       $(document).ready(function(){
@@ -267,7 +284,7 @@
                   },
                   error: function(error) {
                       $("#botResponse").text("Sorry, there was an error processing your request.");
-                       $('#askButtonId').prop('disabled', false);
+                       $('#askButton').prop('disabled', false);
                   }
           
 
@@ -298,6 +315,9 @@
   </body>
 
   <!-- Back to top button-->
-  <a class="btn-scroll-top" href="#top" data-scroll><span class="btn-scroll-top-tooltip text-muted fs-sm me-2">Top</span><i class="btn-scroll-top-icon fi-chevron-up"> </i></a>
+  <a class="btn-scroll-top" href="#top" data-scroll>
+    <span class="btn-scroll-top-tooltip text-muted fs-sm me-2">Top</span>
+    <i class="btn-scroll-top-icon fi-chevron-up"> </i>
+  </a>
  
 </html>
