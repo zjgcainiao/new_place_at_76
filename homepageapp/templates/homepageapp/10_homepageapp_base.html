@@ -127,6 +127,21 @@
     <!-- font-awesome 6.4.2 css  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
+    <!-- MaterialDesign - Webfont  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.3.67/css/materialdesignicons.min.css" integrity="sha512-nRzny9w0V2Y1/APe+iEhKAwGAc+K8QYCw4vJek3zXhdn92HtKt226zHs9id8eUq+uYJKaH2gPyuLcaG/dE5c7A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- mdi icons css and its verifying js -->
+    <!-- <script src="
+    https://cdn.jsdelivr.net/npm/@mdi/font@7.3.67/scripts/verify.min.js
+    "></script>
+
+    <link href="
+    https://cdn.jsdelivr.net/npm/@mdi/font@7.3.67/css/materialdesignicons.min.css
+    " rel="stylesheet"> -->
+
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/4.0.0/font/MaterialIcons-Regular.ttf"
+    ref='stylesheet'> -->
+
     <!-- Vendor Styles-->
     <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}"/>
     <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}"/>
@@ -151,17 +166,29 @@
         {% include 'homepageapp/12_sign_in_and_sign_up_modal.html' %}
       {% endcomment %}
       <!-- navbar navbar-expand-lg navbar-light bg-light -->
-      <header class="navbar navbar-expand-lg navbar-light fixed-top" data-scroll-header>
+      <header class="navbar navbar-expand-lg navbar-light fixed-top" data-scroll-header="">
         <div class="container">
           <a class="navbar-brand me-1 me-xl-4" href="{% url 'homepageapp:homepage' %}">
           <img class="d-block" src="{% static '/homepageapp/2022-Logo-Transparent-small.png' %}" width="75" alt="Amazing Automan LLC"></a>
-          <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span></button>
-            
-           
-            <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}"><i class="fi-users me-2"></i>Create an Account</a>
+          <!-- toggle button  -->
+          <button class="navbar-toggler btn-dark ms-auto collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="mdi mdi-apps navbar-toggle-icon-mdi"></span>
+          </button>
+        <!-- css style added for the toggle button defined right above  -->
+        <style>
+          .navbar-toggle-icon-mdi {
+          font-size: 24px;  /* Adjust as needed */
+          vertical-align: middle;  /* Center the icon vertically */
+}
+        </style>     
+           <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}"><i class="fi-user-plus me-2"></i>Register/Sign In</a>
+          <!-- <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}"><i class="fi-users me-2"></i>Register/Sign In</a> -->
           <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
-            <ul class="navbar-nav navbar-nav-scroll" style="max-height: 25rem;">
+
+            <ul class="navbar-nav navbar-nav-scroll" style="max-height: 35rem;">
+              <!-- register and login  -->
+              <!-- <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'customer_users:customer_user_register' %}">Register/Login</a></li> -->
+
               <!-- Services -->
               <li class="nav-item dropdown py-2 me-lg-2">
                 <a class="nav-link dropdown-toggle align-items-center border-end-lg border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fi-layers me-2"></i>Services</a>
@@ -185,8 +212,19 @@
               {% endcomment %}
 
             </ul>
+            <!-- Sign In button for mobile -->
+            <!-- <div class="text-end">
+              <a class="btn btn-primary btn-sm ms-2 ms-lg-3 order-lg-3 d-none d-lg-block" href="{% url 'customer_users:customer_user_register' %}">
+                <i class="fi-user-plus me-2"></i>Register/Sign In
+              </a>
+            </div> -->
+
+            
           </div>
+          <!-- end of navbarNav  -->
+
         </div>
+        <!-- end of container -->
       </header>
     
      {% block content1-main %}
@@ -207,42 +245,52 @@
           <span class="float-end" id="closeChatbot" style="cursor:pointer;">
             <i class="fas fa-times"></i>
           </span>
-        <h5 class="card-title">Ask Pulido</h5>
-        <p class="text-muted">Our virtual technican.</p>
+        <h5 class="card-title">Ask Pulido <small>(beta 1.0)</small></h5>
+        <p class="text-muted">Our virtual technican. Automotive questions only. </p>
 
       </div>
         <div class="card-body">
             
             <textarea id="userInput" class="form-control" type="text" value="">
-
             </textarea>
-            <button id="askButton" class="btn btn-primary mt-2">Ask</button>
+            <button id="askButton" class="btn btn-primary mt-3">Ask</button>
             <div id="botResponse"  class="mt-2">
-              <div id="loadingMessage" style="display:none;">Hmmm...Let me think...</div>
+              <div id="loadingMessage" class="tex-bold" style="display:none;">Hmmm...Let me think...</div>
             </div>
         </div>
     </div>
 
     <!-- Button to enable chatbot -->
-    <button id="enableChatbot" class="btn btn-success btn-sm position-fixed bottom-0 end-0 m-2 fab-icon" style="z-index: 1000;"  aria-label="Talk to Pulido">
+    <button id="enableChatbot" class="btn btn-outline-success btn-sm position-fixed bottom-0 end-0 m-2 fab-icon" style="z-index: 1000;"  aria-label="Talk to Pulido">
         <i class="fas fa-robot"></i> 
     </button>
 
     <!-- 2023-10-24; style for the fab-icon used in the Chatbot  -->
     <style>
+      .card-hover:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0.2, 0.2);
+      }
       .fab-icon {
         border-radius: 50%;  /* Makes the button circular */
         width: 60px;         /* Set width of the button */
         height: 60px;        /* Set height of the button */
         text-align: center;  /* Center the robot icon */
-        padding: 0;          /* Remove padding */
+        padding: 0;          /* remove padding */
         font-size: 24px;     /* Set icon size */
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);  /* Optional: Add a little shadow for depth */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);  /* Optional: Add a little shadow for depth */
         transition: transform 0.3s;  /* Optional: Smooth transition for hover effect */
+
     }
 
     .fab-icon:hover {
         transform: scale(1.1);  /* Optional: Slightly enlarge button when hovered */
+    }
+
+    /* Glossy metallic look for the header */
+    .glossy-metallic {
+        background: linear-gradient(160deg, #b5bdc8 0%, #828c95 36%, #28343b 100%);
+        color: #fff;
+        border: none;
     }
 </style>
     <script>
