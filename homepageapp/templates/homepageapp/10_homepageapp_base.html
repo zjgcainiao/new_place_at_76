@@ -169,18 +169,18 @@
       <header class="navbar navbar-expand-lg navbar-light fixed-top" data-scroll-header="">
         <div class="container">
           <a class="navbar-brand me-1 me-xl-4" href="{% url 'homepageapp:homepage' %}">
-          <img class="d-block" src="{% static '/homepageapp/2022-Logo-Transparent-small.png' %}" width="75" alt="Amazing Automan LLC"></a>
+          <img class="d-block" src="{% static '/homepageapp/2022-Logo-Transparent-small.png' %}" width="70" alt="Amazing Automan LLC"></a>
           <!-- toggle button  -->
           <button class="navbar-toggler btn-dark ms-auto collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="mdi mdi-apps navbar-toggle-icon-mdi"></span>
           </button>
-        <!-- css style added for the toggle button defined right above  -->
-        <style>
-          .navbar-toggle-icon-mdi {
-          font-size: 24px;  /* Adjust as needed */
-          vertical-align: middle;  /* Center the icon vertically */
-}
-        </style>     
+          <!-- css style added for the toggle button defined right above  -->
+          <style>
+            .navbar-toggle-icon-mdi {
+            font-size: 24px;  /* Adjust as needed */
+            vertical-align: middle;  /* Center the icon vertically */
+              }
+          </style>     
            <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}"><i class="fi-user-plus me-2"></i>Register/Sign In</a>
           <!-- <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}"><i class="fi-users me-2"></i>Register/Sign In</a> -->
           <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
