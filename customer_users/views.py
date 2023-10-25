@@ -100,18 +100,18 @@ def activate_customer_user_account(request, token):
 def customer_user_login(request):
     form = CustomerUserLoginForm()
     logger = logging.getLogger('django.request')
-    print('running customer_user_login view function...')
-    if request.method == 'POST' or request.method == 'post':
-        print('login form posted.')
+    # print('running customer_user_login view function...')
+    if request.method == 'POST':
+        # print('login form posted.')
         # phone_number = request.POST['phone_number']
         # email = request.POST['username']
         # password = request.POST['password']
-        print(
-            f'any email from request.POST["username"].. {request.POST["username"]}')
+        # print(
+        #     f'any email from request.POST["username"].. {request.POST["username"]}')
         form = CustomerUserLoginForm(request.POST)
         # two ways to authenticate, use the default authenticate or use the custom one in CustomerUserBackend()
         # if phone_number is None or len(phone_number)==0:
-        print(f'login form form_valid() is {form.is_valid()}...')
+        # print(f'login form form_valid() is {form.is_valid()}...')
         # print(f'form in request.POST is {request.POST["form"]}...')
         print(f'{form}')
         if form.is_valid():

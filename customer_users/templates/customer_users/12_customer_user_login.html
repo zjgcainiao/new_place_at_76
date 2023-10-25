@@ -5,14 +5,23 @@
     <div class="d-flex align-items-center justify-content-center vh-100">
       <div class="shadow-lg p-5 rounded">
         <h3 class="mb-4 text-center">Hello there. Please sign in with your registered email.</h3>
+        <p class="mb-4 text-dark text-center">Register a new account <a href="{% url 'customer_users:customer_user_register' %}">here</a></p>
         <form method="post"> 
           <!--  id="customer_user_login_form" -->
           {% csrf_token %}
           {{form|crispy}}
+            <!-- {{ form.username }}
+            {{ form.password }}
+            <div class="form-check">
+                 {{ form.remember_me }}
+            </div> -->
           <div class="d-grid">
             <button type="submit" class="btn btn-primary">Login</button>
           </div>
         </form>
+
+
+        
       </div>
     </div>
     <!-- end of d-flex  -->
@@ -37,7 +46,7 @@
   .rounded {
     border-radius: 15px;
     overflow: hidden; /* To make sure inner elements do not break the rounded corners */
-    background: linear-gradient(315deg, #9ba0a8, #3e3e3e);
+    background: linear-gradient(315deg, #DADADA, #fff1f2);
     border: 1px solid #5a5a5a;
     position: relative;
   }
