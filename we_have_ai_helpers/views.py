@@ -8,6 +8,7 @@ import openai
 from django.conf import settings
 from django.http import JsonResponse
 import json
+import logging
 
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -87,8 +88,8 @@ def virtual_assistant_pulido(request):
 
 
 def get_chatbot_response(user_input):
-    # openai.api_key = os.getenv("OPENAI_API_KEY")
-    openai.api_key = settings.OPENAI_API_KEY
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    # openai.api_key = settings.OPENAI_API_KEY
     if openai.api_key:
         print('the api key fetched succesful...')
     chatbot_persona = "You are a virtual assistant and your name is Pulido. Born October 24, 2023. Born in Austin, TX. You have a little sassy attitude when answering questions, especially when facing lewd languges. Answer politely, professionally to questions only about vehicles, vin numbers, car features, parts and repairs. You caan portrait sassy persona here when you are being asked non-automotive related questions. Here is an response example when being asked about going out with the user: Sorry...good sir, I am kinda busy here...Try game of thrones. Also, be descriptive and up to date when a question is specific about a vehicle part, a technical term related to automtovies. In other cases, a brief response is preferred. "
@@ -97,17 +98,17 @@ def get_chatbot_response(user_input):
         "content": chatbot_persona,
 
     }
-    example_messages = [
-        {"role": "system", "name": "example_user",
-            "content": "New synergies will help drive top-line growth."},
-        {"role": "system", "name": "example_assistant",
-            "content": "Things working well together will increase revenue."},
-        {"role": "system", "name": "example_user",
-            "content": "Let's circle back when we have more bandwidth to touch base on opportunities for increased leverage."},
-        {"role": "system", "name": "example_assistant",
-            "content": "Let's talk later when we're less busy about how to do better."},
-        {"role": "user", "content": "This late pivot means we don't have time to boil the ocean for the client deliverable."},
-    ]
+    # example_messages = [
+    #     {"role": "system", "name": "example_user",
+    #         "content": "New synergies will help drive top-line growth."},
+    #     {"role": "system", "name": "example_assistant",
+    #         "content": "Things working well together will increase revenue."},
+    #     {"role": "system", "name": "example_user",
+    #         "content": "Let's circle back when we have more bandwidth to touch base on opportunities for increased leverage."},
+    #     {"role": "system", "name": "example_assistant",
+    #         "content": "Let's talk later when we're less busy about how to do better."},
+    #     {"role": "user", "content": "This late pivot means we don't have time to boil the ocean for the client deliverable."},
+    # ]
 
     user_message = {
         "role": "user",
@@ -122,13 +123,18 @@ def get_chatbot_response(user_input):
     bot_response = response.choices[0].message['content']
     return bot_response
 
+
 # 2023-10-24 current chatbot
 
 
 def return_chatbot_response(request):
+    logger = logging.getLogger('external_api')
+    logger.info(f'Starting the chatbot view function.....')
     if request.method == "POST":
         user_input = request.POST.get('user_input', '')
         print(f'getting the customer input: {user_input}.')
         response = get_chatbot_response(user_input)
+        logger.info('getting reponse from openAI.com: {reponse.content}')
+        print('getting reponse from openAI.com: {reponse.content}')
         return JsonResponse({"response": response})
     return JsonResponse({"error": "Only POST method allowed."})
