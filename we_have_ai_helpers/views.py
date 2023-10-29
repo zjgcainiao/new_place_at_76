@@ -88,7 +88,7 @@ def virtual_assistant_pulido(request):
 
 
 def get_chatbot_response(user_input):
-    openai.api_key = os.getenv("OPENAI_API_KEY")
+    openai.api_key = os.getenv("OPENAI_API_KEY2")
     # openai.api_key = settings.OPENAI_API_KEY
     if openai.api_key:
         print('the api key fetched succesful...')
@@ -109,7 +109,7 @@ def get_chatbot_response(user_input):
     #         "content": "Let's talk later when we're less busy about how to do better."},
     #     {"role": "user", "content": "This late pivot means we don't have time to boil the ocean for the client deliverable."},
     # ]
-
+    # user_input='what do you think of tesla roadster car?'
     user_message = {
         "role": "user",
         "content": user_input,
@@ -121,6 +121,9 @@ def get_chatbot_response(user_input):
     )
 
     bot_response = response.choices[0].message['content']
+    # if bot_response:
+    #     print(
+    #         f'the generated bot_response before returning is {bot_response}.')
     return bot_response
 
 
@@ -134,7 +137,7 @@ def return_chatbot_response(request):
         user_input = request.POST.get('user_input', '')
         print(f'getting the customer input: {user_input}.')
         response = get_chatbot_response(user_input)
-        logger.info('getting reponse from openAI.com: {reponse.content}')
-        print('getting reponse from openAI.com: {reponse.content}')
+        logger.info(f'getting reponse from openAI.com: {response}')
+        print(f'getting reponse from openAI.com: {response}')
         return JsonResponse({"response": response})
     return JsonResponse({"error": "Only POST method allowed."})
