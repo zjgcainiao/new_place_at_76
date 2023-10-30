@@ -43,15 +43,16 @@
     <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/js/tempus-dominus.min.js" crossorigin="anonymous"></script>       
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
 
-    <!-- Vendor css and js-->
-<!-- 
-    <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}"/>
-    <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}"/> -->
+    <!-- Vendor CSSs and Javascripts -->
 
-    <!-- <script src="{% static 'homepageapp/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js' %}"></script>
+    <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}"/>
+    <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}"/>
+
+    <!-- smooth-scoll.js 16.1.3  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/smooth-scroll/16.1.3/smooth-scroll.polyfills.js" integrity="sha512-7RJJepMYGySQYUtVVI+ShJWXDp4qUAWo3ovhCEHFOv5Ga16+lzRQHR6HQe/EBqNoO/aUQfhMU2PGrsQeAThIoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax.min.js' %}"></script>
-    <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script> -->
+    <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script>
 
     <!-- Main Theme CSS Styles + Javascript -->
     <link rel="stylesheet" href="{% static 'homepageapp/css/theme.min.css' %}">
@@ -147,7 +148,7 @@
 <div class="page-loading active d-flex justify-content-center align-items-center" style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(255, 255, 255, 0.9); transition: opacity 0.5s;">
   <div class="page-loading-inner text-center">
     <div class="spinner-border fw-bold" role="status"></div>
-    <div>Loading...</div>
+    <div>Loading...Please wait...</div>
   </div>
 </div>
 
@@ -164,7 +165,21 @@
           {% if user.is_authenticated and user|is_instance_of:"CustomerUser" %}
               <a href="{% url 'customer_users:customer_user_profile' %}" class="btn btn-dark  order-lg-3">Hi, {{ user.customer_user_first_name }}</a>
           {% else %}
-              <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}"><i class="fi-users me-2"></i>Create an Account</a>
+              <!-- <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}">Register/Login</a> -->
+              <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}">Register</a>
+              <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_login' %}">Login</a>
+              <!-- Register/Login, CustomerUser -->
+              <!-- <div  class="dropdown"> -->
+                <!-- The main button with an upward arrow icon -->
+                <!-- <button class="btn btn-primary btn-sm ms-2 order-lg-3 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Register/Login
+                </button> -->
+                <!-- The dropdown menu -->
+                <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="{% url 'customer_users:customer_user_register' %}">Register</a>
+                    <a class="dropdown-item" href="{% url 'customer_users:customer_user_login' %}">Login</a>
+                </div>
+              </div> -->
           {% endif %}
 
 
@@ -176,7 +191,7 @@
               <li class="nav-item dropdown py-2 me-lg-2">
                 <a class="nav-link dropdown-toggle align-items-center border-end-lg border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fi-layers me-2"></i>Services</a>
                 <ul class="dropdown-menu dropdown-menu-light">
-                  <li><a class="dropdown-item" href="{% url 'homepageapp:services' %}"><i class="fi-car me-2"></i>Service List</a></li>
+                  <li><a class="dropdown-item" href="{% url 'homepageapp:services' %}"><i class="fi-car fs-base me-2"></i>Service List</a></li>
                   <li class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="#"><i class="fi-friends fs-base me-2"></i>About Us</a></li>
                   <li><a class="dropdown-item" href="{% url 'internal_users:internal_user_login' %}"><i class="fi-friends fs-base me-2"></i>Employee Portal</a></li>
