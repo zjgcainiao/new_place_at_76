@@ -172,10 +172,8 @@ class CustomerUserLoginForm(AuthenticationForm):
         required=False,
         initial=True,
         label="Remember Me",
-        help_text="Check this box if you want to stay logged in. Personal device only.",
-        widget=forms.CheckboxInput(attrs={
-            # 'class': 'form-check',
-        })
+        help_text="stay logged in.",
+        widget=forms.CheckboxInput()
     )
 
     class Meta:
