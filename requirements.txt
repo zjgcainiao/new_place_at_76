@@ -124,6 +124,7 @@ stripe==7.0.0
 social-auth-app-django==5.2.0
 social-auth-core==4.4.2
 sqlparse==0.4.3
+tenacity==8.2.3
 # tk==0.1.0
 tomli==2.0.1
 toolz==0.12.0

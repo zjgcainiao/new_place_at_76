@@ -98,7 +98,7 @@ def activate_customer_user_account(request, token):
 
 
 def customer_user_login(request):
-    form = CustomerUserLoginForm()
+    # form = CustomerUserLoginForm()
     logger = logging.getLogger('django.request')
     # print('running customer_user_login view function...')
     if request.method == 'POST':
@@ -111,9 +111,9 @@ def customer_user_login(request):
         form = CustomerUserLoginForm(request.POST)
         # two ways to authenticate, use the default authenticate or use the custom one in CustomerUserBackend()
         # if phone_number is None or len(phone_number)==0:
-        # print(f'login form form_valid() is {form.is_valid()}...')
+        print(f'customer_user login form submitted...form_valid() status: {form.is_valid()}...')
         # print(f'form in request.POST is {request.POST["form"]}...')
-        print(f'{form}')
+        # print(f'{form}')
         if form.is_valid():
             print(f'getting the login email for customer user: {email}')
             email = form.cleaned_data['username']
@@ -134,7 +134,7 @@ def customer_user_login(request):
                 messages.error(
                     request, 'cannot authenticate the email and password combo.')
         else:
-            print(f'here are the error(s): {form.errors}')
+            print(f'here are the form error(s): {form.errors}')
             messages.error(
                 request, f'There seems to be an error in the form. Please check your inputs. {form.errors}')
             # pass
