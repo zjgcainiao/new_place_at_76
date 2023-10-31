@@ -21,14 +21,19 @@ class CustomerUserRegistrationForm(UserCreationForm):
     cust_user_phone_number = forms.CharField(
         max_length=15, required=False,
         widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control',
-                               'placeholder:': 'ex. 213-445-9990 or 2134459990.'}),
-        help_text='We will text important updates to this phone number. Optional but recommended.', label='Phone Number')
+                               'placeholder:': 'ex. 213-445-9990 or 2134459990. US phone number only.'}),
+        help_text='Optional but recommended. We will text important updates to this phone number.', label='Phone Number')
     cust_user_last_name = forms.CharField(
         max_length=30, required=False, help_text='Optional.', label='Last Name', widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }))
 
     cust_user_middle_name = forms.CharField(
         max_length=30, required=False, help_text='Optional.', label='Middle Name')
-
+    cust_user_first_name = forms.CharField(
+        max_length=30, required=False, help_text='Required.', label='First Name',
+        widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control',
+                               'placeholder:': 'first name, or business full name.'}))
+    # password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    # password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
     # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
     class Meta:
         model = CustomerUser
@@ -36,9 +41,6 @@ class CustomerUserRegistrationForm(UserCreationForm):
                   'cust_user_last_name', 'password1', 'password2']  # 'username',
         # required = ['cust_user_phone_number', 'cust_user_first_name', 'password1', 'password2']
         widgets = {
-
-            'cust_user_first_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
-
             'password1': forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', 'placeholder': 'Enter Password'}),
             'password2': forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', 'placeholder': 'Confirm Password'}),
         }
@@ -81,6 +83,10 @@ class CustomerUserRegistrationForm(UserCreationForm):
         # remove any non-digit input
         phone_number = re.sub(r'\D', '', phone_number)
 
+        # if phone number is empty. skip validation
+        if not phone_number:
+            return None
+        
         if not is_valid_us_phone_number(phone_number):
             raise forms.ValidationError(
                 'Please enter a valid US phone number.')
@@ -178,7 +184,7 @@ class CustomerUserLoginForm(AuthenticationForm):
 
     class Meta:
         model = CustomerUser
-        fields = ['cust_user_email', 'password']
+        # fields = ['cust_user_email', 'password']
 
 
 class CustomerUserChangeForm(forms.Form):

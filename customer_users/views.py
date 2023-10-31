@@ -27,11 +27,23 @@ def customer_user_register(request):
         if form.is_valid():
             email = form.cleaned_data.get('cust_user_email')
             password = form.cleaned_data.get('password1')
+            first_name = form.cleaned_data.get('cust_user_first_name')
+            last_name = form.cleaned_data.get('cust_user_last_name')
+            middle_name = form.cleaned_data.get('cust_user_middle_name')
+            phone_number = form.cleaned_data.get('cust_user_phone_number')
             print(
                 f'here is the password used to creating this customer email {email}:{password}....')
             # Use the create_user method to create a new customer user. The proper way
             customer_user = CustomerUser.objects.create_user(
                 email=email, password=password)
+            # saving the rest of info
+            if first_name or last_name or middle_name or phone_number:
+                customer_user.cust_user_first_name = first_name
+                customer_user.cust_user_last_name = last_name
+                customer_user.cust_user_middle_name = middle_name
+                customer_user.cust_user_phone_number = phone_number
+   
+            customer_user.save()
 
             print(f'saving the new customer user {customer_user.pk}...')
             return render(request, 'customer_users/60_customer_user_registration_success.html', {'customer_user': customer_user})
@@ -45,7 +57,7 @@ def customer_user_register(request):
 
 def activate_customer_user_account(request, token):
 
-    logger = logging.getLogger('db_file')
+    logger = logging.getLogger('django.request')
 
     logger.info(f' the JWT token received from activation link is {token}')
     print(f'new customer user token recieved: {token}')
@@ -62,11 +74,11 @@ def activate_customer_user_account(request, token):
         user = CustomerUser.objects.get(pk=user_id)
 
         logger.info(f'Decoding user token scuccessfull.')
-        print(f'Decoding customer user token scuccessfull.')
+        # print(f'Decoding customer user token scuccessfull.')
         user_id = decoded_payload['user_id']
         email_verified = decoded_payload['email_verified']
-        print(f'email_verified  decoded: {email_verified}')
-        print(f'user_id decoded: {user_id}')
+        # print(f'email_verified  decoded: {email_verified}')
+        # print(f'user_id decoded: {user_id}')
         print(f'current email_verified: {user.cust_user_email_verified}')
 
         logger.info(f'the decoded user_id is {user_id or None}')
@@ -83,7 +95,7 @@ def activate_customer_user_account(request, token):
                 request, f'Account activation was successful. Thank you for your efforts. You can login now.')
             return redirect('customer_users:customer_user_login')
         elif not email_verified and user.cust_user_email_verified:
-            messages.warning(
+            messages.SUCCESS(
                 request, f'Account {user.pk} had been activated. Email verified.')
             return redirect('customer_users:customer_user_login')
         else:
@@ -98,6 +110,7 @@ def activate_customer_user_account(request, token):
 
 
 def customer_user_login(request):
+    # Customer User Login Form 
     # form = CustomerUserLoginForm()
     logger = logging.getLogger('django.request')
     # print('running customer_user_login view function...')
@@ -126,7 +139,7 @@ def customer_user_login(request):
             if user:
                 login(
                     request, user, backend='customer_users.customer_auth_backend.CustomerUserBackend')
-                return redirect('customer_users:customer_user_profile')
+                return redirect('customer_users:get_personal_info')
             else:
                 # Invalid credentials, handle error
                 logger.error(

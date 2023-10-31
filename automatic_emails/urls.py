@@ -10,5 +10,5 @@ urlpatterns = [
 
     # dashboard -- repair order plus customer info and customer information. Phone numbers are not included yet.
     # prefix: dashboard/
-    path('send-sample-email/',  send_email_sample, name='send_email_sample'),
+    path('send_email/',  send_email_sample, name='send_email'),
 ]

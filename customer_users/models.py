@@ -97,7 +97,7 @@ class CustomerUser(AbstractBaseUser):
     def __str__(self):
         return f'{self.cust_user_full_name}'
 
-   # Full name property field
+        fgtV# Full name property field
     @property
     def cust_user_full_name(self):
         first_name = self.cust_user_first_name

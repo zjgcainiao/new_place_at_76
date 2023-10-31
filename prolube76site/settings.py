@@ -352,7 +352,7 @@ if os.environ.get('EMAIL_SENDER'):
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # replace with your SMTP host
 EMAIL_PORT = 587  # replace with your SMTP port. or 465
-EMAIL_USE_TLS = True  # replace with your SMTP security settings
+EMAIL_USE_TLS = True  # Use either TLS or SSL
 EMAIL_USE_SSL = False
 EMAIL_HOST_USER = email_sender  # replace with your email
 EMAIL_HOST_PASSWORD = email_pwd  # replace with your email password
@@ -366,9 +366,6 @@ DEFAULT_FROM_EMAIL = email_sender  # replace with your email
 # # django < 4.2
 # Import the required packages
 # from storages.backends.gcloud import GoogleCloudStorage
-
-# DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-
 
 # the google service account's credential json file stored online
 google_credential_path = os.environ.get("GOOGLE_CREDENTIAL_PATH")
