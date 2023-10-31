@@ -9,14 +9,12 @@
         <h4 class="card-header">Make a Service Appointment</h4>
         <div class="notice">
           <p class="card-subtitle m-3">Already a member? <a href="{% url 'customer_users:customer_user_login' %}">Sign in</a> for a faster service. Not a member yet? <a href="{% url 'customer_users:customer_user_register' %}">Sign up</a> for a free account today! Having an account with us will make your future appointment bookings faster and easier.</p>
-
         </div>
 
         {% csrf_token %}
         {% crispy form form.helper %}
 
           {% comment %}
-
           <div class ='row m-1'>
             <div class="col-6">
               {{form.appointment_reason_for_visit|as_crispy_field}}

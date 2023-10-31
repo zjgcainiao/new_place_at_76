@@ -43,8 +43,8 @@ class AppointmentCreationForm(forms.ModelForm):
 
     appointment_email = forms.EmailField(
         widget=forms.EmailInput(
-            attrs={'type': 'text', 'placeholder': 'example: johnson.goku@gmail.com.'}),
-        label='Phone', help_text="we send important appointment info and updates to this email.")
+            attrs={'type': 'text', 'placeholder': 'example: johnson.goku@gmail.com'}),
+        label=_('Email'), help_text="we send important appointment info and updates to this email.")
     appointment_concern_description = forms.CharField(widget=forms.Textarea(attrs={'type': 'text', 'placeholder': 'Examples: 1. I want to do a oil change for 2020 Toyota Sienna. Full Synthetic as usual. 2. My A/C system does not cool enough during a hot day. Last week, i drove to ... 3. The engine acted weird this morning, the car suddenly lost power on a freeway ramp...'}),
                                                       label='Desribe your issue as detailed as you can.')
 
