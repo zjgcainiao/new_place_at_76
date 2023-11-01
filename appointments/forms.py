@@ -327,7 +327,7 @@ class AppointmentImagesForm(forms.ModelForm):
 
     class Meta:
         model = AppointmentImages
-        fields = []
+        fields = ["appointment_image",]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -343,9 +343,5 @@ class AppointmentImagesForm(forms.ModelForm):
         )
 
 
-# class TalentDocumentsForm(forms.ModelForm):
-#     class Meta:
-#         model = TalentDocuments
-#         fields = ['talent_employment_docs']
 AppointmentImageFormSet = inlineformset_factory(
     AppointmentRequest, AppointmentImages, form=AppointmentImagesForm, extra=1, max_num=5)

@@ -4,6 +4,7 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from datetime import date, datetime
 from core_operations.common_functions import format_phone_number_to_shop_standard, deformat_phone_numbers
+import re
 
 
 def validate_vehicle_year(value):

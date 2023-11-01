@@ -26,8 +26,6 @@ urlpatterns = [
          name='appointment-preview-view'),
     path('success/', views.appointment_success,
          name='appointment-success-view'),
-
-
     path('<int:pk>/', AppointmentDetailView.as_view(), name='appointment_detail'),
     path('<uuid:appointment_confirmation_id>/',
          AppointmentDetailByConfirmationIdView.as_view(), name='appointment_detail_by_confirmation'),

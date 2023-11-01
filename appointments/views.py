@@ -16,7 +16,7 @@ from django.utils.html import strip_tags
 import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from appointments.forms import AppointmentCreationForm, AppointmentImagesForm
-from appointments.forms import AppointmentImagesForm, AppointmentImageFormSet
+from appointments.forms import AppointmentImageFormSet
 from appointments.models import AppointmentRequest, AppointmentImages
 from django.views.generic import CreateView, FormView, TemplateView
 from django.views.generic import DetailView
@@ -34,16 +34,18 @@ def appointment_create_view_for_customer(request):
     # form = AppointmentCreationForm(request.POST or None)
     if request.method == 'POST':
         # form = AppointmentCreationForm(request.POST)
-        form = AppointmentCreationForm(request.POST, request.FILES)
+        form = AppointmentCreationForm(request.POST)
         image_formset = AppointmentImageFormSet(
-            request.POST, request.FILES, user=request.user)
-        image_form = AppointmentImagesForm(
-            request.POST, request.FILES, user=request.user)
+            request.POST, request.FILES)
+        # image_form = AppointmentImagesForm(
+        #     request.POST, request.FILES)
+        # user=request.user
     # form = AppointmentCreationForm(request.POST)
-        if form.is_valid():  # and image_formset.is_valid()
+        if form.is_valid() and image_formset.is_valid():  # and image_formset.is_valid()
             # form.save()
-            form.save(commit=False)
+            image_formset.instance = form.save(commit=False)
             appointment_data = form.cleaned_data
+            image_formset.save(commit=False)
             # appointment_data.user = request.user
             appointment_data = json.dumps(appointment_data, default=str)
             request.session['appointment_data'] = appointment_data
@@ -59,15 +61,16 @@ def appointment_create_view_for_customer(request):
             return redirect('appointments:appointment-preview-view')
         else:
             print(form.errors)  # print out the form errors
+
             # return redirect('appointment_preview', args=[appointment.appointment_id])
     else:
-        form = AppointmentCreationForm
+        form = AppointmentCreationForm()
         image_formset = AppointmentImageFormSet(
             queryset=AppointmentImages.objects.none())
-        image_form = AppointmentImagesForm()
+        # image_form = AppointmentImagesForm()
     # context = {'form': form}
     context = {'form': form, 'image_formset': image_formset,
-               'image_form': image_form}
+               }
 
     return render(request, 'appointments/10_appointment_create.html', context)
 
@@ -82,10 +85,12 @@ def appointment_preview_view(request):
     # 2024-04-10 using json.loads to load back the appointment_data.
     # otherwise appointment_data will be
     appointment_data = json.loads(appointment_data)
-    images = json.loads(images)
+    if images:
+        images = json.loads(images)
 # if request.method == 'GET':
     form = AppointmentCreationForm(appointment_data)
     appointment = AppointmentRequest(**appointment_data)
+    appointment = AppointmentImageFormSet(**appointment_data)
     context = {'form': form,
                'appointment': appointment,
                }
@@ -138,8 +143,6 @@ def appointment_success(request):
 
 
 # version 2 of appointment creation.
-
-
 class AppointmentCreateView(SessionWizardView):
     # def get_template_names(self):
     #     return ['appointments/12_appointment_create_v2_step_1.html', 'appointments/13_appointment_create_v2_step_2.html']

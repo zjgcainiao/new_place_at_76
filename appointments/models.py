@@ -103,7 +103,7 @@ class AppointmentRequest(models.Model):
         ordering = ['-appointment_id']
 
     def __str__(self):
-        return f"Name: {self.appointment_first_name} {self.appointment_last_name}-Time: {self.appointment_requested_datetime}"
+        return f"Name: {self.appointment_first_name} {self.appointment_last_name} -Time: {self.appointment_requested_datetime}"
 
 
 class AppointmentImages(models.Model):
