@@ -10,7 +10,8 @@
         
         <p>You've successfully created a service appointment scheduled for {{ appointment.appointment_requested_datetime}}.</p>
         
-        <p>Your confirmation ID is:</p>
+        <p>Your confirmation ID is: </p>
+        
         
         <!-- Make the confirmation ID prominent -->
         <h3>{{ appointment.appointment_confirmation_id }}</h3>
@@ -25,19 +26,19 @@
 
         </div>
         <!-- If possible, create a view or page where users can see their appointment details using the confirmation ID -->
-        <a class="btn btn-primary" href="{% url 'appointment_detail_by_confirmation' appointment_confirmation_id=appointment.appointment_confirmation_id %}">View More Details</a>
+        <a class="btn btn-outline-dark btn-sm" href="{% url 'appointment_detail_by_confirmation' appointment_confirmation_id=appointment.appointment_confirmation_id %}">View More Details</a>
         
         <!-- Encourage sign up -->
         <div class="mt-4">
             <h5>Want more benefits?</h5>
-            <p>Create a free customer account to access 100+ detailed data and other exclusive benefits.</p>
-            <a class="btn btn-success" href="{% url 'customer_users:customer_user_register' %}">Sign Up Now!</a>
+            <p>Create a free account to recieve most updated NHTSA safety rating, recall for your beloved vehicle. Access to our AI assitance and other features!</p>
+            <a class="btn btn-success btn-sm" href="{% url 'customer_users:customer_user_register' %}">Sign Up Now!</a>
         </div>
 
         <!-- Reminder for existing customers -->
         <div class="mt-4">
-            <p>Already have an account? Sign in to manage your appointments and more.</p>
-            <a class="btn btn-secondary" href="{% url 'customer_users:customer_user_login' %}">Sign In</a>
+            <p>Already have an account? Aweseome. Use the link below to sign in.</p>
+            <a class="btn btn-secondary btn-sm" href="{% url 'customer_users:customer_user_login' %}">Sign In</a>
         </div>
 
         <p class="mt-4">If this wasn't you, please ignore this email. Your security is our priority.</p>
@@ -46,7 +47,7 @@
         <div class="footer mt-5">
             <p>Best regards,</p>
             <p>The Amazing Automan LLC Team</p>
-            <small>Contact us: <a href="mailto:automan001@amazingautoman.com">support email</a></small>
+            <small>Contact us: <a href="mailto:automan001@amazingautoman.com">Support Email</a></small>
         </div>
     </div>
 </div>

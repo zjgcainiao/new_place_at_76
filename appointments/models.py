@@ -87,7 +87,7 @@ class AppointmentRequest(models.Model):
         RepairOrder, on_delete=models.SET_NULL, null=True, related_name='appointment_repair_order')
     appointment_is_converted_to_ro = models.BooleanField(default=False)
     appointment_confirmation_id = models.UUIDField(
-        default=uuid.uuid4, editable=False,  verbose_name='Appointment Confirmation ID')  # unique=True,
+        default=uuid.uuid4, editable=False,  verbose_name='Appointment confirmation ID')  # unique=True,
     # appointment can either be created by anoymous user, a signed-in customer_user or created by an internal_user when a customer shows up on the physical store.
     created_by = models.ForeignKey(
         InternalUser, on_delete=models.SET_NULL, null=True, related_name='appointment_created_by')  # when null, it means its created by customer user
