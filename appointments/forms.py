@@ -3,7 +3,7 @@ import re
 from appointments.models import AppointmentRequest, AppointmentImages
 from datetime import date, datetime
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div
+from crispy_forms.layout import Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div, Button
 from django.core.exceptions import ValidationError
 from django.forms import modelformset_factory
 from django.forms import inlineformset_factory
@@ -23,28 +23,36 @@ from appointments.custom_validators import validate_vehicle_year, validate_file_
 
 
 class AppointmentCreationForm(forms.ModelForm):
-    # Add your custom fields
-    appointment_vehicle_year = forms.IntegerField(validators=[validate_vehicle_year],
-                                                  widget=forms.TextInput(
-                                                      attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'the year of vehicle, 2022, 2021 etc.', }),
-                                                  label='Year',
-
-                                                  )
-
-    appointment_vehicle_make = forms.ChoiceField(
-        choices=get_latest_vehicle_make_list, label='Make')
-    appointment_vehicle_model = forms.ChoiceField(
-        choices=get_latest_vehicle_model_list, label='Model')
-
-    appointment_phone_number = forms.CharField(validators=[validate_phone_number],
-                                               widget=forms.TextInput(
-                                                   attrs={'type': 'text', 'placeholder': 'Enter a US phone number. Ex.: (231)456-9809.'}),
-                                               label='Phone', help_text="we send important updates and reminders to this number.")
 
     appointment_email = forms.EmailField(
+        required=True,
         widget=forms.EmailInput(
             attrs={'type': 'text', 'placeholder': 'example: johnson.goku@gmail.com'}),
         label=_('Email'), help_text="we send important appointment info and updates to this email.")
+    # Add your custom fields
+    appointment_vehicle_year = forms.IntegerField(
+        required=False,
+        validators=[validate_vehicle_year],
+        widget=forms.TextInput(
+            attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'the year of vehicle, 2022, 2021 etc.', }),
+        label=_('Year'),
+
+    )
+
+    appointment_vehicle_make = forms.ChoiceField(
+        required=False,
+        choices=get_latest_vehicle_make_list, label='Make')
+    appointment_vehicle_model = forms.ChoiceField(
+        required=False,
+        choices=get_latest_vehicle_model_list, label='Model')
+
+    appointment_phone_number = forms.CharField(required=False,
+                                               validators=[
+                                                   validate_phone_number],
+                                               widget=forms.TextInput(attrs={
+                                                                      'type': 'text', 'placeholder': 'Enter a US phone number. Ex.: (231)456-9809.'}),
+                                               label=_('Contact Phone'), help_text="we send important updates and reminders to this number.")
+
     appointment_concern_description = forms.CharField(widget=forms.Textarea(attrs={'type': 'text', 'placeholder': 'Examples: 1. I want to do a oil change for 2020 Toyota Sienna. Full Synthetic as usual. 2. My A/C system does not cool enough during a hot day. Last week, i drove to ... 3. The engine acted weird this morning, the car suddenly lost power on a freeway ramp...'}),
                                                       label='Desribe your issue as detailed as you can.')
 
@@ -61,7 +69,7 @@ class AppointmentCreationForm(forms.ModelForm):
 
     class Meta:
         model = AppointmentRequest
-        exclude = ('appointment_created_at', 'appointment_last_updated_date',)
+        exclude = ('created_at', 'updated_at',)
         fields = [
             'appointment_reason_for_visit',
             'appointment_requested_datetime',
@@ -79,13 +87,13 @@ class AppointmentCreationForm(forms.ModelForm):
         ]
         widgets = {
             # , 'class':'form-control
-            'appointment_requested_datetime': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+            'appointment_requested_datetime': forms.DateTimeInput(attrs={'type': 'datetime-local', }),
             # 'type': 'text','class': 'form-control'
             'appointment_first_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'first name'}),
-            'appointment_last_name': forms.TextInput(attrs={'type': 'text', 'placeholder': 'last name', 'class': 'form-control'}),
+            'appointment_last_name': forms.TextInput(attrs={'type': 'text', 'placeholder': 'last name', }),
             # 'appointment_reason_for_visit': forms.TextInput(attrs={'type': 'text','class': 'form-control'}),
             # 'appointment_vehicle_detail': forms.TextInput(attrs={'type': 'text','placeholder':'for example: 2020 Toyota Tocoma SE, or 2021 Mercedez C300 AWD.'}),
-            'appointment_concern_description': forms.Textarea(attrs={'type': 'text', 'class': 'form-control'}),
+            'appointment_concern_description': forms.Textarea(attrs={'type': 'text', }),
         }
 
         labels = {
@@ -172,23 +180,24 @@ class AppointmentCreationForm(forms.ModelForm):
         # self.fields['appointment_vehicle_make'].choices = [(make.pk, make.make_name) for make in MakesNewSQL02Model.objects.all()]
 
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
+        self.helper.form_tag = False
         self.helper.form_method = "post"
-        self.helper.label_class = 'col-md-3'
-        self.helper.field_class = 'col-md-9'
+        self.helper.form_class = "form-horizontal"
+        # self.helper.label_class = 'col-md-3'
+        # self.helper.field_class = 'col-md-9'
         self.helper.layout = Layout(
             Row(Fieldset(_('Time and Contact Info'),
                 Row(Column(Field('appointment_email', css_class='form-control'),
                            css_class='col-md-6',),
                     Column(Field('appointment_phone_number', css_class='form-control', style="background-color: #cfe2f3"),
                            css_class='col-md-6',),
-                    css_class='p-1'),
+                    css_class='p-1 m-1'),
                 Row(
                     Column(Field('appointment_first_name', css_class='form-control'),
                            css_class='col-md-6',),
                     Column(Field('appointment_last_name', css_class='form-control'),
                            css_class='col-md-6',),
-                    css_class='p-1 '),
+                    css_class='p-1 m-1'),
 
                 Row(
                     # Column(Field('appointment_requested_date', css_class='form-control'),
@@ -199,7 +208,7 @@ class AppointmentCreationForm(forms.ModelForm):
                            css_class='col-md-6',),
                     Column(Field('appointment_reason_for_visit', css_class='form-select'),
                            css_class='col-md-6',),
-                    css_class='p-1 '),
+                    css_class='p-1 m-1'),
             ),
                 css_class='p-1 m-1'),
 
@@ -217,7 +226,7 @@ class AppointmentCreationForm(forms.ModelForm):
                     Column(Field('appointment_vehicle_make', css_class='form-select'),
                            css_class='col-md-4',),
                     Column(Field('appointment_vehicle_model', css_class='form-select'),
-                           css_class='col-md-4',),
+                           css_class='col-md-4 ',),
                     css_class='p-1'),
                 ),
                 css_class='p-1 m-1'),
@@ -238,7 +247,8 @@ class AppointmentCreationForm(forms.ModelForm):
                     css_class='col-md-6'
                 ),
                 css_class='p-1 m-1'),
-
+            Row(Column(Button('upload', 'Upload', css_class='btn-outline-dark', css_id='appt-img-upload-btn'), css_class='col'),
+                css_class='m-1 p-1'),
             HTML("<hr>"),
 
             ButtonHolder(
@@ -260,8 +270,8 @@ class AppointmentRequestFormV2(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
 
-        self.helper.form_class = 'form-horizontal'
-
+        # self.helper.form_class = 'form-horizontal'
+        self.helper.form_tag = False
         self.helper.label_class = 'col-4'
         self.helper.field_class = 'col-8'
         self.helper.layout = Layout(
@@ -332,10 +342,12 @@ class AppointmentImagesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
+        # self.helper.form_class = 'form-horizontal'
+        self.helper.form_tag = False
         self.helper.form_method = "post"
-        self.helper.label_class = 'col-3'
-        self.helper.field_class = 'col-9'
+        self.form_class = "form-inline"
+        # self.helper.label_class = 'col-3'
+        # self.helper.field_class = 'col-9'
         self.helper.layout = Layout(
             Column(Field('appointment_image', css_class='form-control'),
                    css_class='col col-md-12')
@@ -344,4 +356,8 @@ class AppointmentImagesForm(forms.ModelForm):
 
 
 AppointmentImageFormSet = inlineformset_factory(
-    AppointmentRequest, AppointmentImages, form=AppointmentImagesForm, extra=1, max_num=5)
+    AppointmentRequest, AppointmentImages,
+    form=AppointmentImagesForm, fk_name='appointment',
+    # can_order=True, can_delete=True,
+
+    extra=1, max_num=5)

@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content1-main %}
 
-<div class=" d-flex align-items-center justify-content-center m-5 p-5"> 
+<div class="container d-flex align-items-center justify-content-center  mt-5 p-5"> 
 
       <form class ='card card-hover border border-dark' method="post" enctype="multipart/form-data">
           <h4 class="card-header fw-bold">New Service Appointment</h4>
@@ -14,9 +14,23 @@
             {% csrf_token %}
             {% crispy form form.helper %}
               
-        
+            {{ image_formset.management_form }}
+              {% for image_form in image_formset %}
+                <div class="mb-3">
+                    
+                  {% crispy image_form form.helper %}
+                  <!-- add a new btn with an id = `appt-img-upload-btn` -->
+                  <button class="btn btn-outline-dark btn-sm" id="appt-img-upload-btn">
+                    Upload Image
+                  </button>
+                </div>
+              {% endfor %}
+              <!-- <button type="submit">Upload File</button> -->
+          </div>
+          <!-- card body  -->
 
-        
+          
+          <button type="submit"  class="btn btn-primary" >Create Appointment</button>
       </form>
 
           {% comment %}

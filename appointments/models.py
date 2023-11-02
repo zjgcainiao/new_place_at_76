@@ -39,9 +39,9 @@ class AppointmentRequest(models.Model):
     appointment_id = models.BigAutoField(primary_key=True)
     # appointment_date = models.DateField()
     appointment_requested_datetime = models.DateTimeField(
-        null=True, blank=True, verbose_name='Requested Apptmnt Time')
+        null=True, blank=True, verbose_name='Requested Apptement Time')
     appointment_confirmed_datetime = models.DateTimeField(
-        null=True, blank=True, verbose_name='Confirmed Apptmnt Time')
+        null=True, blank=True, verbose_name='Confirmed Apptement Time')
     appointment_reason_for_visit = models.PositiveSmallIntegerField(
         choices=REASON_CHOICES, default=0, verbose_name='Reason for visit?')
     appointment_customer_user = models.ForeignKey(
@@ -87,12 +87,14 @@ class AppointmentRequest(models.Model):
         RepairOrder, on_delete=models.SET_NULL, null=True, related_name='appointment_repair_order')
     appointment_is_converted_to_ro = models.BooleanField(default=False)
     appointment_confirmation_id = models.UUIDField(
-        default=uuid.uuid4, editable=False,  verbose_name='your appointment confirmation id')  # unique=True,
+        default=uuid.uuid4, editable=False,  verbose_name='Appointment Confirmation ID')  # unique=True,
     # appointment can either be created by anoymous user, a signed-in customer_user or created by an internal_user when a customer shows up on the physical store.
-    appointment_created_by_internal_user = models.ForeignKey(
+    created_by = models.ForeignKey(
         InternalUser, on_delete=models.SET_NULL, null=True, related_name='appointment_created_by')  # when null, it means its created by customer user
-    appointment_created_at = models.DateTimeField(auto_now_add=True)
-    appointment_last_updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey(
+        InternalUser, on_delete=models.SET_NULL, null=True, related_name='appointment_updated_by')  # when null, it means its created by customer user
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def appointment_full_name(self):

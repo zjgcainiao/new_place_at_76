@@ -1,11 +1,11 @@
-{% extends 'appointments/00_appointment_base.html' %}
+{% extends 'homepageapp/10_homepageapp_base.html' %}
 {% load crispy_forms_tags %}
 
-{% block content-main %}
-<section class="container py-2">
-  <aside>
+{% block content1-main %}
+
+<div class="container d-flex align-items-center justify-content-center vh-100 my-5 pt-5">
     <div class='row'>
-          <h3>New Appointment</h3>
+          <h3>Service Appointment Request</h3>
 
           <h4>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h4>
           <form class="form-horizontal" method="post">
@@ -38,6 +38,6 @@
 
     </div>
     
-  </aside>
-</section>        
+  
+</div>        
 {% endblock %}

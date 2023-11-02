@@ -26,26 +26,38 @@ from django.urls import reverse_lazy
 import calendar
 from formtools.wizard.views import SessionWizardView
 from appointments.models import APPT_STATUS_CANCELLED, APPT_STATUS_NOT_SUBMITTED
+from internal_users.models import InternalUser
+from customer_users.models import CustomerUser
 
+# 2023-11-01 revised this appointment_create_view_for_customer (request).
 
-# 2023-04-10
 
 def appointment_create_view_for_customer(request):
     # form = AppointmentCreationForm(request.POST or None)
     if request.method == 'POST':
         # form = AppointmentCreationForm(request.POST)
-        form = AppointmentCreationForm(request.POST)
+        if not request.FILES:
+            form = AppointmentCreationForm(request.POST)
+        else:
+            form = AppointmentCreationForm(request.POST, request.FILES)
+
         image_formset = AppointmentImageFormSet(
-            request.POST, request.FILES)
+            request.POST, request.FILES, prefix='images')
         # image_form = AppointmentImagesForm(
         #     request.POST, request.FILES)
         # user=request.user
     # form = AppointmentCreationForm(request.POST)
-        if form.is_valid() and image_formset.is_valid():  # and image_formset.is_valid()
+        if form.is_valid():  # and image_formset.is_valid():  # and image_formset.is_valid()
             # form.save()
-            image_formset.instance = form.save(commit=False)
+            # image_formset.instance = form.save(commit=False)
+            form.save(commit=False)
             appointment_data = form.cleaned_data
-            image_formset.save(commit=False)
+            # image_formset.save(commit=False)
+            if request.user.is_authenticated:
+                user = request.user
+                if isinstance(user, InternalUser):
+                    dsds
+
             # appointment_data.user = request.user
             appointment_data = json.dumps(appointment_data, default=str)
             request.session['appointment_data'] = appointment_data
@@ -61,14 +73,14 @@ def appointment_create_view_for_customer(request):
             return redirect('appointments:appointment-preview-view')
         else:
             print(form.errors)  # print out the form errors
+            print(image_formset.errors)  # print out the image_formset errors
 
             # return redirect('appointment_preview', args=[appointment.appointment_id])
     else:
         form = AppointmentCreationForm()
         image_formset = AppointmentImageFormSet(
             queryset=AppointmentImages.objects.none())
-        # image_form = AppointmentImagesForm()
-    # context = {'form': form}
+
     context = {'form': form, 'image_formset': image_formset,
                }
 
@@ -139,14 +151,14 @@ def appointment_preview_view(request):
 
 
 def appointment_success(request):
-    return render(request, 'appointments/30_appointment_creation_success.html')
+    return render(request, 'appointments/22_appointment_creation_success.html')
 
 
 # version 2 of appointment creation.
 class AppointmentCreateView(SessionWizardView):
     # def get_template_names(self):
     #     return ['appointments/12_appointment_create_v2_step_1.html', 'appointments/13_appointment_create_v2_step_2.html']
-    template_name = 'appointments/11_appointment_create_v2.html'
+    template_name = 'appointments/10_appointment_create_v2.html'
 
     file_storage = FileSystemStorage(location=os.path.join(
         settings.DEFAULT_FILE_STORAGE, 'appointment_images'))
@@ -179,7 +191,7 @@ class AppointmentCreateView(SessionWizardView):
 
 
 class AppointmentPreviewView(FormView):
-    template_name = 'appointments/20_appointment_preview.html'
+    template_name = 'appointments/21_appointment_preview.html'
     # form_class = AppointmentCreationForm
     success_url = reverse_lazy('appointments:appointment-success-view')
 
@@ -194,7 +206,7 @@ class AppointmentPreviewView(FormView):
 
 
 class AppointmentSuccessView(TemplateView):
-    template_name = 'appointments/30_appointment_creation_success.html'
+    template_name = 'appointments/22_appointment_creation_success.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -210,7 +222,7 @@ class AppointmentSuccessView(TemplateView):
 class AppointmentListView(LoginRequiredMixin, ListView):
     model = AppointmentRequest
     context_object_name = 'appointments'
-    template_name = 'appointments/50_appointment_list.html'
+    template_name = 'appointments/20_appointment_list.html'
     login_url = reverse_lazy('internal_users:internal_user_login')
 
     def get_queryset(self):
@@ -227,7 +239,7 @@ class AppointmentListView(LoginRequiredMixin, ListView):
 class AppointmentDetailView(DetailView):
     model = AppointmentRequest
     context_object_name = 'appointment'
-    template_name = 'appointments/60_appointment_detail.html'
+    template_name = 'appointments/30_appointment_detail.html'
     # login_url = '/users/login'
 
     def get_context_data(self, **kwargs):
@@ -278,7 +290,7 @@ def appointment_image_list(request, pk):
     appointment = AppointmentRequest.objects.get(pk=pk)
     images = AppointmentImages.objects.filter(
         image_is_active=True).filter(appointment=appointment).all()
-    return render(request, 'appointments/70_appointment_image_list.html', {'images': images, 'appointment': appointment})
+    return render(request, 'appointments/21_appointment_image_list.html', {'images': images, 'appointment': appointment})
 
 
 def appointment_image_soft_delete(request, image_id):
