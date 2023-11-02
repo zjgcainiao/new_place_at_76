@@ -24,7 +24,7 @@
                 {% for image in images %}
                 <tr>
                     <td>
-                        <a href="{{ image.appointment_images.url }}" download>{{ image.appointment_images.name }}</a>
+                        <a href="{{ image.appointment_image }}" download>{{ image.appointment_images.name }}</a>
                     </td>
                     <td> 
                         {{ image.uploaded_date |date}}

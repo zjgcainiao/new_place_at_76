@@ -1,10 +1,10 @@
-{% extends 'appointments/00_appointment_base.html' %}
+{% extends 'homepageapp/10_homepageapp_base.html' %}
 
-{% block content-main %}
-<div class="container my-2">  
-    <div class="card card-hover">
+{% block content1-main %}
+<div class="container mt-5 pt-5">  
+    <div class="card card-hover border border-50 ">
       <h3 class="card-header">Service Request Submitted Successfully!</h3>
-      <div class="card-body">
+      <div class="card-body ">
         <p>Your service request has been submitted <strong>successfully</strong>! For now, you are all set. </p>
         <p><a href="{% url 'homepageapp:homepage' %}">Go back to Homepage</a></p>
       </div>

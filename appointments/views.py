@@ -75,6 +75,9 @@ def appointment_preview_view(request, pk):
     try:
         appointment = get_object_or_404(AppointmentRequest, pk=pk)
         images = AppointmentImages.objects.filter(appointment=appointment)
+
+        # user confirm on the "Confirm" button.
+
         if request.method == "POST":
             appointment.appointment_status = APPT_STATUS_SUBMITTED
             appointment.save()
@@ -87,8 +90,10 @@ def appointment_preview_view(request, pk):
         return redirect('appointments:create_appointment')
 
 
-def appointment_success(request):
-    return render(request, 'appointments/22_appointment_creation_success.html')
+def appointment_success(request, pk):
+    appointment = get_object_or_404(AppointmentRequest, pk=pk)
+    context = {'appointment': appointment}
+    return render(request, 'appointments/22_appointment_creation_success.html', context)
 
 
 # version 2 of appointment creation.

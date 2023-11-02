@@ -7,7 +7,7 @@
   <div class="appointment-preview">
       <h3>Appointment Preview</h3>
       Hello {{appointment.appointment_first_name}} {{apppontment.appointment_last_name}}, here is the appointment you requested.
-      <table class="table table-light">
+      <table class="table table-dark">
         <thead>
         </thead>
         <tbody>
@@ -42,10 +42,10 @@
       <h3>Uploaded Images</h3>
       <!-- Display images -->
         <div class="row">
-          {% for image in images %}
+          {% for image in iamges %}
             <div class="col-md-4 col-sm-6 col-xs-12">
               <div class="image-thumbnail">
-                <img src="{{ image.appointment_image }}" alt="Uploaded appointment image" class="img-fluid">
+                <img src="{{ image.appointment_image.url }}" alt="Uploaded appointment image" class="img-fluid">
               </div>
             </div>
           {% endfor %}

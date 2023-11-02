@@ -19,13 +19,14 @@
         <h4 class="card-header">Status: {{ appointment.get_appointment_status_display }}</h4>
         <div class="card-body">
             <div class ='row my-1'>
-                <div class="col-3"><p>Confirmed Time: {{appointment.appointment_confirmed_datetime}}</p></div>
+
                 <div class="col-3"><p>Requested Time: {{appointment.appointment_requested_datetime}}</p></div>
                 <div class="col-3"><p>Reason for visit: {{ appointment.get_appointment_reason_for_visit_display }}</p></div>
                 <div class="col-3"><p>Appointment Cust Name: {{appointment.appointment_full_name}}</p></div>
                 <div class="col-3"><p>Contact Phone Number: {{ appointment.appointment_phone_number }}</p></div>
                 <div class="col-3"><p>Contact Email: {{ appointment.appointment_email }}</p></div>
-                <div class="col-12"><p>Concern Description: {{ appointment.appointment_concern_description }}</p></div>
+                <div class="col-12"><p>Service Description: {{ appointment.appointment_concern_description }}</p></div>
+                                <!-- <div class="col-3"><p>Confirmed Time: {{appointment.appointment_confirmed_datetime}}</p></div> -->
             </div>
             <!-- end of row  -->
 
