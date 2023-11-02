@@ -9,8 +9,9 @@ from django.conf import settings
 from django.http import JsonResponse
 import json
 import logging
+from tenacity import retry, wait_random_exponential, stop_after_attempt
 
-# openai.api_key = os.getenv("OPENAI_API_KEY")
+
 def list_pdfs(request):
     # Get a list of all pdf files. add if f to eclude empty ones
     pdf_files = [default_storage.url('scraped_pdfs/' + f)
@@ -84,8 +85,6 @@ def virtual_assistant_pulido(request):
         )  # get a new response from GPT where it can see the function response
         return second_response
 
-
-from tenacity import retry, wait_random_exponential, stop_after_attempt
 
 GPT_MODEL = "gpt-3.5-turbo-0613"
 
