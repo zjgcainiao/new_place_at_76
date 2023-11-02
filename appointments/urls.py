@@ -22,10 +22,11 @@ urlpatterns = [
          name='appointment-get-vehicle-models'),
     path('create/v2', views.AppointmentCreateView.as_view(),
          name='appointment-create-view-v2'),
-    path('preview/', views.appointment_preview_view,
-         name='appointment-preview-view'),
-    path('success/', views.appointment_success,
-         name='appointment-success-view'),
+    path('<int:pk>/preview/', views.appointment_preview_view,
+         name='appointment_preview_view'),
+    path('<int:pk>/success/', views.appointment_success,
+         name='appointment_success_view'),
+
     path('<int:pk>/', AppointmentDetailView.as_view(), name='appointment_detail'),
     path('<uuid:appointment_confirmation_id>/',
          AppointmentDetailByConfirmationIdView.as_view(), name='appointment_detail_by_confirmation'),
@@ -35,9 +36,4 @@ urlpatterns = [
     path('images/<int:image_id>/delete/', appointment_image_soft_delete,
          name='appointment_image_delete'),
 
-
-    # the following three urls are using the class views.
-    # path('create', appointment_create_view, name='appointment-create-view'),
-    # path('preview/', appointment_preview_view, name='appointment-preview-view'),
-    # path('success/', appointment_success_view, name='appointment-success-view'),
 ]

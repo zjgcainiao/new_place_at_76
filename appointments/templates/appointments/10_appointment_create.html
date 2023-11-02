@@ -29,65 +29,6 @@
               </button>
           </div>
       </script>
-
-          {% comment %}
-          <!-- <div class ='row m-1'>
-            <div class="col-6">
-              {{form.appointment_reason_for_visit|as_crispy_field}}
-            </div>
-          </div>
-          <div class ='row m-1'>
-            <div class="col-6">
-              {{form.appointment_requested_datetime|as_crispy_field}}
-            </div>
-          </div>
-        
-          <div class ='row m-1'>
-            <div class="col-6">
-              {{form.appointment_first_name|as_crispy_field}}
-            </div>
-            <div class="col-6">
-              {{form.appointment_last_name|as_crispy_field}}
-            </div>
-          </div>
-          <div class ='row m-1'>
-            <div class="col-4">
-              {{form.appointment_vehicle_year|as_crispy_field}}
-            </div>
-            <div class="col-4">
-              {{form.appointment_vehicle_make|as_crispy_field}}
-            </div>
-            <div class="col-4">
-              {{form.appointment_vehicle_model|as_crispy_field}}
-            </div>
-          </div>
-          <div class ='row m-1'>
-            <div class="col-12">
-              {{form.appointment_concern_description|as_crispy_field}}
-            </div>
-          </div>
-          <button class = 'btn btn-outline-primary' type="submit">Submit</button>
-
-
-          <form method="post" enctype="multipart/form-data">
-              {% csrf_token %}
-              {{ image_formset.management_form }}
-              {% for image_form in image_formset %}
-              {{ image_form | crispy }}
-              {% endfor %}
-              <button type="submit">Upload File</button>
-        </form>        
-          
-        {% if appointment.images.all %}
-        <h2>Uploaded Images</h2>
-        <div>
-            {% for image in appointment.appointment_images.all %}
-            <img src="{{ image.appointment_images.url }}" alt="">
-            {% endfor %}
-        </div>
-        {% endif %} -->
-          {% endcomment %}
-
 </div>
 <!-- end of container  -->
 
@@ -196,11 +137,7 @@
       // Update the image preview when files are chosen
       fileInput.change(updateImagePreview);
 
-      // Click the hidden file input when the 'Upload Images' button is clicked
-      $('.appt-img-upload-btn').click(function(e) {
-          e.preventDefault();
-          fileInput.click();
-      });
+
   });
 
   // Function to remove an image from the preview

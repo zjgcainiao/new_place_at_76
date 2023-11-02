@@ -8,7 +8,7 @@ from django.utils import timezone
 from core_operations.models import FormattedPhoneNumberField
 
 APPT_STATUS_NOT_SUBMITTED = 0
-APPT_STATUS_PENDING = 1
+APPT_STATUS_SUBMITTED = 1
 APPT_STATUS_CONFIRMED = 2
 APPT_STATUS_REJECTED = 3
 APPT_STATUS_RESCHEDULED = 4
@@ -20,7 +20,7 @@ APPT_STATUS_CANCELLED = -20
 class AppointmentRequest(models.Model):
     STATUS_CHOICES = (
         (APPT_STATUS_NOT_SUBMITTED, _('00_Not_Submitted')),
-        (APPT_STATUS_PENDING, _('01_Pending')),
+        (APPT_STATUS_SUBMITTED, _('01_Submitted')),
         (APPT_STATUS_CONFIRMED, _('02_Confirmed')),
         (APPT_STATUS_REJECTED, _('03_Rejected')),
         (APPT_STATUS_RESCHEDULED, _('04_Rescheduled')),

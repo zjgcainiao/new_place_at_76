@@ -1,7 +1,7 @@
 {% extends 'appointments/00_appointment_base.html' %}
 {% load crispy_forms_tags %}
 
-{% block content-main %}
+{% block content1-main %}
 
 <div class ='container-fluid'>
     <!-- nav Breadcrumb-->
@@ -20,7 +20,7 @@
     <!-- the button group  -->
     <div class='row'>
       <div class="col-12 btn-group my-1">
-        <a type="button" class="btn btn-outline-dark" href="{% url 'appointments:create-appointment' %}"> <i class="uil-focus-add"></i> New Appointment</a>
+        <a type="button" class="btn btn-outline-dark" href="{% url 'appointments:create_appointment' %}"> <i class="uil-focus-add"></i> New Appointment</a>
         <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-dash' %}"><i class ='uil-users-alt' ></i> Go to Customer Dash</a>
 
         <a type="button" class="btn btn-outline-dark">Go to Vehicle Dash</a>

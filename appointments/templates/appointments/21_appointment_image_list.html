@@ -1,8 +1,8 @@
 {% extends 'appointments/00_appointment_base.html' %}
 {% load static %}
-{% block content-main %}
+{% block content1-main %}
 
-<div class ='container container-fluid'>
+<div class ='container pt-5 mt-5'>
     <div class="row my-1">
         <div clas="col">
             <a class="btn btn-outline-primary" href="{% url 'appointments:appointment_detail' pk=appointment.appointment_id %}">Go back</a>

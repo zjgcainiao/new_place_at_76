@@ -2,7 +2,7 @@
 
 {% load crispy_forms_tags %}
 
-{% block content-main %}
+{% block content1-main %}
 <div class="container  my-1">
   <div class="appointment-preview">
       <h3>Appointment Preview</h3>
@@ -40,26 +40,31 @@
     
         
       <h3>Uploaded Images</h3>
-      <div class="image-gallery">
-        {% for image in wizard.form.cleaned_data.appointment_images %}
-          <div class="image-thumbnail">
-            <img src="{{ image.url }}" alt="Uploaded image" />
-          </div>
-        {% endfor %}
-      </div>
+      <!-- Display images -->
+        <div class="row">
+          {% for image in images %}
+            <div class="col-md-4 col-sm-6 col-xs-12">
+              <div class="image-thumbnail">
+                <img src="{{ image.appointment_image }}" alt="Uploaded appointment image" class="img-fluid">
+              </div>
+            </div>
+          {% endfor %}
+        </div>
 
   </div>
   <!-- end of appointment-preview  -->
 
-  <p class="small">Click the 'confirm' button below when you finishing review the information below</p>
-  <form class='card' method="post">
-    {% csrf_token %}
-    <input type="hidden" name="appointment_id" value="{{ appointment.appointment_id }}">
-    <button type="submit" class="btn btn-outline-primary">Confirm</button>
-  </form>
+  <!-- Buttons to confirm or go back and edit -->
+  <div class="action-buttons">
+    <a href="{% url 'appointments:create_appointment' %}" class="btn btn-secondary">Go Back</a>
+    <!-- Implement the save_appointment view and url -->
+    <a href="{% url 'appointments:appointment_success_view' pk=appointment.pk %}" class="btn btn-primary">Confirm</a>
+  </div>
   
 </div> 
 <!-- end of container  -->
+
+<!-- added on 2023-11-01  custom css style  -->
 <style>
     /* Assuming this CSS is in a file that's included in your base template */
     .image-gallery {

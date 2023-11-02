@@ -1,10 +1,14 @@
 {% extends 'appointments/00_appointment_base.html' %}
 
 {% block content-main %}
-<div class="container container-fluid my-1">  
-  <h2>Service Request Submitted Successfully!</h2>
-  
-  <p>Your service request has been submitted successfully. We will review your request and get back to you as soon as possible. Thank you!</p>
-  <p><a href="{% url 'homepageapp:homepage' %}">Go back to Homepage</a></p>
+<div class="container my-2">  
+    <div class="card card-hover">
+      <h3 class="card-header">Service Request Submitted Successfully!</h3>
+      <div class="card-body">
+        <p>Your service request has been submitted <strong>successfully</strong>! For now, you are all set. </p>
+        <p><a href="{% url 'homepageapp:homepage' %}">Go back to Homepage</a></p>
+      </div>
+    </div>
+
 </div>
 {% endblock %}

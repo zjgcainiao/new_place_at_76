@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.forms import modelformset_factory
 from django.forms import inlineformset_factory
 from django.utils.translation import gettext_lazy as _
-from appointments.models import APPT_STATUS_PORGRESSING, APPT_STATUS_CONFIRMED, APPT_STATUS_PENDING
+from appointments.models import APPT_STATUS_PORGRESSING, APPT_STATUS_CONFIRMED, APPT_STATUS_SUBMITTED
 from core_operations.common_functions import get_latest_vehicle_make_list, get_latest_vehicle_model_list
 from homepageapp.models import MakesNewSQL02Model
 from django.db.models import Q
@@ -28,13 +28,13 @@ class AppointmentCreationForm(forms.ModelForm):
         required=True,
         widget=forms.EmailInput(
             attrs={'type': 'text', 'placeholder': 'example: johnson.goku@gmail.com'}),
-        label=_('Email'), help_text="we send important appointment info and updates to this email.")
+        label=_('Contact Email'), help_text="Required. Will send important updates to this email.")
     # Add your custom fields
     appointment_vehicle_year = forms.IntegerField(
         required=False,
         validators=[validate_vehicle_year],
         widget=forms.TextInput(
-            attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'the year of vehicle, 2022, 2021 etc.', }),
+            attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'model year, 2024, 2023 etc.', }),
         label=_('Year'),
 
     )
@@ -51,7 +51,7 @@ class AppointmentCreationForm(forms.ModelForm):
                                                    validate_phone_number],
                                                widget=forms.TextInput(attrs={
                                                                       'type': 'text', 'placeholder': 'Enter a US phone number. Ex.: (231)456-9809.'}),
-                                               label=_('Contact Phone'), help_text="we send important updates and reminders to this number.")
+                                               label=_('Contact Phone'), help_text="we send important updates & reminders to this number.")
 
     appointment_concern_description = forms.CharField(widget=forms.Textarea(attrs={'type': 'text', 'placeholder': 'Examples: 1. I want to do a oil change for 2020 Toyota Sienna. Full Synthetic as usual. 2. My A/C system does not cool enough during a hot day. Last week, i drove to ... 3. The engine acted weird this morning, the car suddenly lost power on a freeway ramp...'}),
                                                       label='Desribe your issue as detailed as you can.')
@@ -64,7 +64,8 @@ class AppointmentCreationForm(forms.ModelForm):
     appointment_images = forms.ImageField(
         required=False,
         label="Upload Image",
-        widget=forms.ClearableFileInput(attrs={'multiple': True})
+        widget=forms.ClearableFileInput(attrs={'multiple': True},),
+        help_text="up to 5 images(png, jpg, jpeg, etc). 8MB each"
     )
 
     class Meta:
@@ -134,7 +135,7 @@ class AppointmentCreationForm(forms.ModelForm):
             for img_file in self.files.getlist('appointment_images'):
                 AppointmentImages.objects.create(
                     appointment=appointment,
-                    image=img_file,
+                    appointment_image=img_file,
                 )
 
         return appointment
@@ -142,7 +143,7 @@ class AppointmentCreationForm(forms.ModelForm):
     def clean_appointment_email(self):
         appointment_email = self.cleaned_data['appointment_email']
         if appointment_email is not None:
-            appt = AppointmentRequest.objects.filter(Q(appointment_status=APPT_STATUS_PENDING) | Q(appointment_status=APPT_STATUS_CONFIRMED) | Q(appointment_status=APPT_STATUS_PORGRESSING)
+            appt = AppointmentRequest.objects.filter(Q(appointment_status=APPT_STATUS_SUBMITTED) | Q(appointment_status=APPT_STATUS_CONFIRMED) | Q(appointment_status=APPT_STATUS_PORGRESSING)
                                                      ).filter(appointment_email=appointment_email)
             # existing pending/in-progresss/confirmed/
             if appt.exists():
@@ -166,8 +167,11 @@ class AppointmentCreationForm(forms.ModelForm):
 
     def clean_appointment_phone_number(self):
         phone_number = self.cleaned_data['appointment_phone_number']
-        phone_number_formatted = format_phone_number_to_shop_standard(
-            phone_number)
+        if phone_number:
+            phone_number_formatted = format_phone_number_to_shop_standard(
+                phone_number)
+        else:
+            phone_number_formatted = None
 
         return phone_number_formatted
 
@@ -261,7 +265,7 @@ class AppointmentCreationForm(forms.ModelForm):
             ButtonHolder(
                 Row(
                     Column(Submit('submit', 'Submit', css_class='btn-outline-primary'),
-                           css_class='col col-md-6'),
+                           css_class='col'),
                     # Column(Reset('Reset This Form', 'Reset Form', css_class='btn-outline-dark'),
                     #         css_class='col col-6'),
                     css_class='p-1 m-1'),

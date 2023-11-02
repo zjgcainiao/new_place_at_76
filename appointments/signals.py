@@ -17,7 +17,7 @@ logger = logging.getLogger('django')
 def send_appointment_confirmation_email(sender, instance, created, **kwargs):
     if created:
 
-        mail_subject = "Appointment Confirmation"
+        mail_subject = "Appointment Request Received"
         appointment = instance
 
         logger.info(
@@ -25,7 +25,7 @@ def send_appointment_confirmation_email(sender, instance, created, **kwargs):
 
         context = {
             'appointment_confirmation_id': instance.appointment_confirmation_id,
-            'email': instance.appointment_confirmation_id,
+            'email': instance.appointment_email,
             'appointment': instance,
         }
 
@@ -42,11 +42,11 @@ def send_appointment_confirmation_email(sender, instance, created, **kwargs):
                 subject = mail_subject
                 email_from = settings.EMAIL_HOST_USER
                 message = render_to_string(
-                    'appointments/10_new_appointment_email.html', context)
+                    'appointments/40_new_appointment_email_template.html', context)
                 recipient_list = [appointment.appointment_email, ]
 
                 # Modify recipient_list if "testing" or "test" is present in any email
-                if any('testing' in email or 'test' in email or '22-' in email in email for email in recipient_list):
+                if any('testing' in email or 'test' or "TESTING" in email or '22-' in email in email for email in recipient_list):
                     recipient_list = ['holleratme420@gmail.com']
 
                 email = EmailMessage(subject, message, email_from,

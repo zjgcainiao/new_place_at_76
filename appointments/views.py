@@ -28,22 +28,19 @@ from formtools.wizard.views import SessionWizardView
 from appointments.models import APPT_STATUS_CANCELLED, APPT_STATUS_NOT_SUBMITTED
 from internal_users.models import InternalUser
 from customer_users.models import CustomerUser
-
+from appointments.models import APPT_STATUS_SUBMITTED
 # 2023-11-01 revised this appointment_create_view_for_customer (request)
 
 
 def appointment_create_view_for_customer(request):
     # form = AppointmentCreationForm(request.POST or None)
     if request.method == 'POST':
-        # form = AppointmentCreationForm(request.POST)
-        if not request.FILES:
-            form = AppointmentCreationForm(request.POST)
-        else:
-            form = AppointmentCreationForm(request.POST, request.FILES)
-        if form.is_valid():
 
+        form = AppointmentCreationForm(request.POST, request.FILES or None)
+        if form.is_valid():
+            # Save the appointment instance but do not commit to the database yet
             appointment = form.save(commit=False)
-            if request.user.is_authenticated():
+            if request.user.is_authenticated:
                 user = request.user
                 if isinstance(user, CustomerUser):
                     appointment.appointment_customer_user = user
@@ -52,18 +49,15 @@ def appointment_create_view_for_customer(request):
                     appointment.created_by = user
             else:
                 appointment.appointment_customer_user = None
+            # Now save the appointment instance to the database
+            appointment.save()
 
-            images = request.FILES.getlist('appointment_images')
-
-            for image in images:
-                # Here we save the image temporarily or mark it as not confirmed
-                temp_image = AppointmentImages(
-                    appointment=appointment, image=image)
-                temp_image.save()
-
-            # Instead of saving the entire form data in the session, just save the ID
-            request.session['appointment_id'] = appointment.pk
-            return redirect('appointments:appointment-preview-view')
+            # Now that the appointment instance is saved, you can save related images
+            form.save_m2m()  # Save many-to-many data for the form
+            form.save(commit=True)  # Now save the images
+            messages.info(request,
+                          "Here is the preview of your service appointment request. Your appointment has NOT submitted yet. Please use the submit button below to proceed.")
+            return redirect('appointments:appointment_preview_view', pk=appointment.pk)
         else:
             print(form.errors)  # print out the form errors
 
@@ -76,14 +70,19 @@ def appointment_create_view_for_customer(request):
     return render(request, 'appointments/10_appointment_create.html', context)
 
 
-def appointment_preview_view(request):
-    appointment_id = request.session.get('appointment_id')
-    if appointment_id:
-        appointment = AppointmentRequest.objects.get(pk=appointment_id)
+def appointment_preview_view(request, pk):
+    # appointment_id = request.session.get('appointment_id')
+    try:
+        appointment = get_object_or_404(AppointmentRequest, pk=pk)
         images = AppointmentImages.objects.filter(appointment=appointment)
+        if request.method == "POST":
+            appointment.appointment_status = APPT_STATUS_SUBMITTED
+            appointment.save()
+            return redirect("appointments:appointment_sucess_view", pk=appointment.pk)
+
         context = {'appointment': appointment, 'images': images}
         return render(request, 'appointments/21_appointment_preview.html', context)
-    else:
+    except AppointmentRequest.DoesNotExist:
         # Handle the case where there is no appointment_id in the session
         return redirect('appointments:create_appointment')
 
@@ -125,13 +124,13 @@ class AppointmentCreateView(SessionWizardView):
         # Add a success message
         # messages.success(self.request, "Talent created successfully.")
         # return redirect("talent_management:talent_list", {'talent': talent})
-        return redirect('appointments:appointment-preview-view')
+        return redirect('appointments:appointment_preview_view')
 
 
 class AppointmentPreviewView(FormView):
     template_name = 'appointments/21_appointment_preview.html'
     # form_class = AppointmentCreationForm
-    success_url = reverse_lazy('appointments:appointment-success-view')
+    success_url = reverse_lazy('appointments:appointment_success_view')
 
     def form_valid(self, form):
         self.request.session['appointment_data'] = self.request.POST
