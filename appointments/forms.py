@@ -110,28 +110,34 @@ class AppointmentCreationForm(forms.ModelForm):
             'appointment_vehicle_model': _('Model'),
         }
 
-    def save(self, commit=False):
-        # First save the appointment instance
-        appointment = super(AppointmentCreationForm, self).save(commit)
+    # def save(self, commit=False):
+    #     # First save the appointment instance
+    #     appointment = super().save(commit)
 
-        # If image data exists, save them
-        for img_file in self.files.getlist('appointment_images'):
-            image_instance = AppointmentImages(
-                appointment=appointment,
-                appointment_image=img_file,
-            )
-            image_instance.save()
+    #     # If image data exists, save them
+    #     for img_file in self.files.getlist('appointment_images'):
+    #         image_instance = AppointmentImages(
+    #             appointment=appointment,
+    #             appointment_image=img_file,
+    #         )
+    #         image_instance.save()
+
+    #     return appointment
+
+    def save(self, commit=True):
+        # Save the appointment instance
+        # Make sure to save the appointment first
+        appointment = super().save(commit=commit)
+
+        if commit:  # If we are committing the save to the database
+            # If image data exists, save them
+            for img_file in self.files.getlist('appointment_images'):
+                AppointmentImages.objects.create(
+                    appointment=appointment,
+                    image=img_file,
+                )
 
         return appointment
-
-    # old save function as of 2023-08-08
-    # def save(self, commit=True):
-    #     instance = super().save(commit=False)
-    #     # instance.some_flag = True
-    #     if commit:
-    #         instance.save()
-    #         self.save_m2m()
-    #     return instance
 
     def clean_appointment_email(self):
         appointment_email = self.cleaned_data['appointment_email']
@@ -167,7 +173,7 @@ class AppointmentCreationForm(forms.ModelForm):
 
     def clean(self):
         # cleaned_data = super().clean()
-        images = self.files.getlist('image')
+        images = self.files.getlist('appointment_images')
         if len(images) > 5:
             raise ValidationError("You can only upload a maximum of 5 images.")
 
@@ -247,8 +253,9 @@ class AppointmentCreationForm(forms.ModelForm):
                     css_class='col-md-6'
                 ),
                 css_class='p-1 m-1'),
-            Row(Column(Button('upload', 'Upload', css_class='btn-outline-dark', css_id='appt-img-upload-btn'), css_class='col'),
-                css_class='m-1 p-1'),
+            # no longer needs this "upload" button
+            # Row(Column(Button('upload', 'Upload', css_class='btn-outline-dark', css_id='appt-img-upload-btn'), css_class='col'),
+            #     css_class='m-1 p-1'),
             HTML("<hr>"),
 
             ButtonHolder(

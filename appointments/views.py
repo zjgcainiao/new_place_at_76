@@ -29,7 +29,7 @@ from appointments.models import APPT_STATUS_CANCELLED, APPT_STATUS_NOT_SUBMITTED
 from internal_users.models import InternalUser
 from customer_users.models import CustomerUser
 
-# 2023-11-01 revised this appointment_create_view_for_customer (request).
+# 2023-11-01 revised this appointment_create_view_for_customer (request)
 
 
 def appointment_create_view_for_customer(request):
@@ -40,114 +40,52 @@ def appointment_create_view_for_customer(request):
             form = AppointmentCreationForm(request.POST)
         else:
             form = AppointmentCreationForm(request.POST, request.FILES)
+        if form.is_valid():
 
-        image_formset = AppointmentImageFormSet(
-            request.POST, request.FILES, prefix='images')
-        # image_form = AppointmentImagesForm(
-        #     request.POST, request.FILES)
-        # user=request.user
-    # form = AppointmentCreationForm(request.POST)
-        if form.is_valid():  # and image_formset.is_valid():  # and image_formset.is_valid()
-            # form.save()
-            # image_formset.instance = form.save(commit=False)
-            form.save(commit=False)
-            appointment_data = form.cleaned_data
-            # image_formset.save(commit=False)
-            if request.user.is_authenticated:
+            appointment = form.save(commit=False)
+            if request.user.is_authenticated():
                 user = request.user
-                if isinstance(user, InternalUser):
-                    dsds
+                if isinstance(user, CustomerUser):
+                    appointment.appointment_customer_user = user
 
-            # appointment_data.user = request.user
-            appointment_data = json.dumps(appointment_data, default=str)
-            request.session['appointment_data'] = appointment_data
-            # request.session['images'] = [image_form.cleaned_data for image_form in image_formset]
-            # request.session['submitted_form'] = json.dumps(form, default=dict)[0]
-            # json.dumps(my_dictionary, indent=4, sort_keys=True, default=str)
-            # appointment = form.save(commit=False)
-            # appointment.appointment_requested_datetime = timezone.now()
-            # appointment.save()
-            # kwargs = {'appointment': appointment}
-            # TODO: Send email to customer about service request status
+                elif isinstance(user, InternalUser):
+                    appointment.created_by = user
+            else:
+                appointment.appointment_customer_user = None
 
+            images = request.FILES.getlist('appointment_images')
+
+            for image in images:
+                # Here we save the image temporarily or mark it as not confirmed
+                temp_image = AppointmentImages(
+                    appointment=appointment, image=image)
+                temp_image.save()
+
+            # Instead of saving the entire form data in the session, just save the ID
+            request.session['appointment_id'] = appointment.pk
             return redirect('appointments:appointment-preview-view')
         else:
             print(form.errors)  # print out the form errors
-            print(image_formset.errors)  # print out the image_formset errors
 
             # return redirect('appointment_preview', args=[appointment.appointment_id])
     else:
         form = AppointmentCreationForm()
-        image_formset = AppointmentImageFormSet(
-            queryset=AppointmentImages.objects.none())
 
-    context = {'form': form, 'image_formset': image_formset,
-               }
+    context = {'form': form, }
 
     return render(request, 'appointments/10_appointment_create.html', context)
 
 
 def appointment_preview_view(request):
-    # appointment = kwargs.get('appointment', None)
-    appointment_data = request.session.get('appointment_data')
-    images = request.session.get('images')
-    # submitted_form = request.session.get('submitted_form')
-    if not appointment_data:
-        return redirect('appointments:appointment-create-view')
-    # 2024-04-10 using json.loads to load back the appointment_data.
-    # otherwise appointment_data will be
-    appointment_data = json.loads(appointment_data)
-    if images:
-        images = json.loads(images)
-# if request.method == 'GET':
-    form = AppointmentCreationForm(appointment_data)
-    appointment = AppointmentRequest(**appointment_data)
-    appointment = AppointmentImageFormSet(**appointment_data)
-    context = {'form': form,
-               'appointment': appointment,
-               }
-    if request.method == 'POST':
-        appointment.appointment_status = APPT_STATUS_NOT_SUBMITTED
-        appointment.save()
-        messages.success(
-            request, 'Appointment has been submitted successfuly.')
-        request.session.pop('appointment_data')
-        return redirect('appointments:appointment-success-view')
-    return render(request, 'appointments/20_appointment_preview.html', context)
-
-    # form = AppointmentCreationForm(request.POST)
-    # if form.is_valid():
-    #     appointment = AppointmentRequest(form.fields)
-    #     appointment.save()
-    #     messages.success(request, 'Appointment has been submitted successfuly.')
-    #     request.session.pop('appointment_data')
-    # # send_appointment_confirmation_email(appointment)
-    #     return redirect('appointments:appointment-success')
-    # return redirect('appointment_success')
-    # form = AppointmentCreationForm(initial=kwargs)
-    # return render(request, 'appointments/02-appointment-preview.html', {'form': form})
-    # elif 'confirm' in request.POST:
-    #     form = AppointmentCreationForm(request.POST)
-    #     if form.is_valid():
-    #         appointment = form.save(commit=False)
-    #         appointment.appointment_status = 'C'
-    #         appointment.save()
-    #         # Send confirmation email -- pending
-    #         # 2023-04-10
-    #         # subject = 'Appointment Confirmed'
-    #         # html_message = render_to_string('appointment_confirmation_email.html', {'appointment': appointment})
-    #         # plain_message = strip_tags(html_message)
-    #         # from_email = 'Your Company <noreply@yourcompany.com>'
-    #         # to_email = appointment.appointment_email
-    #         # send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
-
-    # # else:
-    # #     return redirect('appointment-create-view')
-    # # form = AppointmentCreationForm()
-
-    # context = {'form': form}
-    # return render(request, 'appointments/02-appointment-preview.html', context)
-    # return redirect('appointment-create-view')
+    appointment_id = request.session.get('appointment_id')
+    if appointment_id:
+        appointment = AppointmentRequest.objects.get(pk=appointment_id)
+        images = AppointmentImages.objects.filter(appointment=appointment)
+        context = {'appointment': appointment, 'images': images}
+        return render(request, 'appointments/21_appointment_preview.html', context)
+    else:
+        # Handle the case where there is no appointment_id in the session
+        return redirect('appointments:create_appointment')
 
 
 def appointment_success(request):

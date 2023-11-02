@@ -17,7 +17,7 @@ appointment_success_view = AppointmentSuccessView.as_view()
 urlpatterns = [
     path('', AppointmentListView.as_view(), name='appointment_list'),
     path('create/', views.appointment_create_view_for_customer,
-         name='create-appointment'),
+         name='create_appointment'),
     path('get_models/<int:make_id>/', views.appointment_get_vehicle_models,
          name='appointment-get-vehicle-models'),
     path('create/v2', views.AppointmentCreateView.as_view(),

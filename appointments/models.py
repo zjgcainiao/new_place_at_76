@@ -51,7 +51,7 @@ class AppointmentRequest(models.Model):
     appointment_last_name = models.CharField(
         max_length=50, null=True, blank=True)
     appointment_phone_number = FormattedPhoneNumberField(
-        help_text='we will send appointment reminders to this number.')
+        help_text='we will send updates to this number.')
     appointment_phone_number_digits_only = models.CharField(
         max_length=20, null=True)
     # recording either customer_user or internal_user
@@ -114,8 +114,11 @@ class AppointmentImages(models.Model):
                                     null=True, related_name='appointment_appointmentimages')
     appointment_image = models.FileField(
         upload_to='appointment_images')  # the bucket's subfolder
-    uploaded_date = models.DateTimeField(auto_now_add=True)
+
     image_is_active = models.BooleanField(default=True)
+    uploaded_date = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        InternalUser, on_delete=models.SET_NULL, null=True, related_name='image_created_by')  # when null, it means its created by customer user
 
     class Meta:
 

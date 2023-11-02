@@ -1,54 +1,55 @@
-{% extends "appointments/00_appointment_base.html" %}
+{% extends 'homepageapp/10_homepageapp_base.html' %}
 
 {% load crispy_forms_tags %}
 
 {% block content-main %}
-<div class="container container-fluid my-1"> 
-  <h3>Appointment Preview</h3>
-  Hello {{appointment.appointment_first_name}} {{apppontment.appointment_last_name}}, here is the appointment you requested.
-  <table class="table table-light">
-    <thead>
-    </thead>
-    <tbody>
-      <tr>
-        <th>Appointment Time Requested</th>
-        <td>{{ appointment.appointment_requested_datetime }}</td>
-      </tr>
-      <tr>
-        <th scope="row"> Vehicle Information</th>
-        <td>{{ appointment.appointment_vehicle_detail }}</td>
-      </tr>
-      <tr>
-        <th scope="row">The description of your concern</th>
-        <td>{{ appointment.appointment_concern_description }}</td>
-      </tr>
-      <tr>
-        <th scope="row">Email you entered</th>
-        <td>{{appointment.appointment_email }}</td>
-      </tr>
-      <tr>
-        <th scope="row">Phone Number</th>
-        <td>{{appointment.appointment_phone_number }}</td>
-      </tr>   
-      <tr>
-        <th scope="row">Status</th>
-        <td>{{appointment.get_appointment_status_display }}</td>
-      </tr>
-    </tbody>
-  </table>
- 
+<div class="container  my-1">
+  <div class="appointment-preview">
+      <h3>Appointment Preview</h3>
+      Hello {{appointment.appointment_first_name}} {{apppontment.appointment_last_name}}, here is the appointment you requested.
+      <table class="table table-light">
+        <thead>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Appointment Time Requested</th>
+            <td>{{ appointment.appointment_requested_datetime }}</td>
+          </tr>
+          <tr>
+            <th scope="row"> Vehicle Information</th>
+            <td>{{ appointment.appointment_vehicle_detail }}</td>
+          </tr>
+          <tr>
+            <th scope="row">The description of your concern</th>
+            <td>{{ appointment.appointment_concern_description }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Email you entered</th>
+            <td>{{appointment.appointment_email }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Phone Number</th>
+            <td>{{appointment.appointment_phone_number }}</td>
+          </tr>   
+          <tr>
+            <th scope="row">Status</th>
+            <td>{{appointment.get_appointment_status_display }}</td>
+          </tr>
+        </tbody>
+      </table>
     
-  {% if images.all %}
-  <h2>Uploaded Images</h2>
-  <div>
-      {% for image in appointment.appointment_images.all %}
-      <img src="{{ image.appointment_images.url }}" alt="">
-      {% endfor %}
+        
+      <h3>Uploaded Images</h3>
+      <div class="image-gallery">
+        {% for image in wizard.form.cleaned_data.appointment_images %}
+          <div class="image-thumbnail">
+            <img src="{{ image.url }}" alt="Uploaded image" />
+          </div>
+        {% endfor %}
+      </div>
+
   </div>
-  {% endif %}
-
-
-
+  <!-- end of appointment-preview  -->
 
   <p class="small">Click the 'confirm' button below when you finishing review the information below</p>
   <form class='card' method="post">
@@ -58,4 +59,27 @@
   </form>
   
 </div> 
+<!-- end of container  -->
+<style>
+    /* Assuming this CSS is in a file that's included in your base template */
+    .image-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px; /* Adjust as needed */
+    }
+
+    .image-thumbnail {
+      flex: 1 0 21%; /* 4 images per row, adjust as needed */
+      max-width: 21%; /* As above */
+    }
+
+    .image-thumbnail img {
+      width: 100%;
+      height: auto;
+      border: 1px solid #ddd; /* Adjust styling as needed */
+      border-radius: 4px; /* Rounded corners for the thumbnails */
+    }
+
+</style>
+
 {% endblock %}

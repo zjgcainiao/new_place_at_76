@@ -13,11 +13,22 @@
           <div class="card-body">
             {% csrf_token %}
             {% crispy form form.helper %}
-              
-        
-
-        
       </form>
+
+
+      <!-- This will be the container for the image previews -->
+      <div id="image-preview-container" class="d-flex flex-wrap">
+      </div>
+
+      <!-- Template for an individual image preview -->
+      <script type="text/template" id="image-preview-template">
+          <div class="image-preview position-relative m-2">
+              <img src="" alt="Preview" class="img-thumbnail" />
+              <button class="btn btn-danger btn-sm position-absolute top-0 end-0" onclick="removeImage(this)">
+                  &times;
+              </button>
+          </div>
+      </script>
 
           {% comment %}
           <!-- <div class ='row m-1'>
@@ -80,17 +91,142 @@
 </div>
 <!-- end of container  -->
 
+<!-- 2023-11-01 css style added to allow display images as thumbnails -->
+
+<style>
+
+  /* This container will hold all your image previews and will be a flex container */
+  .image-preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px; /* This creates space between your thumbnails */
+      justify-content: center; /* This centers the thumbnails horizontally */
+      align-items: center; /* This centers the thumbnails vertically */
+      padding: 10px;
+  }
+
+  /* The individual image preview item */
+  .image-preview {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden; /* Ensures nothing spills out of the border-radius */
+      position: relative;
+      display: flex;
+      justify-content: center; /* Center the image in the div horizontally */
+      align-items: center; /* Center the image in the div vertically */
+  }
+
+  .image-preview img {
+    width: auto; /* Auto width allows the image to scale proportionally */
+    max-width: 100%; /* Ensures the image doesn't overflow its container */
+    height: auto; /* Auto height allows the image to scale proportionally */
+    max-height: 150px; /* Adjust this value based on your preference */
+  }
+
+  /* The delete button on the top right corner of the image preview */
+  .image-preview .delete-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      border: none;
+      background: rgba(255, 0, 0, 0.7); /* Semi-transparent red background */
+      color: white;
+      border-radius: 50%; /* Circular button */
+      width: 25px;
+      height: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+  }
+
+  /* Media Queries for responsiveness */
+  @media (max-width: 768px) {
+      /* For tablets */
+      .image-preview {
+          max-width: calc(50% - 10px); /* Show two images per row, adjust the percentage as needed */
+          margin-bottom: 10px;
+      }
+  }
+
+  @media (max-width: 480px) {
+      /* For mobile phones */
+      .image-preview {
+          max-width: 100%; /* Each image takes full width of the container */
+          margin-bottom: 10px;
+      }
+  }
+
+</style>
+
+
 <!-- 2023-11-01 added for image uploading  -->
 
 <script>
-$().ready(function() {
-    // Delegate the event to the current and future `.appt-img-upload-btn` elements
-    $(document).on('change', '.appt-img-upload-btn', function() {
-        var fileName = $(this).prev('input[type="file"]').val().split('\\').pop();
-        $(this).text(fileName ? `File selected: ${fileName}` : 'Upload Image');
-    });
-});
+  $(document).ready(function() {
+      var fileInput = $('#id_appointment_images');
+      var imagePreviewContainer = $('#image-preview-container');
+      var imagePreviewTemplate = $('#image-preview-template').html();
+
+      function updateImagePreview() {
+          imagePreviewContainer.empty();
+          var fileList = fileInput.prop('files');
+
+          // Enforce the 5 images maximum restriction
+          if (fileList.length > 5) {
+              alert('You can only upload a maximum of 5 images.');
+              fileInput.val(''); // Clear the file input
+              return;
+          }
+
+          for (var i = 0, len = fileList.length; i < len; i++) {
+              var file = fileList[i];
+              var reader = new FileReader();
+
+              reader.onload = function(e) {
+                  var newImagePreview = $(imagePreviewTemplate);
+                  newImagePreview.find('img').attr('src', e.target.result);
+                  imagePreviewContainer.append(newImagePreview);
+              };
+
+              reader.readAsDataURL(file);
+          }
+      }
+
+      // Update the image preview when files are chosen
+      fileInput.change(updateImagePreview);
+
+      // Click the hidden file input when the 'Upload Images' button is clicked
+      $('.appt-img-upload-btn').click(function(e) {
+          e.preventDefault();
+          fileInput.click();
+      });
+  });
+
+  // Function to remove an image from the preview
+  function removeImage(button) {
+      var imagePreviewDiv = $(button).closest('.image-preview');
+      var imageIndex = imagePreviewDiv.index();
+      var fileList = Array.from($('#id_appointment_images').prop('files'));
+
+      // Remove the file at the index
+      fileList.splice(imageIndex, 1);
+
+      // Create a new DataTransfer object and populate with the updated file list
+      var newFileList = new DataTransfer();
+      fileList.forEach(function(file) {
+          newFileList.items.add(file);
+      });
+
+      // Update the file input with the new file list
+      $('#id_appointment_images').prop('files', newFileList.files);
+
+      // Remove the image preview div
+      imagePreviewDiv.remove();
+  }
+
 </script>
+
 
 <!-- this script is added to automatically format the phone number input field 2023-08-01 -->
 <script>
