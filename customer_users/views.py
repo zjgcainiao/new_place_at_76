@@ -42,7 +42,7 @@ def customer_user_register(request):
                 customer_user.cust_user_last_name = last_name
                 customer_user.cust_user_middle_name = middle_name
                 customer_user.cust_user_phone_number = phone_number
-   
+
             customer_user.save()
 
             print(f'saving the new customer user {customer_user.pk}...')
@@ -110,7 +110,7 @@ def activate_customer_user_account(request, token):
 
 
 def customer_user_login(request):
-    # Customer User Login Form 
+    # Customer User Login Form
     # form = CustomerUserLoginForm()
     logger = logging.getLogger('django.request')
     # print('running customer_user_login view function...')
@@ -124,7 +124,8 @@ def customer_user_login(request):
         form = CustomerUserLoginForm(request.POST)
         # two ways to authenticate, use the default authenticate or use the custom one in CustomerUserBackend()
         # if phone_number is None or len(phone_number)==0:
-        print(f'customer_user login form submitted...form_valid() status: {form.is_valid()}...')
+        print(
+            f'customer_user login form submitted...form_valid() status: {form.is_valid()}...')
         # print(f'form in request.POST is {request.POST["form"]}...')
         # print(f'{form}')
         if form.is_valid():
@@ -161,7 +162,7 @@ def customer_user_login(request):
             if user:
                 login(
                     request, user, backend='customer_users.customer_auth_backend.CustomerUserBackend')
-                return redirect('customer_users:customer_user_profile')
+                return redirect('customer_users:get_personal_info')
             else:
                 # Invalid credentials, handle error
                 logger.error(
