@@ -358,10 +358,11 @@ async def fetch_single_plate_data_via_plate2vin_api(license_plate, state, api_ur
                 vin_data = clean_string_in_dictionary_object(vin_data)
 
                 if vin_data.get('vin'):
-                    await fetch_and_save_single_vin_from_nhtsa_api(vin_data.get('vin'))
-
+                    new_vin = vin_data.get('vin')
+                    await fetch_and_save_single_vin_from_nhtsa_api(new_vin)
+                    logger.info(
+                        f'fetching nhtsa data for the vin {new_vin} associated with the lience plate {license_plate}')
                 # first need to check if there are any existing records with the same license plate and state. this model deos not check the unique on vin field.
-                # whenever there is a n
                 exists = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(license_plate=license_plate, state=state).exists)()
                 if exists:
                     await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(

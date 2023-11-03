@@ -1807,7 +1807,7 @@ class VinNhtsaApiSnapshots(models.Model):
     id = models.BigAutoField(primary_key=True)
     vin = models.CharField(
         max_length=17, verbose_name="Vehicle Identification Number (VIN)")
-    variable_id = models.ForeignKey(
+    variable = models.ForeignKey(
         NhtsaVariableList, on_delete=models.SET_NULL, null=True,
         to_field='variable_id',  # specify the field of the related model is variable_id
         related_name='nhtsa_variableids')
@@ -1900,10 +1900,10 @@ class LicensePlateSnapShotsPlate2Vin(models.Model):
     engine = models.CharField(max_length=50, null=True)
     style = models.CharField(max_length=50, null=True)
     transmission = models.CharField(max_length=50, null=True)
-    drive_type = models.CharField(max_length=20)
-    fuel = models.CharField(max_length=20, null=True)
+    drive_type = models.CharField(max_length=20, null=True, blank=True)
+    fuel = models.CharField(max_length=20, null=True, blank=True)
     color_name = models.CharField(max_length=50, null=True, blank=True)
-    color_abbreviation = models.CharField(max_length=15, null=True)
+    color_abbreviation = models.CharField(max_length=15, null=True, blank=True)
     # keeps 5 versions of any license plates
     version = models.IntegerField(default=5)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)

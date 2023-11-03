@@ -79,10 +79,12 @@ urlpatterns = [
          name='vehicle-update'),
     path('vehicles/<int:pk>/delete/', views.VehicleDeleteView.as_view(),
          name='vehicle-delete'),
-    path('repairorders/', views.RepairOrderListView.as_view(),
-         name='repairorders-list'),
+
     path('tech_dash/<int:technician_id>/',
          views.technician_dash_view, name='technician-dash'),
+
+    path('repairorders/', views.RepairOrderListView.as_view(),
+         name='repairorders-list'),
     # path('repairorders/<int:repair_order_id>/lineitems/', views.repair_order_and_line_items_detail, name='repairorder-lineitem-detail'),
     # path('dataimport/email', views.EmailDataView.as_view(), name='import-email-data')
 ]
