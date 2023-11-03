@@ -33,7 +33,7 @@ from core_operations.models import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE, LIST_OF
 # You can do the same sort of thing manually by testing on request.user.is_authenticated, but the decorator is much more convenient!
 from internal_users.mixins import InternalUserRequiredMixin
 from django.core.serializers import serialize
-from apis.views import fetch_single_vin_from_nhtsa_api, fetch_and_save_single_vin_from_nhtsa_api, fetch_single_plate_data_via_plate2vin_api
+from apis.views import fetch_and_save_single_vin_from_nhtsa_api, fetch_single_plate_data_via_plate2vin_api
 from django.db import models
 from asgiref.sync import sync_to_async
 from dashboard.async_functions import fetch_latest_vin_data_from_snapshots, database_sync_to_async
@@ -1001,6 +1001,7 @@ async def search_single_vin_via_nhtsa(request):
         if form.is_valid():
             vin = form.cleaned_data['vin']
             year = form.cleaned_data['year']
+
             logger.info(
                 f'performing a manual single vin search on webpage for vin {vin} and model year {year}...')
 

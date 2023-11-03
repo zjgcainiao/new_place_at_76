@@ -2,6 +2,14 @@ from django.db import models
 # from computedfields.models import ComputedFieldsModel, computed, compute
 
 
+# class NhtsaVariableLookup(models.Model):
+#     variable_data_type: "string",
+#     variable_description: "<p>This field stores any other battery information that does not belong to any of the other battery related fields.</p>",
+#     variable_group_name: "Mechanical / Battery",
+#       "ID": 1,
+#       "Name": "Other Battery Info"
+
+
 # class CustomerAPI01(models.Model):
 #     customer_new_uid_v01 = models.CharField(editable=False, auto_created = True, primary_key=True, max_length=36)
 #     # primary key = True
@@ -33,12 +41,12 @@ from django.db import models
 #     # custom the corresponding data table name for this model
 #     class Meta:
 #         db_table = 'customers_new_01'  #'AERODROMES'
-    
-    # def get_absolute_url(self):
-    #     return reverse('customer-detail', kwargs={'pk': self.pk})
+
+# def get_absolute_url(self):
+#     return reverse('customer-detail', kwargs={'pk': self.pk})
 
 # class PhonesNewSQL01Model(models.Model):
-#     phone_new_uid_v01= models.CharField(editable=False, auto_created=True, primary_key=True, max_length=36)  
+#     phone_new_uid_v01= models.CharField(editable=False, auto_created=True, primary_key=True, max_length=36)
 #     phone_id = models.CharField(max_length=20, null=True)
 #     phone_desc_id= models.CharField(max_length=20, null=True)
 #     phone_number= models.CharField(max_length=20, null=True)
@@ -87,8 +95,8 @@ from django.db import models
 #     vehicle_recall_last_checked_datetime = models.DateTimeField(null=True)
 #     vehicle_last_updated_datetime       = models.DateTimeField(auto_now=True, null=True)
 #     vehicle_phone_id      = models.CharField(max_length=20, null=True)
-#     vehicle_customer_new_uid   = models.CharField(max_length=36, null=True, primary_key=False) 
-#     vehicle_contact_phone_main_new_uid  = models.CharField(max_length=36, null=True, primary_key=False) 
+#     vehicle_customer_new_uid   = models.CharField(max_length=36, null=True, primary_key=False)
+#     vehicle_contact_phone_main_new_uid  = models.CharField(max_length=36, null=True, primary_key=False)
 #     vehicle_created_at  = models.DateTimeField(auto_now_add=True)
 #     class Meta:
 #         db_table = 'vehicles_new_01'
@@ -99,11 +107,11 @@ from django.db import models
 #     repair_order_id = models.CharField(max_length=20, null=True)
 #     repair_order_phase_id = models.CharField(max_length=20, null=True)
 #     repair_order_cust_id = models.CharField(max_length=20, null=True)
-#     repair_order_customer_new_uid = models.CharField(max_length=36, null=True) 
+#     repair_order_customer_new_uid = models.CharField(max_length=36, null=True)
 #     repair_order_vehicle_id = models.CharField(max_length=20, null=True)
-#     repair_order_serviced_vehicle_new_uid = models.CharField(max_length=36, null=True, primary_key=False) 
-#     repair_order_serviced_vehicle_location = models.CharField(max_length=36, null=True, primary_key=False) 
-#     repair_order_service_status = models.CharField(max_length=36, null=True) 
+#     repair_order_serviced_vehicle_new_uid = models.CharField(max_length=36, null=True, primary_key=False)
+#     repair_order_serviced_vehicle_location = models.CharField(max_length=36, null=True, primary_key=False)
+#     repair_order_service_status = models.CharField(max_length=36, null=True)
 #     repair_order_scheduled_start_datetime = models.DateTimeField(null=True)
 #     repair_order_billed_hours=models.DurationField(null=True, blank=False)  # blank = False so this is a required field on form (pending testing)
 #     repair_order_promise_datetime = models.DateTimeField(null=True)

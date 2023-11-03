@@ -9,8 +9,6 @@ urlpatterns = [
     path('checkout_react/', views.payment_checkout_react,
          name='payment_checkout_react'),
 
-
-
     path('single-vin-search/',
          views.search_by_vin, name='search_by_vin'),
     path('single-plate-search/',

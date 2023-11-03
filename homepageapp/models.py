@@ -1782,10 +1782,11 @@ class PaymentsModel(models.Model):
         verbose_name_plural = 'payments'
 
 
-# created 2023-10-18. store the variable_name info and its group name. updated by management script.
+# created 2023-10-18. store the variable_name info and its group name. updated by management script "populate_nhtsa_variable_list".
+
 class NhtsaVariableList(models.Model):
     id = models.AutoField(primary_key=True)
-    variable_id = models.IntegerField(null=True, blank=True)
+    variable_id = models.IntegerField(unique=True, default=None)
     variable_name = models.CharField(max_length=200, null=True, blank=True)
     variable_group_name = models.CharField(
         max_length=200, null=True, blank=True)
@@ -1806,7 +1807,10 @@ class VinNhtsaApiSnapshots(models.Model):
     id = models.BigAutoField(primary_key=True)
     vin = models.CharField(
         max_length=17, verbose_name="Vehicle Identification Number (VIN)")
-    variable_id = models.IntegerField(null=True, blank=True)
+    variable_id = models.ForeignKey(
+        NhtsaVariableList, on_delete=models.SET_NULL, null=True,
+        to_field='variable_id',  # specify the field of the related model is variable_id
+        related_name='nhtsa_variableids')
     variable_name = models.CharField(max_length=255, null=True, blank=True)
     value = models.TextField(null=True, blank=True)
     value_id = models.IntegerField(null=True, blank=True)
@@ -1909,7 +1913,7 @@ class LicensePlateSnapShotsPlate2Vin(models.Model):
     last_checked_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.license_plate
+        return ''.join(self.license_plate, ' ', self.state)
 
     class Meta:
         db_table = 'licenseplate_snapshots_plate2vin'

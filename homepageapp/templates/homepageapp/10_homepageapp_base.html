@@ -118,25 +118,21 @@
     <!-- add Roboto font from google fonts. this font is used to display chatbot response (beta Pulido v1.0). -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/css/fonts.min.css">
 
-
     <!-- font-awesome 6.4.2 css  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
-    <!-- MaterialDesign - Webfont  -->
+    <!-- MaterialDesign - Webfont 7.3.67 css  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.3.67/css/materialdesignicons.min.css" integrity="sha512-nRzny9w0V2Y1/APe+iEhKAwGAc+K8QYCw4vJek3zXhdn92HtKt226zHs9id8eUq+uYJKaH2gPyuLcaG/dE5c7A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
-
-    <!-- <link href="
-    https://cdn.jsdelivr.net/npm/@mdi/font@7.3.67/css/materialdesignicons.min.css
-    " rel="stylesheet">  -->
 
     <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/4.0.0/font/MaterialIcons-Regular.ttf"
     ref='stylesheet'> -->
 
-    <!-- Vendor Styles-->
+    <!-- simlerbar, tindy-slider css styles -->
     <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}"/>
     <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}"/>
-    <!-- Main Theme Styles + Bootstrap-->
+   
+    <!-- Main Theme Styles css-->
     <link rel="stylesheet" media="screen" href="{% static 'homepageapp/css/theme.min.css' %}">
 
     <!-- css style added for the toggle button defined below   -->
@@ -338,9 +334,16 @@
                        $('#loadingMessage').hide();
                        $('#askButton').prop('disabled', false);
                   },
-                  error: function(error) {
-                      $("#botResponse").text("Sorry, there was an error processing your request.");
-                       $('#askButton').prop('disabled', false);
+                  error: function(xhr, status, error) {
+                    console.error("Error - Status: ", status, " Detail: ", error, " XHR: ", xhr);
+                      // Consider providing more descriptive text based on the error status
+                      var errorMsg = "Sorry, there was an error processing your request.";
+                      if (xhr && xhr.responseJSON && xhr.responseJSON.detail) {
+                        errorMsg = xhr.responseJSON.detail;
+                      }
+                      $("#botResponse").text(errorMsg);
+                      $('#loadingMessage').hide();
+                      $('#askButton').prop('disabled', false);
                   }
               });
           });
@@ -351,9 +354,6 @@
               $("#chatbotUI").hide();
               $("#enableChatbot").show();  // If you want to show the enable button again
           });
-
-
-
 
       });
 

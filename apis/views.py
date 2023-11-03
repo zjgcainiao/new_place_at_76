@@ -201,19 +201,22 @@ def api_internal_user_login(request):
         return JsonResponse({'error': 'Invalid login details.'}, status=401)
 
 
-async def fetch_single_vin_from_nhtsa_api(vin, vehicle_year):
-    url = f"https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}?format=json&modelyear={vehicle_year}"
+# async def fetch_single_vin_from_nhtsa_api(vin, vehicle_year=None):
+#     # url = f"https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}?format=json&modelyear={vehicle_year}"
+#     if vehicle_year:
+#         url = f"https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}?format=json&modelyear={vehicle_year}"
+#     else:
+#         url = f"https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}?format=json"
+#     async with aiohttp.ClientSession() as session:
+#         async with session.get(url) as response:
+#             return await response.json()
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            return await response.json()
 
-# return and save result for one vin
-# return three variables.
-
-
-async def fetch_and_save_single_vin_from_nhtsa_api(vin, year):
-    url = f"https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/{vin}?format=json&modelyear={year}"
+async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
+    if year:
+        url = f"https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/{vin}?format=json&modelyear={year}"
+    else:
+        url = f"https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/{vin}?format=json"
     # url_extended = https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}format=json&modelyear={year}
     logger = logging.getLogger('external_api')
     logger.info(
@@ -348,18 +351,23 @@ async def fetch_single_plate_data_via_plate2vin_api(license_plate, state, api_ur
             data = await response.json()
 
             success = data.get('success')
-            vin_data = data.get('vin', {})
-            if success:
+            if not success:
+                return None, success
+            elif success:
+                vin_data = data.get('vin', {})
                 vin_data = clean_string_in_dictionary_object(vin_data)
 
+                if vin_data.get('vin'):
+                    await fetch_and_save_single_vin_from_nhtsa_api(vin_data.get('vin'))
+
                 # first need to check if there are any existing records with the same license plate and state. this model deos not check the unique on vin field.
-                # whenever there is a new
+                # whenever there is a n
                 exists = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(license_plate=license_plate, state=state).exists)()
                 if exists:
                     await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(
                         license_plate=license_plate, state=state
                     ).update)(version=models.F('version') - 1)
-                # update or create
+                # update or create a plate_data
                 plate_data, created = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.update_or_create)(
                     license_plate=license_plate,
                     state=state,

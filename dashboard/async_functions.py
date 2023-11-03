@@ -88,3 +88,11 @@ def fetch_latest_vin_data_from_snapshots(vin):
         version=5,
         variable_id__in=variable_ids_list,
     ).order_by('-created_at', 'variable_id')
+
+
+@database_sync_to_async
+def fetch_latest_plate_data_from_snapshots(plate, state_abbr):
+    return LicensePlateSnapShotsPlate2Vin.objects.filter(
+        license_plate=plate,
+        state=state_abbr,
+    )

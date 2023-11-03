@@ -19,7 +19,7 @@
                     {% csrf_token %}
                     <input type="text" name="license_plate" placeholder="License Plate" class="form-control my-2">
                     <input type="text" name="state" placeholder="State" class="form-control my-2">
-                    <button type="submit" class="btn btn-outline-secondary">Search</button>
+                    <button type="submit" name="vin-search" class="btn btn-outline-secondary">Search</button>
                 </form>
             </div>
             <div class="tab-pane fade" id="byVIN" role="tabpanel" aria-labelledby="byVIN-tab">
@@ -28,7 +28,7 @@
                     {% csrf_token %}
                     <input type="text" name="vin" placeholder="VIN" class="form-control my-2">
                     <input type="text" name="year" placeholder="Model Year (Optional)" class="form-control my-2">
-                    <button type="submit" class="btn btn-outline-secondary">Search</button>
+                    <button type="submit" name="plate-search" class="btn btn-outline-secondary">Search</button>
                 </form>
             </div>
         </div>
