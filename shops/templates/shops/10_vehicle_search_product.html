@@ -19,22 +19,44 @@
                     {% csrf_token %}
                     <input type="text" name="license_plate" placeholder="License Plate" class="form-control my-2">
                     <input type="text" name="state" placeholder="State" class="form-control my-2">
-                    <button type="submit" name="vin-search" class="btn btn-outline-secondary">Search</button>
+                    <button type="submit" name="plate-search" class="btn btn-outline-secondary">Search</button>
                 </form>
             </div>
             <div class="tab-pane fade" id="byVIN" role="tabpanel" aria-labelledby="byVIN-tab">
                 <!-- By VIN Form -->
-                <form action="{% url 'shops:search_by_vin' %}" method="post">
+                <form id="vinSearchForm" action="{% url 'shops:search_by_vin_or_plate' %}" method="post">
                     {% csrf_token %}
                     <input type="text" name="vin" placeholder="VIN" class="form-control my-2">
                     <input type="text" name="year" placeholder="Model Year (Optional)" class="form-control my-2">
-                    <button type="submit" name="plate-search" class="btn btn-outline-secondary">Search</button>
+                    <button type="submit" name="vin-search" 
+                        id="vin-search-button" class="btn btn-outline-secondary"
+                        data-bs-csrf="{{ csrf_token }}">
+                        Search
+                    </button>
                 </form>
             </div>
         </div>
     </div>
     <!-- end of container  -->
 
+    <!-- export to pdf button  -->
+    <div class="container my-2">
+        <div class="row">
+            <div class="col">
+                <button id="exportPdfButtonClientSide" class="btn btn-outline-primary btn-sm" >Export to PDF via client-side</button>
+            </div>
+            <div class="col">
+                    <button id="exportPdfBackend" class="btn btn-outline-dark btn-sm" href="{% url 'shops:export_vin_data_to_pdf' %}">Export to PDF via server-side</button>
+            </div>
+
+        
+        </div>
+    </div>
+
+    <!-- vinData Display  -->
+    <div id="vinDataDisplay" class="container mt-3">
+
+    </div>
 
     <!-- search result container  -->
     <div class="container my-4">
@@ -60,5 +82,166 @@
             {% endif %}
         </div>
     </div>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.es.min.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+ -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- Include the libraries -->
+<!-- <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script> -->
+<!-- new vendor html to image js -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js" integrity="sha512-7tWCgq9tTYS/QkGVyKrtLpqAoMV9XIUxoou+sPUypsaZx56cYR/qio84fPK9EvJJtKvJEwt7vkn6je5UVzGevw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    // Once the document is loaded, you can use jsPDF and html2canvas
+    const exportPdfButton = document.getElementById('exportPdfButtonClientSide');
+    
+    // First, we would retrieve the text contents of each cell in the table
+    function parseTable(tableSelector) {
+    const table = document.querySelector(tableSelector);
+    const rows = Array.from(table.rows);
+    return rows.map(row => 
+        Array.from(row.cells).map(cell => cell.innerText)
+    );
+    }
+
+
+
+    exportPdfButton.addEventListener('click', function() {
+        // Ensure 'content' points to the existing table you want to capture
+        var content = document.querySelector('#vinDataDisplay .table');
+        if (!content) {
+            console.error('Element `content` to capture not found');
+            return;
+        }
+
+        // Check if the content exists and is part of the document
+        if (typeof html2canvas == 'function') {
+            html2canvas(content, { scale: 2 }).then(canvas => {
+                var imgData = canvas.toDataURL('image/png');
+                var pdf;
+                if (window.jspdf && window.jspdf.jsPDF) {
+                    pdf = new window.jspdf.jsPDF();
+                } else {
+                    console.error('jsPDF not found');
+                    return;
+                }
+                var imgWidth = 210; // A4 width in mm
+                var pageHeight = 295; // A4 height in mm
+                var imgHeight = canvas.height * imgWidth / canvas.width;
+                var heightLeft = imgHeight;
+
+                var position = 0;
+
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                pdf.save('download.pdf');
+            }).catch(error => {
+                console.error('Error capturing the canvas:', error);
+            });
+        } else {
+            console.error('The table element is not found or not attached to the document.');
+        }
+    });
+  });
+</script>
+
+
+
+<!-- customized script to display vin data  -->
+<script>
+$(document).ready(function() {
+//   $('#vin-search-button').click(function(event) {
+    $("#vinSearchForm").submit(function(event){
+
+        event.preventDefault(); // Prevent the form from submitting traditionally
+        const form = $(this)
+        const formData = form.serialize(); // Serialize form data for submission
+        console.log(formData); // Add this line to verify the serialized data
+        
+        // csrfToken two ways
+        const csrfToken = form.find('[name=csrfmiddlewaretoken]').val(); // Fetch CSRF token from the form
+        var csrfToken_alternative = $('#vin-search-button').data('bs-csrf');
+
+        $.ajax({
+        type: 'POST',
+        url: "{% url 'shops:search_by_vin_or_plate' %}", // URL to your Django view
+        data: formData,
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('X-CSRFToken', csrfToken); // Include the CSRF token in the header
+        },
+        success: function(response) {
+            console.log(response);
+            // Clear any previous results
+            $('#vinDataDisplay').empty();
+
+            // Start building the table
+            const table = $('<table>').addClass('table table-responsive table-striped');
+            const tbody = $('<tbody>');
+
+            // Iterate over the object, skipping null values
+            Object.entries(response).forEach(function([key, value]) {
+                if (value !== null) { // Check if value is not null
+                // Create a table row with two columns: one for the key and one for the value
+                const tr = $('<tr>');
+                tr.append($('<td>').text(key));
+                tr.append($('<td>').text(value));
+                tbody.append(tr);
+                }
+            });
+
+            // Append tbody to table
+            table.append(tbody);
+
+            // Append the table to vinDataDisplay div
+            $('#vinDataDisplay').append(table);
+
+
+        },
+        error: function() {
+            $('#vinDataDisplay').html('<p>An error has occurred</p>');
+        }
+        });
+    });
+
+    $('#exportPdfButton').click(function() {
+        // Use html2canvas to convert the table to a canvas
+        html2canvas(document.getElementById('vinDataDisplay')).then(function(canvas) {
+        // Get the image data as JPEG
+        var imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+        // Initialize jsPDF
+        var pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'pt',
+        format: 'a4'
+        });
+
+        // Add image to PDF
+        pdf.addImage(imgData, 'JPEG', 0, 0);
+
+        // Save the PDF
+        pdf.save('report.pdf');
+        });
+    });
+
+
+
+});
+</script>
 
 {% endblock %}

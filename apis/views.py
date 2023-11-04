@@ -19,7 +19,7 @@ from apis.serializers import LineItemsSerializer, TextMessagesSerializer
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from internal_users.models import InternalUser
 from internal_users.internal_user_auth_backend import InternalUserBackend
-from apis.serializers import AddressSerializer, PhoneSerializer, EmailSerializer, CustomerSerializer, RepairOrderSerializer, PaymentSerializer, VinNhtsaApiSnapshotsSerializer
+from apis.serializers import AddressSerializer, PhoneSerializer, EmailSerializer, CustomerSerializer, RepairOrderSerializer, PaymentSerializer, LastestVinDataSerializer
 from homepageapp.models import VinNhtsaApiSnapshots
 
 
@@ -27,8 +27,16 @@ from django.core.exceptions import ObjectDoesNotExist
 from core_operations.constants import POPULAR_NHTSA_VARIABLE_IDS
 
 
+class LastestVinDataViewSet(viewsets.ModelViewSet):
+    serializer_class = LastestVinDataSerializer
+
+    def get_queryset(self):
+        # Your queryset logic here...
+        return VinNhtsaApiSnapshots.objects.all().prefetch_related('nhtsa_variable_ids')
+
+
 class VinNhtsaApiSnapshotViewSet(viewsets.ModelViewSet):
-    serializer_class = VinNhtsaApiSnapshotsSerializer
+    serializer_class = LastestVinDataSerializer
 
     def get_queryset(self):
         # List of variable IDs to filter. imported from core_operations.constants

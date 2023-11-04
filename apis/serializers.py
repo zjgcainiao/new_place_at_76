@@ -135,7 +135,19 @@ class CustomerSerializer(serializers.ModelSerializer):
         return representation
 
 
-class VinNhtsaApiSnapshotsSerializer(serializers.ModelSerializer):
+class LastestVinDataSerializer(serializers.ModelSerializer):
+    flattened_data = serializers.SerializerMethodField()
+
     class Meta:
         model = VinNhtsaApiSnapshots
-        fields = '__all__'  # or specify the fields you want
+        fields = ['vin', 'flattened_data']
+
+    def get_flattened_data(self, obj):
+        # Make sure to prefetch_related or select_related in the QuerySet if needed to optimize database queries
+        snapshots = obj.nhtsa_variable_ids.all()
+        return {
+            f"{snapshot.variable_name} (var_id:{snapshot.variable_id})": snapshot.value
+            for snapshot in snapshots
+        }
+
+# views.py

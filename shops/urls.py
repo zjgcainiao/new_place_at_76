@@ -13,4 +13,11 @@ urlpatterns = [
          views.search_by_vin, name='search_by_vin'),
     path('single-plate-search/',
          views.search_by_plate, name='search_by_plate'),
+
+    path('vin_or_plate_search/',
+         views.search_by_vin_or_plate, name='search_by_vin_or_plate'),
+
+
+    path('exported_pdf/',
+         views.export_vin_data_to_pdf, name='export_vin_data_to_pdf'),
 ]

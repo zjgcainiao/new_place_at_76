@@ -1057,6 +1057,7 @@ async def fetch_or_save_latest_vin_snapshot_async(request):
         print(
             f'no vin {vin} in the database..searching against our vendor apis..')
         await fetch_and_save_single_vin_from_nhtsa_api(vin)
+
     # Convert to list of dictionaries if it's a QuerySet
     if isinstance(latest_vin_data, QuerySet):
         latest_vin_data = await database_sync_to_async(list)(latest_vin_data.values())

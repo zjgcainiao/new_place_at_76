@@ -2,10 +2,12 @@ from django.urls import include, path
 from apis import views
 from rest_framework.routers import DefaultRouter
 from apis.views import ActiveRepairOrderViewSet, LineItemsViewSet, TextMessagesViewSet, api_internal_user_login, VinNhtsaApiSnapshotViewSet
-
+from apis import views
 app_name = 'apis'
 
 router = DefaultRouter()
+router.register(r'latest_vin_data', views.LastestVinDataViewSet,
+                basename='restful_to_latest_vin_data')
 router.register(r'vin_nhtsa_api_snapshots', VinNhtsaApiSnapshotViewSet,
                 basename='restful_to_vin_nhtsa_api_snapshots')
 router.register(r'repair_orders', ActiveRepairOrderViewSet,
