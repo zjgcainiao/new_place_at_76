@@ -14,6 +14,8 @@ import logging
 import json
 from django.http import JsonResponse
 from django.db.models.query import QuerySet
+from django.forms.models import model_to_dict
+
 
 logger = logging.getLogger('django')
 # renders the vehicle search page for all site viisters (not log in required)
@@ -68,11 +70,13 @@ async def search_by_plate(request):
                 if not success:
                     form.add_error(
                         None, 'Failed to fetch information for the given license plate.')
+                # Assuming `plate_data` is an instance of `LicensePlateSnapShotsPlate2Vin`:
+                plate_data = await database_sync_to_async(model_to_dict)(plate_data)
             except Exception as e:
                 form.add_error(
                     None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
 
-    return json.dumps(plate_data)
+    return JsonResponse(plate_data)
 
 
 async def search_by_vin(request):
@@ -103,11 +107,11 @@ def set_session_data(request, key, data):
 
 async def search_by_vin_or_plate(request):
     flattened_data = None
-    vin_form = VINSearchForm(prefix="vin")
-    plate_form = LicensePlateSearchForm(prefix="plate")
+    vin_form = VINSearchForm()
+    plate_form = LicensePlateSearchForm()
     if request.method == 'POST':
         vin_form = VINSearchForm(request.POST)
-        plate_form = LicensePlateSearchForm()  # empty form
+        plate_form = LicensePlateSearchForm(request.POST)  # empty form
         if vin_form.is_valid():
             # process the data in vin_form.cleaned_data
             vin = vin_form.cleaned_data['vin']
@@ -143,6 +147,30 @@ async def search_by_vin_or_plate(request):
             # flattened_data = json.dumps(flattened_data, indent=4)
             # print(f'printing out flattened vin data.222...')
             # print(flattened_data)
+            return JsonResponse(flattened_data, safe=False)
+
+        elif plate_form.is_valid():
+            license_plate = vin_form.cleaned_data['license_plate']
+            state = vin_form.cleaned_data['state']
+            if state:
+                state = state.upper().strip()
+
+            logger.info(
+                f'performing a manual single plate search for license_plate{ license_plate} and state {state}...')
+            print(
+                f'performing a manual single plate search for license_plate {license_plate} and state {state}...')
+
+            try:
+                plate_data, success = await fetch_single_plate_data_via_plate2vin_api(license_plate, state)
+                if not success:
+                    plate_form.add_error(
+                        None, 'Failed to fetch VIN for the given License Plate.')
+            except Exception as e:
+                plate_form.add_error(
+                    None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
+            # Assuming `plate_data` is an instance of `LicensePlateSnapShotsPlate2Vin`:
+            flattened_data = await database_sync_to_async(model_to_dict)(plate_data)
+
             return JsonResponse(flattened_data, safe=False)
         else:
             # If the form is not valid, you can return an error message or empty data.

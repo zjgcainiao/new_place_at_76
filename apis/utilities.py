@@ -1,3 +1,5 @@
+from datetime import timedelta
+from django.utils.timezone import now
 from dashboard.async_functions import decrement_version_for_vin_async, update_or_create_vin_snapshots_async, database_sync_to_async
 from decouple import config, UndefinedValueError, Csv
 from homepageapp.models import LicensePlateSnapShotsPlate2Vin, VinNhtsaApiSnapshots, NhtsaVariableList
@@ -165,6 +167,30 @@ async def fetch_single_plate_data_via_plate2vin_api(license_plate, state, api_ur
         'Accept': 'application/json'
     }
 
+    # check if a record exists already in the database first before initiating a api call:
+    # first need to check if there are any existing records with the same license plate and state.
+    # this model does not check the unique on vin field.
+
+    # Calculate the date for 12 months ago from today
+    twelve_months_ago = now() - timedelta(days=365)
+
+    # Modify the query to check if last_checked_at is within the last 12 months
+    exists = await database_sync_to_async(
+        LicensePlateSnapShotsPlate2Vin.objects.filter(
+            license_plate=license_plate,
+            state=state,
+            last_checked_at__gte=twelve_months_ago
+        ).exists
+    )()
+    # exists = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(license_plate=license_plate, state=state).exists)()
+    if exists:
+        return await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(
+            license_plate=license_plate,
+            state=state,
+            last_checked_at__gte=twelve_months_ago
+        ).order_by('-last_checked_at').first)()
+
+    # start the api call.
     async with aiohttp.ClientSession() as session:
         async with session.post(url, headers=headers, json=payload) as response:
             data = await response.json()

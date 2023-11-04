@@ -15,11 +15,13 @@
         <div class="tab-content" id="searchTypeContent">
             <div class="tab-pane fade show active" id="byPlate" role="tabpanel" aria-labelledby="byPlate-tab">
                 <!-- By Plate Form -->
-                <form action="{% url 'shops:search_by_plate' %}" method="post">
+                <form id="PlateSearchForm" action="{% url 'shops:search_by_plate' %}" method="post">
                     {% csrf_token %}
-                    <input type="text" name="license_plate" placeholder="License Plate" class="form-control my-2">
-                    <input type="text" name="state" placeholder="State" class="form-control my-2">
-                    <button type="submit" name="plate-search" class="btn btn-outline-secondary">Search</button>
+                    <input type="text" name="license_plate" placeholder="License Plate" class="form-control my-1">
+                    <input type="text" name="state" placeholder="State" class="form-control my-1">
+                    <button type="submit" name="plate-search" 
+                    id="plate-search-button"
+                    class="btn btn-outline-secondary">Search</button>
                 </form>
             </div>
             <div class="tab-pane fade" id="byVIN" role="tabpanel" aria-labelledby="byVIN-tab">
@@ -216,28 +218,59 @@ $(document).ready(function() {
         }
         });
     });
+    
+    $("#PlateSearchForm").submit(function(event){
 
-    $('#exportPdfButton').click(function() {
-        // Use html2canvas to convert the table to a canvas
-        html2canvas(document.getElementById('vinDataDisplay')).then(function(canvas) {
-        // Get the image data as JPEG
-        var imgData = canvas.toDataURL('image/jpeg', 1.0);
+        event.preventDefault(); // Prevent the form from submitting traditionally
+        const form = $(this)
+        const formData = form.serialize(); // Serialize form data for submission
+        console.log(formData); // Add this line to verify the serialized data
+        
+        // csrfToken two ways
+        const csrfToken = form.find('[name=csrfmiddlewaretoken]').val(); // Fetch CSRF token from the form
+        var csrfToken_alternative = $('#plate-search-button').data('bs-csrf');
 
-        // Initialize jsPDF
-        var pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'pt',
-        format: 'a4'
-        });
+        $.ajax({
+        type: 'POST',
+        url: "{% url 'shops:search_by_vin_or_plate' %}", // URL to your Django view
+        data: formData,
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('X-CSRFToken', csrfToken); // Include the CSRF token in the header
+        },
+        success: function(response) {
+            console.log(response);
+            // Clear any previous results
+            $('#vinDataDisplay').empty();
 
-        // Add image to PDF
-        pdf.addImage(imgData, 'JPEG', 0, 0);
+            // Start building the table
+            const table = $('<table>').addClass('table table-responsive table-striped');
+            const tbody = $('<tbody>');
 
-        // Save the PDF
-        pdf.save('report.pdf');
+            // Iterate over the object, skipping null values
+            Object.entries(response).forEach(function([key, value]) {
+                if (value !== null) { // Check if value is not null
+                // Create a table row with two columns: one for the key and one for the value
+                const tr = $('<tr>');
+                tr.append($('<td>').text(key));
+                tr.append($('<td>').text(value));
+                tbody.append(tr);
+                }
+            });
+
+            // Append tbody to table
+            table.append(tbody);
+
+            // Append the table to vinDataDisplay div
+            $('#vinDataDisplay').append(table);
+
+
+        },
+        error: function() {
+            $('#vinDataDisplay').html('<p>An error has occurred</p>');
+        }
         });
     });
-
 
 
 });
