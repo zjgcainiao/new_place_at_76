@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from formtools.wizard.views import SessionWizardView
 from dashboard.forms import LicensePlateSearchForm, VINSearchForm
-from apis.views import fetch_and_save_single_vin_from_nhtsa_api, fetch_single_plate_data_via_plate2vin_api
+from apis.utilities import fetch_and_save_single_vin_from_nhtsa_api, fetch_single_plate_data_via_plate2vin_api
 from django.db import models
 from asgiref.sync import sync_to_async
 from dashboard.async_functions import fetch_latest_vin_data_from_snapshots, database_sync_to_async

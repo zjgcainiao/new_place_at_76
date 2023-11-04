@@ -6,4 +6,4 @@ class CoreOperationsConfig(AppConfig):
     name = 'core_operations'
 
     def ready(self):
-        import core_operations.signals
+        import homepageapp.signals

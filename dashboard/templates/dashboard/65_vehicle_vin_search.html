@@ -18,18 +18,17 @@
 
   {% include 'dashboard/02_dashboard_messages_sector.html' %}
 
-<div class="container my-1">
+<div class="container my-2">
   <h3>VIN Search </h3>
 
   <!-- <a class="btn btn-outline-dark" id="go-back-btn" >Go Back</a> -->
 
-  <div class="card card-hover border border-primary my-1">
+  <div class="card card-hover border border-primary my-2 p-2">
       <form method="post">
           {% csrf_token %}
           {{ form|crispy}}
           <input type="submit" value="Search">
       </form>
-
 
   </div>
     <!-- search result card  -->

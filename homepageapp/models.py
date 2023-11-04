@@ -1808,9 +1808,10 @@ class VinNhtsaApiSnapshots(models.Model):
     vin = models.CharField(
         max_length=17, verbose_name="Vehicle Identification Number (VIN)")
     variable = models.ForeignKey(
-        NhtsaVariableList, on_delete=models.SET_NULL, null=True,
+        NhtsaVariableList,
+        on_delete=models.SET_NULL, null=True,
         to_field='variable_id',  # specify the field of the related model is variable_id
-        related_name='nhtsa_variableids')
+        related_name='nhtsa_variable_ids')
     variable_name = models.CharField(max_length=255, null=True, blank=True)
     value = models.TextField(null=True, blank=True)
     value_id = models.IntegerField(null=True, blank=True)
@@ -1827,10 +1828,10 @@ class VinNhtsaApiSnapshots(models.Model):
 
     class Meta:
         db_table = 'vin_snapshots_nhtsa_new_03'
-        ordering = ['-id', '-created_at', 'vin', 'variable_id']
+        ordering = ['-id', '-created_at', 'vin', ]
         indexes = [
             # Index to speed up searches based on created at, VIN and VariableID
-            models.Index(fields=['-created_at', 'vin', 'variable_id']),
+            models.Index(fields=['-created_at', 'vin', ]),
         ]
 
     def __str__(self):

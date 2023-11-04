@@ -781,10 +781,16 @@ LiteCustomerVehicleUpdateFormset = inlineformset_factory(
 # takes a vin and model year and returns an json response with detailed vehicle info from NHTSA gov.
 # the form validates the vin to be 17-digit long and model year to be equal or less than this year plus 1.
 class VINSearchForm(forms.Form):
-    vin = forms.CharField(label='vin', widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholer': 'enter full vin number.'}))
-    year = forms.IntegerField(label='Model Year', widget=forms.NumberInput(
-        attrs={'class': 'form-control', 'placeholder': 'enter model year'}))
+    vin = forms.CharField(required=True,
+                          label='Vehicle Identification Number(VIN)',
+                          help_text='required. Enter full 17 digits',
+                          widget=forms.TextInput(
+                              attrs={'class': 'form-control', 'placeholer': 'example: 5YJSX********'}))
+    year = forms.IntegerField(required=False,
+                              label='Model Year',
+                              help_text="optional",
+                              widget=forms.NumberInput(
+                                  attrs={'class': 'form-control', 'placeholder': 'vehicle year'}))
 
     def clean_vin(self):
         vin = self.cleaned_data['vin']
@@ -802,6 +808,9 @@ class VINSearchForm(forms.Form):
 
     def clean_year(self):
         year = self.cleaned_data['year']
+        if not year:
+            return None
+
         current_year = datetime.now().year
 
         # Check if year is valid

@@ -6,7 +6,7 @@ from django.db import models
 from asgiref.sync import sync_to_async
 from django.db import close_old_connections, DatabaseError, IntegrityError
 from homepageapp.models import LicensePlateSnapShotsPlate2Vin
-from homepageapp.models import VinNhtsaApiSnapshots
+from homepageapp.models import VinNhtsaApiSnapshots, NhtsaVariableList
 
 # from core_operations.common_functions import clean_string_in_dictionary_object
 # import logging
@@ -16,8 +16,6 @@ from homepageapp.models import VinNhtsaApiSnapshots
 # 1. manages the connection's lifecycle expliclty, ensure that connections are properly closed afer usage.
 # 2. i can add logiging speicifc to database operations.
 # 3. can cutomize common database exceptions uniformly.
-
-
 def database_sync_to_async(func):
     """
     Turn a sync function that interacts with the database into an async function.
@@ -65,10 +63,14 @@ def decrement_version_for_vin_async(vin):
 
 
 @database_sync_to_async
-def update_or_create_vin_snapshots_async(vin, variable_id, data):
+def update_or_create_vin_snapshots_async(vin, variable, data):
+    # grab the variable_instance from the lookup table NhtasVariableList model.
+
+    # variable_instance, _ = NhtsaVariableList.objects.get_or_create(
+    #     variable_id=variable_id)
     return VinNhtsaApiSnapshots.objects.update_or_create(
         vin=vin,
-        variable_id=variable_id,
+        variable=variable,
         defaults=data,
     )
 
@@ -87,7 +89,7 @@ def fetch_latest_vin_data_from_snapshots(vin):
         vin=vin,
         version=5,
         variable_id__in=variable_ids_list,
-    ).order_by('-created_at', 'variable_id')
+    ).order_by('-created_at', 'variable')
 
 
 @database_sync_to_async
