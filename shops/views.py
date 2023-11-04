@@ -8,7 +8,7 @@ from dashboard.async_functions import fetch_latest_vin_data_from_snapshots, data
 import stripe
 import logging
 import json
-
+from django.http import JsonResponse
 
 logger = logging.getLogger('django')
 
@@ -89,13 +89,6 @@ async def search_by_vin(request):
     return json.dumps(vin_data_list)
 
 
-# def fetch_data_by_plate_or_vin(request):
-#     logger = logging.getLogger('django')
-#     vin_data_list = []
-#     plate_data = []
-#     success = False
-#     if request
-
 async def search_by_vin_or_plate(request):
     vin_form = VINSearchForm(prefix="vin")
     plate_form = LicensePlateSearchForm(prefix="plate")
@@ -112,21 +105,8 @@ async def search_by_vin_or_plate(request):
                     f'performing a manual single vin search on webpage for vin {vin} and model year {year}...')
                 if not year or not year.strip():
                     year = None
-                vin_data_list, number_of_downgraded_records, created = await fetch_and_save_single_vin_from_nhtsa_api(vin, year)
-                return redirect('success_url')  # redirect to a new URL
 
-                vin = request.GET.get('vin', None)
-                if not vin:
-                    return JsonResponse({'error': 'No VIN provided'}, status=400)
-
-                # Fetch the details based on VIN (you can modify this as per your logic)
                 latest_vin_data = await fetch_latest_vin_data_from_snapshots(vin)
-                # Convert to list of dictionaries if it's a QuerySet
-                if isinstance(latest_vin_data, QuerySet):
-                    latest_vin_data = await database_sync_to_async(list)(latest_vin_data.values())
-
-                if not latest_vin_data:
-                    return JsonResponse({'error': 'No vehicle found for this VIN'}, status=404)
 
                 # Format for presentation
                 formatted_content = ""

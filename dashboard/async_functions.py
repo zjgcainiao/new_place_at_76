@@ -84,12 +84,12 @@ def fetch_latest_vin_data_from_snapshots(vin):
                          126, 129,
                          ]
 
-    print('running function fetch_latest_vin_data_from_snapshots(vin) to fetch vin info ')
+    print('running async function `fetch_latest_vin_data_from_snapshots(vin)` to fetch vin info. pouplar fields only ')
     return VinNhtsaApiSnapshots.objects.filter(
         vin=vin,
         version=5,
-        variable_id__in=variable_ids_list,
-    ).order_by('-created_at', 'variable')
+        variable__in=variable_ids_list,
+    ).order_by('-created_at', 'vin', 'variable')
 
 
 @database_sync_to_async

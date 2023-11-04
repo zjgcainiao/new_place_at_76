@@ -172,3 +172,43 @@ POPULAR_NHTSA_VARIBLE_NAMES = [
 POPULAR_NHTSA_VARIABLE_IDS = [NHTSA_API_VARIBLE_ID_MAPPING[name]
                               for name in POPULAR_NHTSA_VARIBLE_NAMES
                               if name in NHTSA_API_VARIBLE_ID_MAPPING]
+
+
+# run `python manage.py fetch_nhtsa_group_names_distinct` to update this distinct list
+POPULAR_NHTSA_GROUP_NAMES = [
+    'general',
+
+
+    'mechanical / brake',
+    'mechanical / drivetrain',
+    'mechanical / transmission',
+    'mechanical / battery',
+    'mechanical / battery / charger',
+
+    'engine',
+
+    'exterior / body',
+    'exterior / bus',
+    'exterior / dimension',
+    'exterior / motorcycle',
+    'exterior / trailer',
+    'exterior / truck',
+    'exterior / wheel tire',
+
+    'interior',
+    'interior / seat',
+
+    'active safety system',
+    'active safety system / 911 notification',
+    'active safety system / backing up and parking',
+    'active safety system / forward collision prevention',
+    'active safety system / lane and side assist',
+    'active safety system / lighting technologies',
+    'active safety system / maintaining safe distance',
+
+    'passive safety system',
+    'passive safety system / air bag location'
+
+    'internal',  # NSTHA internally used fields
+
+]

@@ -41,12 +41,12 @@ class VinNhtsaApiSnapshotViewSet(viewsets.ModelViewSet):
             qs = VinNhtsaApiSnapshots.objects.filter(
                 vin=vin,
                 version=5,
-                variable_id__in=variable_ids_list,
-            ).order_by('-created_at', 'variable_id')
+                variable__in=variable_ids_list,
+            ).order_by('-created_at', 'variable')
 
             # Sort based on the order of variable_ids_list
             sorted_qs = sorted(
-                qs, key=lambda x: variable_ids_list.index(x.variable_id))
+                qs, key=lambda x: variable_ids_list.index(x.variable))
             return sorted_qs
         else:
             return VinNhtsaApiSnapshots.objects.none()
