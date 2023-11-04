@@ -55,23 +55,40 @@
   </div>
   <!-- end of container -->
   
-<!-- service list the shop provides  -->
-<section class="container pt-5">
-  <div class="d-sm-flex align-items-center justify-content-between mb-3 mb-sm-4 pb-sm-2">
-    <h2 class="h3 text-dark my-2 mb-sm-0">Popular Services</h2><a class="btn btn-link btn-dark fw-normal px-0" href="{% url 'homepageapp:services' %}">View all<i class="fi-arrow-long-right fs-sm mt-0 ps-1 ms-2"></i></a>
+<!-- updated on 2023-11-03 
+  service list the shop provides  -->
+
+<section class="container mt-5 pb-3">
+  <!-- Added padding bottom for spacing -->
+  <div class="d-flex align-items-center justify-content-between mb-4 pb-2">
+    <!-- Increased bottom margin and bottom padding for more space -->
+    <h2 class="h3 text-dark my-2 mb-sm-0">Popular Services</h2>
+    <a class="btn btn-outline-dark fw-normal" href="{% url 'homepageapp:services' %}">
+      <!-- Changed button class for an outlined style -->
+      View all
+      <i class="fi-arrow-long-right fs-sm mt-0 ps-1 ms-2"></i>
+    </a>
   </div>
-  <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-2 g-md-4">
+  <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 g-md-4">
+    <!-- Increased gutter classes for more space between cards -->
     {% for icon in service_icons %}
-    <!-- Item-->
-    <div class="col-md-4 col-sm-6">
-      <div class="card card-body card-dark card-hover bg-transparent border-0 px-0 pt-0 text-center">
-        <img class="d-block mx-auto my-3" src="{% static icon.img_src %}"  alt="{{ icon.alt }}">
-        <p class="stretched-link fw-bold">{{ icon.title }}</p>
+    <!-- Item -->
+    <div class="col">
+      <!-- Removed specific col sizing to allow automatic responsiveness -->
+      <div class="card h-100 card-body bg-transparent border-0 text-center card-hover-glare hover-shadow">
+        <!-- Added h-100 for equal height, hover-shadow for interactive hover effect -->
+        <img class="d-block mx-auto my-4" src="{% static icon.img_src %}" alt="{{ icon.alt }}" style="width: auto; height: 80px;">
+        <!-- Added my-4 for more vertical spacing, and inline style for consistent icon size -->
+        <p class="fw-bold mb-0">{{ icon.title }}</p>
+        <!-- Removed stretched-link and added mb-0 to remove unnecessary link behavior and bottom margin -->
       </div>
     </div>
     {% endfor %}
   </div>
 </section>
+
+
+
 {% endblock %}
 
     
