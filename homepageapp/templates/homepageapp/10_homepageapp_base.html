@@ -143,6 +143,9 @@
         }
     </style>    
 
+
+<meta name="csrf-token" content="{{ csrf_token }}">
+
   </head>
   <!-- Body-->
   <body class="bg-light">
@@ -236,7 +239,8 @@
         <p class="text-muted">Our virtual technican. Automotive questions only. </p>
 
       </div>
-        <div class="card-body">
+       <!-- assign csrf_token into the card-body  -->
+        <div class="card-body" id='chatbotCardBody' data-csrf-token="{{ csrf_token }}">
             
             <textarea id="userInput" class="form-control" type="text" value=""></textarea>
             <button id="askButton" class="btn btn-primary btn-sm mt-3">Ask</button>
@@ -303,6 +307,7 @@
     }
 </style>
     <script>
+      const getCSRFTokenViaCardBody = () => $('#chatbotCardBody').data('csrf-token');
 
       $(document).ready(function(){
 
@@ -326,7 +331,7 @@
                   data: { "user_input": userText },
                   headers: {
                       "X-Requested-With": "XMLHttpRequest",
-                      "X-CSRFToken": getCookie("csrftoken")
+                      "X-CSRFToken":  getCSRFTokenViaCardBody(), //getCookie("csrftoken")
                   },
                   success: function(data) {
 
@@ -362,6 +367,17 @@
           let parts = value.split("; " + name + "=");
           if (parts.length === 2) return parts.pop().split(";").shift();
       }
+
+      // another function to get CSRFToken. via meta 
+      function getCSRFTokenViaMeta() {
+          return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      }
+    
+      function getCSRFTokenViaCardBodyFunc() {
+          return document.querySelector('#chatbotCardBody').getAttribute('data-csrf-token');
+      }
+
+      
     </script>
 
 
