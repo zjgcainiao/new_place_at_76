@@ -38,9 +38,8 @@
         </div>
     </div>
     <!-- end of container  -->
-
     <!-- export to pdf button  -->
-    <div class="container my-2">
+    <div class="container mt-1">
         <div class="row">
             <div class="col">
                 <button id="exportPdfButtonClientSide" class="btn btn-outline-primary btn-sm" >Export to PDF via client-side</button>
@@ -52,6 +51,8 @@
         
         </div>
     </div>
+    <!-- end of button container  -->
+
 
     <!-- vinData Display  -->
     <div id="vinDataDisplay" class="container mt-3">
@@ -110,8 +111,6 @@
     );
     }
 
-
-
     exportPdfButton.addEventListener('click', function() {
         // Ensure 'content' points to the existing table you want to capture
         var content = document.querySelector('#vinDataDisplay .table');
@@ -123,7 +122,7 @@
         // Check if the content exists and is part of the document
         if (typeof html2canvas == 'function') {
             html2canvas(content, { scale: 2 }).then(canvas => {
-                var imgData = canvas.toDataURL('image/png');
+                var imgData = canvas.toDataURL('image/jpeg', 0.7);
                 var pdf;
                 if (window.jspdf && window.jspdf.jsPDF) {
                     pdf = new window.jspdf.jsPDF();
@@ -138,7 +137,7 @@
 
                 var position = 0;
 
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
 
                 while (heightLeft >= 0) {
