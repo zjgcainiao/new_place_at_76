@@ -4,6 +4,8 @@ from datetime import datetime
 
 
 class VINSearchForm(forms.Form):
+    # added this hiddent input for both VINSearchForm and LicensePlateSearchForm
+    action = forms.CharField(widget=forms.HiddenInput(), initial='vin_search')
     vin = forms.CharField(label='vin', widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholer': 'enter full vin number.'}))
     year = forms.IntegerField(label='Model Year', widget=forms.NumberInput(
@@ -51,6 +53,9 @@ class VINSearchForm(forms.Form):
 
 
 class LicensePlateSearchForm(forms.Form):
+
+    action = forms.CharField(
+        widget=forms.HiddenInput(), initial='plate_search')
     license_plate = forms.CharField(max_length=10, widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Enter license plate number.'}))
     state = forms.ChoiceField(choices=[('', '--- None ---')] + list(LIST_OF_STATES_IN_US), widget=forms.Select(

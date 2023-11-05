@@ -107,53 +107,51 @@ def set_session_data(request, key, data):
 
 async def search_by_vin_or_plate(request):
     flattened_data = None
-    vin_form = VINSearchForm()
-    plate_form = LicensePlateSearchForm()
+    vin_form = VINSearchForm(request.POST or None)
+    plate_form = LicensePlateSearchForm(request.POST or None)
     if request.method == 'POST':
-        vin_form = VINSearchForm(request.POST)
-        plate_form = LicensePlateSearchForm(request.POST)  # empty form
-        if vin_form.is_valid():
-            # process the data in vin_form.cleaned_data
-            vin = vin_form.cleaned_data['vin']
-            year = vin_form.cleaned_data['year']
-            logger.info(
-                f'performing a manual single vin search on webpage for vin {vin} and model year {year}...')
-            print(
-                f'performing a manual single vin search on webpage for vin {vin} and model year {year}...')
+        if 'vin-search' in request.POST:
+            if vin_form.is_valid():
+                # process the data in vin_form.cleaned_data
+                vin = vin_form.cleaned_data['vin']
+                year = vin_form.cleaned_data['year']
+                logger.info(
+                    f'performing a manual single vin search on webpage for vin {vin} and model year {year}...')
+                print(
+                    f'performing a manual single vin search on webpage for vin {vin} and model year {year}...')
 
-            if year and year.strip():
-                year = year
-            else:
-                year = None
+                if year and year.strip():
+                    year = year
+                else:
+                    year = None
 
-            # Fetch the latest vin from VinNhtsaApiSnapshots model
+                # Fetch the latest vin from VinNhtsaApiSnapshots model
 
-            latest_vin_data = await fetch_latest_vin_data_from_snapshots(vin)
+                latest_vin_data = await fetch_latest_vin_data_from_snapshots(vin)
 
-            # Convert to list of dictionaries if it's a QuerySet
-            if isinstance(latest_vin_data, QuerySet):
-                latest_vin_data = await database_sync_to_async(list)(latest_vin_data.values())
+                # Convert to list of dictionaries if it's a QuerySet
+                if isinstance(latest_vin_data, QuerySet):
+                    latest_vin_data = await database_sync_to_async(list)(latest_vin_data.values())
 
-            # save a copy into request.session. aysnc
-            # await set_session_data(request, 'latest_vin_data', latest_vin_data)
+                # save a copy into request.session. aysnc
+                # await set_session_data(request, 'latest_vin_data', latest_vin_data)
 
-            flattened_data = {
-                f"{item['variable_name']} (var_id:{item['variable_id']})": item['value']
-                for item in latest_vin_data
-            }
-            # Assuming 'vin' is the VIN you're interested in
-            flattened_data['vin'] = vin
-            # print(f'here is the flattened data: {flattened_data}')
-            # flattened_data = json.dumps(flattened_data, indent=4)
-            # print(f'printing out flattened vin data.222...')
-            # print(flattened_data)
-            return JsonResponse(flattened_data, safe=False)
-
-        elif plate_form.is_valid():
-            license_plate = vin_form.cleaned_data['license_plate']
-            state = vin_form.cleaned_data['state']
-            if state:
-                state = state.upper().strip()
+                flattened_data = {
+                    f"{item['variable_name']} (var_id:{item['variable_id']})": item['value']
+                    for item in latest_vin_data
+                }
+                # Assuming 'vin' is the VIN you're interested in
+                flattened_data['vin'] = vin
+                # print(f'here is the flattened data: {flattened_data}')
+                # flattened_data = json.dumps(flattened_data, indent=4)
+                # print(f'printing out flattened vin data.222...')
+                # print(flattened_data)
+                return JsonResponse(flattened_data, safe=False)
+        elif 'plate-search' in request.POST:
+            if plate_form.is_valid():
+                license_plate = plate_form.cleaned_data['license_plate']
+                state = plate_form.cleaned_data['state'].upper(
+                ).strip() if plate_form.cleaned_data['state'] else ''
 
             logger.info(
                 f'performing a manual single plate search for license_plate{ license_plate} and state {state}...')
@@ -176,7 +174,7 @@ async def search_by_vin_or_plate(request):
             # If the form is not valid, you can return an error message or empty data.
             return JsonResponse({'error': 'Invalid form data'}, status=400)
 
-    return JsonResponse(flattened_data, safe=False)
+    return JsonResponse({'error': 'No data'}, status=404)  # If no POST or no search
 
 
 # 2023-11-13 requring io canvas and HttpResponse

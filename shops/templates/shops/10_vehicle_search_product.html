@@ -25,19 +25,21 @@
                 </form>
             </div>
             <div class="tab-pane fade" id="byVIN" role="tabpanel" aria-labelledby="byVIN-tab">
+
                 <!-- By VIN Form -->
                 <form id="vinSearchForm" action="{% url 'shops:search_by_vin_or_plate' %}" method="post">
                     {% csrf_token %}
                     <input type="text" name="vin" placeholder="VIN" class="form-control my-2">
                     <input type="text" name="year" placeholder="Model Year (Optional)" class="form-control my-2">
-                    <button type="submit" name="vin-search" 
-                        id="vin-search-button" class="btn btn-outline-secondary"
+                    <button type="submit" id="vin-search-button" class="btn btn-outline-secondary"
                         data-bs-csrf="{{ csrf_token }}">
                         Search
                     </button>
                 </form>
             </div>
+            <!-- end of the Vin Search Form  -->
         </div>
+        <!-- end of form tab-cotent -->
     </div>
     <!-- end of container  -->
     <!-- export to pdf button  -->
