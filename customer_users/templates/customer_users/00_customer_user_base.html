@@ -90,12 +90,14 @@
       .page-loading.active > .page-loading-inner {
         opacity: 1;
       }
+      /* Defines the styles for any text that is placed within the .page-loading-inner element, such as a loading message. */
       .page-loading-inner > span {
         display: block;
         font-size: 1rem;
         font-weight: normal;
         color: #fff;;
       }
+       /* This is a styled element intended to look like a spinner, typically used to indicate that something is loading. */
       .page-spinner {
         display: inline-block;
         width: 2.75rem;
@@ -139,13 +141,13 @@
   <!-- Body-->
   <body class="bg-light">
 
-<!-- Page loading spinner with Bootstrap styles -->
-<div class="page-loading active d-flex justify-content-center align-items-center" style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(255, 255, 255, 0.9); transition: opacity 0.5s;">
-  <div class="page-loading-inner text-center">
-    <div class="spinner-border fw-bold" role="status"></div>
-    <div>Loading...Please wait...</div>
-  </div>
-</div>
+    <!-- Page loading spinner with Bootstrap styles -->
+    <div class="page-loading active d-flex justify-content-center align-items-center" style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(255, 255, 255, 0.9); transition: opacity 0.5s;">
+      <div class="page-loading-inner text-center">
+        <div class="spinner-border fw-bold" role="status"></div>
+        <div>Loading...Please wait...</div>
+      </div>
+    </div>
 
     <main class="page-wrapper">
       <!-- Navbar header-->

@@ -28,7 +28,6 @@
   
   <div class="container-fluid">
       <h2>Active Repair Orders</h2>
-
       <!-- the button group  -->
       <div class='row'>
         <div class="col-12 btn-group my-1">
@@ -36,58 +35,79 @@
           <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-dash' %}"><i class ='uil-users-alt' ></i> Go to Customer Dash</a>
           <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:vehicle-dash' %}"> <i class=" uil-car-sideview"></i> Go to Vehicle Dash</a>
           <a type="button" class="btn btn-outline-dark" href="{% url 'appointments:appointment_list' %}"> <i class="uil-calendar-alt"></i> Go to Appointment Dash</a>
-          <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:appointment_list' %}"></a>>Go to Plate Search</a>
+          <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search_single_plate_via_plate2vin' %}">Go to Plate Search</a>
         </div>
       </div>
       <!-- end of button group  -->
 
   </div>
   <!-- end of container -->
-  
+
+  <!-- customized style for stackable tables. used it with td='Order ID'  -->
+  <style>
+      @media (max-width: 768px) {
+    .table-stackable thead {
+      display: none; /* Hide the table headers */
+    }
+    .table-stackable tr {
+      display: block;
+      margin-bottom: .625rem;
+    }
+    .table-stackable td {
+      display: block; /* Stack the table cells on top of each other */
+      text-align: right;
+    }
+    .table-stackable td:before {
+      content: attr(data-label); /* Use a data attribute to add a label before each cell */
+      float: left;
+      font-weight: bold;
+    }
+  }
+ </style>
+
   <div class = 'container-fluid'>
-    <form method="post">
-      {% csrf_token %}
-      <table class ='table table-light table-hover table-centered'>
+    <div class="table-responsive">
+      <table class ='table table-hover table-centered'>
         <thead>
           <tr>
             <th>Order ID</th>
-            <th>Order Status</th>
+            <th >Order Status</th>
             <th>Name</th>
-            <th>Labor</th>
-            <th>Part</th>
-            <th>Discounts</th>
+            <th >Labor</th>
+            <th >Part</th>
+            <th class="d-none d-md-table-cell">Taxes</th>
             <th>Total</th>
-            <th>Phone </th>
-            <th>Email</th>
-            <th>Customer Address</th>
+            <th class="d-none d-md-table-cell">Phone </th>
+            <th class="d-none d-md-table-cell">Email</th>
+            <th class="d-none d-lg-table-cell">Customer Address</th>
             <th>Updated</th>
           </tr>
         </thead>
         <tbody>
           {% for repair_order in repair_orders %}
           <tr>
-            <td><a href="{% url 'dashboard:repair_order_detail' pk=repair_order.repair_order_id %}">{{ repair_order.repair_order_id }}</a></td>
+            <td  data-label="Order ID"><a href="{% url 'dashboard:repair_order_detail' pk=repair_order.pk %}">{{ repair_order.repair_order_id }}</a></td>
             <td>{{repair_order.repair_order_phase.repair_order_phase_description }}</td>
             <!-- <td>repair_order.repair_order_customer.customer_id </td> -->
             <td>{{ repair_order.repair_order_customer.get_customer_full_name |truncatechars:10 }}</td>
             <td>{{ repair_order.repair_order_snapshot_labor_sale_amount }}</td>
             <td>{{ repair_order.repair_order_snapshot_parts_sale_amount }}</td>
-            <td>{{ repair_order.repair_order_snapshot_tax_amount }}</td>
+            <td class="d-none d-md-table-cell">{{ repair_order.repair_order_snapshot_tax_amount }}</td>
             <td>{{ repair_order.repair_order_snapshot_order_total_amount }}</td>
 
-            <td>
+            <td class="d-none d-md-table-cell">
               {% for phone in repair_order.repair_order_customer.phones.all %}
                 <p>{{phone.phone_desc.phone_desc}}:{{phone.phone_number|phone2numeric |truncatechars:30 }}</p>
               {% endfor %}
             </td>
 
-            <td>
+            <td class="d-none d-md-table-cell">
               {% for email in repair_order.repair_order_customer.emails.all %}
                 {{email.email_address|truncatechars:30 }}
               {% endfor %}
             </td>
 
-            <td>
+            <td class="d-none d-lg-table-cell">
               {% for address in repair_order.repair_order_customer.addresses.all %}
               {{ address.get_full_address_with_ATTN|truncatechars:30  }}
               {% endfor %}
@@ -102,6 +122,10 @@
           {% endfor %}
         </tbody>
       </table>
-    </form>
+    </div>
+    <!-- end of .table-responsive -->
+      
   </div>
+
+
 {% endblock %}
