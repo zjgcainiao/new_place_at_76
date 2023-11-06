@@ -17,6 +17,8 @@ from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
 from django.template.context_processors import csrf
 from crispy_forms.utils import render_crispy_form
+from django.views.decorators.http import require_http_methods
+
 
 logger = logging.getLogger('django')
 # renders the vehicle search page for all site viisters (not log in required)
@@ -116,12 +118,20 @@ def set_session_data(request, key, data):
 # 2023-11-04
 async def search_by_vin_or_plate(request):
     flattened_data = None
-    vin_form = VINSearchForm(request.POST or None)
-    plate_form = LicensePlateSearchForm(request.POST or None)
+    if request.method == 'GET':
+        vin_form = VINSearchForm()
+        plate_form = LicensePlateSearchForm()
+        context = {
+            'vin_form': vin_form,
+            'plate_form': plate_form,
+        }
+        return render(request, 'shops/10_vehicle_search_product.html', context)
 
-    if request.method == 'POST' and 'action' in request.POST:
+    # AJAX POST request handling
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest' and 'action' in request.POST:
         action_value = request.POST['action']
-        if action_value == 'vin-search':
+        if action_value == 'action_vin_search':
+            vin_form = VINSearchForm(request.POST)
             print(f'user is submitting vin_form....')
             if vin_form.is_valid():
                 # process the data in vin_form.cleaned_data
@@ -160,7 +170,8 @@ async def search_by_vin_or_plate(request):
                 # print(flattened_data)
                 return JsonResponse(flattened_data, safe=False)
 
-        elif action_value == 'plate-search':
+        elif action_value == 'action_plate_search':
+            plate_form = VINSearchForm(request.POST)
             if plate_form.is_valid():
                 license_plate = plate_form.cleaned_data['license_plate']
                 state = plate_form.cleaned_data['state'].upper(

@@ -71,8 +71,6 @@
             <div class="tab-pane fade" id="byVIN" role="tabpanel" aria-labelledby="byVIN-tab">
 
                 <!-- By VIN Form -->
-
-
                     {% crispy vin_form  vin_form.helper %}
      
             </div>
@@ -206,21 +204,27 @@
 <!-- customized script to display vin data  -->
 <script>
 $(document).ready(function() {
-//   $('#vin-search-button').click(function(event) {
-    $("#vinSearchForm").submit(function(event){
+    // btn-primary was added to the button for no reason.
+    $('#vin-search-button').removeClass('btn-primary');
+    $('#plate-search-button').removeClass('btn-primary');
+
+    $('#vin-search-button').click(function(event) {
+    // $("#vinSearchForm").submit(function(event){
 
         event.preventDefault(); // Prevent the form from submitting traditionally
-        const form = $(this)
+        var form = $('#VinSearchForm');
+            // var formData = form.serialize(); // Serialize form data for submission
         const formData = form.serialize(); // Serialize form data for submission
         console.log(formData); // Add this line to verify the serialized data
         
         // csrfToken two ways
         const csrfToken = form.find('[name=csrfmiddlewaretoken]').val(); // Fetch CSRF token from the form
-        var csrfToken_alternative = $('#vin-search-button').data('bs-csrf');
+                console.log(csrfToken); // Add this line to verify the serialized data
+        // var csrfToken_alternative = $('#vin-search-button').data('bs-csrf');
 
         $.ajax({
         type: 'POST',
-        url: "{% url 'shops:search_by_vin_or_plate' %}", // URL to your Django view
+        url: form.attr('action'), //"{% url 'shops:search_by_vin_or_plate' %}", // URL to your Django view
         data: formData,
         beforeSend: function(xhr) {
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -259,11 +263,11 @@ $(document).ready(function() {
         }
         });
     });
-    
-    $("#PlateSearchForm").submit(function(event){
+       $('#plate-search-button').click(function(event) {
+    // $("#PlateSearchForm").submit(function(event){
 
         event.preventDefault(); // Prevent the form from submitting traditionally
-        const form = $(this)
+        var form = $('#PlateSearchForm');
         const formData = form.serialize(); // Serialize form data for submission
         console.log(formData); // Add this line to verify the serialized data
         
@@ -275,9 +279,9 @@ $(document).ready(function() {
         type: 'POST',
         url: "{% url 'shops:search_by_vin_or_plate' %}", // URL to your Django view
         data: formData,
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            xhr.setRequestHeader('X-CSRFToken', csrfToken); // Include the CSRF token in the header
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrfToken // Include the CSRF token in the header
         },
         success: function(response) {
             console.log(response);
@@ -285,8 +289,8 @@ $(document).ready(function() {
             $('#vinDataDisplay').empty();
 
             // Start building the table
-            const table = $('<table>').addClass('table table-responsive table-striped');
-            const tbody = $('<tbody>');
+            var table = $('<table>').addClass('table table-responsive table-striped');
+            var tbody = $('<tbody>');
 
             // Iterate over the object, skipping null values
             Object.entries(response).forEach(function([key, value]) {
@@ -307,8 +311,9 @@ $(document).ready(function() {
 
 
         },
-        error: function() {
-            $('#vinDataDisplay').html('<p>An error has occurred</p>');
+        error: function(xhr, textStatus, errorThrown) {
+            console.log(xhr.responseText); // Log the error so you can inspect the response
+            $('#vinDataDisplay').html('<p>An error has occurred: ' + errorThrown + '</p>');
         }
         });
     });

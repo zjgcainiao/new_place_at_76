@@ -11,7 +11,8 @@ from django.urls import reverse
 class LicensePlateSearchForm(forms.Form):
 
     action = forms.CharField(
-        widget=forms.HiddenInput(), initial='plate_search')
+        widget=forms.HiddenInput(), initial='action_plate_search')
+
     license_plate = forms.CharField(max_length=10, widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Enter license plate number.'}))
     state = forms.ChoiceField(choices=[('', '--- None ---')] + list(LIST_OF_STATES_IN_US), widget=forms.Select(
@@ -41,15 +42,15 @@ class LicensePlateSearchForm(forms.Form):
         self.helper.layout = Layout(
             # Use Div to create a Bootstrap grid structure for responsiveness
             Div(
-                # Hidden('action', 'plate_search'),
-                Field('license_plate', wrapper_class='col-md-6 mb-3'),
-                Field('state', wrapper_class='col-md-6 mb-3'),
+                Hidden('action', 'action_plate_search'),
+                Field('license_plate', wrapper_class='col-md-6'),
+                Field('state', wrapper_class='col-md-6 '),
                 css_class='row'
             ),
             # You can add FormActions for better control over the submit button's placement and styling
             FormActions(
                 Submit('plate_search', 'Search',
-                       css_class='btn btn-outline-secondary btn-sm', css_id='vin-search-button'),
+                       css_class='btn-outline-secondary', css_id='plate-search-button'),
                 css_class='d-grid gap-2')
         )
 
@@ -63,7 +64,8 @@ class VINSearchForm(forms.Form):
     year = forms.CharField(required=False,
                            label='Year of Vehicle (Optional)', widget=forms.TextInput(
                                attrs={'class': 'form-control', 'placeholder': 'enter model year'}), help_text="Optional. Enter only if you cannot get the result with vin only.")
-    action = forms.CharField(widget=forms.HiddenInput(), initial='vin_search')
+    action = forms.CharField(widget=forms.HiddenInput(),
+                             initial='action_vin_search')
 
     def clean_vin(self):
         vin = self.cleaned_data['vin']
@@ -104,9 +106,9 @@ class VINSearchForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-
+        self.helper.form_id = 'VinSearchForm'
         # 'form-inline'  # 'form-horizontal'
-        self.helper.form_class = 'form-inline'
+        self.helper.form_class = 'form-horizontal'
         self.helper.form_tag = True
         self.helper.form_method = "post"
         self.helper.form_action = reverse(
@@ -114,14 +116,14 @@ class VINSearchForm(forms.Form):
         self.helper.layout = Layout(
             Div(
                 # Adjust the column sizes as needed
-                # Hidden('action', 'vin_search'),
-                'vin',
-                'year',
+                Hidden('action', 'action_vin_search'),
+                Field('vin'),
+                Field('year'),
                 css_class='row m-1'
             ),
 
             FormActions(
-                Submit('vin search', 'Search', css_class='btn btn-outline-secondary',
+                Submit('vin search', 'Search', css_class='btn-outline-secondary',
                        css_id='vin-search-button'),
                 css_class='d-grid gap-2')
 

@@ -4,7 +4,7 @@ from shops import views
 app_name = 'shops'
 urlpatterns = [
     # the first product. Vehicle Search and generate reports for that vehicle.
-    path('vehicle_search/', views.vehicle_search_product,
+    path('vehicle_search/', views.search_by_vin_or_plate,  # views.vehicle_search_product,
          name='vehicle_search_product'),
 
     path('single-vin-search/',
