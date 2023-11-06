@@ -1,15 +1,69 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from datetime import datetime
+from crispy_forms.helper import FormHelper
+from core_operations.models import LIST_OF_STATES_IN_US
+from crispy_forms.layout import Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div, Button, Hidden
+from crispy_forms.bootstrap import FormActions, InlineCheckboxes, InlineField
+from django.urls import reverse
+
+
+class LicensePlateSearchForm(forms.Form):
+
+    action = forms.CharField(
+        widget=forms.HiddenInput(), initial='plate_search')
+    license_plate = forms.CharField(max_length=10, widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter license plate number.'}))
+    state = forms.ChoiceField(choices=[('', '--- None ---')] + list(LIST_OF_STATES_IN_US), widget=forms.Select(
+        attrs={'class': 'form-select'}))
+
+    def clean_license_plate(self):
+        license_plate = self.cleaned_data['license_plate']
+        if len(license_plate) > 10:
+            raise ValidationError(
+                'License plate number must not be more than 10 characters long.')
+        return license_plate.strip().upper()
+
+    def clean_state(self):
+        state = self.cleaned_data['state']
+        if state and state not in dict(LIST_OF_STATES_IN_US):
+            raise ValidationError('Invalid US state abbreviation.')
+        return state
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'PlateSearchForm'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.form_tag = True
+        self.helper.form_method = 'post'
+        self.helper.form_action = reverse('shops:search_by_vin_or_plate')
+        self.helper.layout = Layout(
+            # Use Div to create a Bootstrap grid structure for responsiveness
+            Div(
+                # Hidden('action', 'plate_search'),
+                Field('license_plate', wrapper_class='col-md-6 mb-3'),
+                Field('state', wrapper_class='col-md-6 mb-3'),
+                css_class='row'
+            ),
+            # You can add FormActions for better control over the submit button's placement and styling
+            FormActions(
+                Submit('plate_search', 'Search',
+                       css_class='btn btn-outline-secondary btn-sm', css_id='vin-search-button'),
+                css_class='d-grid gap-2')
+        )
 
 
 class VINSearchForm(forms.Form):
     # added this hiddent input for both VINSearchForm and LicensePlateSearchForm
+
+    vin = forms.CharField(required=True,
+                          label='Vin', widget=forms.TextInput(
+                              attrs={'class': 'form-control', 'placeholer': 'enter full vin number.'}))
+    year = forms.CharField(required=False,
+                           label='Year of Vehicle (Optional)', widget=forms.TextInput(
+                               attrs={'class': 'form-control', 'placeholder': 'enter model year'}), help_text="Optional. Enter only if you cannot get the result with vin only.")
     action = forms.CharField(widget=forms.HiddenInput(), initial='vin_search')
-    vin = forms.CharField(label='vin', widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholer': 'enter full vin number.'}))
-    year = forms.IntegerField(label='Model Year', widget=forms.NumberInput(
-        attrs={'class': 'form-control', 'placeholder': 'enter model year'}), help_text="Optional. Enter only if you cannot get the result with vin only.")
 
     def clean_vin(self):
         vin = self.cleaned_data['vin']
@@ -49,31 +103,26 @@ class VINSearchForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # exclude the line item id
+        self.helper = FormHelper()
 
+        # 'form-inline'  # 'form-horizontal'
+        self.helper.form_class = 'form-inline'
+        self.helper.form_tag = True
+        self.helper.form_method = "post"
+        self.helper.form_action = reverse(
+            'shops:search_by_vin_or_plate')  # Use your URL name here
+        self.helper.layout = Layout(
+            Div(
+                # Adjust the column sizes as needed
+                # Hidden('action', 'vin_search'),
+                'vin',
+                'year',
+                css_class='row m-1'
+            ),
 
-class LicensePlateSearchForm(forms.Form):
+            FormActions(
+                Submit('vin search', 'Search', css_class='btn btn-outline-secondary',
+                       css_id='vin-search-button'),
+                css_class='d-grid gap-2')
 
-    action = forms.CharField(
-        widget=forms.HiddenInput(), initial='plate_search')
-    license_plate = forms.CharField(max_length=10, widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': 'Enter license plate number.'}))
-    state = forms.ChoiceField(choices=[('', '--- None ---')] + list(LIST_OF_STATES_IN_US), widget=forms.Select(
-        attrs={'class': 'form-select'}))
-
-    def clean_license_plate(self):
-        license_plate = self.cleaned_data['license_plate']
-        if len(license_plate) > 10:
-            raise ValidationError(
-                'License plate number must not be more than 10 characters long.')
-        return license_plate.strip().upper()
-
-    def clean_state(self):
-        state = self.cleaned_data['state']
-        if state and state not in dict(LIST_OF_STATES_IN_US):
-            raise ValidationError('Invalid US state abbreviation.')
-        return state
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # exclude the line item id
+        )

@@ -4,7 +4,7 @@ from reportlab.lib.pagesizes import letter
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from formtools.wizard.views import SessionWizardView
-from dashboard.forms import LicensePlateSearchForm, VINSearchForm
+from shops.forms import LicensePlateSearchForm, VINSearchForm
 from apis.utilities import fetch_and_save_single_vin_from_nhtsa_api, fetch_single_plate_data_via_plate2vin_api
 from django.db import models
 from asgiref.sync import sync_to_async
@@ -15,19 +15,26 @@ import json
 from django.http import JsonResponse
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
-
+from django.template.context_processors import csrf
+from crispy_forms.utils import render_crispy_form
 
 logger = logging.getLogger('django')
 # renders the vehicle search page for all site viisters (not log in required)
 
 
 def vehicle_search_product(request):
-    vehicle = None
+    flattened_data = None
 
-    return render(request, 'shops/10_vehicle_search_product.html')
+    vin_form = VINSearchForm()
+    plate_form = LicensePlateSearchForm()
+    context = {
+        'vin_form': vin_form,
+        'plate_form': plate_form,
+    }
+    return render(request, 'shops/10_vehicle_search_product.html', context)
+
 
 # standard django based checkout page, using ES6 module based stripe.js
-
 
 def payment_checkout(request):
     return render(request, 'shops/21_payment_checkout.html')
@@ -84,7 +91,7 @@ async def search_by_vin(request):
     vin_data_list = []
     # count = 0
     logger = logging.getLogger('django')
-    if request.method == 'POST':
+    if request.method == 'POST' and 'action' in request.POST:
         form = VINSearchForm(request.POST)
         if form.is_valid():
             vin = form.cleaned_data['vin']
@@ -105,12 +112,17 @@ def set_session_data(request, key, data):
     request.session.modified = True  # Ensure the session is saved
 
 
+# used in shops/search_by_vin_or_plate
+# 2023-11-04
 async def search_by_vin_or_plate(request):
     flattened_data = None
     vin_form = VINSearchForm(request.POST or None)
     plate_form = LicensePlateSearchForm(request.POST or None)
-    if request.method == 'POST':
-        if 'vin-search' in request.POST:
+
+    if request.method == 'POST' and 'action' in request.POST:
+        action_value = request.POST['action']
+        if action_value == 'vin-search':
+            print(f'user is submitting vin_form....')
             if vin_form.is_valid():
                 # process the data in vin_form.cleaned_data
                 vin = vin_form.cleaned_data['vin']
@@ -147,7 +159,8 @@ async def search_by_vin_or_plate(request):
                 # print(f'printing out flattened vin data.222...')
                 # print(flattened_data)
                 return JsonResponse(flattened_data, safe=False)
-        elif 'plate-search' in request.POST:
+
+        elif action_value == 'plate-search':
             if plate_form.is_valid():
                 license_plate = plate_form.cleaned_data['license_plate']
                 state = plate_form.cleaned_data['state'].upper(
@@ -166,7 +179,8 @@ async def search_by_vin_or_plate(request):
             except Exception as e:
                 plate_form.add_error(
                     None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
-            # Assuming `plate_data` is an instance of `LicensePlateSnapShotsPlate2Vin`:
+
+            # Assuming `plate_data` is an instance of `LicensePlateSnapShotsPlate2Vin`
             flattened_data = await database_sync_to_async(model_to_dict)(plate_data)
 
             return JsonResponse(flattened_data, safe=False)
@@ -174,8 +188,11 @@ async def search_by_vin_or_plate(request):
             # If the form is not valid, you can return an error message or empty data.
             return JsonResponse({'error': 'Invalid form data'}, status=400)
 
-    return JsonResponse({'error': 'No data'}, status=404)  # If no POST or no search
+    # If no POST or no search
+    if not flattened_data:
+        return JsonResponse({'error': 'No data'}, status=404)
 
+    return JsonResponse(flattened_data, safe=False)
 
 # 2023-11-13 requring io canvas and HttpResponse
 
@@ -184,14 +201,7 @@ async def export_vin_data_to_pdf(request):
 
     # Fetch the data from the session or database
     latest_vin_data = request.session.get(
-        'latest_vin_data')  # or fetch from the database
-
-    # if not latest_vin_data:
-    #     latest_vin_data = await fetch_latest_vin_data_from_snapshots(vin)
-
-    # Convert to list of dictionaries if it's a QuerySet
-    # if isinstance(latest_vin_data, QuerySet):
-    #     latest_vin_data = await database_sync_to_async(list)(latest_vin_data.values())
+        'latest_vin_data')
 
     # Create a byte stream buffer
     buf = io.BytesIO()

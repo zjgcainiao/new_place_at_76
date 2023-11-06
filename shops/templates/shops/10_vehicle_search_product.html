@@ -1,41 +1,80 @@
 {% extends 'homepageapp/10_homepageapp_base.html' %}
-
+{% load crispy_forms_tags %}
 {% load static %}
 {% block content1-main %}
+<style>
+    /* custom styles on shops/vehicle_search_product */
+    /* .nav-tabs {
+    border-bottom: 2px solid #dee2e6;
+    } */
 
+    .nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    background: #f8f9fa; /* Light grey background */
+    margin-right: 2px;
+    }
+
+    .nav-tabs .nav-link.active {
+    color: #495057;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1),
+                0 2px 4px -1px rgba(0,0,0,0.06); /* Soft shadow for active tab */
+    }
+
+    .tab-content > .tab-pane {
+    border: 1px solid #dee2e6;
+    border-top: none; /* Hide top border */
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    padding: 15px;
+    box-shadow: inset 20px 20px 60px #bebebe,
+                inset -20px -20px 60px #ffffff; /* Inward shadows for a matte look */
+    }
+
+    /* Mobile friendly adjustments */
+    @media (max-width: 768px) {
+    .nav-tabs .nav-link {
+        padding: 0.5rem 1rem; /* Larger tap targets for mobile */
+    }
+
+    .tab-content > .tab-pane {
+        padding: 10px;
+    }
+    }
+
+</style>
     <div class="container pt-5 my-5">
         <ul class="nav nav-tabs" id="searchType" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="byPlate-tab" data-bs-toggle="tab" type="button" data-bs-target="#byPlate" role="tab" aria-controls="byPlate" aria-selected="true">By Plate</button>
+                <button class="nav-link active" id="byPlate-tab" data-bs-toggle="tab" 
+                type="button" data-bs-target="#byPlate" role="tab" aria-controls="byPlate" aria-selected="true">By Plate</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="byVIN-tab" data-bs-toggle="tab" type="button" data-bs-target="#byVIN" role="tab" aria-controls="byVIN" aria-selected="false">By VIN</button>
+                <button class="nav-link" id="byVIN-tab" data-bs-toggle="tab" 
+                type="button" data-bs-target="#byVIN" role="tab" aria-controls="byVIN" aria-selected="false">By VIN</button>
             </li>
         </ul>
         <div class="tab-content" id="searchTypeContent">
             <div class="tab-pane fade show active" id="byPlate" role="tabpanel" aria-labelledby="byPlate-tab">
                 <!-- By Plate Form -->
-                <form id="PlateSearchForm" action="{% url 'shops:search_by_plate' %}" method="post">
-                    {% csrf_token %}
-                    <input type="text" name="license_plate" placeholder="License Plate" class="form-control my-1">
-                    <input type="text" name="state" placeholder="State" class="form-control my-1">
-                    <button type="submit" name="plate-search" 
+                <!-- <form id="PlateSearchForm" action="{% url 'shops:search_by_vin_or_plate' %}" method="post"> -->
+
+               
+                    {% crispy plate_form %}
+                    <!-- <button type="submit" name="plate-search" 
                     id="plate-search-button"
-                    class="btn btn-outline-secondary">Search</button>
-                </form>
+                    class="btn btn-outline-secondary">Search</button> -->
+                <!-- </form> -->
             </div>
             <div class="tab-pane fade" id="byVIN" role="tabpanel" aria-labelledby="byVIN-tab">
 
                 <!-- By VIN Form -->
-                <form id="vinSearchForm" action="{% url 'shops:search_by_vin_or_plate' %}" method="post">
-                    {% csrf_token %}
-                    <input type="text" name="vin" placeholder="VIN" class="form-control my-2">
-                    <input type="text" name="year" placeholder="Model Year (Optional)" class="form-control my-2">
-                    <button type="submit" id="vin-search-button" class="btn btn-outline-secondary"
-                        data-bs-csrf="{{ csrf_token }}">
-                        Search
-                    </button>
-                </form>
+
+
+                    {% crispy vin_form  vin_form.helper %}
+     
             </div>
             <!-- end of the Vin Search Form  -->
         </div>
