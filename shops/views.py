@@ -149,6 +149,7 @@ async def search_by_vin_or_plate(request):
                     year = None
 
                 # Fetch the latest vin from VinNhtsaApiSnapshots model
+                await fetch_and_save_single_vin_from_nhtsa_api(vin)
 
                 latest_vin_data = await fetch_latest_vin_data_func(vin)
 

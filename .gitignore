@@ -7,6 +7,8 @@ testing_sql_db/
 __pycache__/
 my_app_logs/
 
+sample.mp4
+
 # nodejs or reactjs app.
 node_modules
 
@@ -53,7 +55,7 @@ venv/
 # mac file system extension
 .DS_STORE
 
-# .gitignore
+.gitignore
 .gcloudignore
 .git
 

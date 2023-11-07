@@ -43,14 +43,15 @@ class LicensePlateSearchForm(forms.Form):
             # Use Div to create a Bootstrap grid structure for responsiveness
             Div(
                 Hidden('action', 'action_plate_search'),
-                Field('license_plate', wrapper_class='col-md-6'),
-                Field('state', wrapper_class='col-md-6 '),
+                Field('license_plate', wrapper_class='col-md-6 p-1 m-1'),
+                Field('state', wrapper_class='col-md-6 p-1 m-1'),
                 css_class='row'
             ),
             # You can add FormActions for better control over the submit button's placement and styling
             FormActions(
                 Submit('plate_search', 'Search',
-                       css_class='btn-outline-secondary', css_id='plate-search-button'),
+                       css_class='btn-outline-dark',
+                       css_id='plate-search-button'),
                 css_class='d-grid gap-2')
         )
 
@@ -123,7 +124,7 @@ class VINSearchForm(forms.Form):
             ),
 
             FormActions(
-                Submit('vin search', 'Search', css_class='btn-outline-secondary',
+                Submit('vin search', 'Search', css_class='btn-outline-dark',
                        css_id='vin-search-button'),
                 css_class='d-grid gap-2')
 

@@ -1,4 +1,5 @@
 
+from ultralytics import YOLO
 from django.shortcuts import render
 from os import listdir
 from we_have_ai_helpers.webscraper import scrape_and_download_pdfs
@@ -141,3 +142,9 @@ def return_simple_chatbot_response(request):
         print(f'getting reponse from openAI.com: {response}')
         return JsonResponse({"response": response})
     return JsonResponse({"error": "Only POST method allowed."})
+
+
+# creating a license plate recognition function that uses Ultranalytics, Yolov8, Python and EasyOCR
+# load model
+# coco_model = YOLO('yolo8n.pt')
+# license_palte_detector = YOLO('/')
