@@ -77,30 +77,59 @@ class TextMessagesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# class RepairOrderSerializer(serializers.ModelSerializer):
-#         repair_order_created_at = serializers.DateTimeField()
-#         class Meta:
-#             model = RepairOrdersNewSQL02Model
-#             fields = ['repair_order_new_uid_v01',
-#                       'repair_order_id',
-#                       'repair_order_created_as_estimate',
-#                     #   'repair_order_snapshot_order_total_amount',
-#                     #   'customer_first_name',
-#                     #   'customer_last_name',
-#                     #   'customer_middle_name',
-#                     # 'customer_dob',
-#                     #   'customer_is_deleted',
-#                     #   'customer_is_in_social_crm',
-#                     #   'customer_is_okay_to_charge',
-#                       'repair_order_created_at',
-#                      ]
-#         def to_representation(self, instance):
-#             representation = super().to_representation(instance) # representation is a data dictionary. "data" is often used as well.
-#             repair_order_created_at = instance.repair_order_created_at
+class RepairOrderSerializer(serializers.ModelSerializer):
+    repair_order_created_at = serializers.DateTimeField()
 
-#             if repair_order_created_at is not None:
-#                 representation['repair_order_created_at'] = timezone.make_aware(repair_order_created_at).isoformat()
-#             return representation
+    class Meta:
+        model = RepairOrdersNewSQL02Model
+        fields = "__all__"
+        # fields = ['repair_order_new_uid_v01',
+        #           'repair_order_id',
+        #           'repair_order_created_as_estimate',
+        #           'repair_order_customer',
+        #           'repair_order_vehicle',
+        #           'repair_order_phase'
+        #           #   'repair_order_snapshot_order_total_amount',
+        #           #   'customer_first_name',
+        #           #   'customer_last_name',
+        #           #   'customer_middle_name',
+        #           # 'customer_dob',
+        #           #   'customer_is_deleted',
+        #           #   'customer_is_in_social_crm',
+        #           #   'customer_is_okay_to_charge',
+        #           'repair_order_created_at',
+
+        #           ]
+        depth = 2
+
+    def to_representation(self, instance):
+        # representation is a data dictionary. "data" is often used as well.
+        representation = super().to_representation(instance)
+        repair_order_created_at = instance.repair_order_created_at
+
+        # Check if the datetime is naive before making it aware
+        if repair_order_created_at is not None:
+            if timezone.is_naive(repair_order_created_at):
+                repair_order_created_at = timezone.make_aware(
+                    repair_order_created_at)
+            representation['repair_order_created_at'] = repair_order_created_at.isoformat(
+            )
+        return representation
+
+    def validate(self, attrs):
+        # You can add custom validation here
+        return super().validate(attrs)
+
+    def create(self, validated_data):
+        # Custom logic for creation
+        return RepairOrdersNewSQL02Model.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        # Custom logic for updating
+        instance.field = validated_data.get('field', instance.field)
+        instance.save()
+        return instance
+
 
 class CustomerSerializer(serializers.ModelSerializer):
     # customer_dob = serializers.DateTimeField()
@@ -140,14 +169,21 @@ class LastestVinDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VinNhtsaApiSnapshots
-        fields = ['vin', 'flattened_data']
+        fields = ['id', 'vin', 'flattened_data', 'variable',  'value']
+        depth = 1
 
     def get_flattened_data(self, obj):
-        # Make sure to prefetch_related or select_related in the QuerySet if needed to optimize database queries
-        snapshots = obj.nhtsa_variable_ids.all()
-        return {
-            f"{snapshot.variable_name} (var_id:{snapshot.variable_id})": snapshot.value
-            for snapshot in snapshots
-        }
+        # Initialize an empty dictionary to store our flattened data
+        flattened_data = {}
 
-# views.py
+        # Access the related NhtsaVariableList object through the foreign key
+        variable = obj.variable
+
+        # Check if the variable exists and is not None
+        if variable:
+            # Use the attributes of the variable object as keys
+            # and the corresponding value from VinNhtsaApiSnapshots as the value
+            flattened_data[f"{variable.variable_name} (var_id:{variable.variable_id})"] = obj.value
+
+        # Return the flattened data
+        return flattened_data

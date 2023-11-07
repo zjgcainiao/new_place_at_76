@@ -223,6 +223,11 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+
+    # added to allow simpleJWTToken used between a React Native frontend and this application.
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
 
@@ -268,6 +273,8 @@ INSTALLED_APPS = [
     'shops',
     # added on 2023-10-18. provding dtc trouble codes reading..
     'smart_diagnosis',
+
+    'rest_framework_simplejwt',
 ]
 
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.
