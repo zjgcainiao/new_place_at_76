@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from google.oauth2 import service_account
 import os
 from dotenv import load_dotenv,  find_dotenv
@@ -21,7 +20,7 @@ import firebase_admin
 from firebase_admin import credentials
 from core_operations.log_filters import LocalTimezoneFilter
 import logging
-
+from datetime import timedelta
 
 logger = logging.getLogger("django")
 # The find_dotenv() function will search for the .env file starting from the current working directory and then going up each parent directory until it finds one.
@@ -225,10 +224,17 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
 
-    # added to allow simpleJWTToken used between a React Native frontend and this application.
+
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',  # default authentications
+        'rest_framework.authentication.SessionAuthentication',  # default authentications
+        # added to allow simpleJWTToken used between a React Native frontend and this application.
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
+}
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 # ALLOWED_HOSTS=[]

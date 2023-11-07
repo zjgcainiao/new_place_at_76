@@ -59,17 +59,6 @@ class WIPDashboardViewSet(viewsets.ReadOnlyModelViewSet):
 
         return qs
 
-    # def list(self, request, *args, **kwargs):
-    #     queryset = self.filter_queryset(self.get_queryset())
-
-    #     page = self.paginate_queryset(queryset)
-    #     if page is not set:
-    #         serializer = self.get_serializer(page, many=True)
-    #         return self.get_paginated_response(serializer.data)
-
-    #     serializer = self.get_serializer(queryset, many=True)
-    #     return Response(serializer.data)
-
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
@@ -90,6 +79,7 @@ class WIPDashboardViewSet(viewsets.ReadOnlyModelViewSet):
 
 class LastestVinDataViewSet(viewsets.ModelViewSet):
     serializer_class = LastestVinDataSerializer
+    permission_classes = [IsAuthenticated, IsInternalUser]
 
     def get_queryset(self):
         # Your queryset logic here...
@@ -128,6 +118,7 @@ class VinNhtsaApiSnapshotViewSet(viewsets.ModelViewSet):
 
 class ActiveRepairOrderViewSet(viewsets.ModelViewSet):
     serializer_class = RepairOrderSerializer
+    permission_classes = [IsAuthenticated, IsInternalUser]
 
     def get_queryset(self):
         qs = RepairOrdersNewSQL02Model.objects.filter(
@@ -147,6 +138,7 @@ class ActiveRepairOrderViewSet(viewsets.ModelViewSet):
 class LineItemsViewSet(viewsets.ModelViewSet):
 
     serializer_class = LineItemsSerializer
+    permission_classes = [IsAuthenticated, IsInternalUser]
 
     def get_queryset(self):
         return LineItemsNewSQL02Model.objects.prefetch_related(

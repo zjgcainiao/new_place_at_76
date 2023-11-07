@@ -83,23 +83,6 @@ class RepairOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = RepairOrdersNewSQL02Model
         fields = "__all__"
-        # fields = ['repair_order_new_uid_v01',
-        #           'repair_order_id',
-        #           'repair_order_created_as_estimate',
-        #           'repair_order_customer',
-        #           'repair_order_vehicle',
-        #           'repair_order_phase'
-        #           #   'repair_order_snapshot_order_total_amount',
-        #           #   'customer_first_name',
-        #           #   'customer_last_name',
-        #           #   'customer_middle_name',
-        #           # 'customer_dob',
-        #           #   'customer_is_deleted',
-        #           #   'customer_is_in_social_crm',
-        #           #   'customer_is_okay_to_charge',
-        #           'repair_order_created_at',
-
-        #           ]
         depth = 2
 
     def to_representation(self, instance):
@@ -137,20 +120,11 @@ class CustomerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomersNewSQL02Model
-        fields = ['customer_new_uid_v01',
-
-                  'customer_first_name',
-                  'customer_last_name',
-                  'customer_middle_name',
-                  # 'customer_dob',
-                  'customer_is_deleted',
-                  'customer_is_in_social_crm',
-                  'customer_is_okay_to_charge',
-                  'customer_created_at',
-                  ]
+        fields = ["__all__"]
+        depth = 2
 
     def get_full_name(self, instance):
-        return f"{instance.first_name} {instance.last_name}"
+        return f"{instance.cust_first_name} {instance.cust_last_name}"
 
     # The to_representation method is used to transform the data into a format that will be used in the serialized output. In this case, it is taking the customer_created_at date and transforming it into an ISO fo
 
@@ -183,7 +157,7 @@ class LastestVinDataSerializer(serializers.ModelSerializer):
         if variable:
             # Use the attributes of the variable object as keys
             # and the corresponding value from VinNhtsaApiSnapshots as the value
-            flattened_data[f"{variable.variable_name} (var_id:{variable.variable_id})"] = obj.value
+            flattened_data[f"{variable.variable_name} (id:{variable.variable_id})"] = obj.value
 
         # Return the flattened data
         return flattened_data
