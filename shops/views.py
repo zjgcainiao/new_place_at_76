@@ -9,6 +9,7 @@ from apis.utilities import fetch_and_save_single_vin_from_nhtsa_api, fetch_singl
 from django.db import models
 from asgiref.sync import sync_to_async
 from dashboard.async_functions import fetch_latest_vin_data_from_snapshots, database_sync_to_async
+from apis.utilities import fetch_latest_vin_data_func
 import stripe
 import logging
 import json
@@ -149,7 +150,14 @@ async def search_by_vin_or_plate(request):
 
                 # Fetch the latest vin from VinNhtsaApiSnapshots model
 
-                latest_vin_data = await fetch_latest_vin_data_from_snapshots(vin)
+                latest_vin_data = await fetch_latest_vin_data_func(vin)
+
+                # if not latest_vin_data:
+                #     print(
+                #         f'no vin {vin} in the database..searching against our vendor apis..')
+                #     await fetch_and_save_single_vin_from_nhtsa_api(vin)
+
+                # latest_vin_data = await fetch_latest_vin_data_from_snapshots(vin)
 
                 # Convert to list of dictionaries if it's a QuerySet
                 if isinstance(latest_vin_data, QuerySet):

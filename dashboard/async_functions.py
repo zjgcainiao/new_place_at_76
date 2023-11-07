@@ -8,6 +8,8 @@ from django.db import close_old_connections, DatabaseError, IntegrityError
 from homepageapp.models import LicensePlateSnapShotsPlate2Vin
 from homepageapp.models import VinNhtsaApiSnapshots, NhtsaVariableList
 from core_operations.constants import POPULAR_NHTSA_VARIABLE_IDS, POPULAR_NHTSA_GROUP_NAMES
+# from apis.utilities import fetch_and_save_single_vin_from_nhtsa_api
+from asgiref.sync import sync_to_async
 # from core_operations.common_functions import clean_string_in_dictionary_object
 # import logging
 
@@ -75,15 +77,19 @@ def update_or_create_vin_snapshots_async(vin, variable, data):
     )
 
 
-@database_sync_to_async
-def fetch_latest_vin_data_from_snapshots(vin, group_names_list=POPULAR_NHTSA_GROUP_NAMES):
+async def fetch_latest_vin_data_from_snapshots(vin, group_names_list=POPULAR_NHTSA_GROUP_NAMES):
     # List of variable IDs to filter
     variable_ids_list = POPULAR_NHTSA_VARIABLE_IDS
 
     print('running async function `fetch_latest_vin_data_from_snapshots(vin)` to fetch vin info. pouplar fields only ')
 
+    if not sync_to_async(VinNhtsaApiSnapshots.objects.filter(vin=vin).exists, thread_sensitive=True)():
+        # VIN does not exist, so fetch and save the VIN data
+        # Ensure the fetch_and_save_single_vin_from_nhtsa_api is an async function or properly awaited if using sync_to_async
+        # await fetch_and_save_single_vin_from_nhtsa_api(vin)
+        pass
 # Include a join on the related NhtsaVariableList table and filter on the variable_group_name
-    return VinNhtsaApiSnapshots.objects.filter(
+    return sync_to_async(VinNhtsaApiSnapshots.objects.filter)(
         vin=vin,
         version=5,
         variable__variable_id__in=variable_ids_list,

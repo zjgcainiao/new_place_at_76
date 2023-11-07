@@ -11,6 +11,10 @@ import aiohttp
 import asyncio
 from django.core.exceptions import ObjectDoesNotExist
 from dashboard.async_functions import database_sync_to_async, fetch_latest_vin_data_from_snapshots
+from core_operations.constants import POPULAR_NHTSA_VARIABLE_IDS, POPULAR_NHTSA_GROUP_NAMES
+from asgiref.sync import sync_to_async
+
+# API utility function. modified in Dec 2023.
 
 
 async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
@@ -120,13 +124,12 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
                 vin_data_list.append(vin_data)
 
         logger.info(
-            f'Vin data has been saved for {vin} and model year {year}. Created?:{created}.')
-        logger.info(
-            f'Vin data has been saved for {vin} and model year {year}. Created?:{created}.')
+            f'Vin data has been saved for {vin} and model year {year}. created?:{created}.')
+
         if created:
-            print(f'saving new vin data? {created}?')
+            print(f'saving new vin data? : {created}.')
         else:
-            print('no new vin data saved.')
+            print('no new vin data saved...')
 
         print('function is completed.')
         # return the data, the number of records downgraded, and if new records are created in the VinNhtsaSnapshots
@@ -237,3 +240,40 @@ async def fetch_single_plate_data_via_plate2vin_api(license_plate, state, api_ur
                     }
                 )
             return plate_data, success
+
+
+# Define a synchronous function to get the QuerySet of VinNhtsaApiSnapshots (vin_data).
+# the function is created to be used in async fetch_latest_vin_data_func()
+def get_vin_snapshot_queryset(vin, variable_ids_list=POPULAR_NHTSA_VARIABLE_IDS, group_names_list=POPULAR_NHTSA_GROUP_NAMES):
+    return VinNhtsaApiSnapshots.objects.filter(
+        vin=vin,
+        version=5,
+        variable__variable_id__in=variable_ids_list,
+        variable__variable_group_name__in=group_names_list,
+    ).select_related('variable').order_by('-created_at', 'vin', 'variable')
+
+
+async def fetch_latest_vin_data_func(vin, variable_ids_list=POPULAR_NHTSA_VARIABLE_IDS, group_names_list=POPULAR_NHTSA_GROUP_NAMES):
+
+    logger = logging.getLogger('external_api')
+
+    # List of variable IDs to filter
+    variable_ids_list = POPULAR_NHTSA_VARIABLE_IDS
+
+    print('initiating async function `fetch_latest_vin_data_func` to fetch vin info. pouplar fields only. ')
+
+    # Convert the synchronous exists() call to an async call using sync_to_async and await it
+    vin_exists = await sync_to_async(VinNhtsaApiSnapshots.objects.filter(vin=vin).exists, thread_sensitive=True)()
+    logger.info(f'checking if vin {vin} records exist in database...')
+    print(f'checking if vin {vin} records exist in database...')
+    if not vin_exists:
+        # VIN does not exist, so fetch and save the VIN data
+        # Ensure the fetch_and_save_single_vin_from_nhtsa_api is an async function or properly awaited if using sync_to_async
+        await fetch_and_save_single_vin_from_nhtsa_api(vin)
+
+    # Includes a join on the related NhtsaVariableList table and filter on the variable_group_name
+    # Now retrieve the filtered records asynchronously
+    queryset = await sync_to_async(
+        get_vin_snapshot_queryset, thread_sensitive=True)(vin)
+
+    return queryset
