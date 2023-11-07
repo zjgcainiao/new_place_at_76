@@ -102,6 +102,7 @@ pycosat==0.6.3
 pycparser==2.21
 PyDispatcher==2.0.5
 PyJWT==2.7.0
+pytesseract==0.3.10
 pyodbc==4.0.39
 pyparsing==3.1.0
 PyQt5-sip==12.11.0

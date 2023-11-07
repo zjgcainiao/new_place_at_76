@@ -131,6 +131,7 @@ async def search_by_vin_or_plate(request):
     # AJAX POST request handling
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest' and 'action' in request.POST:
         action_value = request.POST['action']
+        # defined in forms.py
         if action_value == 'action_vin_search':
             vin_form = VINSearchForm(request.POST)
             print(f'user is submitting vin_form....')

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from homepageapp.models import CustomersNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsNewSQL02Model, TextMessagesModel
 from homepageapp.models import AddressesNewSQL02Model, PhonesNewSQL02Model, EmailsNewSQL02Model, CustomersNewSQL02Model, PhoneDescModel, PaymentsModel
-from homepageapp.models import VinNhtsaApiSnapshots
+from homepageapp.models import VinNhtsaApiSnapshots, LicensePlateSnapShotsPlate2Vin
 from django.utils import timezone
 
 
@@ -49,19 +49,6 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = ['customer_first_name', 'customer_last_name',
                   'addresses', 'phones', 'emails',
                   # 'payment_customers',
-                  ]
-
-
-class RepairOrderSerializer(serializers.ModelSerializer):
-    repair_order_customer = CustomerSerializer(read_only=True)
-    # payment_repairorders = PaymentSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = RepairOrdersNewSQL02Model
-        fields = ['repair_order_id', 'repair_order_service_status', 'repair_order_customer',
-                  'repair_order_snapshot_order_total_amount',
-                  'repair_order_last_updated_at',
-                  # 'payment_repairorders'
                   ]
 
 
@@ -132,9 +119,12 @@ class CustomerSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         customer_created_at = instance.customer_created_at
 
+        # Check if the datetime is naive before making it aware
         if customer_created_at is not None:
-            representation['customer_created_at'] = timezone.make_aware(
-                customer_created_at).isoformat()
+            if timezone.is_naive(customer_created_at):
+                customer_created_at = timezone.make_aware(
+                    customer_created_at)
+            representation['customer_created_at'] = customer_created_at.isoformat()
         return representation
 
 
@@ -161,3 +151,10 @@ class LastestVinDataSerializer(serializers.ModelSerializer):
 
         # Return the flattened data
         return flattened_data
+
+
+class PlateDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LicensePlateSnapShotsPlate2Vin
+        fields = ['__all__']
+        depth = 1

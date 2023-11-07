@@ -279,7 +279,8 @@ INSTALLED_APPS = [
     'shops',
     # added on 2023-10-18. provding dtc trouble codes reading..
     'smart_diagnosis',
-
+    # token authentication provied by Django Rest framework.
+    'rest_framework.authtoken',
     'rest_framework_simplejwt',
 ]
 
