@@ -26,10 +26,10 @@ class Ticket(models.Model):
     description_additional = models.JSONField(null=True, blank=True)
     is_customer_anonymous = models.BooleanField(default=False)
     customer = models.ForeignKey(
-        CustomerUser, related_name='tickets', on_delete=models.DO_NOTHING, related_name='customer_tickets')
+        CustomerUser,  on_delete=models.DO_NOTHING, related_name='tickets')
     operator = models.ForeignKey(
-        Operator, related_name='assigned_tickets',
-        null=True, blank=True, on_delete=models.DO_NOTHING, related_name='operator_tickets')
+        Operator,
+        null=True, blank=True, on_delete=models.DO_NOTHING, related_name='assigned_tickets')
     status = models.CharField(
         max_length=10, choices=STATUS_CHOICES, default='new')
     created_at = models.DateTimeField(auto_now_add=True)

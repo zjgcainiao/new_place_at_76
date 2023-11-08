@@ -244,6 +244,8 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())
 INSTALLED_APPS = [
     'django.contrib.admin',
     # "prolube76site.apps.MyAdminConfig",
+    'daphne',  # added for django-channel. # 2023-11-08
+    'channels',  # added for django-channel. # 2023-11-08
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',  # allow sessions
@@ -282,6 +284,7 @@ INSTALLED_APPS = [
     # token authentication provied by Django Rest framework.
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'CRMs',  # CRMs app
 ]
 
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.
@@ -357,11 +360,14 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 # added channel layer for the human operator's converation app (in CRMs app).
 # 2023-11-08
 
+# Use channels to manage ASGI
+ASGI_APPLICATION = 'prolube76site.routing.application'
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
+            "hosts": [("localhost", 6379)],  # 127.0.0.1
         },
     },
 }

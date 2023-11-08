@@ -9,7 +9,7 @@ from CRMs.models import Operator, Ticket
 def ticket_dashboard(request):
     operator = request.user.operator
     assigned_tickets = operator.assigned_tickets.filter(status='assigned')
-    return render(request, 'tickets/80_ticket_dash.html', {'tickets': assigned_tickets})
+    return render(request, 'CRMs/80_ticket_dash.html', {'tickets': assigned_tickets})
 
 # allow
 
@@ -20,4 +20,4 @@ def update_ticket_status(request, ticket_id):
         ticket.status = request.POST['status']
         ticket.save()
         # Further logic here, e.g., sending updates to the customer
-    return redirect('crms:ticket_dash')
+    return redirect('CRMs:ticket_dash')
