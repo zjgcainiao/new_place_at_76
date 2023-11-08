@@ -361,7 +361,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 # 2023-11-08
 
 # Use channels to manage ASGI
-ASGI_APPLICATION = 'prolube76site.routing.application'
+ASGI_APPLICATION = 'prolube76site.asgi.application'
 
 CHANNEL_LAYERS = {
     "default": {

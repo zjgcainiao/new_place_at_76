@@ -14,11 +14,9 @@ node_modules
 
 # exclude .vite folder inside dashboard_react
 dashboard_react/.vite/*
-.vite
+*/.vite/
 
-management/
-management/commands/*
-commands
+*/management/
 
 bin
 conda-meta
