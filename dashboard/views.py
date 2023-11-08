@@ -2,6 +2,7 @@
 # 2023-04-02 created to display the index page of the main workstation page.
 # representing a modern version of old mitchell1 dashboard
 # WIP, search, etc.
+from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required

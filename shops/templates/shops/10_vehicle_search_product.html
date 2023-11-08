@@ -344,7 +344,7 @@ $(document).ready(function() {
 
             // Iterate over the object, skipping null values
             Object.entries(response).forEach(function([key, value]) {
-                if (value !== null) { // Check if value is not null
+                if (value !== null && value !== undefined) { // Check if value is not null
                 // Create a table row with two columns: one for the key and one for the value
                 const tr = $('<tr>');
                 tr.append($('<td>').text(key));
@@ -361,10 +361,10 @@ $(document).ready(function() {
 
 
         },
-        error: function(xhr, textStatus, errorThrown) {
-            console.log(xhr.responseText); // Log the error so you can inspect the response
-            $('#vinDataDisplay').html('<p>An error has occurred: ' + errorThrown + '</p>');
-        }
+        error: function(xhr, status, error) {
+            // Handle errors here, such as displaying a message to the user
+            $('#vinDataDisplay').html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+        },
         });
     });
 

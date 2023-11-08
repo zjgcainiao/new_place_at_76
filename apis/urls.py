@@ -1,7 +1,7 @@
 from django.urls import include, path
 from apis import views
 from rest_framework.routers import DefaultRouter
-from apis.views import ActiveRepairOrderViewSet, LineItemsViewSet, TextMessagesViewSet, api_internal_user_login, VinNhtsaApiSnapshotViewSet
+from apis.views import ActiveRepairOrderViewSet, LineItemsViewSet, TextMessagesViewSet, api_internal_user_login, VinNhtsaApiSnapshotViewSet, openai_proxy
 from apis import views
 
 from django.urls import path
@@ -39,6 +39,8 @@ urlpatterns = [
          name='repairorders-api'),
     # path('apis/repairorders', views.RepairOrderModelForm, name='api-repair-order'),
 
+    # offer openai proxy for api access in react native app VinDoctor
+    path('api/openai_proxy/', openai_proxy, name='openai_proxy'),
 
     # verify simpleJWTToken
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

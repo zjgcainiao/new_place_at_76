@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.views.decorators.http import require_http_methods
 import logging
 import aiohttp
 import asyncio
@@ -22,10 +24,10 @@ from internal_users.internal_user_auth_backend import InternalUserBackend
 from apis.serializers import AddressSerializer, PhoneSerializer, EmailSerializer, CustomerSerializer, RepairOrderSerializer, PaymentSerializer, LastestVinDataSerializer
 from homepageapp.models import VinNhtsaApiSnapshots
 from core_operations.models import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
-
+import os
 from django.core.exceptions import ObjectDoesNotExist
 from core_operations.constants import POPULAR_NHTSA_VARIABLE_IDS, POPULAR_NHTSA_GROUP_NAMES
-
+import requests
 
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -88,6 +90,7 @@ class LastestVinDataViewSet(viewsets.ModelViewSet):
 
 class VinNhtsaApiSnapshotViewSet(viewsets.ModelViewSet):
     serializer_class = LastestVinDataSerializer
+    permission_classes = [IsAuthenticated, IsInternalUser]
 
     def get_queryset(self):
         # List of variable IDs to filter. imported from core_operations.constants
@@ -254,3 +257,28 @@ def api_internal_user_login(request):
     else:
         # Unauthorized sattus code.
         return JsonResponse({'error': 'Invalid login details.'}, status=401)
+
+
+@csrf_exempt  # Disable CSRF token for this view
+@require_http_methods(["POST"])  # Only allow POST requests to this endpoint
+def openai_proxy(request):
+    # Extract the data from the incoming POST request
+    data = request.POST or request.data
+    headers = {
+        'Authorization': f'Bearer {settings.OPENAI_API_KEY2}',
+        'Content-Type': 'application/json',
+    }
+
+    try:
+        # Forward the request to OpenAI API
+        response = requests.post(
+            'https://api.openai.com/v1/engines/davinci-codex/completions',
+            json=data,
+            headers=headers
+        )
+        response.raise_for_status()
+        # Return the response from OpenAI API
+        return JsonResponse(response.json())
+    except requests.exceptions.RequestException as e:
+        # Handle any errors that occur during the request to OpenAI API
+        return JsonResponse({'error': str(e)}, status=502)  # Proxy Error

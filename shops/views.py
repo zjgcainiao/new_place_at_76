@@ -154,34 +154,23 @@ async def search_by_vin_or_plate(request):
 
                 latest_vin_data = await fetch_latest_vin_data_func(vin)
 
-                # if not latest_vin_data:
-                #     print(
-                #         f'no vin {vin} in the database..searching against our vendor apis..')
-                #     await fetch_and_save_single_vin_from_nhtsa_api(vin)
-
-                # latest_vin_data = await fetch_latest_vin_data_from_snapshots(vin)
-
                 # Convert to list of dictionaries if it's a QuerySet
                 if isinstance(latest_vin_data, QuerySet):
                     latest_vin_data = await database_sync_to_async(list)(latest_vin_data.values())
 
                 # save a copy into request.session. aysnc
                 # await set_session_data(request, 'latest_vin_data', latest_vin_data)
-
+                flattened_data['vin'] = vin
                 flattened_data = {
                     f"{item['variable_name']} (var_id:{item['variable_id']})": item['value']
                     for item in latest_vin_data
                 }
                 # Assuming 'vin' is the VIN you're interested in
-                flattened_data['vin'] = vin
-                # print(f'here is the flattened data: {flattened_data}')
-                # flattened_data = json.dumps(flattened_data, indent=4)
-                # print(f'printing out flattened vin data.222...')
-                # print(flattened_data)
+
                 return JsonResponse(flattened_data, safe=False)
 
         elif action_value == 'action_plate_search':
-            plate_form = VINSearchForm(request.POST)
+            plate_form = LicensePlateSearchForm(request.POST)
             if plate_form.is_valid():
                 license_plate = plate_form.cleaned_data['license_plate']
                 state = plate_form.cleaned_data['state'].upper(
