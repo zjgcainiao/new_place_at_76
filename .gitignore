@@ -53,7 +53,7 @@ venv/
 # mac file system extension
 .DS_STORE
 
-.gitignore
+# .gitignore
 .gcloudignore
 .git
 
