@@ -150,23 +150,4 @@ def return_simple_chatbot_response(request):
 # coco_model = YOLO('yolo8n.pt')
 # license_palte_detector = YOLO('/')
 
-def assign_ticket_to_operator(ticket):
-    available_operator = Operator.objects.filter(is_available=True).first()
-    if available_operator:
-        ticket.operator = available_operator
-        ticket.status = 'assigned'
-        ticket.save()
-        notify_operator(available_operator)
-        # Set the operator to unavailable if your logic requires it
-        # available_operator.is_available = False
-        # available_operator.save()
-    else:
-        # Handle case when no operators are available
-        pass
 
-
-def create_ticket(customer_user, **kwargs):
-    ticket = Ticket(customer=customer_user, **kwargs)
-    ticket.save()
-    assign_ticket_to_operator(ticket)
-    return ticket

@@ -5,6 +5,25 @@ from customer_users.models import CustomerUser
 from internal_users.models import InternalUser
 
 
+# class ChatWindow(models.Model):
+#     uuid = models.UUIDField(primary_key=True)
+#     name = models.CharField(max_length=128)
+#     online = models.ManyToManyField(to=CustomerUser, blank=True)
+
+#     def get_online_count(self):
+#         return self.online.count()
+
+#     def join(self, user):
+#         self.online.add(user)
+#         self.save()
+
+#     def leave(self, user):
+#         self.online.remove(user)
+#         self.save()
+
+#     def __str__(self):
+#         return f'{self.name} ({self.get_online_count()})'
+
 class Operator(models.Model):
     id = models.AutoField(primary_key=True)
     internal_user = models.OneToOneField(

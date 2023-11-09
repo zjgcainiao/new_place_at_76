@@ -7,7 +7,8 @@ urlpatterns = [
     path('ticket_dash/<int:ticket_id>/',
          views.ticket_detail, name='ticket_detail'),
 
-    # create a submit_ticket view function in views.py
+    # create a submit_ticket view function in views.py for me.
+    
     path('submit_ticket/', views.submit_ticket, name='submit_ticket').
     path('update_ticket/', views.update_ticket_status, name='update_ticket'),
 ]

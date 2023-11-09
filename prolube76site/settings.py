@@ -65,6 +65,10 @@ LOGGING = {
         },
     },
     'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
         'django_file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
@@ -132,38 +136,38 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['django_file'],
+            'handlers': ['console', 'django_file'],
             'level': 'INFO',
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['request_file'],
+            'handlers': ['console', 'request_file'],
             'level': 'ERROR',
             'propagate': False,
         },
         'django.db': {
-            'handlers': ['db_file'],
+            'handlers': ['console', 'db_file'],
             'level': 'WARNING',
             'propagate': False,
         },
         'django.security': {  # Logger for customer_users and internal_users and all future user types
-            'handlers': ['security_file'],
+            'handlers': ['console', 'security_file'],
             'level': 'WARNING',
             'propagate': False,
         },
         'talent_management': {  # the name of your custom app `talent_management`
-            'handlers': ['app_file'],
+            'handlers': ['console', 'app_file'],
             'level': 'DEBUG',
             'propagate': False,
         },
         'external_api': {  # Logger for external API interactions
-            'handlers': ['external_api_file'],
+            'handlers': ['console', 'external_api_file'],
             'level': 'INFO',
             'propagate': False,
         },
 
         'management_script': {  # Logger for management scripts
-            'handlers': ['management_script_file'],
+            'handlers': ['console', 'management_script_file'],
             'level': 'DEBUG',
             'propagate': False,
         },
@@ -171,7 +175,7 @@ LOGGING = {
 }
 # 2023-10-24 added OpenAI_API_key and OpenAI_API_key 2
 OPENAI_API_KEY = config("OPENAI_API_KEY")
-OPENAI_API_KEY2 = config("OPENAI_API_KEY2")
+OPENAI_API_KEY2 = config("OPENAI_API_KEY2",default=OPENAI_API_KEY)
 if OPENAI_API_KEY2:
     logger.info("there is no openai api key found during Django setting launch.")
 
