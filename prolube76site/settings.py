@@ -250,8 +250,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())
 INSTALLED_APPS = [
     'django.contrib.admin',
     # "prolube76site.apps.MyAdminConfig",
-    'daphne',  # added for django-channel. # 2023-11-08
-    'channels',  # added for django-channel. # 2023-11-08
+
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',  # allow sessions
@@ -291,6 +290,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'CRMs',  # CRMs app
+    'daphne',  # added for django-channel. # 2023-11-08
+    'channels',  # added for django-channel. # 2023-11-08
 ]
 
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.
