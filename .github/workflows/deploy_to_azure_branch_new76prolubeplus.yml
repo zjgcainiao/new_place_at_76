@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v3
         with:
-          python-version: '3.9'
+          python-version: "3.9"
 
       - name: Create and start virtual environment
         run: |
@@ -28,10 +28,13 @@ jobs:
           source venv/bin/activate
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
-        
+        run: |
+          pip install -r requirements.txt
+
+        # pip install channels daphne
+
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
-      
+
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v3
         with:
@@ -44,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'Production'
+      name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -53,11 +56,12 @@ jobs:
         with:
           name: python-app
           path: .
-          
-      - name: 'Deploy to Azure Web App'
+
+      - name: "Deploy to Azure Web App"
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
-          app-name: 'new76prolubeplus'
-          slot-name: 'Production'
+          app-name: "new76prolubeplus"
+          slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7B703D38E6054DADB338CCC4205B749C }}
+          startup-command: "daphne -b 0.0.0.0 -p 8000 prolube76site.asgi:application"
