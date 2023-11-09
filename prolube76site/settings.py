@@ -391,9 +391,10 @@ CHANNEL_LAYERS = {
         "CONFIG": {
             "hosts": [(
                 REDIS_HOST,
-                REDIS_PORT
+                REDIS_PORT,
             )],
             # "ssl": REDIS_USE_SSL,
+            # 'password': REDIS_PASSWORD,
         },
     },
 }
