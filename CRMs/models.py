@@ -49,7 +49,7 @@ class OperatorNotification(models.Model):
 
 
 class Conversation(models.Model):
-    uuid = models.UUIDField(primary_key=True)
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     conversation_name = models.CharField(max_length=128)
     operator = models.ForeignKey(Operator, on_delete=models.DO_NOTHING, 
                                  null=True, blank=True, 

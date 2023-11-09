@@ -27,4 +27,5 @@ urlpatterns = [
     # added on 2023-05-26. 3d model creating app.
     path('3dmodels/', include('we_create_3d_models.urls')),
     path('aihelpers/', include('we_have_ai_helpers.urls')),
+    path('crms/', include('CRMs.urls')),
 ]
