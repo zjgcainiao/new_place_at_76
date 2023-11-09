@@ -1,0 +1,50 @@
+<div class="card card-hover border">
+    <h4 class="card-header">Customer Support Conversation</h4>
+    <div class="card-body">
+
+        <textarea id="conversation-log" cols="100" rows="50"></textarea>
+        <br>
+        <input id="conversation-message-input" type="text" size="100">
+        <br>
+        <input id="conversation-message-submit" type="button" value="Send">
+    </div>
+
+</div>
+<!-- this line of code is outputting the room_name variable as JSON inside a script tag with the id of "conversation-uide". This can then be used in your JavaScript code. -->
+    {{ conversation_uid|json_script:"conversation-uid" }}
+    <script>
+        const conversationUid = JSON.parse(document.getElementById('conversation-uid').textContent);
+
+        const conversationSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/conversations/'
+            + conversationUid
+            + '/'
+        );
+
+        conversationSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.querySelector('#conversation-log').value += (data.message + '\n');
+        };
+
+        conversationSocket.onclose = function(e) {
+            console.error('Customer Support Conversation socket was closed unexpectedly.');
+        };
+
+        document.querySelector('#conversation-message-input').focus();
+        document.querySelector('#conversation-message-input').onkeyup = function(e) {
+            if (e.key === 'Enter') {  // enter, return
+                document.querySelector('#conversation-message-submit').click();
+            }
+        };
+
+        document.querySelector('#conversation-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#conversation-message-input');
+            const conversation_message = messageInputDom.value;
+            conversationSocket.send(JSON.stringify({
+                'conversation_message': conversation_message
+            }));
+            messageInputDom.value = '';
+        };
+    </script>

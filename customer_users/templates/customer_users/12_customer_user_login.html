@@ -25,6 +25,22 @@
       </div>
     </div>
     <!-- end of d-flex  -->
+
+    <style>
+      .support-button {
+        position: fixed;
+        bottom: 0;
+        right: 2rem;
+        margin: 20px;
+      }
+    </style>
+    <div class="support-button my-1">
+      <button class="toggle-button" onclick="toggleSupport()">Support</button>
+      <div class="support-window">
+        {% include 'CRMs/10_conversation.html' %}
+      </div>
+    </div>
+
 </div>
 <!-- custom css style that makes the login form looks metal and glossy. -->
 <style>
