@@ -12,8 +12,6 @@ def ticket_dashboard(request):
     return render(request, 'CRMs/80_ticket_dash.html', {'tickets': assigned_tickets})
 
 # allow
-
-
 def update_ticket_status(request, ticket_id):
     if 'status' in request.POST:
         ticket = Ticket.objects.get(id=ticket_id)

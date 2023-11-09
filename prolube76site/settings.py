@@ -175,7 +175,7 @@ LOGGING = {
 }
 # 2023-10-24 added OpenAI_API_key and OpenAI_API_key 2
 OPENAI_API_KEY = config("OPENAI_API_KEY")
-OPENAI_API_KEY2 = config("OPENAI_API_KEY2")
+OPENAI_API_KEY2 = config("OPENAI_API_KEY2", default=OPENAI_API_KEY)
 if OPENAI_API_KEY2:
     logger.info("there is no openai api key found during Django setting launch.")
 
