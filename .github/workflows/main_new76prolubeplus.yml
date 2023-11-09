@@ -75,4 +75,4 @@ jobs:
           app-name: "new76prolubeplus"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D24551A996B5446DAD20FD4CC5190E13 }}
-          startup-command: "daphne -b 0.0.0.0 -p 8000 new76prolubeplus.asgi:application"
+          startup-command: "daphne -b 0.0.0.0 -p 8000 prolube76site.asgi:application"
