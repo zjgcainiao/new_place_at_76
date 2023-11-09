@@ -327,7 +327,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'prolube76site.wsgi.application'
+# WSGI_APPLICATION = 'prolube76site.wsgi.application'
 
 # 2023-04-01 add a custom internal_users app to manage the future employees.
 AUTH_USER_MODEL = 'internal_users.InternalUser'
@@ -363,14 +363,48 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 # Use channels to manage ASGI
 ASGI_APPLICATION = 'prolube76site.asgi.application'
 
+
+# Use os.getenv to get environment variables
+# 'REDIS_HOST' and 'REDIS_PORT' can be set to 'localhost' and '6379' respectively in your local .env file
+# For production, set them to your Azure Redis Cache instance details
+USE_LOCAL_REDIS = config("USE_LOCAL_REDIS", default=False, cast=bool)
+if USE_LOCAL_REDIS:
+    REDIS_HOST = config("LOCAL_REDIS_HOST", default='localhost')
+    REDIS_PORT = config("LOCAL_REDIS_PORT", default=6379, cast=int)  # default to 6379 on local redis server (run `redis-server`)
+    REDIS_PASSWORD = config('LOCAL_REDIS_PASSWORD', default=None)
+    REDIS_USE_SSL = config('LOCAL_REDIS_USE_SSL', default=False, cast=bool)
+else:
+    REDIS_HOST = config('REDIS_HOST', default='localhost')
+    REDIS_PORT = config('REDIS_PORT', default=6379, cast=int)
+    REDIS_PASSWORD = config('REDIS_PASSWORD', default=None)
+    REDIS_USE_SSL = config('REDIS_USE_SSL', default=False, cast=bool)
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],  # 127.0.0.1
+            "hosts": [(
+                REDIS_HOST,
+                REDIS_PORT
+            )],
+            "ssl": REDIS_USE_SSL,
         },
     },
 }
+
+# If REDIS_PASSWORD is set, add it to the configuration
+if REDIS_PASSWORD:
+    CHANNEL_LAYERS["default"]["CONFIG"]["password"] = REDIS_PASSWORD
+
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("localhost", 6379)],  # 127.0.0.1
+#         },
+#     },
+# }
 
 # added so that when a user login from 127.0.0.1/users/login, he will be re-directed to 'dashboard/'.
 # controlled by dashboard app. the main core app that do the lineitems and etc.

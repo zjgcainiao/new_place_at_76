@@ -52,7 +52,7 @@ jobs:
           name: python-app
           path: |
             . 
-            !venv/
+            !myvenv/
 
   deploy:
     runs-on: ubuntu-latest
