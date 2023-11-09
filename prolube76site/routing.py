@@ -5,5 +5,6 @@ from prolube76site import consumers
 
 websocket_urlpatterns = [
     re_path(r'ws/notifications/$', consumers.NotificationConsumer.as_asgi()),
-    re_path(r'ws/chats/$', consumers.NotificationConsumer.as_asgi()),
+    re_path(r'ws/conversations/(?P<conversation_uid>\w+)/$',
+            consumers.ConversationConsumer.as_asgi()),
 ]

@@ -177,6 +177,8 @@ LOGGING = {
 OPENAI_API_KEY = config("OPENAI_API_KEY")
 OPENAI_API_KEY2 = config("OPENAI_API_KEY2", default=OPENAI_API_KEY)
 if OPENAI_API_KEY2:
+    logger.info("loading openai api key succesfully.")
+else:
     logger.info("there is no openai api key found during Django setting launch.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -391,14 +393,14 @@ CHANNEL_LAYERS = {
                 REDIS_HOST,
                 REDIS_PORT
             )],
-            "ssl": REDIS_USE_SSL,
+            # "ssl": REDIS_USE_SSL,
         },
     },
 }
 
 # If REDIS_PASSWORD is set, add it to the configuration
-if REDIS_PASSWORD:
-    CHANNEL_LAYERS["default"]["CONFIG"]["password"] = REDIS_PASSWORD
+# if REDIS_PASSWORD:
+#     CHANNEL_LAYERS["default"]["CONFIG"]["password"] = REDIS_PASSWORD
 
 
 # CHANNEL_LAYERS = {
