@@ -265,7 +265,8 @@ INSTALLED_APPS = [
     # 'polls.apps.PollsConfig',
     'corsheaders',
     'homepageapp',
-    'appointments',
+    'appointments.apps.AppointmentsConfig',
+
     'apis',  # adding the apis.
     'internal_users',
     'customer_users',

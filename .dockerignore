@@ -1,0 +1,62 @@
+# exclude assets/ folder and /static folder and their contents from uploading to github.
+dist/
+assets/
+static/
+migrations/
+testing_sql_db/
+__pycache__/
+my_app_logs/
+.Python
+sample.mp4
+
+# nodejs or reactjs app.
+node_modules
+
+# exclude .vite folder inside dashboard_react
+dashboard_react/.vite/*
+*/.vite/
+
+*/management/
+lib64/
+bin
+conda-meta
+etc
+lib
+man
+sbin
+share
+ssl
+include
+
+/nginx/
+# The leading slash / ensures that Git will only ignore the nginx directory at the root of your repository, 
+# and not any other nginx directories that might exist elsewhere in your repository.
+# Ignore the local DB
+db.sqlite3
+
+.vscode
+.pytest_cache/
+
+.ipynb_checkpoints
+.condatmp
+*.ipynb
+*.pyc
+
+myenv/
+env/
+venv/
+
+.env
+.env copy
+.env*
+
+# mac file system extension
+.DS_STORE
+
+# .gitignore
+.gcloudignore
+.git
+
+# to exclude any .log files and .pid files
+*.log
+*.pid
