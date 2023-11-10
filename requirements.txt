@@ -43,7 +43,7 @@ easyocr==1.7.1
 et-xmlfile==1.1.0
 Faker==19.6.2
 filelock==3.12.2
-filterpy==1.4.5
+# filterpy==1.4.5
 firebase-admin==6.2.0
 frozenlist==1.4.0
 google-api-core==2.11.0
@@ -90,7 +90,7 @@ pandas==2.0.2
 patsy==0.5.2
 pep8==1.7.1
 phonenumbers==8.13.11
-Pillow==9.2.0
+# Pillow==9.2.0
 platformdirs==2.6.2
 pluggy==1.2.0
 ply==3.11
@@ -131,7 +131,7 @@ stripe==7.0.0
 social-auth-app-django==5.2.0
 social-auth-core==4.4.2
 sqlparse==0.4.3
-tenacity==8.2.3
+# tenacity==8.2.3
 # tk==0.1.0
 tomli==2.0.1
 toolz==0.12.0
@@ -148,7 +148,7 @@ whitenoise==6.4.0
 # wxPython==4.2.0
 xhtml2pdf==0.2.11
 yarl==1.9.2
-yfinance==0.2.31
+# yfinance==0.2.31
 zict==2.1.0
 zipp==3.16.1
 # zope.interface==6.0
