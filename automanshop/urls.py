@@ -1,4 +1,4 @@
-"""prolube76site URL Configuration
+"""Automanshop URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/
@@ -8,7 +8,7 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 from django.contrib import admin
 from django.urls import include, path
 # from internal_users.admin import my_admin_site
-app_name = 'prolube76site'
+app_name = 'automanshop'
 urlpatterns = [
     path('', include('homepageapp.urls')),
     path('talents/', include('talent_management.urls')),

@@ -1,5 +1,7 @@
 """
-ASGI config for automanshopp project.
+ASGI config for automanshopp project. 
+
+Updated: 2023-11-09
 
 It exposes the ASGI callable as a module-level variable named `application`.
 
@@ -13,8 +15,6 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 import os
 from django.core.asgi import get_asgi_application
 from django.urls import re_path
-# from prolube76site import consumers
-# from prolube76site.routing import websocket_urlpatterns
 from automanshop import consumers
 from automanshop.routing import websocket_urlpatterns
 
