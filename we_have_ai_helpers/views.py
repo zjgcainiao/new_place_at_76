@@ -1,5 +1,5 @@
 
-from ultralytics import YOLO
+# from ultralytics import YOLO
 from django.shortcuts import render
 from os import listdir
 from we_have_ai_helpers.webscraper import scrape_and_download_pdfs
