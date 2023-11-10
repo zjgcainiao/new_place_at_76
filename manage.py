@@ -6,8 +6,8 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    # changed it from prolube76site.settings to config.settings
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'prolube76site.settings')
+    # changed it from automanshop.settings (old name: prolube76site.settings) to config.settings
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'automanshop.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
