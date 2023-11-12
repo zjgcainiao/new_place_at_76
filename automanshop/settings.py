@@ -501,7 +501,7 @@ local_server = config("DB_SERVER", default=False)
 
 
 if local_server:
-    print(f'Using local sql server:{server}...')
+    print(f'Using local sql server:{local_server}...')
     # load the environment variables
     # user = config("DB_USER")
     try:
