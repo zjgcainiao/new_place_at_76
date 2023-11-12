@@ -497,18 +497,31 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 # use the django-mssql-backend
 # 2022-07-04- hide sensitivie environemnt variables such as the database url and login info.
 
-server = config("DB_SERVER", default=False)
-az_server = config("AZURE_DB_SERVER", default=False)
+local_server = config("DB_SERVER", default=False)
 
-if server:
+
+if local_server:
+    print(f'Using local sql server:{server}...')
     # load the environment variables
     # user = config("DB_USER")
-    user = config("DB_APP_USR")
-    # password = config("DB_PASSWORD")
-    password = config("DB_APP_USER_PASSWORD")
-    databaseName = config("DB_DATABASE1")
-    demoDatabaseName = config("DEMO_DB_DATABASE_NAME")
-    # print('using the DB_SERVER database')
+    try:
+        user = config("DB_APP_USR")
+        # password = config("DB_PASSWORD")
+        password = config("DB_APP_USER_PASSWORD")
+        databaseName = config("DB_DATABASE1") # AutomanDB01
+        demoDatabaseName = config("DEMO_DB_DATABASE_NAME") # DemoDB01
+    except FileNotFoundError as e:
+        print(f"Error: The specified file was not found: {e}")
+    except requests.exceptions.RequestException as e:
+        print(f"Error: A network error occurred while attempting to download the credential file: {e}")
+    except json.JSONDecodeError as e:
+        print(f"Error: The credential file could not be parsed as JSON: {e}")
+    except (KeyError, ValueError) as e:
+        print(f"Error: The credential file is missing required information: {e}")
+    except Exception as e:
+        print(f"Error: An unexpected error occurred: {e}")
+        # handle the error here
+        # print('using the DB_SERVER database')
 
     # use the Microsoft provided MSSQL DRIVER for Django
     DATABASES = {
@@ -517,7 +530,7 @@ if server:
             "NAME": databaseName,
             "USER": user,
             "PASSWORD": password,
-            "HOST": server,
+            "HOST": local_server,
             "PORT": "",
             "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  # "ODBC Driver 18 for SQL Server",
                         "extra_params": "TrustServerCertificate=yes;Encrypt=no;"
@@ -528,16 +541,17 @@ if server:
             "NAME": demoDatabaseName,
             "USER": user,
             "PASSWORD": password,
-            "HOST": server,
+            "HOST": local_server,
             "PORT": "",
             "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  # "ODBC Driver 18 for SQL Server",
                         "extra_params": "TrustServerCertificate=yes;Encrypt=no;"
                         },
         }
     }
-
-elif az_server:
-    print('Using Azure SQL DB.')
+# when local_server is not available, use the Azure SQL DB.
+else:
+    print('Using Azure SQL DB....')
+    az_server = config("AZURE_DB_SERVER", default=False)
     az_user = config("AZURE_DB_USER")
     az_password = config("AZURE_DB_PASSWORD")
     az_databaseName = config("AZURE_DB_DATABASE")

@@ -3,7 +3,15 @@ version: '3.8'
 services:
   web:
     build: .
-    command: daphne -b 0.0.0.0 -p 8000 automanshop.asgi:application
+    command:
+      [
+        "daphne",
+        "-b",
+        "0.0.0.0",
+        "-p",
+        "8000",
+        "automanshop.asgi:application"
+      ]
     volumes:
       - .:/app
     ports:
@@ -32,9 +40,11 @@ services:
       - DB_DATABASE1=${DB_DATABASE1}
       - DB_DATABASE2=${DB_DATABASE2}
       - DEMO_DB_DATABASE_NAME=${DEMO_DB_DATABASE_NAME}
+      - DB_SA_USER=${DB_SA_USER}
+      - DB_SA_USER_PASSWORD=${DB_SA_USER_PASSWORD}
       - DB_APP_USR=${DB_APP_USR}
       - DB_APP_USER_PASSWORD=${DB_APP_USER_PASSWORD}
-      - AZURE_DB_SERVER=${AZURE_DB_SERVER}
+      #- AZURE_DB_SERVER=${AZURE_DB_SERVER}
       - AZURE_DB_USER=${AZURE_DB_USER}
       - AZURE_DB_PORT=${AZURE_DB_PORT}
       - AZURE_DB_PASSWORD=${AZURE_DB_PASSWORD}
@@ -66,12 +76,13 @@ services:
     ports:
       - "1433:1433"
     environment:
-      - ACCEPT_EULA=1
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DB_SA_USER_PASSWORD}
       - DB_APP_USR=${DB_APP_USR}
       - DB_APP_USER_PASSWORD=${DB_APP_USER_PASSWORD}
-      - SA_PASSWORD=${AZURE_DB_PASSWORD}
-    volumes:
-      - sql_data:/var/opt/mssql
-      # Add other necessary environment variables for SQL Server
-volumes:
-  sql_data:
+
+#     volumes:
+#       - sql_data:/var/opt/mssql
+#       # Add other necessary environment variables for SQL Server
+# volumes:
+#   sql_data:
