@@ -40,7 +40,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 try:
-    SECRET_KEY = config("DJANO_SECRET_KEY")
+    SECRET_KEY = config("DJANGO_SECRET_KEY")
 except KeyError as e:
     raise RuntimeError(
         "Could not find a Django SECRET_KEY in the environment variables.") from e
@@ -380,13 +380,17 @@ ASGI_APPLICATION = 'automanshop.asgi.application'
 # 'REDIS_HOST' and 'REDIS_PORT' can be set to 'localhost' and '6379' respectively in your local .env file
 # For production, set them to your Azure Redis Cache instance details
 USE_LOCAL_REDIS = config("USE_LOCAL_REDIS", default=False, cast=bool)
+# REDIS server dockerized flag, default to False
+REIS_DOCKERIZED = config("REDOS_DOCKERIZED", default=False, cast=bool)
+REIS_DOCKERIZED_HOST = config("REDOS_DOCKERIZED_HOST", default='localhost')
+
 if USE_LOCAL_REDIS:
-    REDIS_HOST = config("LOCAL_REDIS_HOST", default='localhost')
+    REDIS_HOST = config("LOCAL_REDIS_HOST", default=REIS_DOCKERIZED_HOST)
     REDIS_PORT = config("LOCAL_REDIS_PORT", default=6379, cast=int)  # default to 6379 on local redis server (run `redis-server`)
     REDIS_PASSWORD = config('LOCAL_REDIS_PASSWORD', default=None)
     REDIS_USE_SSL = config('LOCAL_REDIS_USE_SSL', default=False, cast=bool)
 else:
-    REDIS_HOST = config('REDIS_HOST', default='localhost')
+    REDIS_HOST = config('REDIS_HOST', default=REIS_DOCKERIZED_HOST)
     REDIS_PORT = config('REDIS_PORT', default=6379, cast=int)
     REDIS_PASSWORD = config('REDIS_PASSWORD', default=None)
     REDIS_USE_SSL = config('REDIS_USE_SSL', default=False, cast=bool)
@@ -498,16 +502,20 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 # 2022-07-04- hide sensitivie environemnt variables such as the database url and login info.
 
 local_server = config("DB_SERVER", default=False)
-
+SQL_DOCKERIZED = config("SQL_DOCKERIZED", default=False, cast=bool)
 
 if local_server:
-    print(f'Using local sql server:{local_server}...')
+    if SQL_DOCKERIZED:
+        local_server = config("SQL_DOCKERIZED_HOST", default=None)
+        logger.info(f'Using dockerized sql server {local_server}...')
+    else:
+        logger.info(f'Using local sql server:{local_server}...')
+
     # load the environment variables
     # user = config("DB_USER")
     try:
-        user = config("DB_APP_USR")
-        # password = config("DB_PASSWORD")
-        password = config("DB_APP_USER_PASSWORD")
+        user = config("DB_SA_USER") # DB_APP_USER
+        password = config("DB_SA_USER_PASSWORD") # DB_APP_USER_PASSWORD
         databaseName = config("DB_DATABASE1") # AutomanDB01
         demoDatabaseName = config("DEMO_DB_DATABASE_NAME") # DemoDB01
     except FileNotFoundError as e:

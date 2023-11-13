@@ -18,12 +18,16 @@ RUN apt-get update && apt-get install -y gnupg2 unixodbc-dev curl apt-transport-
 # Install Microsoft ODBC Driver for SQL Server
 RUN curl https://packages.microsoft.com/keys/microsoft.asc |  tee /etc/apt/trusted.gpg.d/microsoft.asc
 # Replace 'debian_version' with the correct version number for your base image. debian_version can be 8, 9,10, 11, 12.
-# debian_version 11 works for native M1 chip build. if i need to build for platform other than M1 (windows amd64), change to debian_version 10.
-RUN curl https://packages.microsoft.com/config/debian/11/prod.list |  tee /etc/apt/sources.list.d/mssql-release.list
+# debian_version 11 works for native M1 chip build. if i need to build for platform , like (windows amd64), change to debian_version 10.
+RUN curl https://packages.microsoft.com/config/debian/10/prod.list |  tee /etc/apt/sources.list.d/mssql-release.list
 RUN apt-get update && apt-get upgrade -y
 RUN ACCEPT_EULA=Y apt-get install -y msodbcsql18 
 RUN ACCEPT_EULA=Y apt-get install -y mssql-tools18 
 RUN echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
+
+# install ping command, debian-version
+RUN apt-get update && apt-get install -y iputils-ping
+
 
 # Install Python dependencies
 COPY requirements.txt .

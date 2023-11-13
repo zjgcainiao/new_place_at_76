@@ -17,7 +17,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DJANO_SECRET_KEY=${DJANO_SECRET_KEY}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
       - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
       - DJANGO_DEBUG=${DJANGO_DEBUG}
       - DJANGO_PROD_ENV=${DJANGO_PROD_ENV}
@@ -35,6 +35,8 @@ services:
       - CLOUDSQL_DB_PASSWORD=${CLOUDSQL_DB_PASSWORD}
       - CLOUDSQL_DB_DATABASE1=${CLOUDSQL_DB_DATABASE1}
       - CLOUDSQL_DB_DATABASE2=${CLOUDSQL_DB_DATABASE2}
+      - SQL_DOCKERIZED=${SQL_DOCKERIZED}
+      - SQL_DOCKERIZED_HOST=${SQL_DOCKERIZED_HOST}
       - DB_SERVER=${DB_SERVER}
       - DB_PORT=${DB_PORT}
       - DB_DATABASE1=${DB_DATABASE1}
@@ -59,6 +61,8 @@ services:
       - STRIPE_SECRET_LIVE_KEY=${STRIPE_SECRET_LIVE_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_API_KEY2=${OPENAI_API_KEY2}
+      - REDIS_DOCKERIZED=${REDIS_DOCKERIZED}
+      - REDIS_DOCKERIZED_HOST=${REDIS_DOCKERIZED_HOST}
       - USE_LOCAL_REDIS=${USE_LOCAL_REDIS}
       - LOCAL_REDIS_HOST=${LOCAL_REDIS_HOST}
       - LOCAL_REDIS_PORT=${LOCAL_REDIS_PORT}
@@ -69,9 +73,15 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_USE_SSL=${REDIS_USE_SSL}
     depends_on:
-      - db
+      - sqldb
+      - redis
 
-  db:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  sqldb:
     image: mcr.microsoft.com/azure-sql-edge
     ports:
       - "1433:1433"
@@ -80,9 +90,10 @@ services:
       - MSSQL_SA_PASSWORD=${DB_SA_USER_PASSWORD}
       - DB_APP_USR=${DB_APP_USR}
       - DB_APP_USER_PASSWORD=${DB_APP_USER_PASSWORD}
+      # volumes:
+      # - sql_data:/var/opt/mssql
+      # - /Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/05_databases/sqldata:/var/opt/mssql
 
-#     volumes:
-#       - sql_data:/var/opt/mssql
-#       # Add other necessary environment variables for SQL Server
-# volumes:
-#   sql_data:
+      #       # Add other necessary environment variables for SQL Server
+      # volumes:
+      #   sql_data:
