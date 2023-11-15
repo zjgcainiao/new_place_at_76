@@ -4,8 +4,11 @@ assets/
 static/
 migrations/
 testing_sql_db/
+stripe-payment-react/
 __pycache__/
 my_app_logs/
+dashboard_react/
+str
 .Python
 sample.mp4
 
@@ -60,3 +63,4 @@ venv/
 # to exclude any .log files and .pid files
 *.log
 *.pid
+

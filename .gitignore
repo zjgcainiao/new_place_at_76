@@ -60,3 +60,12 @@ venv/
 # to exclude any .log files and .pid files
 *.log
 *.pid
+
+
+# to exclude secrets.yaml file
+web-secrets.yaml
+./*secrets.yml
+auto_gen_secrets.yaml
+*secrets.yaml
+
+managed-sql-instance.yaml

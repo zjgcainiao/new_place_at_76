@@ -2,12 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.31.2 (HEAD)
-  creationTimestamp: null
+    version: v1
+    description: 'use-2022-sql-server-image'
   labels:
     io.kompose.service: sqldb
-  name: sqldb
+  name: sqldb-deployment
 spec:
   ports:
     - name: "1433"

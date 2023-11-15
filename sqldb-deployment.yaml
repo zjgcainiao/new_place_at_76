@@ -2,9 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.31.2 (HEAD)
-  creationTimestamp: null
+    author: StephenWang
+    version: v1
   labels:
     io.kompose.service: sqldb
   name: sqldb
@@ -19,24 +18,68 @@ spec:
       annotations:
         kompose.cmd: kompose convert
         kompose.version: 1.31.2 (HEAD)
-      creationTimestamp: null
       labels:
-        io.kompose.network/new-76prolubepluscom-default: "true"
+        sql-in-container: "true"
         io.kompose.service: sqldb
     spec:
+      # terminationGracePeriodSeconds: 30
+      # hostname: mssqlinst
+      # securityContext:
+      #   fsGroup: 10001
       containers:
-        - env:
-            - name: ACCEPT_EULA
-              value: "Y"
-            - name: DB_APP_USER_PASSWORD
-            - name: DB_APP_USR
-            - name: MSSQL_SA_PASSWORD
-          image: mcr.microsoft.com/azure-sql-edge
-          name: sqldb
+        - name: sqldb
+          image: mcr.microsoft.com/mssql/server:2022-latest
+          resources:
+            requests:
+              memory: "2G"
+              cpu: "2000m"
+            limits:
+              memory: "2G"
+              cpu: "2000m"
           ports:
             - containerPort: 1433
               hostPort: 1433
               protocol: TCP
-          resources: {}
+          env:
+            - name: MSSQL_PID
+              value: "Developer"
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: MSSQL_SA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: MSSQL_SA_PASSWORD
+
+            - name: DB_APP_USR
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DB_APP_USR
+            - name: DB_APP_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DB_APP_USER_PASSWORD
+            - name: AZURE_DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: AZURE_DB_DATABASE
+            - name: AZURE_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: AZURE_DB_PASSWORD
+            - name: AZURE_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: AZURE_DB_PORT
+            - name: AZURE_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: AZURE_DB_USER
       restartPolicy: Always
-status: {}
+

@@ -1,34 +1,4 @@
-{% extends 'customer_users/00_customer_user_base.html' %}
-{% load crispy_forms_tags %}
-{% load static %}
-{% block content1-main %}
-<div class="bg-top-center">
-    <div class="d-flex align-items-center justify-content-center vh-100">
-      <div class="shadow-lg p-5 rounded">
-        <h3 class="mb-4 text-center">Hello there. Please sign in with your registered email.</h3>
-        <p class="mb-4 text-dark text-center">Register a new account <a href="{% url 'customer_users:customer_user_register' %}">here</a></p>
-        <form method="post"> 
-          <!--  id="customer_user_login_form" -->
-          {% csrf_token %}
-          {{form|crispy}}
-
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Login</button>
-          </div>
-        </form>
-
-
-        
-      </div>
-    </div>
-    <!-- end of d-flex  -->
-    
     <!-- 2023-11-08 added a customer support converation button  -->
-    {% comment %}
-    {% include 'customer_users/02_customer_user_support_conversation_ui.html' %}
-    {% endcomment %}
-
-
     <style>
       .support-button {
         position: fixed;
@@ -47,14 +17,14 @@
         display: none;
         position: fixed;
         bottom: 60px; /* Adjust depending on button size */
-        right: 10px;
+        right: 20px;
         border: 2px solid #666; /* More pronounced border */
-        box-shadow: 0px 0px 10px rgba(24, 24, 24, 0.2);
-        width: 500px; /* Adjust the width as needed */
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        width: 300px; /* Adjust the width as needed */
         z-index: 1000; /* Make sure it floats above other content */
         background-color: linear-gradient(315deg, #DADADA, #fff1f2); /* Background color for the window */
         box-sizing: border-box; /* Box sizing to ensure padding doesn't affect width */
-        padding: 5px; /* Padding inside the window */
+        padding: 15px; /* Padding inside the window */
         /* Additional responsive styles */
         max-width: 90%; /* Max width to ensure it doesn't get too wide on larger screens */
       }
@@ -88,11 +58,11 @@
 
     <form method="POST" id="new-support-conversation-form">
       {% csrf_token %}
-      <btn class="support-button" id="new_conversation_button" type="submit" value="Submit">
+      <button class="support-button" id="new_conversation_button" type="submit" value="Submit">
 
           <i class="support-icon fa fa-comments"></i>
     
-        </btn>
+        </button>
     </form>
   
     <div class="support-window" id="support_conversation_window">
@@ -100,8 +70,7 @@
     </div>
 
     <script>
-      // Function to handle debounce
-
+        // Function to handle debounce
       function debounce(func, wait, immediate) {
         var timeout;
         return function() {
@@ -171,6 +140,38 @@
               });
             }
             $('#new_conversation_button').click(debounce(handleNewConversationClick, 300));
+          // $('#new_conversation_button').click(function(event) {
+          //   event.preventDefault();
+          //   $('#loading-spinner-new-conversation').show(); // Show the spinner
+          //   var form = $('#new-support-conversation-form');
+          //   var csrfToken = form.find('[name=csrfmiddlewaretoken]').val(); // Fetch CSRF token from the form
+          //   $.ajax({
+          //       url: '/crms/new_conversation/',
+          //       type: 'POST',
+          //       data: JSON.stringify({}), // If you need to send data
+          //       contentType: 'application/json',
+          //       dataType: 'json',
+          //       headers: {
+          //           'X-Requested-With': 'XMLHttpRequest',
+          //           'X-CSRFToken': csrfToken // Include the CSRF token in the header
+          //       },
+          //       success: function(data) {
+          //         console.log('fetch data success.conversation uuid is: ', data.uuid);
+          //           if (data.uuid) {
+          //               conversation_uid = data.uuid;
+          //               // Render the conversation window with the received UUID
+          //               renderConversationWindow(conversation_uid);
+          //           }
+          //       },
+          //       error: function(xhr, status, error) {
+          //           console.error('Error:', error);
+          //       },
+          //       complete: function() {
+          //             $('#loading-spinner').hide(); // Hide the spinner once everything is loaded
+          //       },
+          //   });
+          // });
+          // end of .ajax() call 
       });
 
       function renderConversationWindow(uuid) {
@@ -181,12 +182,12 @@
         // Creating the HTML structure
         var conversationHtml = `  
               <div class="card card-hover border-5">
-                  <h4 class="card-header text-dark">Customer Support</h4>
-                  <p class="text-muted m-1 p-1">(Support-Case-ID:${uuid})</p>
-                  <div class="card-body m-1">
+                  <h4 class="card-header text-dark">Customer Support </h4>
+                  <p class="text-muted">(ID:${uuid})</p>
+                  <div class="card-body">
                       <textarea id="conversation-log" cols="40" rows="10" readonly></textarea><br>
-                      <input id="conversation-message-input" type="text" class="form-control mb-2" />
-                      <button class="btn btn-outline-dark btn-sm" id="conversation-message-submit" type="button">Send</button>
+                      <input id="conversation-message-input" type="text" class="form-control mb-3" />
+                      <button class="btn btn-outline-dark" id="conversation-message-submit" type="button">Send</button>
                   </div>
               </div>
             `;
@@ -250,73 +251,3 @@
         $('#conversation-message-input').focus();
       }
   </script>
-
-</div>
-<!-- custom css style that makes the login form looks metal and glossy. -->
-<style>
-  body, html {
-    height: 100%;
-    background: linear-gradient(145deg, #c4c3c3, #4b4b4b);
-  }
-
-  .shadow-lg {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  }
-
-  .bg-top-center {
-    background-color: #2f2f2f;
-    background-image: radial-gradient(at top center, #ffffff22, transparent);
-    color: white;
-  }
-
-  .rounded {
-    border-radius: 15px;
-    overflow: hidden; /* To make sure inner elements do not break the rounded corners */
-    background: linear-gradient(315deg, #DADADA, #fff1f2);
-    border: 1px solid #5a5a5a;
-    position: relative;
-  }
-
-  .rounded:before {
-    content: "";
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    bottom: -5px;
-    left: -5px;
-    z-index: -1;
-    background: linear-gradient(315deg, #ffffff44, #00000044);
-    border-radius: inherit;
-  }
-
-  .btn-primary {
-    background-color: #5a5a5a;
-    border: none;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-  }
-
-  .btn-primary:hover {
-    background-color: #747474;
-    transform: translateY(-2px);
-  }
-
-  .btn-primary:active {
-    background-color: #4d4d4d;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-    transform: translateY(1px);
-  }
-
-  .form-control {
-    background: transparent;
-    border: 1px solid #5a5a5a;
-    color: #FFA500;
-    transition: border 0.3s ease;
-  }
-
-  .form-control:focus {
-    border-color: #747474;
-    box-shadow: 0 0 5px rgba(116, 116, 116, 0.5);
-  }
-</style>
-{% endblock %}

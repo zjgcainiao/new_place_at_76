@@ -4,7 +4,7 @@ from celery import Celery
 # Set the default Django settings module for the 'celery' program.
 # similar to the setup in asgi.py
 
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'prolube76site.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'automanshop.settings')
 
 app = Celery('automanshop')
 

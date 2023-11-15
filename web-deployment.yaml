@@ -2,9 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.31.2 (HEAD)
-  creationTimestamp: null
+    version: v1
   labels:
     io.kompose.service: web
   name: web
@@ -20,87 +18,306 @@ spec:
       annotations:
         kompose.cmd: kompose convert
         kompose.version: 1.31.2 (HEAD)
-      creationTimestamp: null
       labels:
         io.kompose.network/new-76prolubepluscom-default: "true"
         io.kompose.service: web
     spec:
       containers:
-        - args:
+        - image: docker.io/web:amd64 #automanshopdocker.azurecr.io/web:amd64
+          # v1 - m1 chip. amd64- windows
+          name: web
+
+          env:
+            - name: ACME_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: ACME_API_TOKEN
+            - name: ALLOWED_HOSTS
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: ALLOWED_HOSTS
+            - name: AZURE_DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: AZURE_DB_DATABASE
+            - name: AZURE_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: AZURE_DB_PASSWORD
+            - name: AZURE_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: AZURE_DB_PORT
+            - name: AZURE_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: AZURE_DB_USER
+            - name: CLOUDSQL_DB_DATABASE1
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key:  CLOUDSQL_DB_DATABASE1
+            - name: CLOUDSQL_DB_DATABASE2
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: CLOUDSQL_DB_DATABASE2
+            - name: CLOUDSQL_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: CLOUDSQL_DB_PASSWORD
+            - name: CLOUDSQL_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: CLOUDSQL_DB_PORT
+            - name: CLOUDSQL_DB_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: CLOUDSQL_DB_SERVER
+            - name: CLOUDSQL_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: CLOUDSQL_DB_USER
+            - name: CSRF_TRUSTED_ORIGINS
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: CSRF_TRUSTED_ORIGINS
+            - name: DB_APP_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DB_APP_USER_PASSWORD
+            - name: DB_APP_USR
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DB_APP_USR
+            - name: DB_DATABASE1
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DB_DATABASE1
+            - name: DB_DATABASE2
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DB_DATABASE2
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DB_PORT
+            - name: DB_SA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DB_SA_USER
+            - name: DB_SA_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DB_SA_USER_PASSWORD
+            - name: DB_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DB_SERVER
+            - name: DEMO_DB_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DEMO_DB_DATABASE_NAME
+            - name: DJANGO_DEBUG
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DJANGO_DEBUG
+            - name: DJANGO_PROD_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DJANGO_PROD_ENV
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DJANGO_SECRET_KEY
+            - name: DJANGO_SETTINGS_MODULE
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: DJANGO_SETTINGS_MODULE
+            - name: EAB_HMAC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: EAB_HMAC_KEY
+            - name: EAB_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: EAB_KEY_ID
+            - name: EMAIL_SENDER
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: EMAIL_SENDER
+            - name: EMAIL_SENDER_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: EMAIL_SENDER_PWD
+            - name: EMAIL_VERIFICATION_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: EMAIL_VERIFICATION_API_KEY
+            - name: GOOGLE_CREDENTIAL_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: GOOGLE_CREDENTIAL_PATH
+            - name: LOCAL_REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: LOCAL_REDIS_HOST
+            - name: LOCAL_REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: LOCAL_REDIS_PASSWORD
+            - name: LOCAL_REDIS_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: LOCAL_REDIS_PORT
+            - name: LOCAL_REDIS_USE_SSL
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: LOCAL_REDIS_USE_SSL
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: OPENAI_API_KEY
+            - name: OPENAI_API_KEY2
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: OPENAI_API_KEY2
+            - name: PLATE2VIN_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: PLATE2VIN_API_KEY
+            - name: RECAPTCHA_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: RECAPTCHA_PRIVATE_KEY
+            - name: RECAPTCHA_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: RECAPTCHA_PUBLIC_KEY
+            - name: REDIS_DOCKERIZED
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: REDIS_DOCKERIZED
+            - name: REDIS_DOCKERIZED_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: REDIS_DOCKERIZED_HOST
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: REDIS_HOST
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: REDIS_PASSWORD
+            - name: REDIS_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: REDIS_PORT
+
+            - name: SQL_DOCKERIZED
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: SQL_DOCKERIZED
+            - name: SQL_DOCKERIZED_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: SQL_DOCKERIZED_HOST
+            - name: STRIPE_PUBLIC_LIVE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: STRIPE_PUBLIC_LIVE_KEY
+            - name: STRIPE_PUBLIC_TEST_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: STRIPE_PUBLIC_TEST_KEY
+            - name: STRIPE_SECRET_LIVE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: STRIPE_SECRET_LIVE_KEY
+            - name: STRIPE_SECRET_TEST_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: STRIPE_SECRET_TEST_KEY
+            - name: USE_LOCAL_REDIS
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: USE_LOCAL_REDIS
+          ports:
+            - containerPort: 8000
+              hostPort: 8000
+              protocol: TCP
+          args:
             - daphne
             - -b
             - 0.0.0.0
             - -p
             - "8000"
             - automanshop.asgi:application
-          env:
-            - name: ACME_API_TOKEN
-            - name: ALLOWED_HOSTS
-            - name: AZURE_DB_DATABASE
-            - name: AZURE_DB_PASSWORD
-            - name: AZURE_DB_PORT
-            - name: AZURE_DB_USER
-            - name: CLOUDSQL_DB_DATABASE1
-            - name: CLOUDSQL_DB_DATABASE2
-            - name: CLOUDSQL_DB_PASSWORD
-            - name: CLOUDSQL_DB_PORT
-            - name: CLOUDSQL_DB_SERVER
-            - name: CLOUDSQL_DB_USER
-            - name: CSRF_TRUSTED_ORIGINS
-            - name: DB_APP_USER_PASSWORD
-            - name: DB_APP_USR
-            - name: DB_DATABASE1
-            - name: DB_DATABASE2
-            - name: DB_PORT
-            - name: DB_SA_USER
-            - name: DB_SA_USER_PASSWORD
-            - name: DB_SERVER
-            - name: DEMO_DB_DATABASE_NAME
-            - name: DJANGO_DEBUG
-            - name: DJANGO_PROD_ENV
-            - name: DJANGO_SECRET_KEY
-            - name: DJANGO_SETTINGS_MODULE
-            - name: EAB_HMAC_KEY
-            - name: EAB_KEY_ID
-            - name: EMAIL_SENDER
-            - name: EMAIL_SENDER_PWD
-            - name: EMAIL_VERIFICATION_API_KEY
-            - name: GOOGLE_CREDENTIAL_PATH
-            - name: LOCAL_REDIS_HOST
-            - name: LOCAL_REDIS_PASSWORD
-            - name: LOCAL_REDIS_PORT
-            - name: LOCAL_REDIS_USE_SSL
-            - name: OPENAI_API_KEY
-            - name: OPENAI_API_KEY2
-            - name: PLATE2VIN_API_KEY
-            - name: RECAPTCHA_PRIVATE_KEY
-            - name: RECAPTCHA_PUBLIC_KEY
-            - name: REDIS_DOCKERIZED
-            - name: REDIS_DOCKERIZED_HOST
-            - name: REDIS_HOST
-            - name: REDIS_PASSWORD
-            - name: REDIS_PORT
-            - name: REDIS_USE_SSL
-            - name: SQL_DOCKERIZED
-            - name: SQL_DOCKERIZED_HOST
-            - name: STRIPE_PUBLIC_LIVE_KEY
-            - name: STRIPE_PUBLIC_TEST_KEY
-            - name: STRIPE_SECRET_LIVE_KEY
-            - name: STRIPE_SECRET_TEST_KEY
-            - name: USE_LOCAL_REDIS
-          image: web
-          name: web
-          ports:
-            - containerPort: 8000
-              hostPort: 8000
-              protocol: TCP
-          resources: {}
-          volumeMounts:
-            - mountPath: /app
-              name: web-claim0
-      restartPolicy: Always
-      volumes:
-        - name: web-claim0
-          persistentVolumeClaim:
-            claimName: web-claim0
+          resources: 
+            requests:
+              memory: "128Mi"
+              cpu: "500m"
+            limits:
+              memory: "256Mi"
+              cpu: "1000m"
+      #     volumeMounts:
+      #       - mountPath: /app
+      #         name: web-claim0
+      # restartPolicy: Always
+      # volumes:
+      #   - name: web-claim0
+      #     persistentVolumeClaim:
+      #       claimName: web-claim0
 status: {}

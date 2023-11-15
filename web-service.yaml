@@ -2,13 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    kompose.cmd: kompose convert
+    author: "Stephen-Wang-@info@76prolubeplus.com"
     kompose.version: 1.31.2 (HEAD)
-  creationTimestamp: null
   labels:
     io.kompose.service: web
   name: web
 spec:
+  type: LoadBalancer
   ports:
     - name: "8000"
       port: 8000

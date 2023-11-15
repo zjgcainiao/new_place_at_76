@@ -187,7 +187,8 @@ else:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
-
+DJANGO_PROD_ENV = config("DJANGO_PROD_ENV", default=True, cast=bool)
+logger.info(f'Django debug has been set to {DEBUG}...Enable Production environment is {DJANGO_PROD_ENV}...')
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',  # or the domain where your React app is hosted
@@ -384,11 +385,13 @@ USE_LOCAL_REDIS = config("USE_LOCAL_REDIS", default=False, cast=bool)
 REIS_DOCKERIZED = config("REDOS_DOCKERIZED", default=False, cast=bool)
 REIS_DOCKERIZED_HOST = config("REDOS_DOCKERIZED_HOST", default='localhost')
 
-if USE_LOCAL_REDIS:
+if USE_LOCAL_REDIS and not DJANGO_PROD_ENV:
+
     REDIS_HOST = config("LOCAL_REDIS_HOST", default=REIS_DOCKERIZED_HOST)
     REDIS_PORT = config("LOCAL_REDIS_PORT", default=6379, cast=int)  # default to 6379 on local redis server (run `redis-server`)
     REDIS_PASSWORD = config('LOCAL_REDIS_PASSWORD', default=None)
     REDIS_USE_SSL = config('LOCAL_REDIS_USE_SSL', default=False, cast=bool)
+    logger.info(f'using local redis server...{REDIS_HOST}...')
 else:
     REDIS_HOST = config('REDIS_HOST', default=REIS_DOCKERIZED_HOST)
     REDIS_PORT = config('REDIS_PORT', default=6379, cast=int)
@@ -504,7 +507,7 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 local_server = config("DB_SERVER", default=False)
 SQL_DOCKERIZED = config("SQL_DOCKERIZED", default=False, cast=bool)
 
-if local_server:
+if local_server and (not DJANGO_PROD_ENV):
     if SQL_DOCKERIZED:
         local_server = config("SQL_DOCKERIZED_HOST", default=None)
         logger.info(f'Using dockerized sql server {local_server}...')
@@ -558,11 +561,15 @@ if local_server:
     }
 # when local_server is not available, use the Azure SQL DB.
 else:
-    print('Using Azure SQL DB....')
+    logger.info('Using Azure SQL DB....')
     az_server = config("AZURE_DB_SERVER", default=False)
     az_user = config("AZURE_DB_USER")
     az_password = config("AZURE_DB_PASSWORD")
     az_databaseName = config("AZURE_DB_DATABASE")
+    logger.info('the azure db server:database is: {}:{}...'.format(az_server, az_databaseName))
+   
+    # added on 2023-11-13
+
     DATABASES = {
         "default": {
             "ENGINE": "mssql",
@@ -636,3 +643,8 @@ STATIC_ROOT = BASE_DIR / 'assets'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+from core_operations.utilies import test_db_connection  # Adjust the import based on your file structure
+
+# Test the database connection
+test_db_connection()
