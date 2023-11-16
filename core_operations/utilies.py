@@ -9,8 +9,8 @@ def test_db_connection():
         db_conn = connections['default']
         db_conn.cursor()
     except OperationalError:
-        logger.exception("Unable to connect to the database.")
+        logger.exception("Unable to connect to the application used database.")
         return False
     else:
-        logger.info("Database connection successful.")
+        logger.info("Django Database connection successful.")
         return True

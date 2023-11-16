@@ -23,13 +23,13 @@ https://cdn.jsdelivr.net/npm/popover@2.4.1/popover.min.css
         //     }
         // };
 
-        document.querySelector('#support-conversation-submit').onclick = function(e) {
-            var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/chat/' + roomName + '/';
-        };
+        // document.querySelector('#support-conversation-submit').onclick = function(e) {
+        //     var roomName = document.querySelector('#conversation-name-input').value;
+        //     window.location.pathname = '/conversations/' + roomName + '/';
+        // };
     </script>
 </div>
-<div class="container">
+<div class="container m-1 p-1">
     <div class="card card-hover border-5">
         <h4 class="card-header text-dark">Customer Support Conversation</h4>
         <div class="card-body">
@@ -47,10 +47,14 @@ https://cdn.jsdelivr.net/npm/popover@2.4.1/popover.min.css
 </div>
 
     <script>
+        document.querySelector('#support-conversation-submit').onclick = function(e) {
+            var roomName = document.querySelector('#conversation-name-input').value;
+            window.location.pathname = '/conversations/' + roomName + '/';
+        };
         const conversationUid = JSON.parse(document.getElementById('conversation-uid').textContent);
-
+        const ws_scheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
         const conversationSocket = new WebSocket(
-            'ws://'
+            ws_scheme 
             + window.location.host
             + '/ws/conversations/'
             + conversationUid

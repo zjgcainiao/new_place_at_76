@@ -72,7 +72,7 @@ class ConversationConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.conversation_group_name,
             {
-                'type': 'conversation_message',
+                'type': 'SUPPORT_CONVERSATION_MESSAGE',
                 'conversation_message': conversation_message,
                 'message_direction': message_direction,  # Assuming this is obtained appropriately
             }

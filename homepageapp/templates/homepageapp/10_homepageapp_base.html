@@ -135,13 +135,18 @@
     <!-- Main Theme Styles css-->
     <link rel="stylesheet" media="screen" href="{% static 'homepageapp/css/theme.min.css' %}">
 
-    <!-- css style added for the toggle button defined below   -->
+    <!-- Automan theme css  -->
+    <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
+
+
+<!-- 
+
     <style>
       .navbar-toggle-icon-mdi {
       font-size: 24px;  /* Adjust as needed */
       vertical-align: middle;  /* Center the icon vertically */
         }
-    </style>    
+    </style>     -->
 
 
 <meta name="csrf-token" content="{{ csrf_token }}">
@@ -163,8 +168,8 @@
       <!-- navbar navbar-expand-lg navbar-light bg-light -->
       <header class="navbar navbar-expand-lg navbar-light fixed-top" data-scroll-header="">
         <div class="container">
-          <a class="navbar-brand me-1 me-xl-4" href="{% url 'homepageapp:homepage' %}">
-          <img class="d-block" src="{% static '/homepageapp/2022-logo-transparent-small.png' %}" width="70" alt="Amazing Automan LLC"></a>
+          <a class="automan-navbar-brand me-1 me-xl-4" href="{% url 'homepageapp:homepage' %}">
+          <img class="d-block" src="{% static '/homepageapp/2022-logo-transparent-small.png' %}" width="68" alt="Amazing Automan LLC"></a>
           <!-- toggle button  -->
           <button class="navbar-toggler btn-dark ms-auto collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="mdi mdi-apps navbar-toggle-icon-mdi"></span>
@@ -221,8 +226,6 @@
       This is the main block.
      {% endblock %}
 
-     
-
     </main>
     {% include 'homepageapp/11_homepageapp_footer.html' %}
     {% comment %}
@@ -230,7 +233,7 @@
     {% endcomment %}
 
     
-    <div id="chatbotUI" class="card card-hover position-fixed bottom-0 end-0 m-3" style="display:none; max-width: 300px; z-index:1000;">
+    <div id="chatbotUI" class="card card-hover position-fixed bottom-0 end-0 m-3 p-2" style="display:none; max-width: 450px; z-index:1000;">
       <div class="card-header bg-secondary">
           <span class="float-end" id="closeChatbot" style="cursor:pointer;">
             <i class="fas fa-times"></i>
@@ -240,42 +243,32 @@
 
       </div>
        <!-- assign csrf_token into the card-body  -->
-        <div class="card-body" id='chatbotCardBody' data-csrf-token="{{ csrf_token }}">
-            
+        <form class="card-body m-1 p-1" id='chatbotCardBody' data-csrf-token="{{ csrf_token }}" method="POST">
+            {% csrf_token %}
             <textarea id="userInput" class="form-control" type="text" value=""></textarea>
-            <button id="askButton" class="btn btn-primary btn-sm mt-3">Ask</button>
+            <button id="askButton" class="btn btn-primary btn-sm mt-3"><i class=" fi-send fs-base me-2"></i>Send</button>
             <div id="botResponse"  class="mt-2">
-              <div id="loadingMessage" class="tex-bold" style="display:none;">Hmmm...Let me think...</div>
+              <div id="loadingMessage" class="text-bold" style="display:none;">Hmmm...Let me think...</div>
             </div>
-        </div>
+        </form>
     </div>
 
-    <!-- Button to enable chatbot -->
-    <button id="enableChatbot" class="btn btn-outline-success btn-sm position-fixed bottom-0 end-0 m-2 fab-icon" style="z-index: 1000;"  aria-label="Talk to Pulido">
-        <i class="fas fa-robot"></i> 
-    </button>
+<!-- Button to enable chatbot -->
+<!-- pendint to extra styling  -->
+
+<button id="enableChatbot" class="btn btn-outline-success btn-sm position-fixed automan-chatbot-toggle-button bottom-0 end-0 m-3 p-1 fab-icon" style="z-index: 1000; margin-bottom: 20px; margin-right: 20px;" aria-label="Talk to Virtual Assistant Pulido">
+    <i class="fas fa-robot"></i> 
+</button>
+
 
     <!-- 2023-10-24; style for the fab-icon used in the Chatbot  -->
     <!-- css modifed in 2023-10-28  -->
     <style>
-      /* #botResponse {
-          font-family: 'Roboto', sans-serif;
-          padding: 10px;
-          border: 1px solid #ddd;
-          border-radius: 5px;
-          background-color: #f7f7f7;
-          max-width: 300px;
-          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-      }
-
-      #botResponse p {
-          margin: 0;
-          padding: 0;
-      } */
-
+      
       #loadingMessage {
           font-weight: 400;
-          color: #666;
+          font-family: 'Roboto', sans-serif;
+          color: #5b5858;
           font-style: italic;
       }
 
@@ -307,17 +300,33 @@
     }
 </style>
     <script>
-      const getCSRFTokenViaCardBody = () => $('#chatbotCardBody').data('csrf-token');
+
 
       $(document).ready(function(){
 
-          $(document).on('click', '#enableChatbot', function() {
+          $('#enableChatbot').on('click', function() {
               $("#chatbotUI").show();
               $(this).hide();
           });
-          var chatbotEndpoint = "{% url 'we_have_ai_helpers:chatbot_response' %}";
-          $("#askButton").on("click",function(){
 
+          var chatbotEndpoint = "{% url 'we_have_ai_helpers:chatbot_response' %}";
+
+          $("#askButton").on("click",function(e){
+              e.preventDefault();
+              const getCSRFTokenViaCardBody = () => $('#chatbotCardBody').data('csrf-token');
+              let token = getCSRFTokenViaCardBody();
+              if (!token) {
+                console.log("fetching csrfToken with cardBody is not none...try out fetching from meta.");
+                token = getCSRFTokenViaMeta();
+              }
+              if (!token) {
+
+                token = getCookie("csrftoken");
+              }
+              if (!token) {
+                console.log("Error - CSRF token not found in the card body or meta tag.");
+                return;
+              }
               // Disable the "Ask" button to display multiple requests being sent
               $(this).prop('disabled', true);
 
@@ -334,6 +343,7 @@
                       "X-CSRFToken":  getCSRFTokenViaCardBody(), //getCookie("csrftoken")
                   },
                   success: function(data) {
+                      console.log("Success - bot response is : ", data.response);
 
                       $("#botResponse").text(data.response);
                        $('#loadingMessage').hide();
@@ -353,7 +363,6 @@
               });
           });
           // end of askButton 
-
 
           $("#closeChatbot").on('click', function() {
               $("#chatbotUI").hide();

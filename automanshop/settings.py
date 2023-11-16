@@ -25,6 +25,7 @@ from firebase_admin import credentials
 from core_operations.log_filters import LocalTimezoneFilter
 import logging
 from datetime import timedelta
+import re
 
 logger = logging.getLogger("django")
 # The find_dotenv() function will search for the .env file starting from the current working directory and then going up each parent directory until it finds one.
@@ -382,10 +383,10 @@ ASGI_APPLICATION = 'automanshop.asgi.application'
 # For production, set them to your Azure Redis Cache instance details
 USE_LOCAL_REDIS = config("USE_LOCAL_REDIS", default=False, cast=bool)
 # REDIS server dockerized flag, default to False
-REIS_DOCKERIZED = config("REDOS_DOCKERIZED", default=False, cast=bool)
-REIS_DOCKERIZED_HOST = config("REDOS_DOCKERIZED_HOST", default='localhost')
+REIS_DOCKERIZED = config("REDIS_DOCKERIZED", default=False, cast=bool)
+REIS_DOCKERIZED_HOST = config("REDIS_DOCKERIZED_HOST", default='localhost')
 
-if USE_LOCAL_REDIS and not DJANGO_PROD_ENV:
+if USE_LOCAL_REDIS and (not DJANGO_PROD_ENV):
 
     REDIS_HOST = config("LOCAL_REDIS_HOST", default=REIS_DOCKERIZED_HOST)
     REDIS_PORT = config("LOCAL_REDIS_PORT", default=6379, cast=int)  # default to 6379 on local redis server (run `redis-server`)
@@ -393,28 +394,38 @@ if USE_LOCAL_REDIS and not DJANGO_PROD_ENV:
     REDIS_USE_SSL = config('LOCAL_REDIS_USE_SSL', default=False, cast=bool)
     logger.info(f'using local redis server...{REDIS_HOST}...')
 else:
+    
     REDIS_HOST = config('REDIS_HOST', default=REIS_DOCKERIZED_HOST)
     REDIS_PORT = config('REDIS_PORT', default=6379, cast=int)
     REDIS_PASSWORD = config('REDIS_PASSWORD', default=None)
     REDIS_USE_SSL = config('REDIS_USE_SSL', default=False, cast=bool)
-
+    logger.info(f'using redis server...{REDIS_HOST}...')
+    
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(
-                REDIS_HOST,
-                REDIS_PORT,
-            )],
-            # "ssl": REDIS_USE_SSL,
-            # 'password': REDIS_PASSWORD,
+            "hosts":[
+                ('rediss://:{password}@{host}:{port}'.format(
+                    password=REDIS_PASSWORD,
+                    host=REDIS_HOST,
+                    ssl=True,
+                    port=6380)
+                ),
+
+            ],
+            "channel_capacity": {
+                "http.request": 200,
+                "http.response!*": 10,
+                re.compile(r"^websocket.send\!.+"): 20,
+            }
         },
     },
 }
 
 # If REDIS_PASSWORD is set, add it to the configuration
 # if REDIS_PASSWORD:
-#     CHANNEL_LAYERS["default"]["CONFIG"]["password"] = REDIS_PASSWORD
+#     CHANNEL_LAYERS["default"]["CONFIG"]["hosts"].append(REDIS_PASSWORD)
 
 
 # CHANNEL_LAYERS = {
@@ -638,6 +649,14 @@ STATIC_URL = 'https://storage.googleapis.com/{}/static_files/'.format(
 
 STATIC_ROOT = BASE_DIR / 'assets'
 
+# DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+# STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+
+# AZURE_ACCOUNT_NAME = 'your_account_name'
+# AZURE_ACCOUNT_KEY = 'your_account_key'
+# AZURE_CONTAINER = 'your_container_name'
+
+# STATIC_URL = f'https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/{AZURE_CONTAINER}/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

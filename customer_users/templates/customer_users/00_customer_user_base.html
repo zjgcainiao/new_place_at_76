@@ -154,7 +154,7 @@
       <header class="navbar navbar-expand-lg navbar-light fixed-top" data-scroll-header>
         <div class="container">
           <a class="navbar-brand me-2 me-xl-4" href="{% url 'homepageapp:homepage' %}">
-          <img class="d-block" src="{% static '/homepageapp/2022-logo-transparent-small.png' %}" width="80" alt="New 76 Pro Lube Plus"></a>
+          <img class="d-block" src="{% static '/homepageapp/2022-logo-transparent-small.png' %}" width="80" alt="Automan Automotive Repair Shop, powered by data and artifical intelligence."></a>
           <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#customerUserNavbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -163,40 +163,38 @@
               <a href="{% url 'customer_users:customer_user_profile' %}" class="btn btn-dark  order-lg-3">Hi, {{ user.customer_user_first_name }}</a>
           {% else %}
               <!-- <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}">Register/Login</a> -->
-              <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}">Register</a>
-              <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_login' %}">Login</a>
-              <!-- Register/Login, CustomerUser -->
-              <!-- <div  class="dropdown"> -->
-                <!-- The main button with an upward arrow icon -->
-                <!-- <button class="btn btn-primary btn-sm ms-2 order-lg-3 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Register/Login
-                </button> -->
-                <!-- The dropdown menu -->
-                <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="{% url 'customer_users:customer_user_register' %}">Register</a>
-                    <a class="dropdown-item" href="{% url 'customer_users:customer_user_login' %}">Login</a>
-                </div>
-              </div> -->
+              <!-- <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}">Register</a>
+              <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_login' %}">Login</a> -->
+              <!-- end of dropdown list -->
           {% endif %}
 
-
-
           <div class="collapse navbar-collapse order-lg-2" id="customerUserNavbarNav">
-            <ul class="navbar-nav navbar-nav-scroll" style="max-height: 5rem;">
-
-              <!-- Services -->
-              <li class="nav-item dropdown py-2 me-lg-2">
-                <a class="nav-link dropdown-toggle align-items-center border-end-lg border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fi-layers me-2"></i>Services</a>
+            <ul class="navbar-nav navbar-nav-scroll" style="max-height: 35rem;">
+              <!-- Home -->
+              <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'homepageapp:homepage' %}"><i class="fi-home fs-base me-1"></i>Home</a></li>
+              <!-- Accounts-->
+              <li class="nav-item dropdown ">
+                <a class="nav-link dropdown-toggle align-items-center border-end-lg border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+                Customer Account</a>
+                <ul class="dropdown-menu dropdown-menu-light">
+                  <li><a class="dropdown-item" href="{% url 'homepageapp:services' %}"><i class="fi-plus-circle fs-base me-1"></i>Create an account</a></li>
+                  <li class="dropdown-divider m-1"></li>
+                  <li><a class="dropdown-item" href="#"><i class="fi-login fs-base me-2"></i>Login</a></li>
+                 
+                </ul>
+              </li>
+              <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'appointments:appointment_list' %}"><i class="fi-calendar fs-base me-2"></i>Service Appointment</a></li>
+              
+              <!-- More -->
+              <li class="nav-item dropdown ">
+                <a class="nav-link dropdown-toggle align-items-center border-end-lg border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fi-layers fs-base me-1"></i>More</a>
                 <ul class="dropdown-menu dropdown-menu-light">
                   <li><a class="dropdown-item" href="{% url 'homepageapp:services' %}"><i class="fi-car fs-base me-2"></i>Service List</a></li>
                   <li class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="#"><i class="fi-friends fs-base me-2"></i>About Us</a></li>
-                  <li><a class="dropdown-item" href="{% url 'internal_users:internal_user_login' %}"><i class="fi-friends fs-base me-2"></i>Employee Portal</a></li>
                 </ul>
               </li>
-              <!-- Menu items-->
-              <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'appointments:appointment_list' %}">Service Appointment</a></li>
-              
+
               <!-- <li class="nav-item"><a class="nav-link" href="#" role="button">Careers</a></li> -->
             </ul>
 

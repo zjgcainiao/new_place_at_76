@@ -1,4 +1,4 @@
-    <!-- 2023-11-08 added a customer support converation button  -->
+<!-- 2023-11-08 added a customer support converation button  -->
     <style>
       .support-button {
         position: fixed;
@@ -17,14 +17,14 @@
         display: none;
         position: fixed;
         bottom: 60px; /* Adjust depending on button size */
-        right: 20px;
+        right: 10px;
         border: 2px solid #666; /* More pronounced border */
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-        width: 300px; /* Adjust the width as needed */
+        box-shadow: 0px 0px 10px rgba(24, 24, 24, 0.2);
+        width: 500px; /* Adjust the width as needed */
         z-index: 1000; /* Make sure it floats above other content */
         background-color: linear-gradient(315deg, #DADADA, #fff1f2); /* Background color for the window */
         box-sizing: border-box; /* Box sizing to ensure padding doesn't affect width */
-        padding: 15px; /* Padding inside the window */
+        padding: 5px; /* Padding inside the window */
         /* Additional responsive styles */
         max-width: 90%; /* Max width to ensure it doesn't get too wide on larger screens */
       }
@@ -58,11 +58,11 @@
 
     <form method="POST" id="new-support-conversation-form">
       {% csrf_token %}
-      <button class="support-button" id="new_conversation_button" type="submit" value="Submit">
+      <btn class="support-button" id="new_conversation_button" type="submit" value="Submit">
 
           <i class="support-icon fa fa-comments"></i>
     
-        </button>
+        </btn>
     </form>
   
     <div class="support-window" id="support_conversation_window">
@@ -140,38 +140,7 @@
               });
             }
             $('#new_conversation_button').click(debounce(handleNewConversationClick, 300));
-          // $('#new_conversation_button').click(function(event) {
-          //   event.preventDefault();
-          //   $('#loading-spinner-new-conversation').show(); // Show the spinner
-          //   var form = $('#new-support-conversation-form');
-          //   var csrfToken = form.find('[name=csrfmiddlewaretoken]').val(); // Fetch CSRF token from the form
-          //   $.ajax({
-          //       url: '/crms/new_conversation/',
-          //       type: 'POST',
-          //       data: JSON.stringify({}), // If you need to send data
-          //       contentType: 'application/json',
-          //       dataType: 'json',
-          //       headers: {
-          //           'X-Requested-With': 'XMLHttpRequest',
-          //           'X-CSRFToken': csrfToken // Include the CSRF token in the header
-          //       },
-          //       success: function(data) {
-          //         console.log('fetch data success.conversation uuid is: ', data.uuid);
-          //           if (data.uuid) {
-          //               conversation_uid = data.uuid;
-          //               // Render the conversation window with the received UUID
-          //               renderConversationWindow(conversation_uid);
-          //           }
-          //       },
-          //       error: function(xhr, status, error) {
-          //           console.error('Error:', error);
-          //       },
-          //       complete: function() {
-          //             $('#loading-spinner').hide(); // Hide the spinner once everything is loaded
-          //       },
-          //   });
-          // });
-          // end of .ajax() call 
+       
       });
 
       function renderConversationWindow(uuid) {

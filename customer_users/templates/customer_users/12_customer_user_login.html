@@ -1,4 +1,5 @@
 {% extends 'customer_users/00_customer_user_base.html' %}
+
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content1-main %}
@@ -25,83 +26,34 @@
     
     <!-- 2023-11-08 added a customer support converation button  -->
     {% comment %}
-    {% include 'customer_users/02_customer_user_support_conversation_ui.html' %}
+        {% include 'customer_users/02_customer_user_support_conversation_ui.html' %}
+
+
+        <script src="{% static 'CRMs/js/support_conversation.js' %}"></script>
     {% endcomment %}
 
 
-    <style>
-      .support-button {
-        position: fixed;
-        bottom: 0;
-        right: 0;
-        margin: 20px;
-        cursor: pointer;
-      }
-       .support-icon {
-        font-size: 30px; /* Size of the icon */
-        /* Add additional styling for the icon here */
-      }
-
-
-      .support-window {
-        display: none;
-        position: fixed;
-        bottom: 60px; /* Adjust depending on button size */
-        right: 10px;
-        border: 2px solid #666; /* More pronounced border */
-        box-shadow: 0px 0px 10px rgba(24, 24, 24, 0.2);
-        width: 500px; /* Adjust the width as needed */
-        z-index: 1000; /* Make sure it floats above other content */
-        background-color: linear-gradient(315deg, #DADADA, #fff1f2); /* Background color for the window */
-        box-sizing: border-box; /* Box sizing to ensure padding doesn't affect width */
-        padding: 5px; /* Padding inside the window */
-        /* Additional responsive styles */
-        max-width: 90%; /* Max width to ensure it doesn't get too wide on larger screens */
-      }
-      /* Responsive behavior for smaller screens */
-      @media (max-width: 600px) {
-        .support-window {
-          right: 10px;
-          bottom: 50px;
-          width: auto; /* Full width on smaller screens */
-        }
-      }
-      .spinner-border-new-conversation {
-        display: inline-block;
-        width: 2rem;
-        height: 2rem;
-        vertical-align: text-bottom;
-        border: 0.25em solid currentColor;
-        border-right-color: transparent;
-        border-radius: 50%;
-        animation: spinner-border-new-conversation .75s linear infinite;
-      }
-
-      @keyframes spinner-border-new-conversation {
-        to { transform: rotate(360deg); }
-      }
-    </style>
-
-    <div id="loading-spinner-new-conversation" class="spinner-border-new-conversation text-primary" role="status" style="display: none;">
+     <!-- added customized css styling  -->
+    <link href="{% static 'core_operations/css/automan-theme.css' %}" rel="stylesheet" >
+   
+    <div id="loading-spinner-new-conversation" class="automan-spinner-border-new-conversation text-primary" role="status" style="display: none;">
       <span class="sr-only">launching a new customer support conversation</span>
     </div>
 
     <form method="POST" id="new-support-conversation-form">
       {% csrf_token %}
-      <btn class="support-button" id="new_conversation_button" type="submit" value="Submit">
+      <btn class="automan-support-button" id="new_conversation_button" type="submit" value="Submit">
 
-          <i class="support-icon fa fa-comments"></i>
+          <i class="automan-support-icon fa fa-comments"></i>
     
         </btn>
     </form>
   
-    <div class="support-window" id="support_conversation_window">
-        
+    <div class="automan-support-window" id="support_conversation_window">
     </div>
 
     <script>
       // Function to handle debounce
-
       function debounce(func, wait, immediate) {
         var timeout;
         return function() {
@@ -122,7 +74,7 @@
           var ajaxCallTimeout;
           var ajaxCallDuration = 10000; // 10 seconds for timeout
 
-          function handleNewConversationClick(event) {
+          $('#new_conversation_button').click(debounce(function(event) {
               event.preventDefault();
               var $button = $(this);
               var $spinner = $('#loading-spinner-new-conversation');
@@ -169,15 +121,17 @@
                   $button.prop('disabled', false);
                 },
               });
-            }
-            $('#new_conversation_button').click(debounce(handleNewConversationClick, 300));
+            
+          }, 300));
+          
       });
 
       function renderConversationWindow(uuid) {
 
         // Determine if the app is running on localhost
-        var isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
-        var wsProtocol = isLocalhost ? "ws://" : "wss://";
+        // var isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+        // var wsProtocol = isLocalhost ? "ws://" : "wss://";
+        var wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
         // Creating the HTML structure
         var conversationHtml = `  
               <div class="card card-hover border-5">
@@ -186,7 +140,7 @@
                   <div class="card-body m-1">
                       <textarea id="conversation-log" cols="40" rows="10" readonly></textarea><br>
                       <input id="conversation-message-input" type="text" class="form-control mb-2" />
-                      <button class="btn btn-outline-dark btn-sm" id="conversation-message-submit" type="button">Send</button>
+                      <button class="btn btn-outline-dark btn-sm" id="conversation-message-send-button" type="button">Send</button>
                   </div>
               </div>
             `;
@@ -195,13 +149,20 @@
         $('#support_conversation_window').append(conversationHtml);
 
         // Make the support conversation window visible
-        $('.support-window').css('display', 'block');
+        $('.support-window').fadeIn(1000); // This will smoothly fade in the window
 
         // Establish the WebSocket connection
         // use ws:// when its local server. use wss:// for production server.
         const conversationSocket = new WebSocket(
             wsProtocol + window.location.host + '/ws/conversations/' + uuid + '/'
         );
+
+        //
+        conversationSocket.onopen = function(event) {
+            console.log('WebSocket is now open');
+            // You can now safely send a message
+            conversationSocket.send(JSON.stringify({ message: 'Hello Server!' }));
+        };
 
         // WebSocket event for receiving messages
         conversationSocket.onmessage = function(e) {
@@ -225,15 +186,28 @@
             console.error('Customer Support Conversation socket was closed unexpectedly.');
         };
 
-        // Send message event
-        $(document).on('click', '#conversation-message-submit', function() {
-            var messageInput = $('#conversation-message-input');
-            var message = messageInput.val();
+        // Send message event. via clicking 'conversation-message-send-button' button or pressing 'Enter' key
+        $('#conversation-message-send-button').on('click', function() {
+            // var messageInput = $('#conversation-message-input');
+            // var message = messageInput.val();
+            
+            const messageInputDom = document.querySelector('#conversation-message-input');
+            const conversation_message = messageInputDom.value;
+
+            if (conversationSocket.readyState === WebSocket.OPEN) {
+                conversationSocket.send(JSON.stringify({
+                    'conversation_message': conversation_message
+                }));
+            } else {
+                console.error('WebSocket is not open: ' + conversationSocket.readyState);
+            }
+            
+            messageInputDom.value = '';
             // Determine the direction of the message
             // For example, let's assume 1 is for messages from customer to operator
             var messageDirection = 1;
             conversationSocket.send(JSON.stringify({
-                'conversation_message': message,
+                'conversation_message':conversation_message,
                 'message_direction': messageDirection,
             }));
             messageInput.val('');
@@ -242,10 +216,9 @@
         // Press Enter to send message
         $('#conversation-message-input').keyup(function(e) {
             if (e.key === 'Enter') {
-                $('#conversation-message-submit').click();
+                $('#conversation-message-send-button').click();
             }
         });
-
         // Focus the input field for message
         $('#conversation-message-input').focus();
       }
