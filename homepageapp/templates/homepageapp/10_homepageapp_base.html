@@ -256,8 +256,10 @@
 <!-- Button to enable chatbot -->
 <!-- pendint to extra styling  -->
 
-<button id="enableChatbot" class="btn btn-outline-success btn-sm position-fixed automan-chatbot-toggle-button bottom-0 end-0 m-3 p-1 fab-icon" style="z-index: 1000; margin-bottom: 20px; margin-right: 20px;" aria-label="Talk to Virtual Assistant Pulido">
-    <i class="fas fa-robot"></i> 
+{% load static %}
+
+<button id="enableChatbot" class="btn btn-outline-success position-fixed automan-chatbot-toggle-button bottom-0 end-0 m-3 p-1 fab-icon" style="z-index: 1020; margin-bottom: 25px; margin-right: 25px;" aria-label="Talk to Virtual Assistant Pulido">
+    <img src="{% static 'core_operations/imgs/robot-icon-01-smaller.svg' %}" alt="Robot Icon" style="height: 2em; width: 2em;" />
 </button>
 
 

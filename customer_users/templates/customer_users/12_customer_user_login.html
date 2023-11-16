@@ -43,8 +43,8 @@
     <form method="POST" id="new-support-conversation-form">
       {% csrf_token %}
       <btn class="automan-support-button" id="new_conversation_button" type="submit" value="Submit">
-
-          <i class="automan-support-icon fa fa-comments"></i>
+        <img class="automan-support-icon" src="{% static 'core_operations/imgs/robot-icon-02-smaller.svg' %}" alt="Robot Icon" style="height: 2em; width: 2em;" />   
+          <!-- <i class="automan-support-icon fa fa-comments"></i> -->
     
         </btn>
     </form>
