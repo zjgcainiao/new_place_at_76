@@ -17,6 +17,8 @@ dashboard_react/.vite/*
 */.vite/
 
 */management/
+.github/
+.github/*
 
 bin
 conda-meta
@@ -67,5 +69,4 @@ web-secrets.yaml
 ./*secrets.yml
 auto_gen_secrets.yaml
 *secrets.yaml
-
 managed-sql-instance.yaml
