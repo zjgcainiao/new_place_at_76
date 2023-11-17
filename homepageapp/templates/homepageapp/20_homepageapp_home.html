@@ -49,10 +49,23 @@
       <!-- end of column  -->
 
       <figure class="col-md-4 p-md-4">
-        <img class="d-block mt-4 ms-auto"  src="{% static 'homepageapp/img/2023-05-27-tesla-roadster-sports-car-tesla-motors-car.png' %}" width="600" alt="Car">
+        <img class="d-block mt-4 ms-auto custom-img"  src="{% static 'homepageapp/img/2023-05-27-tesla-roadster-sports-car-tesla-motors-car.png' %}" alt="Car">
       </figure>
     </article>
   </div>
+  <style>
+        .custom-img {
+        width: 100%;
+        height: auto;
+    }
+
+    @media (min-width: 768px) {
+        .custom-img {
+            width: 500px; /* or any other size */
+        }
+    }
+
+  </style>
   <!-- end of container -->
   
 <!-- updated on 2023-11-03 

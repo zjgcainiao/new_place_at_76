@@ -12,9 +12,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Favicon and Touch Icons-->
     <!-- <link rel="apple-touch-icon" sizes="180x180" href="{% static 'homepageapp/apple-touch-icon.png' %}"> -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'homepageapp/img/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'homepageapp/img/logo/logo-2022.svg' %}">
-    <meta name="msapplication-TileColor" content="#ffffff">
+    <!-- <link rel="icon" type="image/png" sizes="32x32" href="{% static 'homepageapp/img/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'homepageapp/img/logo/logo-2022.svg' %}"> -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'homepageapp/favicon_package_v0/apple-touch-icon.png' %}" >
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'homepageapp/favicon_package_v0/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'homepageapp/favicon_package_v0/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'homepageapp/favicon_package_v0/site.webmanifest' %}">
+    <link rel="mask-icon" href="{% static 'homepageapp/favicon_package_v0/safari-pinned-tab.svg' %}" color="#c2410c">
+    <meta name="msapplication-TileColor" content="#ffedd5">
     <meta name="theme-color" content="#ffffff">
     
     <!-- jQuery 3.7.0 js -->
@@ -169,7 +174,7 @@
       <header class="navbar navbar-expand-lg navbar-light fixed-top" data-scroll-header="">
         <div class="container">
           <a class="automan-navbar-brand me-1 me-xl-4" href="{% url 'homepageapp:homepage' %}">
-          <img class="d-block" src="{% static '/homepageapp/2022-logo-transparent-small.png' %}" width="68" alt="Amazing Automan LLC"></a>
+          <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68" alt="Amazing Automan LLC"></a>
           <!-- toggle button  -->
           <button class="navbar-toggler btn-dark ms-auto collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="mdi mdi-apps navbar-toggle-icon-mdi"></span>

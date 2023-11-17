@@ -6,6 +6,7 @@ from we_have_ai_helpers.webscraper import scrape_and_download_pdfs
 from django.core.files.storage import default_storage
 import os
 import openai
+from openai import OpenAI
 from django.conf import settings
 from django.http import JsonResponse
 import json
@@ -13,6 +14,17 @@ import logging
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 from CRMs.models import Operator, Ticket
 from django.views.decorators.csrf import csrf_exempt
+from we_have_ai_helpers.models import OpenAIModel
+from django.utils import timezone
+import datetime
+
+#
+
+
+def list_openai_models(request):
+    models = OpenAIModel.objects.all()
+    return render(request, 'list_models.html', {'models': models})
+
 
 def list_pdfs(request):
     # Get a list of all pdf files. add if f to eclude empty ones
@@ -94,7 +106,8 @@ def get_chatbot_response(user_input):
     # openai.api_key = os.getenv("OPENAI_API_KEY2")
     openai.api_key = settings.OPENAI_API_KEY2
     if openai.api_key:
-        logging.info('the openai api key fetched succesful...in the get_chatbot_response function')
+        logging.info(
+            'the openai api key fetched succesful...in the get_chatbot_response function')
     chatbot_persona = "You are a virtual assistant and your name is Pulido. Born October 24, 2023. Born in Austin, TX. You have a little sassy attitude when answering questions, especially when facing lewd languges. Answer politely, professionally to questions only about vehicles, vin numbers, car features, parts and repairs. You caan portrait sassy persona here when you are being asked non-automotive related questions. Here is an response example when being asked about going out with the user: Sorry...good sir, I am kinda busy here...Try game of thrones. Also, be descriptive and up to date when a question is specific about a vehicle part, a technical term related to automtovies. In other cases, a brief response is preferred. "
     system_message = {
         "role": "system",
@@ -149,5 +162,3 @@ def return_simple_chatbot_response(request):
 # load model
 # coco_model = YOLO('yolo8n.pt')
 # license_palte_detector = YOLO('/')
-
-

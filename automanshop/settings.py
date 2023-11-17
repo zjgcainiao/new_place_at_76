@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+from core_operations.utilies import test_db_connection  # Adjust the import based on your file structure
 from google.oauth2 import service_account
 import os
 from dotenv import load_dotenv,  find_dotenv
@@ -26,6 +27,7 @@ from core_operations.log_filters import LocalTimezoneFilter
 import logging
 from datetime import timedelta
 import re
+import ssl
 
 logger = logging.getLogger("django")
 # The find_dotenv() function will search for the .env file starting from the current working directory and then going up each parent directory until it finds one.
@@ -189,7 +191,8 @@ else:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 DJANGO_PROD_ENV = config("DJANGO_PROD_ENV", default=True, cast=bool)
-logger.info(f'Django debug has been set to {DEBUG}...Enable Production environment is {DJANGO_PROD_ENV}...')
+logger.info(
+    f'Django debug has been set to {DEBUG}...Enable Production environment is {DJANGO_PROD_ENV}...')
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',  # or the domain where your React app is hosted
@@ -359,18 +362,6 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-# 2023-05-30
-# Celery Configuration Options
-# https://docs.celeryq.dev/en/stable/django/first-steps-with-django.html
-
-CELERY_TIMEZONE = "America/Los_Angeles"
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60
-
-# Celery broker settings
-# CELERY_BROKER_URL = "redis://localhost:6379"
-# CELERY_RESULT_BACKEND = "redis://localhost:6379"
-
 # added channel layer for the human operator's converation app (in CRMs app).
 # 2023-11-08
 
@@ -386,32 +377,33 @@ USE_LOCAL_REDIS = config("USE_LOCAL_REDIS", default=False, cast=bool)
 REIS_DOCKERIZED = config("REDIS_DOCKERIZED", default=False, cast=bool)
 REIS_DOCKERIZED_HOST = config("REDIS_DOCKERIZED_HOST", default='localhost')
 
-if USE_LOCAL_REDIS and (not DJANGO_PROD_ENV):
+if not USE_LOCAL_REDIS:
 
     REDIS_HOST = config("LOCAL_REDIS_HOST", default=REIS_DOCKERIZED_HOST)
-    REDIS_PORT = config("LOCAL_REDIS_PORT", default=6379, cast=int)  # default to 6379 on local redis server (run `redis-server`)
+    # default to 6379 on local redis server (run `redis-server`)
+    REDIS_PORT = config("LOCAL_REDIS_PORT", default=6379, cast=int)
     REDIS_PASSWORD = config('LOCAL_REDIS_PASSWORD', default=None)
     REDIS_USE_SSL = config('LOCAL_REDIS_USE_SSL', default=False, cast=bool)
     logger.info(f'using local redis server...{REDIS_HOST}...')
 else:
-    
+
     REDIS_HOST = config('REDIS_HOST', default=REIS_DOCKERIZED_HOST)
-    REDIS_PORT = config('REDIS_PORT', default=6379, cast=int)
+    REDIS_PORT = config('REDIS_PORT', default=6380, cast=int)
     REDIS_PASSWORD = config('REDIS_PASSWORD', default=None)
     REDIS_USE_SSL = config('REDIS_USE_SSL', default=False, cast=bool)
     logger.info(f'using redis server...{REDIS_HOST}...')
-    
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts":[
+            "hosts": [
                 ('rediss://:{password}@{host}:{port}'.format(
                     password=REDIS_PASSWORD,
                     host=REDIS_HOST,
                     ssl=True,
                     port=6380)
-                ),
+                 ),
 
             ],
             "channel_capacity": {
@@ -423,19 +415,30 @@ CHANNEL_LAYERS = {
     },
 }
 
-# If REDIS_PASSWORD is set, add it to the configuration
-# if REDIS_PASSWORD:
-#     CHANNEL_LAYERS["default"]["CONFIG"]["hosts"].append(REDIS_PASSWORD)
 
+# updated on 2023-11-17:
+# reconfigured with Azure cache for redis instance. BACK IN USE!
+# 2023-05-30
+# Celery Configuration Options
+# https://docs.celeryq.dev/en/stable/django/first-steps-with-django.html
 
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [("localhost", 6379)],  # 127.0.0.1
-#         },
-#     },
-# }
+CELERY_TIMEZONE = "America/Los_Angeles"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
+
+# Celery broker settings for redis
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#conf-redis-result-backend
+CELERY_BROKER_URL = [
+    f'rediss://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/3?ssl_cert_reqs=required']
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = f'rediss://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/3?ssl_cert_reqs=required'
+
+# Ensure secure Redis connection (SSL)
+CELERY_BROKER_USE_SSL = {
+    'ssl_cert_reqs': ssl.CERT_REQUIRED,
+}
+CELERY_RESULT_BACKEND_USE_SSL = CELERY_BROKER_USE_SSL
 
 # added so that when a user login from 127.0.0.1/users/login, he will be re-directed to 'dashboard/'.
 # controlled by dashboard app. the main core app that do the lineitems and etc.
@@ -486,8 +489,9 @@ else:
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 # Replace with your Google Cloud Storage bucket name #2023_new_prolube76site/2023_talent_employment_docs
-GS_BUCKET_NAME = '2023_new_prolube76site'
-GS_PROJECT_ID = 'fresh-start-9fdb6'  # Replace with your Google Cloud project ID
+# '2023_new_prolube76site'  new name is vin-docor.appspot.com
+GS_BUCKET_NAME = 'vin-doctor.appspot.com'  # 'vin-doctor.appspot.com'
+GS_PROJECT_ID = 'vin-doctor'  # Replace with your Google Cloud project ID
 GS_DEFAULT_ACL = 'publicRead'
 GS_BUCKET_ACL = 'publicRead'
 GS_AUTO_CREATE_BUCKET = True
@@ -528,18 +532,20 @@ if local_server and (not DJANGO_PROD_ENV):
     # load the environment variables
     # user = config("DB_USER")
     try:
-        user = config("DB_SA_USER") # DB_APP_USER
-        password = config("DB_SA_USER_PASSWORD") # DB_APP_USER_PASSWORD
-        databaseName = config("DB_DATABASE1") # AutomanDB01
-        demoDatabaseName = config("DEMO_DB_DATABASE_NAME") # DemoDB01
+        user = config("DB_SA_USER")  # DB_APP_USER
+        password = config("DB_SA_USER_PASSWORD")  # DB_APP_USER_PASSWORD
+        databaseName = config("DB_DATABASE1")  # AutomanDB01
+        demoDatabaseName = config("DEMO_DB_DATABASE_NAME")  # DemoDB01
     except FileNotFoundError as e:
         print(f"Error: The specified file was not found: {e}")
     except requests.exceptions.RequestException as e:
-        print(f"Error: A network error occurred while attempting to download the credential file: {e}")
+        print(
+            f"Error: A network error occurred while attempting to download the credential file: {e}")
     except json.JSONDecodeError as e:
         print(f"Error: The credential file could not be parsed as JSON: {e}")
     except (KeyError, ValueError) as e:
-        print(f"Error: The credential file is missing required information: {e}")
+        print(
+            f"Error: The credential file is missing required information: {e}")
     except Exception as e:
         print(f"Error: An unexpected error occurred: {e}")
         # handle the error here
@@ -577,8 +583,9 @@ else:
     az_user = config("AZURE_DB_USER")
     az_password = config("AZURE_DB_PASSWORD")
     az_databaseName = config("AZURE_DB_DATABASE")
-    logger.info('the azure db server:database is: {}:{}...'.format(az_server, az_databaseName))
-   
+    logger.info('the azure db server:database is: {}:{}...'.format(
+        az_server, az_databaseName))
+
     # added on 2023-11-13
 
     DATABASES = {
@@ -639,8 +646,8 @@ USE_TZ = True
 
 # STATICFILES_STORAGE is set to 'storages.backends.gcloud.GoogleCloudStorage'
 
-
-# using storage bucket to host static files
+# https://learn.microsoft.com/en-us/azure/storage/common/storage-configure-connection-string
+# using azure storage bucket to host static files
 
 STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
@@ -649,21 +656,23 @@ STATIC_URL = 'https://storage.googleapis.com/{}/static_files/'.format(
 
 STATIC_ROOT = BASE_DIR / 'assets'
 
+
+# STATIC_URL = f'https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/{AZURE_CONTAINER}/'
+# Azure Storage configurations
 # DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 # STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 
 # AZURE_ACCOUNT_NAME = 'your_account_name'
-# AZURE_ACCOUNT_KEY = 'your_account_key'
+# AZURE_ACCOUNT_KEY = 'your_account_key'  # You can use the connection string here
 # AZURE_CONTAINER = 'your_container_name'
+# AZURE_SSL = True  # Use https if True
 
 # STATIC_URL = f'https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/{AZURE_CONTAINER}/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-from core_operations.utilies import test_db_connection  # Adjust the import based on your file structure
 
 # Test the database connection
 test_db_connection()
