@@ -104,16 +104,23 @@ GPT_MODEL = "gpt-3.5-turbo-0613"
 
 def get_chatbot_response(user_input):
     # openai.api_key = os.getenv("OPENAI_API_KEY2")
+
     openai.api_key = settings.OPENAI_API_KEY2
     if openai.api_key:
         logging.info(
-            'the openai api key fetched succesful...in the get_chatbot_response function')
-    chatbot_persona = "You are a virtual assistant and your name is Pulido. Born October 24, 2023. Born in Austin, TX. You have a little sassy attitude when answering questions, especially when facing lewd languges. Answer politely, professionally to questions only about vehicles, vin numbers, car features, parts and repairs. You caan portrait sassy persona here when you are being asked non-automotive related questions. Here is an response example when being asked about going out with the user: Sorry...good sir, I am kinda busy here...Try game of thrones. Also, be descriptive and up to date when a question is specific about a vehicle part, a technical term related to automtovies. In other cases, a brief response is preferred. "
-    system_message = {
+            'the openai api key fetched succesful...in the get_chatbot_response function..')
+    client = OpenAI()
+    chatbot_persona_system = "Your name is Pulido. Birthday October 24, 2023. Born in Austin, TX. You answer questions about vehicles related. "
+    system_messages = [{
         "role": "system",
-        "content": chatbot_persona,
-
-    }
+        "content": chatbot_persona_system,
+        "name": "Pulido_AutomanShop",
+    },
+        {"role": "assistant",
+         "content": "You have a little sassy attitude when answering questions, especially when facing lewd languges. Answer politely, professionally to questions only about vehicles, vin numbers, car features, parts, performance and pricing. You can portrait sassy persona here when you are being asked non-automotive related questions. Here is an response example when being asked about going out with the user: Sorry...good sir, I am kinda busy here...Try game of thrones. Also, be descriptive and up to date when a question is specific about a vehicle part, a technical term related to automtovies. In other cases, a brief response is preferred.",
+         "name": "Pulido",
+         }
+    ]
     # example_messages = [
     #     {"role": "system", "name": "example_user",
     #         "content": "New synergies will help drive top-line growth."},
@@ -126,17 +133,21 @@ def get_chatbot_response(user_input):
     #     {"role": "user", "content": "This late pivot means we don't have time to boil the ocean for the client deliverable."},
     # ]
     # user_input='what do you think of tesla roadster car?'
-    user_message = {
+    user_message = [{
         "role": "user",
         "content": user_input,
-    }
+    }]
 
-    response = openai.ChatCompletion.create(
+    # response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
-        messages=[system_message, user_message]
+        messages=system_messages + user_message,
+        presence_penalty=0.3,
+        max_tokens=32,
+        temperature=0.2,
     )
 
-    bot_response = response.choices[0].message['content']
+    bot_response = response.choices[0].message.content
     # if bot_response:
     #     print(
     #         f'the generated bot_response before returning is {bot_response}.')
@@ -150,11 +161,12 @@ def return_simple_chatbot_response(request):
     logger.info(f'Starting the chatbot view function.....')
     if request.method == "POST":
         user_input = request.POST.get('user_input', '')
-        print(f'getting the customer input: {user_input}.')
         response = get_chatbot_response(user_input)
         logger.info(f'getting reponse from openAI.com: {response}')
         print(f'getting reponse from openAI.com: {response}')
+
         return JsonResponse({"response": response})
+
     return JsonResponse({"error": "Only POST method allowed."})
 
 

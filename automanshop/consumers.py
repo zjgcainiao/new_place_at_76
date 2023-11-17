@@ -5,39 +5,42 @@ from channels.consumer import AsyncConsumer
 import json
 
 
-class NotificationConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
-        await self.channel_layer.group_add(
-            "notifications", self.channel_name
-        )
-        await self.accept()
+# class NotificationConsumer(AsyncWebsocketConsumer):
+#     async def connect(self):
+#         await self.channel_layer.group_add(
+#             "notifications", self.channel_name
+#         )
+#         await self.accept()
 
-    async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            "notifications", self.channel_name
-        )
+#     async def disconnect(self, close_code):
+#         await self.channel_layer.group_discard(
+#             "notifications", self.channel_name,
 
-    async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+#         )
 
-        # Send message to room group
-        await self.channel_layer.group_send(
-            "notifications",
-            {
-                'type': 'notification_message',
-                'message': message
-            }
-        )
+#     async def receive(self, text_data):
+#         text_data_json = json.loads(text_data)
+#         message = text_data_json['message']
 
-    # Receive message from room group
-    async def notification_message(self, event):
-        message = event['message']
+#         # Send message to room group
+#         await self.channel_layer.group_send(
+#             "notifications",
+#             {
+#                 # 'type': 'notification_message',
+#                 'message': message
+#             }
+#         )
 
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
+#     # Receive message from room group
+#     async def notification_message(self, event):
+#         message = event['message']
+
+#         # Send message to WebSocket
+#         await self.send(text_data=json.dumps({
+#             'message': message
+#         }))
+
+# this is the support conversation window's websocket config in server_side
 
 
 class ConversationConsumer(AsyncWebsocketConsumer):
@@ -62,7 +65,7 @@ class ConversationConsumer(AsyncWebsocketConsumer):
             self.channel_name,
         )
 
-    # Receive message from WebSocket
+    # Receive message from the covnersation window via WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         conversation_message = text_data_json['conversation_message']
@@ -72,13 +75,14 @@ class ConversationConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.conversation_group_name,
             {
-                'type': 'SUPPORT_CONVERSATION_MESSAGE',
+                'type': 'conversation_message',
                 'conversation_message': conversation_message,
-                'message_direction': message_direction,  # Assuming this is obtained appropriately
+                # Assuming this is obtained appropriately
+                'message_direction': message_direction,
             }
         )
 
-    # Receive message from conversation group
+    # Receive message from conversation window (client with operator)
     async def conversation_message(self, event):
         conversation_message = event['conversation_message']
         message_direction = event['message_direction']
@@ -87,4 +91,3 @@ class ConversationConsumer(AsyncWebsocketConsumer):
             'conversation_message': conversation_message,
             'message_direction': message_direction,
         }))
-    

@@ -17,13 +17,13 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'homepageapp/favicon_package_v0/apple-touch-icon.png' %}" >
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'homepageapp/favicon_package_v0/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'homepageapp/favicon_package_v0/favicon-16x16.png' %}">
-    <link rel="manifest" href="{% static 'homepageapp/favicon_package_v0/site.webmanifest' %}">
-    <link rel="mask-icon" href="{% static 'homepageapp/favicon_package_v0/safari-pinned-tab.svg' %}" color="#c2410c">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#c2410c">
     <meta name="msapplication-TileColor" content="#ffedd5">
     <meta name="theme-color" content="#ffffff">
     
     <!-- jQuery 3.7.0 js -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   
     <!-- Vendor scrits: js libraries and plugins -->
      <!-- poper 2.9.2 js, bootstrap 5.3.0 js , simplebar js, smooth-scoll.polyfills js, tiny-slider js, jarallax and jarallax-element js  -->
@@ -252,7 +252,7 @@
             {% csrf_token %}
             <textarea id="userInput" class="form-control" type="text" value=""></textarea>
             <button id="askButton" class="btn btn-primary btn-sm mt-3"><i class=" fi-send fs-base me-2"></i>Send</button>
-            <div id="botResponse"  class="mt-2">
+            <div id="botResponse"  class="d-block mt-2">
               <div id="loadingMessage" class="text-bold" style="display:none;">Hmmm...Let me think...</div>
             </div>
         </form>
@@ -260,8 +260,6 @@
 
 <!-- Button to enable chatbot -->
 <!-- pendint to extra styling  -->
-
-{% load static %}
 
 <button id="enableChatbot" class="btn btn-outline-success position-fixed automan-chatbot-toggle-button bottom-0 end-0 m-3 p-1 fab-icon" style="z-index: 1020; margin-bottom: 25px; margin-right: 25px;" aria-label="Talk to Virtual Assistant Pulido">
     <img src="{% static 'core_operations/imgs/robot-icon-01-smaller.svg' %}" alt="Robot Icon" style="height: 2em; width: 2em;" />
@@ -305,6 +303,11 @@
         color: #fff;
         border: none;
     }
+
+    #botResponse strong {
+    color: #9a3412; /* Choose a color that fits your UI for highlighting */
+    font-weight: bold;
+}
 </style>
     <script>
 
@@ -351,8 +354,23 @@
                   },
                   success: function(data) {
                       console.log("Success - bot response is : ", data.response);
+                      var messageContent = data.response;
+                      // var messageRole = data.response.role; // 'assistant'
+                      let messageRole='assistant'
+
+                        // Format the message
+                        var formattedMessage = `<strong>${messageRole}:</strong> ${messageContent}`;
 
                       $("#botResponse").text(data.response);
+
+                      // Add a button to opt-in for human operators. 2023-11-17
+                      // var connectHumanButton = $('<button/>', {
+                      //     text: 'Connect with a Human Operator',
+                      //     id: 'connectHumanOperator',
+                      //     class: 'btn btn-primary',
+                      //     click: function() { showHumanOperatorChat(); }
+                      // });
+
                        $('#loadingMessage').hide();
                        $('#askButton').prop('disabled', false);
                   },

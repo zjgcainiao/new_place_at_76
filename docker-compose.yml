@@ -73,7 +73,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_USE_SSL=${REDIS_USE_SSL}
     depends_on:
-      - sqldb
+      # - sqldb
       - redis
 
   redis:
@@ -81,19 +81,27 @@ services:
     ports:
       - "6379:6379"
 
-  sqldb:
-    image: mcr.microsoft.com/azure-sql-edge
-    ports:
-      - "1433:1433"
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=${DB_SA_USER_PASSWORD}
-      - DB_APP_USR=${DB_APP_USR}
-      - DB_APP_USER_PASSWORD=${DB_APP_USER_PASSWORD}
-      # volumes:
-      # - sql_data:/var/opt/mssql
-      # - /Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/05_databases/sqldata:/var/opt/mssql
+  celery:
+    build: .
+    command: celery -A automanshop worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - web
+      - redis
 
-      #       # Add other necessary environment variables for SQL Server
-      # volumes:
-      #   sql_data:
+  beat:
+    build: .
+    command: celery -A automanshop  beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - celery
+      - redis
+    # volumes:
+    # - sql_data:/var/opt/mssql
+    # - /Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/05_databases/sqldata:/var/opt/mssql
+
+    #       # Add other necessary environment variables for SQL Server
+    # volumes:
+    #   sql_data:

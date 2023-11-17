@@ -1,4 +1,4 @@
-{% extends 'customer_users/00_customer_user_base.html' %}
+{% extends 'homepageapp/10_homepageapp_base.html' %}
 
 {% load crispy_forms_tags %}
 {% load static %}
@@ -125,7 +125,7 @@
           }, 300));
           
       });
-
+      // this function renders a conversation window with new convesation uid. enable wesocket for messaging 
       function renderConversationWindow(uuid) {
 
         // Determine if the app is running on localhost
@@ -136,9 +136,9 @@
         var conversationHtml = `  
               <div class="card card-hover border-5">
                   <h4 class="card-header text-dark">Customer Support</h4>
-                  <p class="text-muted m-1 p-1">(Support-Case-ID:${uuid})</p>
+                  <p class="text-muted ">(Support-Case-ID:${uuid})</p>
                   <div class="card-body m-1">
-                      <textarea id="conversation-log" cols="40" rows="10" readonly></textarea><br>
+                      <textarea id="conversation-log" class='form-control mb-2' readonly></textarea><br>
                       <input id="conversation-message-input" type="text" class="form-control mb-2" />
                       <button class="btn btn-outline-dark btn-sm" id="conversation-message-send-button" type="button">Send</button>
                   </div>
@@ -149,7 +149,7 @@
         $('#support_conversation_window').append(conversationHtml);
 
         // Make the support conversation window visible
-        $('.support-window').fadeIn(1000); // This will smoothly fade in the window
+        $('.automan-support-window').fadeIn(1000); // This will smoothly fade in the window
 
         // Establish the WebSocket connection
         // use ws:// when its local server. use wss:// for production server.
@@ -158,32 +158,45 @@
         );
 
         //
-        conversationSocket.onopen = function(event) {
-            console.log('WebSocket is now open');
+        conversationSocket.onopen = function(response) {
+
             // You can now safely send a message
-            conversationSocket.send(JSON.stringify({ message: 'Hello Server!' }));
+            // conversationSocket.send(JSON.stringify({ message: 'Hello Server!' }));
+              // const data = JSON.parse(response.data);
+              console.info('conversation started...a websocket connection is established...');
+            // document.querySelector('#conversation-log').value += (data.conversation_message + '\n');
         };
 
         // WebSocket event for receiving messages
-        conversationSocket.onmessage = function(e) {
-          const data = JSON.parse(e.data);
-          const message = data.conversation_message;
-          const direction = data.direction;  // 0 for outgoing, 1 for incoming
+        conversationSocket.onmessage = function(response) {
+          try{
+            data = JSON.parse(response.data);
+            const message = data.conversation_message;
+            let direction = parseInt(0);  // 0 for outgoing, 1 for incoming
 
-          let formattedMessage = '';
-          if (direction === 0) {
-              formattedMessage = 'Operator: ' + message;
-          } else {
-              formattedMessage = 'Customer: ' + message;
-          }
-
-          $('#conversation-log').val(function(index, value) {
-              return value + (formattedMessage + '\n');
-          });
+            let formattedMessage = '';
+            if (direction === 0) {
+                formattedMessage = 'Operator: ' + message;
+            } else {
+                formattedMessage = 'Customer: ' + message;
+            }
+            document.querySelector('#conversation-log').value += (formattedMessage  + '\n');
+            // $('#conversation-log').val(function(index, value) {
+            //     return value + (formattedMessage + '\n');
+            // });
+          }catch(error){
+            console.error('Error Parsing received data. Expecting JSON:', error)
+          }; 
         };
 
         conversationSocket.onclose = function(e) {
-            console.error('Customer Support Conversation socket was closed unexpectedly.');
+            console.log('WebSocket closed:', event);
+            if (event.wasClean) {
+                console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
+            } else {
+                // e.g., the server process killed or network down
+                console.log('Connection died');
+    }
         };
 
         // Send message event. via clicking 'conversation-message-send-button' button or pressing 'Enter' key
@@ -193,29 +206,27 @@
             
             const messageInputDom = document.querySelector('#conversation-message-input');
             const conversation_message = messageInputDom.value;
+            
+            // Determine the direction of the message
+            // For example, let's assume 1 is for messages from customer to operator; 0 is from operator to customer.
+            var messageDirection = 1; 
 
             if (conversationSocket.readyState === WebSocket.OPEN) {
                 conversationSocket.send(JSON.stringify({
-                    'conversation_message': conversation_message
+                    'conversation_message': conversation_message,
+                    'message_direction': messageDirection,
                 }));
             } else {
                 console.error('WebSocket is not open: ' + conversationSocket.readyState);
             }
             
-            messageInputDom.value = '';
-            // Determine the direction of the message
-            // For example, let's assume 1 is for messages from customer to operator
-            var messageDirection = 1;
-            conversationSocket.send(JSON.stringify({
-                'conversation_message':conversation_message,
-                'message_direction': messageDirection,
-            }));
-            messageInput.val('');
+            messageInputDom.value='';
+
         });
 
         // Press Enter to send message
         $('#conversation-message-input').keyup(function(e) {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' || e.keyCode === 13) {
                 $('#conversation-message-send-button').click();
             }
         });

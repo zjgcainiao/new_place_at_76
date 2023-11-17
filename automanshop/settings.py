@@ -401,7 +401,7 @@ CHANNEL_LAYERS = {
                     password=REDIS_PASSWORD,
                     host=REDIS_HOST,
                     ssl=True,
-                    port=6380)
+                    port=REDIS_PORT)
                  ),
 
             ],
