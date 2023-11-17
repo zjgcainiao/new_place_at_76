@@ -288,7 +288,6 @@ INSTALLED_APPS = [
     'captcha',  # google reCAPTCHA connection
     'formtools',
     'crispy_forms',  # add django-cripsy-form
-    # 'crispy_bootstrap4',
     'crispy_bootstrap5',
     # 'social_django',
     # 'firebase_auth', # google firebase-auth
@@ -430,15 +429,21 @@ CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#conf-redis-result-backend
 CELERY_BROKER_URL = [
     f'rediss://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/3?ssl_cert_reqs=required']
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = f'rediss://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/3?ssl_cert_reqs=required'
-
 # Ensure secure Redis connection (SSL)
 CELERY_BROKER_USE_SSL = {
     'ssl_cert_reqs': ssl.CERT_REQUIRED,
 }
-CELERY_RESULT_BACKEND_USE_SSL = CELERY_BROKER_USE_SSL
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+# f'rediss://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/3?ssl_cert_reqs=required'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+CELERY_RESULT_EXPIRES = 3600  # 1 hour.
+
+CELERY_RESULT_EXTENDED = True
+
+# CELERY_RESULT_BACKEND_USE_SSL = CELERY_BROKER_USE_SSL
 
 # added so that when a user login from 127.0.0.1/users/login, he will be re-directed to 'dashboard/'.
 # controlled by dashboard app. the main core app that do the lineitems and etc.
