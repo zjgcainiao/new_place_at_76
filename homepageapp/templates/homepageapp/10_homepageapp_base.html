@@ -17,7 +17,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'homepageapp/favicon_package_v0/apple-touch-icon.png' %}" >
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'homepageapp/favicon_package_v0/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'homepageapp/favicon_package_v0/favicon-16x16.png' %}">
-    <link rel="manifest" href="/site.webmanifest">
+    <link rel="manifest" href="{%static 'favicon_package_v0/site.webmanifest' %}">
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#c2410c">
     <meta name="msapplication-TileColor" content="#ffedd5">
     <meta name="theme-color" content="#ffffff">
@@ -174,41 +174,45 @@
         {% include 'homepageapp/12_sign_in_and_sign_up_modal.html' %}
       {% endcomment %}
       <!-- navbar navbar-expand-lg navbar-light bg-light -->
-      <header class="navbar navbar-expand-lg navbar-light fixed-top automan-glossy-metallic" data-scroll-header="">
+      <header class="navbar navbar-expand-lg  fixed-top automan-glossy-metallic" data-scroll-header="">
         <div class="container ">
           <a class="automan-navbar-brand me-1 me-xl-4" href="{% url 'homepageapp:homepage' %}">
-          <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68" alt="Amazing Automan LLC"></a>
+          <!-- <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68" alt="Amazing Automan LLC"></a> -->
+          <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68" alt="Amazing Automan LLC" oncontextmenu="return false;">
+
           <!-- toggle button  -->
           <button class="navbar-toggler btn-light ms-auto collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="mdi mdi-apps navbar-toggle-icon-mdi"></span>
+            <span class="mdi mdi-apps navbar-toggle-icon-mdi me-2"></span>
           </button> 
 
           <a class="btn btn-outline-light btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}">Register</a>
           <a class="btn btn-outline-light btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_login' %}">Login</a>
-          <!-- <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}"><i class="fi-users me-2"></i>Register/Sign In</a> -->
           <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
 
             <ul class="navbar-nav navbar-nav-scroll" style="max-height: 35rem;">
               <!-- register and login  -->
               <!-- <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'customer_users:customer_user_register' %}">Register/Login</a></li> -->
-
-              <!-- Services -->
+              
+              <!-- Appointments  -->
+              <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'appointments:create_appointment' %}">Service Appointment</a></li>
+              
+              <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'shops:search_by_vin_or_plate' %}">VIN Report</a></li>
+              <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'internal_users:internal_user_login' %}">Employee Portal</a></li>
+              <!-- More -->
               <li class="nav-item dropdown py-2 me-lg-2">
-                <a class="nav-link dropdown-toggle align-items-center  border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fi-layers me-2"></i>Services</a>
+                <a class="nav-link dropdown-toggle align-items-center  border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fi-layers me-2"></i>More</a>
                 <ul class="dropdown-menu dropdown-menu-light">
-                  <li><a class="dropdown-item fw-normal" href="{% url 'homepageapp:services' %}"><i class="fi-car me-2"></i>Service List</a></li>
+                  <li><a class="dropdown-item fw-normal" href="{% url 'homepageapp:services' %}"><i class="fi-car fs-base me-2"></i>Service List</a></li>
                   <li class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="{% url 'homepageapp:about-us' %}"><i class="fi-friends fs-base me-2"></i>About Us</a></li>
-                  <li class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="{% url 'internal_users:internal_user_login' %}"><i class="fi-users fs-base me-2"></i>Employee Portal</a></li>
+
                   <li class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="{% url 'shops:payment_checkout' %}"><i class="fi-cash fs-base me-2"></i>Payment System</a></li>
-                  <li class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="{% url 'shops:search_by_vin_or_plate' %}"><i class="fi-car fs-base me-2"></i>Vehicle Reports</a></li>
+                
                 </ul>
               </li>
               
-              <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'appointments:create_appointment' %}">Service Appointment</a></li>
+             
                
               {% comment %}
               <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'shops:payment_checkout' %}">Our Shops</a></li>
@@ -235,7 +239,7 @@
      {% endblock %}
 
     </main>
-    {% include 'homepageapp/11_homepageapp_footer.html' %}
+   
     {% comment %}
     {% include 'we_have_ai_helpers/20_chatbot.html' %}
     {% endcomment %}
@@ -435,6 +439,7 @@
       
     </script>
 
+    {% include 'homepageapp/11_homepageapp_footer.html' %}
 
   </body>
 

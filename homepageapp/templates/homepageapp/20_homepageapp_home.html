@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content1-main %}
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 @keyframes car-animation {
@@ -11,11 +12,42 @@
 
 #animated-car {
   position: relative;  /* changed to absolute */
-  max-width: 800px;       
+  max-width: 550px;       
   height: auto;
   animation: car-animation 2s linear forwards; /* Adjust time as needed */
+  
 }
+
+
+.custom-img {
+width: 100%;
+
+height: auto;
+}
+
+@media (min-width: 500px) {
+.custom-img {
+    width: 500px; /* or any other size */
+}
+}
+
+/* new styling for the content-body  2023-11-18 */
+/* .automan-section {
+  font-family: 'Roboto Condensed', sans-serif;
+  background: linear-gradient(135deg, #bfc1c2, #f5f5f5 50%, #bfc1c2 100%);
+  padding: 20px;
+  border-radius: 10px;
+}
+.automan-section, #article,#header  , #figure ,.content-body .fs-lg, .content-body ul, .content-body a {
+  color: #757171; 
+  font-weight: 450;
+} 
+*/
+
+
 </style>
+
+<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> -->
 
 <!-- Page header-->
 <section class="bg-top-center bg-repeat-0 mt-5" style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); background-size: cover;">
@@ -25,47 +57,40 @@
 
   <div class="container pt-5 my-5">
     <article class="row pt-lg-3 pt-xl-4">
-      <section class="col-md-8 pt-3 pt-md-3 pt-lg-5">
+      <div class="col-md-8 pt-3 pt-md-3 pt-lg-5 automan-section">
         <header>
           <h2 class="text-dark pb-2 mb-4 me-md-n5">The Future of Auto Repair is Here at Automan Shop!</h2>
         </header>
         <div class="content-body">
-            <p class="fs-lg text-dark opacity-70">At Automan Shop, we're not just fixing cars - we're revolutionizing the auto repair industry with our data-driven approach. Your vehicle isn't just nuts and bolts; it's data waiting to be analyzed.</p>
-            <p class="fs-lg text-dark opacity-70">Gone are the days of ambiguous repair statuses and surprise delays. We're here to ensure transparency, accuracy, and speed like you've never experienced before.</p>
-            <p class="fs-lg text-dark opacity-70">Why Automan Shop stands out:</p>
-            <ul class="fs-lg text-dark opacity-70">
-                <li>🔹 <strong>Seamless Digital Integration:</strong> Real-time tracking of tasks, from appointments to repairs, all at the tip of your fingers.</li>
-                <li>🔹 <strong>Advanced Vehicle Reports:</strong> Dive deep into vehicle data, extracting specs, warranty details, and even safety recalls from our vast digital archives.</li>
-                <li>🔹 <strong>Real-Time Updates:</strong> Never be in the dark again with our constant updates on repair progress and digital payment gateways.</li>
-                <li>🔹 <strong>Next-Gen Automation:</strong> We're harnessing technology to eliminate redundancy, ensuring you get your vehicle back faster.</li>
-                <li>🔹 <strong>AI at its Best:</strong> Meet Pulido, our AI assistant. From smart service estimates to AI-assisted parts recommendations, we're bringing the future to you.</li>
+            <p class="fs-lg text-dark opacity-80">At Automan Shop, we're not just fixing cars - we're revolutionizing the auto repair industry with our data-driven approach. Your vehicle isn't just nuts and bolts; it's data waiting to be analyzed.</p>
+            <p class="fs-lg text-dark opacity-80">Gone are the days of ambiguous repair statuses and surprise delays. We're here to ensure transparency, accuracy, and speed like you've never experienced before.</p>
+            <p class="fs-lg text-dark opacity-100">Why Automan Shop stands out:</p>
+            <ul class="fs-lg text-dark opacity-100">
+                <li class ="p-1 m-1"> <strong>System Integration :</strong> Real-time tracking of tasks, from appointments to repairs, all at the tip of your fingers.</li>       
+                <li class ="p-1 m-1"> <strong> Data-powered Vehicle Service <i class="fa-solid fa-screwdriver-wrench"></i></strong> Never be in the dark again with our constant updates on repair progress and digital payment gateways. We bring live updates to you.</li>
+                <li class ="p-1 m-1"> <strong> Digital Payment Gateways<i class="fa-solid fa-credit-card"></i></strong> Don't have time to pay at our stores? You can now pay online with Stripe.</li>
+                <li class ="p-1 m-1"> <strong> Privacy Protection <i class="fa-solid fa-shield-halved"></i>: </strong> We securely store your data, such as email, credit card information with SHA256 encryption, meeting the industry standard. </li>
+                <li class ="p-1 m-1"> <strong> Advanced Vehicle Reports <i class="fa-solid fa-file-shield"></i>:</strong> Dive deep into vehicle data, extracting specs, warranty details, and even safety recalls from our vast digital archives.</li>
+                <li class ="p-1 m-1"> <strong> Articial Intellgience at its best <i class="fa-solid fa-robot"></i>:</strong> Meet Pulido, our virtual assistant. From smart service estimates to AI-assisted parts recommendations [launching soon], we're bringing the future to you.</li>
             </ul>
             <p class="fs-lg text-dark opacity-80">Be a part of the automotive future. Book a service with Automan Shop and experience the next generation of auto repairs!</p>
 
 
-          <a  class="btn btn-sm btn-outline-primary w-sm-auto" href="{% url 'appointments:create_appointment' %}">Service Appointment</a>
+          <a  class="btn btn-sm btn-outline-primary w-sm-auto m-1" href="{% url 'appointments:create_appointment' %}">Service Appointment</a>
         </div>
-      </section>
+      </div>
       <!-- end of column  -->
-
-      <figure class="col-md-4 p-md-4">
-        <img class="d-block mt-4 ms-auto custom-img"  src="{% static 'homepageapp/img/2023-05-27-tesla-roadster-sports-car-tesla-motors-car.png' %}" alt="Car">
+      <!-- <div class="d-flex align-items-center vh-100">
+        <figure class="col-md-4 p-md-4 mx-auto">
+          <img class="d-block mt-4 ms-auto cust-img" src="{% static 'homepageapp/img/2023-05-27-tesla-roadster-sports-car-tesla-motors-car.png' %}" alt="Car">
+        </figure>
+      </div> -->
+      <figure class="col-md-4 p-md-4 mx-auto">
+        <img class=" d-flex mt-4 ms-auto cust-img align-items-center justify-content-between "  src="{% static 'homepageapp/img/2023-05-27-tesla-roadster-sports-car-tesla-motors-car.png' %}" alt="Car">
       </figure>
     </article>
   </div>
-  <style>
-        .custom-img {
-        width: 100%;
-        height: auto;
-    }
 
-    @media (min-width: 768px) {
-        .custom-img {
-            width: 500px; /* or any other size */
-        }
-    }
-
-  </style>
   <!-- end of container -->
   
 <!-- updated on 2023-11-03 
@@ -73,7 +98,7 @@
 
 <section class="container mt-5 pb-3">
   <!-- Added padding bottom for spacing -->
-  <div class="d-flex align-items-center justify-content-between mb-4 pb-2">
+  <div class="d-flex align-items-center mb-4 pb-2">
     <!-- Increased bottom margin and bottom padding for more space -->
     <h2 class="h3 text-dark my-2 mb-sm-0">Popular Services</h2>
     <a class="btn btn-outline-dark fw-normal" href="{% url 'homepageapp:services' %}">
@@ -90,7 +115,7 @@
       <!-- Removed specific col sizing to allow automatic responsiveness -->
       <div class="card h-100 card-body bg-transparent border-0 text-center card-hover-glare hover-shadow">
         <!-- Added h-100 for equal height, hover-shadow for interactive hover effect -->
-        <img class="d-block mx-auto my-4" src="{% static icon.img_src %}" alt="{{ icon.alt }}" style="width: auto; height: 80px;">
+        <img class="d-block mx-auto my-4" src="{% static icon.img_src %}" alt="{{ icon.alt }}" style="width: auto; height: 70px;">
         <!-- Added my-4 for more vertical spacing, and inline style for consistent icon size -->
         <p class="fw-bold mb-0">{{ icon.title }}</p>
         <!-- Removed stretched-link and added mb-0 to remove unnecessary link behavior and bottom margin -->
