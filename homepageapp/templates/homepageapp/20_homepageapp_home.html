@@ -44,13 +44,11 @@ height: auto;
 } 
 */
 
-
 </style>
 
-<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> -->
-
 <!-- Page header-->
-<section class="bg-top-center bg-repeat-0 mt-5" style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); background-size: cover;">
+<section class="bg-top-center bg-repeat-0 mt-5" 
+style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); background-size: cover;">
 
   <!-- django messages section  -->
   {% include 'homepageapp/14_homepageapp_messages_section.html' %}
@@ -66,12 +64,12 @@ height: auto;
             <p class="fs-lg text-dark opacity-80">Gone are the days of ambiguous repair statuses and surprise delays. We're here to ensure transparency, accuracy, and speed like you've never experienced before.</p>
             <p class="fs-lg text-dark opacity-100">Why Automan Shop stands out:</p>
             <ul class="fs-lg text-dark opacity-100">
-                <li class ="p-1 m-1"> <strong>System Integration :</strong> Real-time tracking of tasks, from appointments to repairs, all at the tip of your fingers.</li>       
-                <li class ="p-1 m-1"> <strong> Data-powered Vehicle Service <i class="fa-solid fa-screwdriver-wrench"></i></strong> Never be in the dark again with our constant updates on repair progress and digital payment gateways. We bring live updates to you.</li>
-                <li class ="p-1 m-1"> <strong> Digital Payment Gateways<i class="fa-solid fa-credit-card"></i></strong> Don't have time to pay at our stores? You can now pay online with Stripe.</li>
-                <li class ="p-1 m-1"> <strong> Privacy Protection <i class="fa-solid fa-shield-halved"></i>: </strong> We securely store your data, such as email, credit card information with SHA256 encryption, meeting the industry standard. </li>
-                <li class ="p-1 m-1"> <strong> Advanced Vehicle Reports <i class="fa-solid fa-file-shield"></i>:</strong> Dive deep into vehicle data, extracting specs, warranty details, and even safety recalls from our vast digital archives.</li>
-                <li class ="p-1 m-1"> <strong> Articial Intellgience at its best <i class="fa-solid fa-robot"></i>:</strong> Meet Pulido, our virtual assistant. From smart service estimates to AI-assisted parts recommendations [launching soon], we're bringing the future to you.</li>
+                <li class ="p-1 m-1"> <i class="fas fa-cogs"></i>  <strong>System Integration</strong>. Real-time tracking of tasks, from appointments to repairs, all at the tip of your fingers.</li>       
+                <li class ="p-1 m-1"> <i class="fa-solid fa-screwdriver-wrench"></i> <strong> Data-powered Vehicle Service</strong>. Never be in the dark again with our constant updates on repair progress and digital payment gateways. We bring live updates to you.</li>
+                <li class ="p-1 m-1"> <i class="fa-solid fa-credit-card"></i> <strong> Digital Payment Gateways</strong>. Don't have time to pay at our stores? You can now pay online with Stripe.</li>
+                <li class ="p-1 m-1"> <i class="fa-solid fa-shield-halved"></i> <strong> Privacy Protection </strong>. We securely store your data, such as email, credit card information with SHA256 encryption, meeting the industry standard. </li>
+                <li class ="p-1 m-1"> <i class="fa-solid fa-file-shield"></i> <strong> Advanced Vehicle Reports. </strong> Dive deep into vehicle data, extracting specs, warranty details, and even safety recalls from our vast digital archives.</li>
+                <li class ="p-1 m-1">  <i class="fa-solid fa-robot"></i> <strong> Articial Intellgience at its best</strong>. Meet Pulido, our virtual assistant. From smart service estimates to AI-assisted parts recommendations [launching soon], we're bringing the future to you.</li>
             </ul>
             <p class="fs-lg text-dark opacity-80">Be a part of the automotive future. Book a service with Automan Shop and experience the next generation of auto repairs!</p>
 
@@ -109,7 +107,6 @@ height: auto;
   </div>
   <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 g-md-4">
     <!-- Increased gutter classes for more space between cards -->
-    {% for icon in service_icons %}
     <!-- Item -->
     <div class="col">
       <!-- Removed specific col sizing to allow automatic responsiveness -->

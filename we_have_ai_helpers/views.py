@@ -105,7 +105,7 @@ GPT_MODEL = "gpt-3.5-turbo-0613"
 def get_chatbot_response(user_input):
     # openai.api_key = os.getenv("OPENAI_API_KEY2")
 
-    openai.api_key = settings.OPENAI_API_KEY2
+    # openai.api_key = settings.OPENAI_API_KEY2
     if openai.api_key:
         logging.info(
             'the openai api key fetched succesful...in the get_chatbot_response function..')

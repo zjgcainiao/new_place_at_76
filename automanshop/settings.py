@@ -29,7 +29,7 @@ from datetime import timedelta
 import re
 import ssl
 
-logger = logging.getLogger("django")
+
 # The find_dotenv() function will search for the .env file starting from the current working directory and then going up each parent directory until it finds one.
 # So, even if your script isn't in the root of your project, find_dotenv() can still locate your .env file.
 load_dotenv(find_dotenv())
@@ -180,6 +180,9 @@ LOGGING = {
         },
     },
 }
+
+logger = logging.getLogger("django")
+
 # 2023-10-24 added OpenAI_API_key and OpenAI_API_key 2
 OPENAI_API_KEY = config("OPENAI_API_KEY")
 OPENAI_API_KEY2 = config("OPENAI_API_KEY2", default=OPENAI_API_KEY)
