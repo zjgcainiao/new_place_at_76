@@ -1914,8 +1914,9 @@ class LicensePlateSnapShotsPlate2Vin(models.Model):
     last_checked_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return ''.join(self.license_plate, ' ', self.state)
-
+        # return ''.join(self.license_plate, '_', self.state)
+        return '{}_{}'.format(self.license_plate, self.state)
+        # return f'{self.license_plate}_{self.state}'
     class Meta:
         db_table = 'licenseplate_snapshots_plate2vin'
         ordering = ["-id", '-created_at', "license_plate", '-version']
@@ -1960,7 +1961,7 @@ class NhtsaRecalls(models.Model):
                                    null=True, related_name='recalls_updated_by')
 
     def __str__(self):
-        return ''.join(self.nhtsa_compaign_number, '_', self.recall_summary)
+        return '{}_{}'.format(self.nhtsa_compaign_number, self.recall_summary)
 
     class Meta:
         db_table = 'nhtsa_recalls'

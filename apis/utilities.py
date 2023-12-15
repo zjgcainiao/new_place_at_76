@@ -158,6 +158,7 @@ async def fetch_single_plate_data_via_plate2vin_api(license_plate, state, api_ur
     logger.info('attempting to read any api key stored in the .env...')
     try:
         plate2vin_api_key = config("PLATE2VIN_API_KEY")
+        logger.info('any api key found...')
     except UndefinedValueError:
         logger.error(
             'Error: The required environment variable PLATE2VIN_API_KEY is not set.')
