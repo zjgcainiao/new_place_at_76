@@ -76,10 +76,10 @@ services:
       # - sqldb
       - redis
 
-  redis:
-    image: redis:latest
-    ports:
-      - "6379:6379"
+  # redis:
+  #   image: redis:latest
+  #   ports:
+  #     - "6379:6379"
 
   celery:
     build: .
@@ -88,7 +88,7 @@ services:
       - .:/app
     depends_on:
       - web
-      - redis
+      # - redis
 
   beat:
     build: .
@@ -97,7 +97,7 @@ services:
       - .:/app
     depends_on:
       - celery
-      - redis
+      # - redis
     # volumes:
     # - sql_data:/var/opt/mssql
     # - /Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/05_databases/sqldata:/var/opt/mssql

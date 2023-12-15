@@ -122,6 +122,17 @@
 
       });
     </script>
+    
+    <!-- 2023-12-14
+      You can add a JavaScript snippet to disable right-click functionality on your images. This will prevent the standard
+    right-click and save method. -->
+    <script>
+      document.addEventListener('contextmenu', function (e) {
+        if (e.target.tagName === 'IMG') {
+          e.preventDefault();
+        }
+      });
+    </script>
 
     <!-- add Roboto font from google fonts. this font is used to display chatbot response (beta Pulido v1.0). -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/css/fonts.min.css">

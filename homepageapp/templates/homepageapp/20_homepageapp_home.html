@@ -46,6 +46,8 @@ height: auto;
 
 </style>
 
+
+
 <!-- Page header-->
 <section class="bg-top-center bg-repeat-0 mt-5" 
 style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); background-size: cover;">
@@ -113,7 +115,8 @@ style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); b
       <!-- Removed specific col sizing to allow automatic responsiveness -->
       <div class="card h-100 card-body bg-transparent border-0 text-center card-hover-glare hover-shadow">
         <!-- Added h-100 for equal height, hover-shadow for interactive hover effect -->
-        <img class="d-block mx-auto my-4" src="{% static icon.img_src %}" alt="{{ icon.alt }}" style="width: auto; height: 70px;">
+        <img class="d-block mx-auto my-4" src="{% static icon.img_src %}" alt="{{ icon.alt }}"  ondragstart="return false;" style="width: auto; height: 70px;">
+        <!-- <div class="icon" alt="{{ icon.alt }}"  ondragstart="return false;" style="background-image: url('{% static icon.img_src %}');width: auto; height: 70px;"></div> -->
         <!-- Added my-4 for more vertical spacing, and inline style for consistent icon size -->
         <p class="fw-bold mb-0">{{ icon.title }}</p>
         <!-- Removed stretched-link and added mb-0 to remove unnecessary link behavior and bottom margin -->

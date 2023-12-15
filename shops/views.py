@@ -114,11 +114,10 @@ def set_session_data(request, key, data):
     request.session[key] = data
     request.session.modified = True  # Ensure the session is saved
 
-
 # used in shops/search_by_vin_or_plate
 # 2023-11-04
 async def search_by_vin_or_plate(request):
-    flattened_data = None
+    flattened_data = {} # initalize as an emtpy. if set it as None, this will cause an error about flaten_data not being iterable.
     if request.method == 'GET':
         vin_form = VINSearchForm()
         plate_form = LicensePlateSearchForm()
