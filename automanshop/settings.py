@@ -196,15 +196,11 @@ DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 DJANGO_PROD_ENV = config("DJANGO_PROD_ENV", default=True, cast=bool)
 logger.info(
     f'Django debug has been set to {DEBUG}...Enable Production environment is {DJANGO_PROD_ENV}...')
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',  # or the domain where your React app is hosted
+CORS_ORIGIN_ALLOWED_ALL = True
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:5173',  # Add the origin of your React app here
     "http://localhost",
     "http://127.0.0.1:8000"
-]
-
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:5173",  # Add the origin of your React app here
 ]
 
 # Turn off CSRF secure in development env (HTTP); in production, HTTPS requires to have CSRF_COOKIE_SECURE = True

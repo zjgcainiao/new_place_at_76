@@ -39,7 +39,7 @@ django-recaptcha==3.0.0
 django-storages==1.13.2
 django-timezone-field==5.0
 djangorestframework==3.14.0
-easyocr==1.7.1
+# easyocr==1.7.1  #torch dependency. computer vision related
 et-xmlfile==1.1.0
 Faker==19.6.2
 filelock==3.12.2

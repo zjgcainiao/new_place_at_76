@@ -94,18 +94,19 @@ style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); b
 <!-- updated on 2023-11-03 
   service list the shop provides  -->
 
-<section class="container mt-5 pb-3">
+<section class="container mt-5 p-3">
   <!-- Added padding bottom for spacing -->
-  <div class="d-flex align-items-center mb-4 pb-2">
+  <div class="d-flex align-items-center justify-content-between mb-4 pb-2">
     <!-- Increased bottom margin and bottom padding for more space -->
     <h2 class="h3 text-dark my-2 mb-sm-0">Popular Services</h2>
-    <a class="btn btn-outline-dark fw-normal" href="{% url 'homepageapp:services' %}">
+    <a class="btn  btn-outline-dark fw-normal" href="{% url 'homepageapp:services' %}">
       <!-- Changed button class for an outlined style -->
       View all
       <i class="fi-arrow-long-right fs-sm mt-0 ps-1 ms-2"></i>
     </a>
   </div>
   <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 g-md-4">
+    {% for icon in service_icons %}
     <!-- Increased gutter classes for more space between cards -->
     <!-- Item -->
     <div class="col">
@@ -121,7 +122,7 @@ style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); b
     {% endfor %}
   </div>
 </section>
-
+<!-- end of service list section  -->
 
 
 {% endblock %}

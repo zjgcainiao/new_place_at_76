@@ -23,10 +23,9 @@ spec:
         io.kompose.service: web
     spec:
       containers:
-        - image: docker.io/web:amd64 #automanshopdocker.azurecr.io/web:amd64
-          # v1 - m1 chip. amd64- windows
+        - image: web:latest
           name: web
-
+          imagePullPolicy: IfNotPresent
           env:
             - name: ACME_API_TOKEN
               valueFrom:
@@ -294,6 +293,7 @@ spec:
                 secretKeyRef:
                   name: web-secret
                   key: USE_LOCAL_REDIS
+
           ports:
             - containerPort: 8000
               hostPort: 8000
@@ -305,17 +305,17 @@ spec:
             - -p
             - "8000"
             - automanshop.asgi:application
-          resources: 
-            requests:
-              memory: "128Mi"
-              cpu: "500m"
-            limits:
-              memory: "256Mi"
-              cpu: "1000m"
-      #     volumeMounts:
-      #       - mountPath: /app
-      #         name: web-claim0
-      # restartPolicy: Always
+          resources: {}
+            # requests:
+            #   memory: "128Mi"
+            #   cpu: "500m"
+            # limits:
+            #   memory: "256Mi"
+            #   cpu: "1000m"
+          # volumeMounts:
+          #   - mountPath: /app
+          #     name: web-claim0
+      restartPolicy: Always
       # volumes:
       #   - name: web-claim0
       #     persistentVolumeClaim:
