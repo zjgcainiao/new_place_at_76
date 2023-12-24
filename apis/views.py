@@ -1,8 +1,9 @@
 from django.conf import settings
 from django.views.decorators.http import require_http_methods
 import logging
-import aiohttp
-import asyncio
+import requests
+import json
+import os
 from django.contrib.auth import authenticate, login
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
@@ -10,35 +11,27 @@ from django.shortcuts import render
 from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework import status
-from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsNewSQL02Model, TextMessagesModel, VinNhtsaApiSnapshots
-from apis.serializers import CustomerSerializer, RepairOrderSerializer
+from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model, LineItemsNewSQL02Model, TextMessagesModel, VinNhtsaApiSnapshots, LicensePlateSnapShotsPlate2Vin
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.response import Response
-import json
-from apis.serializers import LineItemsSerializer, TextMessagesSerializer
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from internal_users.models import InternalUser
 from internal_users.internal_user_auth_backend import InternalUserBackend
-from apis.serializers import AddressSerializer, PhoneSerializer, EmailSerializer, CustomerSerializer, RepairOrderSerializer, PaymentSerializer, LastestVinDataSerializer
+from apis.serializers import CustomerSerializer,LineItemsSerializer, TextMessagesSerializer,AddressSerializer, PhoneSerializer, EmailSerializer, CustomerSerializer, RepairOrderSerializer, PaymentSerializer, LastestVinDataSerializer, PlateAndVinDataSerializer
 from homepageapp.models import VinNhtsaApiSnapshots
 from core_operations.models import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
-import os
 from django.core.exceptions import ObjectDoesNotExist
 from core_operations.constants import POPULAR_NHTSA_VARIABLE_IDS, POPULAR_NHTSA_GROUP_NAMES
-import requests
-
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from apis.user_permissions import IsInternalUser
 from rest_framework.permissions import IsAuthenticated
-from apis.serializers import RepairOrderSerializer
 
 
 # added on 2023-11-06
-
 class WIPDashboardViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated, IsInternalUser]
     serializer_class = RepairOrderSerializer
@@ -87,7 +80,7 @@ class LastestVinDataViewSet(viewsets.ModelViewSet):
         # Your queryset logic here...
         return VinNhtsaApiSnapshots.objects.all().select_related('variable')
 
-
+## this one returns api data based on POPULAR_NHTSA_VARIABLE_IDS
 class VinNhtsaApiSnapshotViewSet(viewsets.ModelViewSet):
     serializer_class = LastestVinDataSerializer
     permission_classes = [IsAuthenticated, IsInternalUser]
@@ -117,6 +110,55 @@ class VinNhtsaApiSnapshotViewSet(viewsets.ModelViewSet):
         if isinstance(exc, ObjectDoesNotExist):
             return Response({"Error": "VIN not found."}, status=status.HTTP_404_NOT_FOUND)
         return super().handle_exception(exc)
+
+
+class PlateAndVinDataViewSet(viewsets.ModelViewSet):
+    queryset = LicensePlateSnapShotsPlate2Vin.objects.all()
+    serializer_class = PlateAndVinDataSerializer
+    # permission_classes = [IsAuthenticated, IsInternalUser]
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = super().get_queryset()
+        vin = self.request.query_params.get('vin', None)
+        if vin:
+            queryset = queryset.filter(vin=vin)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        # Custom logic for creating a new instance
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+        # Custom logic for updating an existing instance
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        # Custom logic for deleting an instance
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    # Add any other methods you need (e.g., partial_update, retrieve, etc.)
+
+    # Optionally override perform_create, perform_update, perform_destroy if needed
 
 
 class ActiveRepairOrderViewSet(viewsets.ModelViewSet):

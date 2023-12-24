@@ -197,10 +197,14 @@ DJANGO_PROD_ENV = config("DJANGO_PROD_ENV", default=True, cast=bool)
 logger.info(
     f'Django debug has been set to {DEBUG}...Enable Production environment is {DJANGO_PROD_ENV}...')
 CORS_ORIGIN_ALLOWED_ALL = True
+CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',  # Add the origin of your React app here
     "http://localhost",
-    "http://127.0.0.1:8000"
+    "http://127.0.0.1:8000",
+    "https://new76prolubeplus.com",
+    "https://storage.googleapis.com",
 ]
 
 # Turn off CSRF secure in development env (HTTP); in production, HTTPS requires to have CSRF_COOKIE_SECURE = True
@@ -486,7 +490,9 @@ if response.status_code == 200:
     GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
         credential_info)
     cred = credentials.Certificate(credential_info)
+    logger.info(f'successfully downloaded the google sdk credential file (.json)')
 else:
+    logger.error(f"failing to download the google sdk credential file (.json)'")
     print("Failed to download the google sdk credential file (.json)")
     GS_CREDENTIALS = None
     cred = None
@@ -508,6 +514,7 @@ GS_AUTO_CREATE_BUCKET = True
 # initialize the firebase auth app.
 
 default_app = firebase_admin.initialize_app(cred)
+logger.info('initializing the firebase auth app...')
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
@@ -679,4 +686,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Test the database connection
-test_db_connection()
+# test_db_connection()

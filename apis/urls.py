@@ -1,9 +1,6 @@
 from django.urls import include, path
-from apis import views
 from rest_framework.routers import DefaultRouter
-from apis.views import ActiveRepairOrderViewSet, LineItemsViewSet, TextMessagesViewSet, api_internal_user_login, VinNhtsaApiSnapshotViewSet, openai_proxy
-from apis import views
-
+from apis.views import ActiveRepairOrderViewSet, LineItemsViewSet, TextMessagesViewSet, api_internal_user_login, VinNhtsaApiSnapshotViewSet, openai_proxy, PlateAndVinDataViewSet, WIPDashboardViewSet, LastestVinDataViewSet, get_active_repairorders_api,get_active_customers_api
 from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -11,31 +8,32 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-
 app_name = 'apis'
 
 router = DefaultRouter()
-router.register(r'vin_data', views.LastestVinDataViewSet,
-                basename='restful_to_latest_vin_data')
+router.register(r'vin_data', LastestVinDataViewSet,
+                basename='latest_vin_data_api')
 router.register(r'vin_nhtsa_api_snapshots', VinNhtsaApiSnapshotViewSet,
-                basename='restful_to_vin_nhtsa_api_snapshots')
-router.register(r'wip_dash', views.WIPDashboardViewSet,
+                basename='popular_vin_nhtsa_api')
+router.register(r'plate_and_vin_data', PlateAndVinDataViewSet,
+                basename='plate_and_vin_data_api')
+router.register(r'wip_dash', WIPDashboardViewSet,
                 basename='wip_dash_api')
 
 router.register(r'repair_orders', ActiveRepairOrderViewSet,
-                basename='restful_to_repair_orders')
+                basename='repair_orders_api')
 router.register(r'line_items', LineItemsViewSet,
-                basename='restful_to_line_items')
+                basename='line_items_api')
 router.register(r'text_messages', TextMessagesViewSet,
-                basename='restful_to_text_messages')
+                basename='text_messages_api')
 
 urlpatterns = [
     path('', include(router.urls)),
     path('internal_user_login/', api_internal_user_login,
          name='api_internal_user_login'),
-    path('customers/', views.get_active_customers_api,
+    path('customers/', get_active_customers_api,
          name='customers-api'),  # apis/cust
-    path('ros/', views.get_active_repairorders_api,
+    path('ros/', get_active_repairorders_api,
          name='repairorders-api'),
     # path('apis/repairorders', views.RepairOrderModelForm, name='api-repair-order'),
 

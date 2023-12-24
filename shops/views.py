@@ -21,9 +21,8 @@ from crispy_forms.utils import render_crispy_form
 from django.views.decorators.http import require_http_methods
 
 
-logger = logging.getLogger('django')
+logger = logging.getLogger('external_api')
 # renders the vehicle search page for all site viisters (not log in required)
-
 
 def vehicle_search_product(request):
     flattened_data = None
@@ -76,8 +75,8 @@ async def search_by_plate(request):
             state = form.cleaned_data['state'].upper()
 
             try:
-                plate_data, success = await fetch_single_plate_data_via_plate2vin_api(license_plate, state)
-                if not success:
+                plate_data= await fetch_single_plate_data_via_plate2vin_api(license_plate, state)
+                if not plate_data or not isinstance(plate_data, models.Model):
                     form.add_error(
                         None, 'Failed to fetch information for the given license plate.')
                 # Assuming `plate_data` is an instance of `LicensePlateSnapShotsPlate2Vin`:
@@ -93,7 +92,6 @@ async def search_by_vin(request):
     logger = logging.getLogger('django')
     vin_data_list = []
     # count = 0
-    logger = logging.getLogger('django')
     if request.method == 'POST' and 'action' in request.POST:
         form = VINSearchForm(request.POST)
         if form.is_valid():
@@ -117,6 +115,8 @@ def set_session_data(request, key, data):
 # used in shops/search_by_vin_or_plate
 # 2023-11-04
 async def search_by_vin_or_plate(request):
+    logger = logging.getLogger('django')
+    plate_data={}
     flattened_data = {} # initalize as an emtpy. if set it as None, this will cause an error about flaten_data not being iterable.
     if request.method == 'GET':
         vin_form = VINSearchForm()
@@ -167,7 +167,7 @@ async def search_by_vin_or_plate(request):
                 # Assuming 'vin' is the VIN you're interested in
 
                 return JsonResponse(flattened_data, safe=False)
-
+        # license plate search
         elif action_value == 'action_plate_search':
             plate_form = LicensePlateSearchForm(request.POST)
             if plate_form.is_valid():
@@ -177,8 +177,8 @@ async def search_by_vin_or_plate(request):
 
             logger.info(
                 f'performing a manual single plate search for license_plate{ license_plate} and state {state}...')
-            print(
-                f'performing a manual single plate search for license_plate {license_plate} and state {state}...')
+            # print(
+            #     f'performing a manual single plate search for license_plate {license_plate} and state {state}...')
 
             try:
                 plate_data, success = await fetch_single_plate_data_via_plate2vin_api(license_plate, state)
@@ -209,7 +209,7 @@ async def search_by_vin_or_plate(request):
 async def export_vin_data_to_pdf(request):
 
     # Fetch the data from the session or database
-    latest_vin_data = request.session.get(
+    latest_vin_data = database_sync_to_async(request.session.get)(
         'latest_vin_data')
 
     # Create a byte stream buffer

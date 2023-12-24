@@ -1,3 +1,6 @@
+import logging
+import aiohttp
+import asyncio
 from datetime import timedelta
 from django.utils.timezone import now
 from dashboard.async_functions import decrement_version_for_vin_async, update_or_create_vin_snapshots_async, database_sync_to_async
@@ -6,17 +9,12 @@ from homepageapp.models import LicensePlateSnapShotsPlate2Vin, VinNhtsaApiSnapsh
 from core_operations.common_functions import clean_string_in_dictionary_object
 from apis.api_vendor_urls import PLATE2VIN_API_URL, NHTSA_API_URL
 from django.db import models
-import logging
-import aiohttp
-import asyncio
 from django.core.exceptions import ObjectDoesNotExist
 from dashboard.async_functions import database_sync_to_async, fetch_latest_vin_data_from_snapshots
 from core_operations.constants import POPULAR_NHTSA_VARIABLE_IDS, POPULAR_NHTSA_GROUP_NAMES
 from asgiref.sync import sync_to_async
 
 # API utility function. modified in Dec 2023.
-
-
 async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
     if year and year.strip():
         url = f"https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}?format=json&modelyear={year}"
@@ -25,8 +23,8 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
     # url_extended = https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}format=json&modelyear={year}
     logger = logging.getLogger('external_api')
     logger.info(
-        f'Initiating an api request to NHTSA.DOT.GOV:{ NHTSA_API_URL}.')
-    print(f'Initiating an api request to NHTSA.DOT.GOV:{ NHTSA_API_URL}.')
+        f'Initiating an api request to { NHTSA_API_URL}.')
+    print(f'Initiating an api request to { NHTSA_API_URL}.')
     # print(url)
     vin_data_list = []
     number_of_downgraded_records = 0
@@ -79,7 +77,6 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
                 variable_id = item.get("VariableId")
 
                 # Try to convert VariableId to an integer, if it's not None or empty
-
                 if variable_id:
                     try:
                         variable_id = int(variable_id)
@@ -119,19 +116,27 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
 
                 # updated 2023-11-02 after variable_id becomes a foreign key field
                 # variable=variable, override
-                vin_data, created = await update_or_create_vin_snapshots_async(vin=vin, variable=variable, data=organized_data)
+                # vin_data, created = await update_or_create_vin_snapshots_async(vin=vin, variable=variable, data=organized_data)
+                
+                # updated on 2023-12-24: async function, to create or update in VinNhtsaApiSnapshots model.
+                vin_data,created = await database_sync_to_async(VinNhtsaApiSnapshots.objects.update_or_create)(
+                        vin=vin,
+                        variable=variable,
+                        defaults=organized_data,
+                    )
+                logger.info(f'vin_data is {vin_data}')
                 print(f'vin_data is {vin_data}')
                 vin_data_list.append(vin_data)
 
         logger.info(
-            f'Vin data has been saved for {vin} and model year {year}. created?:{created}.')
+            f'Vin data has been saved for {vin} and model year {year}. new vin data created?:{created}.')
 
-        if created:
-            print(f'saving new vin data? : {created}.')
-        else:
-            print('no new vin data saved...')
-
-        print('function is completed.')
+        # if created:
+        #     print(f'saving new vin data? : {created}.')
+        # else:
+        #     print('no new vin data saved...')
+        logger.info('function is completed.')
+        # print('function is completed.')
         # return the data, the number of records downgraded, and if new records are created in the VinNhtsaSnapshots
         return vin_data_list, number_of_downgraded_records, created
 
@@ -146,10 +151,10 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
 
 # async function that fetchs a result for a single combo of license plate and state. Vendor: plate2vin
 
-
 async def fetch_single_plate_data_via_plate2vin_api(license_plate, state, api_url=PLATE2VIN_API_URL):
     logger = logging.getLogger('external_api')
     url = api_url.strip()
+    success = False
     payload = {
         "state": state,
         "plate": license_plate
@@ -158,7 +163,7 @@ async def fetch_single_plate_data_via_plate2vin_api(license_plate, state, api_ur
     logger.info('attempting to read any api key stored in the .env...')
     try:
         plate2vin_api_key = config("PLATE2VIN_API_KEY")
-        logger.info('any api key found...')
+        logger.info('the api key found...')
     except UndefinedValueError:
         logger.error(
             'Error: The required environment variable PLATE2VIN_API_KEY is not set.')
@@ -188,37 +193,41 @@ async def fetch_single_plate_data_via_plate2vin_api(license_plate, state, api_ur
     )()
     # exists = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(license_plate=license_plate, state=state).exists)()
     if exists:
+        success = True
         return await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(
             license_plate=license_plate,
             state=state,
             last_checked_at__gte=twelve_months_ago
-        ).order_by('-last_checked_at').first)()
+        ).order_by('-last_checked_at').first)(), success
 
     # start the api call.
     async with aiohttp.ClientSession() as session:
         async with session.post(url, headers=headers, json=payload) as response:
             data = await response.json()
-
+            plate_data = {}
             success = data.get('success')
             if not success:
                 return None, success
             elif success:
                 vin_data = data.get('vin', {})
+                vin = vin_data.get('vin') or None
                 vin_data = clean_string_in_dictionary_object(vin_data)
-
-                if vin_data.get('vin'):
-                    new_vin = vin_data.get('vin')
-                    await fetch_and_save_single_vin_from_nhtsa_api(new_vin)
+                # saving a record of the vin data associated with this license plate and state to Vin
+                if vin:
+                    await fetch_and_save_single_vin_from_nhtsa_api(vin)
                     logger.info(
-                        f'fetching nhtsa data for the vin {new_vin} associated with the lience plate {license_plate}')
+                        f'fetching and saving nhtsa data in progress, for VIN {vin}, which is associated with the license plate {license_plate} and state {state}.')
+                else:
+                    logger.error('no vin found in the api response....')
+
                 # first need to check if there are any existing records with the same license plate and state. this model deos not check the unique on vin field.
-                exists = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(license_plate=license_plate, state=state).exists)()
-                if exists:
-                    await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(
-                        license_plate=license_plate, state=state
-                    ).update)(version=models.F('version') - 1)
+                # exists = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(license_plate=license_plate, state=state).exists)()
+                # if exists:
+                #     await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.filter(
+                #         license_plate=license_plate, state=state
+                #     ).update)(version=models.F('version') - 1)
                 # update or create a plate_data
-                plate_data, created = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.update_or_create)(
+                plate_data, created = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.create)(
                     license_plate=license_plate,
                     state=state,
                     defaults={

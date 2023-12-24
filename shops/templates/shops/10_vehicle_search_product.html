@@ -12,13 +12,13 @@
     border: 1px solid transparent;
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
-    background: #f8f9fa; /* Light grey background */
-    margin-right: 2px;
+    background:#f8f9fa;                 /* #f8f9fa;  Light grey background. orange400 */
+    margin-right: 5px;
     }
 
     .nav-tabs .nav-link.active {
     color: #495057;
-    background-color: #fff;
+    background-color: #fed7aa; /* orange200 */
     border-color: #dee2e6 #dee2e6 #fff;
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1),
                 0 2px 4px -1px rgba(0,0,0,0.06); /* Soft shadow for active tab */
@@ -78,16 +78,17 @@
     /* Styles for the export buttons */
     .btn-export-pdf {
         color: #fff; /* Text color */
-        background-color: #343a40; /* Dark background color */
+        background-color: #031a30;/* Dark background color */
         border-color: #343a40; /* Dark border */
-        margin: 10px 0; /* Space around buttons */
+        margin: 5px 0; /* Space around buttons */
         width: 100%; /* Full width for responsiveness */
-        padding: 10px; /* Padding for a larger click area */
+        padding: 5px; /* Padding for a larger click area */
         transition: background-color 0.3s ease; /* Smooth transition for hover effect */
     }
 
     .btn-export-pdf:hover {
-        background-color: #23272b; /* Slightly darker on hover */
+        color: #f2f6f7; /* Text color on hover */
+        background-color: #3a7ec6; /* lighter blue on hover */
         border-color: #1d2124; /* Dark border on hover */
     }
 
@@ -126,7 +127,7 @@
             <div class="tab-pane fade" id="byVIN" role="tabpanel" aria-labelledby="byVIN-tab">
 
                 <!-- By VIN Form -->
-                    {% crispy vin_form  vin_form.helper %}
+                    {% crispy vin_form vin_form.helper %}
      
             </div>
             <!-- end of the Vin Search Form  -->
@@ -305,8 +306,6 @@ $(document).ready(function() {
 
             // Append the table to vinDataDisplay div
             $('#vinDataDisplay').append(table);
-
-
         },
         error: function() {
             $('#vinDataDisplay').html('<p>An error has occurred</p>');
@@ -314,7 +313,7 @@ $(document).ready(function() {
         });
     });
        $('#plate-search-button').click(function(event) {
-    // $("#PlateSearchForm").submit(function(event){
+        // $("#PlateSearchForm").submit(function(event){
 
         event.preventDefault(); // Prevent the form from submitting traditionally
         var form = $('#PlateSearchForm');

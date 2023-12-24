@@ -82,14 +82,13 @@ class RepairOrderSerializer(serializers.ModelSerializer):
             if timezone.is_naive(repair_order_created_at):
                 repair_order_created_at = timezone.make_aware(
                     repair_order_created_at)
-            representation['repair_order_created_at'] = repair_order_created_at.isoformat(
-            )
+            representation['repair_order_created_at'] = repair_order_created_at.isoformat()
         return representation
 
     def validate(self, attrs):
         # You can add custom validation here
         return super().validate(attrs)
-
+    # 2023-12-20 https://www.django-rest-framework.org/api-guide/relations/#nested-relationships
     def create(self, validated_data):
         # Custom logic for creation
         return RepairOrdersNewSQL02Model.objects.create(**validated_data)
@@ -104,6 +103,7 @@ class RepairOrderSerializer(serializers.ModelSerializer):
 class CustomerSerializer(serializers.ModelSerializer):
     # customer_dob = serializers.DateTimeField()
     customer_created_at = serializers.DateTimeField()
+    customer_updated_at = serializers.DateTimeField()
 
     class Meta:
         model = CustomersNewSQL02Model
@@ -129,11 +129,13 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 
 class LastestVinDataSerializer(serializers.ModelSerializer):
+
+    # use to create a nested relationship
     flattened_data = serializers.SerializerMethodField()
 
     class Meta:
         model = VinNhtsaApiSnapshots
-        fields = ['id', 'vin', 'flattened_data', 'variable',  'value']
+        fields = ['id', 'vin', 'flattened_data', 'variable', 'variable_name', 'value']
         depth = 1
 
     def get_flattened_data(self, obj):
@@ -158,3 +160,27 @@ class PlateDataSerializer(serializers.ModelSerializer):
         model = LicensePlateSnapShotsPlate2Vin
         fields = ['__all__']
         depth = 1
+
+
+# added 2023-12-24 
+class VinNhtsaApiSnapshotsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VinNhtsaApiSnapshots
+        fields = [ 'id','vin', 'variable', 'variable_name', 'value', 'value_id']
+        depth = 1
+
+class PlateAndVinDataSerializer(serializers.ModelSerializer):
+    vin_data = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LicensePlateSnapShotsPlate2Vin
+        fields = ['id', 'api_url', 'license_plate', 'state', 'vin', 
+                  'trim','year','make','engine','drive_type','style','fuel',
+                  'color_name','color_abbreviation','vin_data',]
+        depth = 2
+
+    def get_vin_data(self, obj):
+        # Retrieve VinNhtsaApiSnapshots instances related to the VIN
+        vin_related_data = VinNhtsaApiSnapshots.objects.filter(vin=obj.vin)
+        # Serialize the related data
+        return VinNhtsaApiSnapshotsSerializer(vin_related_data, many=True).data

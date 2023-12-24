@@ -1,63 +1,19 @@
 from django.db import models
 # from computedfields.models import ComputedFieldsModel, computed, compute
 
-
+# # the lookup table for NHTSA APIs. already exists in homepageapp.models 
 # class NhtsaVariableLookup(models.Model):
-#     variable_data_type: "string",
-#     variable_description: "<p>This field stores any other battery information that does not belong to any of the other battery related fields.</p>",
-#     variable_group_name: "Mechanical / Battery",
-#       "ID": 1,
-#       "Name": "Other Battery Info"
+#     id = models.AutoField(primary_key=True)
+#     nhtsa_variable_id = models.CharField(max_length=20, null=True)
+#     nhtsa_variable_name = models.CharField(max_length=100, null=True)
+#     nhtsa_variable_data_type = models.CharField(max_length=50, null=True)
+#     nhtsa_variable_description = models.CharField(max_length=4000, null=True)
+#     nhtsa_variable_group_name = models.CharField(max_length=100, null=True)
+#     last_updated_at = models.DateTimeField(null=True, auto_now=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
 
 
-# class CustomerAPI01(models.Model):
-#     customer_new_uid_v01 = models.CharField(editable=False, auto_created = True, primary_key=True, max_length=36)
-#     # primary key = True
-#     customer_id  = models.CharField(max_length=20, null=True)
-#     customer_title_id    = models.CharField(max_length=20, null=True)
-#     customer_first_name  = models.CharField(max_length=50, null=True)
-#     customer_last_name   = models.CharField(max_length=50, null=True)
-#     customer_middle_name = models.CharField(max_length=50, null=True)
-#     customer_dob    = models.DateTimeField(null=True)
-#     customer_spouse_name  = models.CharField(max_length=50, null=True)
-#     customer_contact_phone_uid = models.CharField(max_length=36, null=True, primary_key=False)
-#     customer_contact_email_uid = models.CharField(max_length=36, null=True, primary_key=False)
-#     customer_is_okay_to_charge  = models.BooleanField(default=True)
-#     customers_memo_1  = models.CharField(max_length=4000, null=True)
-#     customer_is_tax_exempt = models.BooleanField(default=False)
-#     customer_resale_permit_nbr = models.CharField(max_length=20, null=True)
-#     customer_is_in_social_crm  = models.BooleanField(default=True)
-#     customer_hear_from_us_type = models.CharField(max_length=20, null=True)
-#     customer_last_visit_date   = models.DateTimeField(null=True)
-#     customer_first_visit_date  = models.DateTimeField(null=True)
-#     customer_is_activate       = models.BooleanField(default=True)
-#     customer_memebership_nbr   = models.CharField(max_length=20, null=True)
-#     customer_does_allow_SMS  = models.BooleanField(default=True)
-#     customer_email_address_in_json = models.CharField(max_length=200, null=True)
-#     customer_last_updated_datetime  = models.DateTimeField(null=True, auto_now=True)
-#     customer_created_at   = models.DateTimeField(auto_now_add=True)
-#     customer_is_created_from_appointments = models.BooleanField(default=False)
-#     customer_fleet_vendor_id = models.CharField(max_length=20, null=True)
-#     # custom the corresponding data table name for this model
-#     class Meta:
-#         db_table = 'customers_new_01'  #'AERODROMES'
 
-# def get_absolute_url(self):
-#     return reverse('customer-detail', kwargs={'pk': self.pk})
-
-# class PhonesNewSQL01Model(models.Model):
-#     phone_new_uid_v01= models.CharField(editable=False, auto_created=True, primary_key=True, max_length=36)
-#     phone_id = models.CharField(max_length=20, null=True)
-#     phone_desc_id= models.CharField(max_length=20, null=True)
-#     phone_number= models.CharField(max_length=20, null=True)
-#     phone_number_ext= models.CharField(max_length=20, null=True)
-#     phone_displayed_name= models.CharField(max_length=20, null=True)
-#     phone_memo_01 = models.CharField(max_length=100, null=True)
-#     phone_created_at = models.DateTimeField(null=True,add_now_add=True)
-#     phone_last_updated_date = models.DateTimeField(null=True,auto_now=True)
-#     # custom the corresponding data table name for this model
-#     class Meta:
-#         db_table = 'phones_news_01'  #'AERODROMES'
 
 
 # class VehiclesNewSQL01Model(models.Model):
