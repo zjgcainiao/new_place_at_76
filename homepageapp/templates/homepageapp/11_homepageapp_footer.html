@@ -1,4 +1,49 @@
-<!-- Footer-->
+<!-- hompageapp_footer  -->
+<style>
+  footer.footer {
+    font-family: 'Roboto', sans-serif;
+    /* Apply Orbitron font */
+    background-color: #ffffff;
+    /* Set the background to white */
+    color: #333333;
+    /* Dark text for contrast */
+    text-align: center;
+    /* Center align the text for a more balanced look */
+    padding: 10px 0;
+    /* Add some padding for spacing */
+  }
+
+  footer.footer a {
+    color: #515153;
+    /* Color for links */
+    text-decoration: none;
+    /* Remove underline from links */
+  }
+
+  footer.footer a:hover {
+    color: #f35608;
+    /* Color for links on hover */
+  }
+
+  footer.footer .container {
+    max-width: 1140px;
+    /* Optional: constrain the max width */
+    margin: 0 auto;
+    /* Center the container */
+  }
+
+  /* Style for the copyright text */
+  footer.footer .copyright-text {
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    margin-bottom: 5px;
+    color: #6c757d;
+    /* Adjust the color as needed */
+    font-size: 0.9rem;
+    /* Adjust the size as needed */
+  }
+</style>
+
 <footer class="footer bg-faded-light">
   <div class="border-bottom border-light py-4">
     <div class="container d-sm-flex align-items-center justify-content-between"><a class="d-inline-block"
@@ -9,13 +54,17 @@
   </div>
 
   <div class="container d-lg-flex align-items-center justify-content-between fs-sm pb-3">
-    <div class="d-flex flex-wrap justify-content-center order-lg-2 mb-3"><a class="nav-link nav-link-light fw-normal"
-        href="#">Terms of use</a><a class="nav-link nav-link-light fw-normal" href="#">Privacy policy</a><a
-        class="nav-link nav-link-light fw-normal" href="#">Accessibility statement</a><a
-        class="nav-link nav-link-light fw-normal pe-0" href="#">Interest based ads</a></div>
-    <p class="text-center text-lg-start order-lg-1 mb-lg-0"><span class="text-light opacity-50">
-        Amazing Automan LLC. &copy; All Rights Reserved. @2022-
-        <script>document.write(new Date().getFullYear())</script>
+    <div class="d-flex flex-wrap justify-content-center order-lg-2 mb-3">
+      <a class="nav-link nav-link-dark fw-normal" href="#">Terms of use</a>
+      <a class="nav-link nav-link-dark fw-normal" href="#">Privacy policy</a>
+    </div>
+
+    <p class="copyright-text text-center text-lg-start order-lg-1 mb-lg-0"><span class="text-dark">
+        Amazing Automan LLC. &copy; 2023 - <span id="copyright-current-year"></span>
     </p>
+    <script>
+      document.getElementById('copyright-current-year').textContent = new Date().getFullYear();
+    </script>
   </div>
+  <!-- end of container -->
 </footer>

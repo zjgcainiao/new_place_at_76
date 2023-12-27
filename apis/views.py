@@ -111,11 +111,12 @@ class VinNhtsaApiSnapshotViewSet(viewsets.ModelViewSet):
             return Response({"Error": "VIN not found."}, status=status.HTTP_404_NOT_FOUND)
         return super().handle_exception(exc)
 
-
+# added on 2023-12-24. this one returns DRF-viewset data from license plate and state. 
+# this viewset uses `PlateAndVinDataSerializer` serializer, which has a nested serializer `VinNhtsaApiSnapshotsSerializer`
 class PlateAndVinDataViewSet(viewsets.ModelViewSet):
     queryset = LicensePlateSnapShotsPlate2Vin.objects.all()
     serializer_class = PlateAndVinDataSerializer
-    # permission_classes = [IsAuthenticated, IsInternalUser]
+    permission_classes = [IsAuthenticated, IsInternalUser]
 
     def get_queryset(self):
         """
@@ -159,7 +160,6 @@ class PlateAndVinDataViewSet(viewsets.ModelViewSet):
     # Add any other methods you need (e.g., partial_update, retrieve, etc.)
 
     # Optionally override perform_create, perform_update, perform_destroy if needed
-
 
 class ActiveRepairOrderViewSet(viewsets.ModelViewSet):
     serializer_class = RepairOrderSerializer

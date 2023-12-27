@@ -7,7 +7,7 @@ from formtools.wizard.views import SessionWizardView
 from shops.forms import LicensePlateSearchForm, VINSearchForm
 from apis.utilities import fetch_and_save_single_vin_from_nhtsa_api, fetch_single_plate_data_via_plate2vin_api
 from django.db import models
-from asgiref.sync import sync_to_async
+
 from dashboard.async_functions import fetch_latest_vin_data_from_snapshots, database_sync_to_async
 from apis.utilities import fetch_latest_vin_data_func
 import stripe
@@ -63,48 +63,48 @@ def stripe_charge(request):
         return redirect('some_view_name')
 
 
-async def search_by_plate(request):
+# async def search_by_plate(request):
 
-    plate_data = []
-    success = False
+#     plate_data = []
+#     success = False
 
-    if request.method == 'POST':
-        form = LicensePlateSearchForm(request.POST or None)
-        if form.is_valid():
-            license_plate = form.cleaned_data['license_plate']
-            state = form.cleaned_data['state'].upper()
+#     if request.method == 'POST':
+#         form = LicensePlateSearchForm(request.POST or None)
+#         if form.is_valid():
+#             license_plate = form.cleaned_data['license_plate']
+#             state = form.cleaned_data['state'].upper()
 
-            try:
-                plate_data= await fetch_single_plate_data_via_plate2vin_api(license_plate, state)
-                if not plate_data or not isinstance(plate_data, models.Model):
-                    form.add_error(
-                        None, 'Failed to fetch information for the given license plate.')
-                # Assuming `plate_data` is an instance of `LicensePlateSnapShotsPlate2Vin`:
-                plate_data = await database_sync_to_async(model_to_dict)(plate_data)
-            except Exception as e:
-                form.add_error(
-                    None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
+#             try:
+#                 plate_data= await fetch_single_plate_data_via_plate2vin_api(license_plate, state)
+#                 if not plate_data or not isinstance(plate_data, models.Model):
+#                     form.add_error(
+#                         None, 'Failed to fetch information for the given license plate.')
+#                 # Assuming `plate_data` is an instance of `LicensePlateSnapShotsPlate2Vin`:
+#                 plate_data = await database_sync_to_async(model_to_dict)(plate_data)
+#             except Exception as e:
+#                 form.add_error(
+#                     None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
 
-    return JsonResponse(plate_data)
+#     return JsonResponse(plate_data)
 
 
-async def search_by_vin(request):
-    logger = logging.getLogger('django')
-    vin_data_list = []
-    # count = 0
-    if request.method == 'POST' and 'action' in request.POST:
-        form = VINSearchForm(request.POST)
-        if form.is_valid():
-            vin = form.cleaned_data['vin']
-            year = form.cleaned_data['year']
-            logger.info(
-                f'performing a manual single vin search on webpage for vin {vin} and model year {year}...')
+# async def search_by_vin(request):
+#     logger = logging.getLogger('django')
+#     vin_data_list = []
+#     # count = 0
+#     if request.method == 'POST' and 'action' in request.POST:
+#         form = VINSearchForm(request.POST)
+#         if form.is_valid():
+#             vin = form.cleaned_data['vin']
+#             year = form.cleaned_data['year']
+#             logger.info(
+#                 f'performing a manual single vin search on webpage for vin {vin} and model year {year}...')
 
-            vin_data_list, number_of_downgraded_records, created = await fetch_and_save_single_vin_from_nhtsa_api(vin, year)
-    else:
-        form = VINSearchForm()
+#             vin_data_list, number_of_downgraded_records, created = await fetch_and_save_single_vin_from_nhtsa_api(vin, year)
+#     else:
+#         form = VINSearchForm()
 
-    return json.dumps(vin_data_list)
+#     return json.dumps(vin_data_list)
 
 
 @database_sync_to_async
@@ -185,12 +185,16 @@ async def search_by_vin_or_plate(request):
                 if not success:
                     plate_form.add_error(
                         None, 'Failed to fetch VIN for the given License Plate.')
+                elif plate_data:
+                    # Flatten the data only if plate_data is not empty
+                    # Assuming `plate_data` is an instance of `LicensePlateSnapShotsPlate2Vin`
+                    flattened_data = await database_sync_to_async(model_to_dict)(plate_data)
             except Exception as e:
                 plate_form.add_error(
                     None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
 
-            # Assuming `plate_data` is an instance of `LicensePlateSnapShotsPlate2Vin`
-            flattened_data = await database_sync_to_async(model_to_dict)(plate_data)
+            
+            # flattened_data = await database_sync_to_async(model_to_dict)(plate_data)
 
             return JsonResponse(flattened_data, safe=False)
         else:

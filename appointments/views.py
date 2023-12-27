@@ -81,7 +81,7 @@ def appointment_preview_view(request, pk):
         if request.method == "POST":
             appointment.appointment_status = APPT_STATUS_SUBMITTED
             appointment.save()
-            return redirect("appointments:appointment_sucess_view", pk=appointment.pk)
+            return redirect("appointments:appointment_success_view", pk=appointment.pk)
 
         context = {'appointment': appointment, 'images': images}
         return render(request, 'appointments/21_appointment_preview.html', context)

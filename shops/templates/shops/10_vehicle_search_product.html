@@ -285,7 +285,7 @@
 
 <!-- customized script to display vin data  -->
 <script>
-    $(document).ready(function () {
+    $(function () {
         // btn-primary was added to the button for no reason.
         $('#vin-search-button').removeClass('btn-primary');
         $('#plate-search-button').removeClass('btn-primary');
@@ -299,10 +299,14 @@
             const formData = form.serialize(); // Serialize form data for submission
             console.log(formData); // Add this line to verify the serialized data
 
-            // csrfToken two ways
+            // get `csrfToken` two ways
             const csrfToken = form.find('[name=csrfmiddlewaretoken]').val(); // Fetch CSRF token from the form
             console.log(csrfToken); // Add this line to verify the serialized data
             // var csrfToken_alternative = $('#vin-search-button').data('bs-csrf');
+
+
+            // Clear existing data and show a loading spinner 2023-12-27
+            $('#vinDataDisplay').empty().html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
 
             $.ajax({
                 type: 'POST',
@@ -314,7 +318,7 @@
                 },
                 success: function (response) {
                     console.log(response);
-                    // Clear any previous results
+                    // Clear any previous results and the loading spinner
                     $('#vinDataDisplay').empty();
 
                     // Start building the table
@@ -354,7 +358,8 @@
             // csrfToken two ways
             const csrfToken = form.find('[name=csrfmiddlewaretoken]').val(); // Fetch CSRF token from the form
             var csrfToken_alternative = $('#plate-search-button').data('bs-csrf');
-
+            // Clear existing data and show a loading spinner 2023-12-27
+            $('#vinDataDisplay').empty().html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
             $.ajax({
                 type: 'POST',
                 url: "{% url 'shops:search_by_vin_or_plate' %}", // URL to your Django view

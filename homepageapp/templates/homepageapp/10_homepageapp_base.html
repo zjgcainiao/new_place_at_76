@@ -50,118 +50,18 @@
   <!-- Main theme js-->
   <script src="{% static 'homepageapp/js/theme.min.js' %}"></script>
 
-  <!-- Page loading styles-->
-  <style>
-    .page-loading {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      -webkit-transition: all .4s .2s ease-in-out;
-      transition: all .4s .2s ease-in-out;
-      background-color: linear-gradient(160deg, #97989a, #9a9b9d 50%, #c5d0dc 100%);
-      /* #1f1b2d; #7c2d12;*/
-      opacity: 0;
-      visibility: hidden;
-      z-index: 99999;
-    }
-
-    .page-loading.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .page-loading-inner {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      -webkit-transform: translateY(-50%);
-      transform: translateY(-50%);
-      -webkit-transition: opacity .2s ease-in-out;
-      transition: opacity .2s ease-in-out;
-      opacity: 0;
-    }
-
-    .page-loading.active>.page-loading-inner {
-      opacity: 1;
-    }
-
-    .page-loading-inner>span {
-      display: block;
-      font-size: 1rem;
-      font-weight: normal;
-      color: #fff;
-      ;
-    }
-
-    .page-spinner {
-      display: inline-block;
-      width: 2.75rem;
-      height: 2.75rem;
-      margin-bottom: .75rem;
-      vertical-align: text-bottom;
-      border: .15em solid rgb(50, 79, 211);
-      border-right-color: transparent;
-      border-radius: 50%;
-      -webkit-animation: spinner .75s linear infinite;
-      animation: spinner .75s linear infinite;
-    }
-
-    @-webkit-keyframes spinner {
-      100% {
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes spinner {
-      100% {
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
-      }
-    }
-
-    .navbar-toggle-icon-mdi {
-      font-size: 2rem;
-      /* Adjust as needed */
-      vertical-align: middle;
-      /* Center the icon vertically */
-    }
-  </style>
-  <!-- Page loading scripts-->
-  <script>
-
-    $(function () {
-      var preloader = $('.page-loading');
-      preloader.removeClass('active');
-      setTimeout(function () {
-        preloader.remove();
-      }, 2000);
-
-      $(document).on('contextmenu', 'img', function (e) {
-        e.preventDefault();
-      });
-    });
-  </script>
 
   <!-- 2023-12-14
       You can add a JavaScript snippet to disable right-click functionality on your images. This will prevent the standard
     right-click and save method. -->
-  <script>
-    // document.addEventListener('contextmenu', function (e) {
-    //   if (e.target.tagName === 'IMG') {
-    //     e.preventDefault();
-    //   }
-    // });
-  </script>
+  <!-- <script>
+    document.addEventListener('contextmenu', function (e) {
+      if (e.target.tagName === 'IMG') {
+        e.preventDefault();
+      }
+    });
+  </script> -->
 
-  <!-- add Roboto font from google fonts. this font is used to display chatbot response (beta Pulido v1.0). -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/css/fonts.min.css">
 
   <!-- font-awesome 6.4.2 css  -->
   <link rel="stylesheet" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
@@ -189,9 +89,12 @@
   <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
 
 
+  <!-- add Roboto font from google fonts. this font is used to display chatbot response (beta Pulido v1.0). -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/css/fonts.min.css">
+  <!-- 2023-12-25 add new Orbitron font from google fonts  -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <meta name="csrf-token" content="{{ csrf_token }}">
-
-
 </head>
 
 <style>
@@ -202,9 +105,109 @@
     /* Center the icon vertically */
   }
 </style>
+
+<!-- Page loading styles-->
+<style>
+  .page-loading {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    -webkit-transition: all .4s .2s ease-in-out;
+    transition: all .4s .2s ease-in-out;
+    background-color: linear-gradient(160deg, #97989a, #9a9b9d 50%, #c5d0dc 100%);
+    /* #1f1b2d; #7c2d12;*/
+    opacity: 0;
+    visibility: hidden;
+    z-index: 99999;
+  }
+
+  .page-loading.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .page-loading-inner {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    -webkit-transition: opacity .2s ease-in-out;
+    transition: opacity .2s ease-in-out;
+    opacity: 0;
+  }
+
+  .page-loading.active>.page-loading-inner {
+    opacity: 1;
+  }
+
+  .page-loading-inner>span {
+    display: block;
+    font-size: 1rem;
+    font-weight: normal;
+    color: #fff;
+    ;
+  }
+
+  .page-spinner {
+    display: inline-block;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-bottom: .75rem;
+    vertical-align: text-bottom;
+    border: .15em solid rgb(244, 79, 14);
+    border-right-color: transparent;
+    border-radius: 50%;
+    -webkit-animation: spinner .75s linear infinite;
+    animation: spinner .75s linear infinite;
+  }
+
+  @-webkit-keyframes spinner {
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes spinner {
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
+  .navbar-toggle-icon-mdi {
+    font-size: 2rem;
+    /* Adjust as needed */
+    vertical-align: middle;
+    /* Center the icon vertically */
+  }
+</style>
+<!-- Page loading scripts-->
+<script>
+
+  $(function () {
+    var preloader = $('.page-loading');
+    preloader.removeClass('active');
+    setTimeout(function () {
+      preloader.remove();
+    }, 2000);
+
+    $(document).on('contextmenu', 'img', function (e) {
+      e.preventDefault();
+    });
+  });
+</script>
 <!-- Body-->
 
 <body class="bg-light">
+
   <!-- Page loading spinner-->
   <div class="page-loading active">
     <div class="page-loading-inner">
@@ -403,12 +406,9 @@
       style="height: 2em; width: 2em;" />
   </button>
 
-
-
   <script>
 
-
-    $(document).ready(function () {
+    $(function () {
 
       $('#enableChatbot').on('click', function () {
         $("#chatbotUI").show();
@@ -510,7 +510,28 @@
 
   </script>
 
+  <!-- Footer-->
   {% include 'homepageapp/11_homepageapp_footer.html' %}
+  <!-- <footer class="footer bg-faded-light ">
+    <div class="border-bottom border-light py-4">
+      <div class="container d-sm-flex align-items-center justify-content-between"><a class="d-inline-block"
+          href="{% url 'homepageapp:homepage' %}">
+          <div class="d-flex pt-3 pt-sm-0">
+          </div>
+      </div>
+    </div>
+
+    <div class="container d-lg-flex align-items-center justify-content-between fs-sm pb-3">
+      <div class="d-flex flex-wrap justify-content-center order-lg-2 mb-3"><a class="nav-link nav-link-dark fw-normal"
+          href="#">Terms of use</a><a class="nav-link nav-link-dark fw-normal" href="#">Privacy policy</a>
+
+      </div>
+      <p class="text-center text-lg-start order-lg-1 mb-lg-0"><span class="text-dark " style="font-family: 'Roboto';">
+          Amazing Automan LLC. &copy; All Rights Reserved. @2023 -
+          <script>document.write(new Date().getFullYear())</script>
+      </p>
+    </div>
+  </footer> -->
 
 </body>
 

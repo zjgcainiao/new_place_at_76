@@ -226,7 +226,7 @@ async def fetch_single_plate_data_via_plate2vin_api(license_plate, state, api_ur
                 #         license_plate=license_plate, state=state
                 #     ).update)(version=models.F('version') - 1)
                 # update or create a plate_data
-                plate_data, created = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.create)(
+                plate_data, created = await database_sync_to_async(LicensePlateSnapShotsPlate2Vin.objects.update_or_create)(
                     license_plate=license_plate,
                     state=state,
                     defaults={

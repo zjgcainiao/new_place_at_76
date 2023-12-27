@@ -3,13 +3,161 @@
 {% load crispy_forms_tags %}
 
 {% block content1-main %}
-<div class="container  my-1">
-  <div class="appointment-preview">
-      <h3>Appointment Preview</h3>
-      Hello {{appointment.appointment_first_name}} {{apppontment.appointment_last_name}}, here is the appointment you requested.
-      <table class="table table-dark">
-        <thead>
-        </thead>
+<!-- added on 2023-11-01  custom css style  -->
+<style>
+  /* Assuming this CSS is in a file that's included in your base template */
+  .image-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    /* Adjust as needed */
+  }
+
+  .image-thumbnail {
+    flex: 1 0 21%;
+    /* 4 images per row, adjust as needed */
+    max-width: 21%;
+    /* As above */
+  }
+
+  .image-thumbnail img {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    /* Adjust styling as needed */
+    border-radius: 4px;
+    /* Rounded corners for the thumbnails */
+
+  }
+
+  /* Style for the appointment preview section */
+  .appointment-preview {
+    background-color: #fff;
+    /* White background */
+    border-radius: 0.25rem;
+    /* Rounded corners */
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    /* Subtle shadow */
+    margin-bottom: 1rem;
+    /* Spacing below the card */
+  }
+
+  .appointment-preview .card-header {
+    background-color: #f7f7f7;
+    /* Light grey background for the header */
+    border-bottom: 1px solid #e0e0e0;
+    /* Border line to separate header */
+  }
+
+  .appointment-preview .card-body {
+    padding: 1rem;
+    /* Spacing inside the card */
+  }
+
+  .appointment-preview table {
+    margin-bottom: 0;
+    /* Remove default bottom margin of table */
+  }
+
+  /* Style for the uploaded images section */
+  .uploaded-images {
+    margin-top: 1rem;
+    /* Spacing above the image section */
+  }
+
+  .uploaded-images h4 {
+    margin-bottom: 0.75rem;
+    /* Spacing below the heading */
+  }
+
+  .uploaded-images .image-thumbnail {
+    border: 1px solid #e0e0e0;
+    /* Border around each image */
+    padding: 0.25rem;
+    /* Padding around the image */
+    border-radius: 0.25rem;
+    /* Rounded corners for the border */
+    overflow: hidden;
+    /* Ensures the image fits within the border radius */
+  }
+
+  .uploaded-images .img-fluid {
+    width: 100%;
+    /* Ensure the image takes the full width of the container */
+    height: auto;
+    /* Keep image aspect ratio */
+    object-fit: cover;
+    /* Ensures the images cover the area nicely */
+  }
+
+  /* Responsive adjustments for smaller screens */
+  @media (max-width: 576px) {
+    .uploaded-images .image-thumbnail {
+      margin-bottom: 0.5rem;
+      /* Spacing between images on small screens */
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .btn-custom-primary,
+  .btn-custom-secondary {
+    font-weight: bold;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-custom-primary {
+    background-color: #007bff;
+    /* Primary color */
+    color: white;
+    border: 1px solid transparent;
+  }
+
+  .btn-custom-primary:hover,
+  .btn-custom-primary:focus {
+    background-color: #0056b3;
+    /* Darker shade for hover/focus */
+  }
+
+  .btn-custom-secondary {
+    background-color: #6c757d;
+    /* Secondary color */
+    color: white;
+    border: 1px solid transparent;
+  }
+
+  .btn-custom-secondary:hover,
+  .btn-custom-secondary:focus {
+    background-color: #545b62;
+    /* Darker shade for hover/focus */
+  }
+
+  /* Icon styling */
+  .btn i {
+    font-size: 1.2rem;
+  }
+</style>
+
+<div class="container pt-5 my-5">
+  <div class="card ">
+    <div class="card-header">
+      <h4>Appointment Information</h4>
+    </div>
+    <div class="card-body">
+
+      <p>Hello {{appointment.appointment_first_name}} {{apppontment.appointment_last_name}}, here is the appointment you
+        requested.</p>
+      <table class="table table-striped ">
+        <!-- <thead>
+        </thead> -->
         <tbody>
           <tr>
             <th>Appointment Time Requested</th>
@@ -20,71 +168,61 @@
             <td>{{ appointment.appointment_vehicle_detail }}</td>
           </tr>
           <tr>
-            <th scope="row">The description of your concern</th>
-            <td>{{ appointment.appointment_concern_description }}</td>
-          </tr>
-          <tr>
             <th scope="row">Email you entered</th>
             <td>{{appointment.appointment_email }}</td>
           </tr>
           <tr>
             <th scope="row">Phone Number</th>
             <td>{{appointment.appointment_phone_number }}</td>
-          </tr>   
+          </tr>
           <tr>
             <th scope="row">Status</th>
-            <td>{{appointment.get_appointment_status_display }}</td>
+            <td>{{appointment.get_appointment_status_display}}</td>
+          </tr>
+          <tr>
+            <th scope="row">The description of your concern</th>
+            <td>{{ appointment.appointment_concern_description }}</td>
           </tr>
         </tbody>
       </table>
-    
-        
-      <h3>Uploaded Images</h3>
-      <!-- Display images -->
+    </div>
+    <!-- end of card-body  -->
+
+    <div class="card-body">
+      <div class="uploaded-images mt-4">
+        <h4>Uploaded Images</h4>
         <div class="row">
-          {% for image in iamges %}
-            <div class="col-md-4 col-sm-6 col-xs-12">
-              <div class="image-thumbnail">
-                <img src="{{ image.appointment_image.url }}" alt="Uploaded appointment image" class="img-fluid">
-              </div>
+          {% for image in images %}
+          <div class="col-md-4 col-sm-6 mb-3">
+            <div class="image-thumbnail">
+              <img src="{{ image.appointment_image.url }}" alt="Uploaded appointment image" class="img-fluid">
             </div>
+          </div>
           {% endfor %}
         </div>
-
+      </div>
+    </div>
+    <!-- end of card-body  -->
   </div>
-  <!-- end of appointment-preview  -->
+  <!-- end of card  -->
 
   <!-- Buttons to confirm or go back and edit -->
-  <div class="action-buttons">
-    <a href="{% url 'appointments:create_appointment' %}" class="btn btn-secondary">Go Back</a>
-    <!-- Implement the save_appointment view and url -->
-    <a href="{% url 'appointments:appointment_success_view' pk=appointment.pk %}" class="btn btn-primary">Confirm</a>
+  <div class="action-buttons text-center mt-4">
+    <a href="{% url 'appointments:create_appointment' %}" class="btn btn-custom-secondary">
+      <i class="fas fa-arrow-left"></i> Go Back
+    </a>
+    <a href="{% url 'appointments:appointment_success_view' pk=appointment.pk %}" class="btn btn-custom-primary">
+      <i class="fas fa-check"></i> Confirm
+    </a>
   </div>
-  
-</div> 
-<!-- end of container  -->
 
-<!-- added on 2023-11-01  custom css style  -->
-<style>
-    /* Assuming this CSS is in a file that's included in your base template */
-    .image-gallery {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px; /* Adjust as needed */
-    }
+</div>
+<!-- end of container   -->
 
-    .image-thumbnail {
-      flex: 1 0 21%; /* 4 images per row, adjust as needed */
-      max-width: 21%; /* As above */
-    }
 
-    .image-thumbnail img {
-      width: 100%;
-      height: auto;
-      border: 1px solid #ddd; /* Adjust styling as needed */
-      border-radius: 4px; /* Rounded corners for the thumbnails */
-    }
 
-</style>
+
+
+
 
 {% endblock %}

@@ -86,7 +86,6 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
         (AUTH_GROUP_LEVEL_12, 'developer-group'),
         (AUTH_GROUP_LEVEL_13, 'user-management-group'),
 
-
         (AUTH_GROUP_LEVEL_21, 'service-technican-group'),
         (AUTH_GROUP_LEVEL_88, 'master-shi-fu-group'),
     )

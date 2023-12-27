@@ -7,10 +7,10 @@ urlpatterns = [
     path('vehicle_search/', views.vehicle_search_product,
          name='vehicle_search_product'),
 
-    path('single-vin-search/',
-         views.search_by_vin, name='search_by_vin'),
-    path('single-plate-search/',
-         views.search_by_plate, name='search_by_plate'),
+#     path('single-vin-search/',
+#          views.search_by_vin, name='search_by_vin'),
+#     path('single-plate-search/',
+#          views.search_by_plate, name='search_by_plate'),
 
     path('vin_or_plate_search/',
          views.search_by_vin_or_plate, name='search_by_vin_or_plate'),

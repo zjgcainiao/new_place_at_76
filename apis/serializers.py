@@ -168,7 +168,7 @@ class VinNhtsaApiSnapshotsSerializer(serializers.ModelSerializer):
         model = VinNhtsaApiSnapshots
         fields = [ 'id','vin', 'variable', 'variable_name', 'value', 'value_id']
         depth = 1
-
+# added 2023-12-24 . nested relationship
 class PlateAndVinDataSerializer(serializers.ModelSerializer):
     vin_data = serializers.SerializerMethodField()
 

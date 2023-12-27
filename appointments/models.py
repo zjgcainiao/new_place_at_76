@@ -7,7 +7,7 @@ from homepageapp.models import RepairOrdersNewSQL02Model as RepairOrder
 from django.utils import timezone
 from core_operations.models import FormattedPhoneNumberField
 
-APPT_STATUS_NOT_SUBMITTED = 0
+APPT_STATUS_NOT_SUBMITTED = "00"
 APPT_STATUS_SUBMITTED = 1
 APPT_STATUS_CONFIRMED = 2
 APPT_STATUS_REJECTED = 3

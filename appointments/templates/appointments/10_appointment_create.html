@@ -82,7 +82,7 @@
         top: 5px;
         right: 5px;
         border: none;
-        background: rgba(255, 0, 0, 0.7);
+        background: rgba(117, 101, 92, 0.7);
         /* Semi-transparent red background */
         color: white;
         border-radius: 50%;
@@ -122,6 +122,12 @@
 
 <script>
     $(function () {
+        // this script is added to automatically format the phone number input field 2023-08-01
+        $('#id_appointment_phone_number').on('input', function () {
+            let x = $(this).val().replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            $(this).val(!x[2] ? x[1] : `(${x[1]}) ${x[2]}` + (x[3] ? `-${x[3]}` : ''));
+        });
+
         var fileInput = $('#id_appointment_images');
         var imagePreviewContainer = $('#image-preview-container');
         var imagePreviewTemplate = $('#image-preview-template').html();
@@ -173,7 +179,7 @@
         });
     });
 
-    // Function to remove an image from the preview
+    // Function to remove an image from the preview.
     function removeImage(button) {
         var imagePreviewDiv = $(button).closest('.image-preview');
         var imageIndex = imagePreviewDiv.index();
@@ -195,11 +201,6 @@
         imagePreviewDiv.remove();
     }
 
-    // this script is added to automatically format the phone number input field 2023-08-01
-    $('#id_appointment_phone_number').on('input', function () {
-        let x = $(this).val().replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-        $(this).val(!x[2] ? x[1] : `(${x[1]}) ${x[2]}` + (x[3] ? `-${x[3]}` : ''));
-    });
 
 </script>
 
