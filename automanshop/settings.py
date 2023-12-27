@@ -326,6 +326,9 @@ MIDDLEWARE = [
 
     # custom InternalUserMiddleware that applies to certain apps
     "internal_users.middlewares.InternalUserMiddleware",
+
+    # custom middleware that limits the number of search requests
+    "core_operations.middlewares.SearchLimitMiddleware",
 ]
 
 # if os.environ.get('DJANGO_USE_DEBUG_TOOLBAR'):
