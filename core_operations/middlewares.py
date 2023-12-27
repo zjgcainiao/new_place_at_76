@@ -15,11 +15,12 @@ class SearchLimitMiddleware(MiddlewareMixin):
             ip = anonymize_ip(request.META.get('REMOTE_ADDR', ''))
             # ip = get_client_ip(request)
             cookie_key = 'search_count'
-            search_limit = 2  # Limit to 2 searches
+            search_limit = 3  # Limit to 2 searches
 
             # Increment IP-based counter
             ip_count = cache.get(ip, 0)
-            cache.set(ip, ip_count + 1, timeout=86400)  # Store count with a 24-hour timeout
+            
+            cache.set(ip, ip_count + 1, timeout=86400*30)  # Store count with a 24-hour*30 (one month) timeout
 
             # Increment cookie-based counter
             cookie_count = int(request.COOKIES.get(cookie_key, 0))

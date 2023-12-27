@@ -8,7 +8,8 @@
   <!-- SEO Meta Tags-->
   <meta name="description"
     content="Tesla &amp; general automotive repair &amp; oil change. AI-driven modern auto repair shop.">
-  <meta name="keywords" content="oil changes, a/c services, service lights on; radiator problems; vin reports">
+  <meta name="keywords"
+    content="oil changes, a/c services, service lights on; radiator problems; detailed vehicle reports">
   <meta name="author" content="Automan001@76prolubeplus.com">
   <!-- Viewport-->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,14 +20,16 @@
   <link rel="manifest" href="{% static 'homepageapp/img/site.webmanifest' %}">
   <link rel="mask-icon" href="{% static 'homepageapp/img/safari-pinned-tab.svg' %}" color="#c2410c">
   <link rel="icon" type="image/x-icon" href="{% static 'homepageapp/img/favicon.ico' %}">
-  <!-- <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon_package_v0/apple-touch-icon.png' %}" > -->
-  <!-- <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_package_v0/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_package_v0/favicon-16x16.png' %}"> -->
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon_package_v0/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_package_v0/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_package_v0/favicon-16x16.png' %}">
   <!-- <link rel="icon" type="image/x-icon"  href="{% static 'favicon_package_v0/favicon.ico' %}"> -->
   <!-- <link rel="manifest" href="{% static 'favicon_package_v0/site.webmanifest' %}"> -->
   <!-- <link rel="mask-icon" href="{% static 'favicon_package_v0/safari-pinned-tab.svg' %}" color="#c2410c"> -->
   <meta name="msapplication-TileColor" content="#ffedd5">
   <meta name="theme-color" content="#ffffff">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+
 
   <!-- jQuery 3.7.0 js -->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -94,7 +97,6 @@
   <!-- 2023-12-25 add new Orbitron font from google fonts  -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 
 <style>
@@ -332,9 +334,13 @@
 
     }
 
+
+
+    /* This CSS code block defines the hover effect for the .fab-icon class.
+      When the .fab-icon element is hovered over, it will be slightly enlarged by 10%. */
+
     .fab-icon:hover {
       transform: scale(1.1);
-      /* Optional: Slightly enlarge button when hovered */
     }
 
     /* Glossy metallic look for the header */
@@ -376,7 +382,7 @@
   </style>
 
   <div id="chatbotUI" class="card card-hover card-lg position-fixed bottom-0 end-0 m-3 p-2 glossy-metallic"
-    style="display:none; max-width: 500px; z-index:1000;">
+    style="display:none; max-width: 580px; z-index:1000;">
     <div class="card-header" style="background:transparent;">
       <span class="float-end" id="closeChatbot" style="cursor:pointer;">
         <i class="fas fa-times"></i>
