@@ -1,122 +1,225 @@
 {% extends 'dashboard/00_dashboard_base.html' %}
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-{% block content-main %}
-<div class="container container-fluid">
-  <!-- Breadcrumb-->
-  <nav aria-label="breadcrumb">
-      <ol class="breadcrumb breadcrumb-dark mb-0">
-          <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
-          <li class="breadcrumb-item active">Main Dash</li>
-      </ol>
-  </nav>
-</div>
 
-<div class="container container-fluid">
-  <h2>Main Dashboard</h2>
-  <!-- Display the date and logged in user -->
-  <div class="row">
-    <div class="col">
-      Welcome. {{ user.user_first_name }}. Logged in as {{user.email}}
-    </div>
-    <div class="col">
-        <p>Today is: {{ current_time |date}}</p>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+  crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+
+<!-- 2023-12-25 add new Orbitron font from google fonts  -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+{% block content-main %}
+
+
+<style>
+  .portal-card {
+    /* Custom card styling */
+    border: none;
+    transition: transform 0.3s ease-in-out;
+    min-width: 200px;
+    min-height: 200px;
+  }
+
+  .portal-card:hover {
+    /* Scale effect on hover */
+    transform: scale(1.05);
+  }
+
+  .portal-icon {
+    /* Icon styling */
+    font-size: 3rem;
+    padding: 20px 20px;
+    /* Adjust size as needed */
+    color: #007bff;
+    /* Icon color */
+  }
+
+  .portal-title {
+    /* Styling for the title */
+    font-weight: bold;
+  }
+
+  /* 2023-12-25 added user-info-bar custom styling */
+  .user-info-bar {
+    background: transparent;
+    /* border-bottom: 1px solid #a1a1a1; */
+    padding: 5px 5px;
+    color: #333;
+    font-family: 'Orbitron', 'sans-serif';
+  }
+
+  .user-greeting {
+    color: #495057;
+    /* Dark font color */
+    font-family: 'Arial', sans-serif;
+    /* Choose a readable font */
+  }
+
+
+
+  .user-name,
+  .user-email {
+    font-weight: bold;
+    color: #525252;
+    /* Dark grey color for contrast */
+    letter-spacing: 1px;
+    /* Highlight color */
+    text-transform: uppercase;
+    /* Optional: makes it stand out */
+    font-family: 'Orbitron', sans-serif;
+    /* Custom font for steel effect */
+  }
+</style>
+
+
+<div class="user-info-bar">
+
+  <div class="container m-2">
+    <!-- Breadcrumb-->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-dark mb-0">
+        <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+        <li class="breadcrumb-item active">Main Dash</li>
+      </ol>
+    </nav>
+  </div>
+
+
+  <div class="container m-2">
+    <h2>Main Dashboard</h2>
+    <div class="row align-items-center">
+      <div class="col">
+        <div class="user-greeting">
+          Welcome, <span class="user-name">{{ user.user_first_name }}</span>. Logged in as <span class="user-email">
+            {{user.email}}</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<!-- The main content with 6 app portals -->
-<div class="container container-fluid ">
-  
-  <div class="row my-1 px-1">
+
+<!-- The main content with 8 app portals -->
+<div class="container m-2">
+  <div class="row my-1 px-1 justify-content-center">
 
     <!-- Each col represents a portal -->
 
-    <!-- <div class="col col-md-3 col-lg-2 mb-0"> -->
-    <div class="col col-md-3 col-lg-2 mb-0">
-      <div class="card rounded">
+    <!-- Portal 1: Repair Orders -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <div class="card portal-card text-center">
         <a href="{% url 'dashboard:repair-order-dash' %}">
-          <img src="" class="card-img-top rounded" alt="...">
+          <div class="card-img-top">
+            <i class="fas fa-tools portal-icon"></i>
+          </div>
         </a>
         <div class="card-body">
           <p>1. Repair Orders</p>
         </div>
+        <!-- end of card-body  -->
       </div>
+      <!-- end of card  -->
     </div>
     <!-- end of column  -->
 
-    <div class="col col-md-3 col-lg-2 mb-0">
-      <div class="card widget-flat">
+    <!-- Portal 2: Vehicles -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <div class="card portal-card text-center">
         <a href="{% url 'dashboard:vehicle-dash' %}">
-          <img src="" class="card-img-top" alt="...">
+          <div class="card-img-top">
+            <i class="fas fa-car portal-icon"></i>
+          </div>
         </a>
-          <div class="card-body">2. Vehicles</div>
-        
+        <div class="card-body">
+          <p>2. Vehicles</p>
+        </div>
+        <!-- end of card-body  -->
       </div>
+      <!-- end of card  -->
     </div>
+    <!-- end of column  -->
 
-    <div class="col col-md-3 col-lg-2 mb-0">
-      <div class="card widget-flat">
+
+    <!-- Portal 3: Customers -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <div class="card portal-card text-center">
         <a href="{% url 'dashboard:customer-dash' %}">
-          <img src="" class="card-img-top" alt="...">
+          <div class="card-img-top">
+            <i class="fas fa-users portal-icon"></i>
+          </div>
         </a>
-        <div class="card-body"><p>3. Customers</p></div>
-        
+        <div class="card-body">
+          <p>3. Customers</p>
+        </div>
+
       </div>
     </div>
 
-    <div class="col col-md-3 col-lg-2 mb-0">
-      <div class="card ">
+    <!-- Portal 4: Customers -->
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <div class="card portal-card text-center">
         <a href="{% url 'appointments:appointment_list' %}">
-          <img src="" class="card-img-top" alt="...">
+          <div class="card-img-top">
+            <i class="fas fa-calendar-plus portal-icon"></i>
+          </div>
         </a>
-            <div class="card-body">4. Appointments</div>
+        <div class="card-body">4. Appointments</div>
 
       </div>
     </div>
   </div>
   <!-- end of row  -->
 
-  <div class="row"> 
-    <div class="col col-md-3 col-lg-2 mb-0">
-      <div class="card">
+  <!-- Portal 5: Talent Managements -->
+  <div class="row my-1 px-1 justify-content-center">
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <div class="card portal-card text-center">
         <a href="{% url 'talent_management:talent_list' %}">
-          <img src="" class="card-img-top" alt="...">
+          <div class="card-img-top">
+            <i class="fas fa-dice-five portal-icon"></i>
+          </div>
         </a>
-        
-          <div class="card-body">5. Talent Managements</div>
+
+        <div class="card-body">5. Talent Managements</div>
       </div>
     </div>
 
-    <div class="col col-md-3 col-lg-2 mb-0">
-      <div class="card card-rounded">
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <div class="card portal-card text-center">
         <a href="{% url 'dashboard:vehicle-dash' %}">
-          <img src="" class="card-img-top" alt="...">
+          <div class="card-img-top">
+            <i class="fas fa-credit-card portal-icon"></i>
+          </div>
         </a>
-                  <div class="card-body">6. Payments</div>
-        
+        <div class="card-body">6. Payments</div>
+
       </div>
     </div>
 
-    <div class="col col-md-3 col-lg-2 mb-0">
-      <div class="card card-rounded">
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <div class="card portal-card text-center">
         <a href="{% url 'dashboard:vehicle-dash' %}">
-          <img src="" class="card-img-top" alt="...">
+          <div class="card-img-top">
+            <i class="fas fa-coins portal-icon"></i>
+          </div>
         </a>
-        
-          <div class="card-body">7. Accounting and Finance</div>
+
+        <div class="card-body">7. Accounting and Finance</div>
       </div>
     </div>
 
-    <div class="col col-md-3 col-lg-2 mb-0">
-      <div class="card widget-flat">
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <div class="card portal-card text-center">
         <a href="{% url 'dashboard:vehicle-dash' %}">
-          <img src="" class="card-img-top" alt="...">
+          <div class="card-img-top">
+            <i class="fas fa-users-gear portal-icon"></i>
+          </div>
         </a>
-        
-          <div class="card-body">8. User Management and IT</div>
+        <div class="card-body">8. User Management and Software Develpment</div>
       </div>
+      <!-- card  -->
     </div>
 
   </div>
+  <!-- end of second row  -->
 </div>
 
 {% endblock %}

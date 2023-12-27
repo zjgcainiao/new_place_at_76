@@ -1,460 +1,523 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Amazing Automan- AI-driven repair shop</title>
-    <!-- SEO Meta Tags-->
-    <meta name="description" content="Tesla &amp; general automotive repair &amp; oil change. AI-driven modern auto repair shop.">
-    <meta name="keywords" content="oil changes, a/c services, service lights on; radiator problems; vin reports">
-    <meta name="author" content="Automan001@76prolubeplus.com">
-    <!-- Viewport-->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Favicon and Touch Icons-->
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'homepageapp/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'homepageapp/img/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'homepageapp/img/logo/logo-2022.svg' %}">
-    <!-- <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon_package_v0/apple-touch-icon.png' %}" > -->
-    <!-- <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_package_v0/favicon-32x32.png' %}">
+
+<head>
+  <meta charset="utf-8">
+  <title>Amazing Automan- AI-driven repair shop</title>
+  <!-- SEO Meta Tags-->
+  <meta name="description"
+    content="Tesla &amp; general automotive repair &amp; oil change. AI-driven modern auto repair shop.">
+  <meta name="keywords" content="oil changes, a/c services, service lights on; radiator problems; vin reports">
+  <meta name="author" content="Automan001@76prolubeplus.com">
+  <!-- Viewport-->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Favicon and Touch Icons-->
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'homepageapp/img/apple-touch-icon.png' %}">
+  <!-- <link rel="icon" type="image/png" sizes="32x32" href="{% static 'homepageapp/img/favicon-32x32.png' %}"> -->
+  <!-- <link rel="icon" type="image/png" sizes="16x16" href="{% static 'homepageapp/img/logo/logo-2022.svg' %}"> -->
+  <link rel="manifest" href="{% static 'homepageapp/img/site.webmanifest' %}">
+  <link rel="mask-icon" href="{% static 'homepageapp/img/safari-pinned-tab.svg' %}" color="#c2410c">
+  <link rel="icon" type="image/x-icon" href="{% static 'homepageapp/img/favicon.ico' %}">
+  <!-- <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon_package_v0/apple-touch-icon.png' %}" > -->
+  <!-- <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_package_v0/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_package_v0/favicon-16x16.png' %}"> -->
-    <!-- <link rel="icon" type="image/x-icon"  href="{% static 'favicon_package_v0/favicon.ico' %}"> -->
-    <link rel="manifest" href="{% static 'favicon_package_v0/site.webmanifest' %}">
-    <link rel="mask-icon" href="{% static 'favicon_package_v0/safari-pinned-tab.svg' %}" color="#c2410c">
-    <meta name="msapplication-TileColor" content="#ffedd5">
-    <meta name="theme-color" content="#ffffff">
-  
-    <!-- jQuery 3.7.0 js -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  
-    <!-- Vendor scrits: js libraries and plugins -->
-     <!-- poper 2.9.2 js, bootstrap 5.3.0 js , simplebar js, smooth-scoll.polyfills js, tiny-slider js, jarallax and jarallax-element js  -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js" integrity="sha512-3dZ9wIrMMij8rOH7X3kLfXAzwtcHpuYpEgQg1OA4QAob1e81H8ntUQmQm3pBudqIoySO5j0tHN4ENzA6+n2r4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="{% static 'homepageapp/vendor/simplebar/dist/simplebar.min.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/smooth-scroll/16.1.3/smooth-scroll.polyfills.js" integrity="sha512-7RJJepMYGySQYUtVVI+ShJWXDp4qUAWo3ovhCEHFOv5Ga16+lzRQHR6HQe/EBqNoO/aUQfhMU2PGrsQeAThIoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="{% static 'homepageapp/vendor/tiny-slider/dist/min/tiny-slider.js' %}"></script>
-    <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax.min.js' %}"></script>
-    <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script>
-    
-    <!-- Main theme js-->
-    <script src="{% static 'homepageapp/js/theme.min.js' %}"></script>
-    
-    <!-- Page loading styles-->
-    <style>
-      .page-loading {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        -webkit-transition: all .4s .2s ease-in-out;
-        transition: all .4s .2s ease-in-out;
-        background-color: #1f1b2d;
-        opacity: 0;
-        visibility: hidden;
-        z-index: 9999;
-      }
-      .page-loading.active {
-        opacity: 1;
-        visibility: visible;
-      }
-      .page-loading-inner {
-        position: absolute;
-        top: 50%;
-        left: 0;
-        width: 100%;
-        text-align: center;
-        -webkit-transform: translateY(-50%);
-        transform: translateY(-50%);
-        -webkit-transition: opacity .2s ease-in-out;
-        transition: opacity .2s ease-in-out;
-        opacity: 0;
-      }
-      .page-loading.active > .page-loading-inner {
-        opacity: 1;
-      }
-      .page-loading-inner > span {
-        display: block;
-        font-size: 1rem;
-        font-weight: normal;
-        color: #fff;;
-      }
-      .page-spinner {
-        display: inline-block;
-        width: 2.75rem;
-        height: 2.75rem;
-        margin-bottom: .75rem;
-        vertical-align: text-bottom;
-        border: .15em solid rgb(172, 173, 193);
-        border-right-color: transparent;
-        border-radius: 50%;
-        -webkit-animation: spinner .75s linear infinite;
-        animation: spinner .75s linear infinite;
-      }
-      @-webkit-keyframes spinner {
-        100% {
-          -webkit-transform: rotate(360deg);
-          transform: rotate(360deg);
-        }
-      }
-      @keyframes spinner {
-        100% {
-          -webkit-transform: rotate(360deg);
-          transform: rotate(360deg);
-        }
-      }
-      .navbar-toggle-icon-mdi {
-      font-size: 2rem;  /* Adjust as needed */
-      vertical-align: middle;  /* Center the icon vertically */
-        }
-    </style>
-    <!-- Page loading scripts-->
-    <script>
+  <!-- <link rel="icon" type="image/x-icon"  href="{% static 'favicon_package_v0/favicon.ico' %}"> -->
+  <!-- <link rel="manifest" href="{% static 'favicon_package_v0/site.webmanifest' %}"> -->
+  <!-- <link rel="mask-icon" href="{% static 'favicon_package_v0/safari-pinned-tab.svg' %}" color="#c2410c"> -->
+  <meta name="msapplication-TileColor" content="#ffedd5">
+  <meta name="theme-color" content="#ffffff">
 
-      $(function(){
-          var preloader = $('.page-loading');
-          preloader.removeClass('active');
-          setTimeout(function() {
-            preloader.remove();
-          }, 2000);
+  <!-- jQuery 3.7.0 js -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
+  <!-- Vendor scrits: js libraries and plugins -->
+  <!-- poper 2.9.2 js, bootstrap 5.3.0 js , simplebar js, smooth-scoll.polyfills js, tiny-slider js, jarallax and jarallax-element js  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+    integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"
+    integrity="sha512-3dZ9wIrMMij8rOH7X3kLfXAzwtcHpuYpEgQg1OA4QAob1e81H8ntUQmQm3pBudqIoySO5j0tHN4ENzA6+n2r4w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="{% static 'homepageapp/vendor/simplebar/dist/simplebar.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/smooth-scroll/16.1.3/smooth-scroll.polyfills.js"
+    integrity="sha512-7RJJepMYGySQYUtVVI+ShJWXDp4qUAWo3ovhCEHFOv5Ga16+lzRQHR6HQe/EBqNoO/aUQfhMU2PGrsQeAThIoQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="{% static 'homepageapp/vendor/tiny-slider/dist/min/tiny-slider.js' %}"></script>
+  <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax.min.js' %}"></script>
+  <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script>
+
+  <!-- Main theme js-->
+  <script src="{% static 'homepageapp/js/theme.min.js' %}"></script>
+
+  <!-- Page loading styles-->
+  <style>
+    .page-loading {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      -webkit-transition: all .4s .2s ease-in-out;
+      transition: all .4s .2s ease-in-out;
+      background-color: linear-gradient(160deg, #97989a, #9a9b9d 50%, #c5d0dc 100%);
+      /* #1f1b2d; #7c2d12;*/
+      opacity: 0;
+      visibility: hidden;
+      z-index: 99999;
+    }
+
+    .page-loading.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .page-loading-inner {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      -webkit-transform: translateY(-50%);
+      transform: translateY(-50%);
+      -webkit-transition: opacity .2s ease-in-out;
+      transition: opacity .2s ease-in-out;
+      opacity: 0;
+    }
+
+    .page-loading.active>.page-loading-inner {
+      opacity: 1;
+    }
+
+    .page-loading-inner>span {
+      display: block;
+      font-size: 1rem;
+      font-weight: normal;
+      color: #fff;
+      ;
+    }
+
+    .page-spinner {
+      display: inline-block;
+      width: 2.75rem;
+      height: 2.75rem;
+      margin-bottom: .75rem;
+      vertical-align: text-bottom;
+      border: .15em solid rgb(50, 79, 211);
+      border-right-color: transparent;
+      border-radius: 50%;
+      -webkit-animation: spinner .75s linear infinite;
+      animation: spinner .75s linear infinite;
+    }
+
+    @-webkit-keyframes spinner {
+      100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spinner {
+      100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+    .navbar-toggle-icon-mdi {
+      font-size: 2rem;
+      /* Adjust as needed */
+      vertical-align: middle;
+      /* Center the icon vertically */
+    }
+  </style>
+  <!-- Page loading scripts-->
+  <script>
+
+    $(function () {
+      var preloader = $('.page-loading');
+      preloader.removeClass('active');
+      setTimeout(function () {
+        preloader.remove();
+      }, 2000);
+
+      $(document).on('contextmenu', 'img', function (e) {
+        e.preventDefault();
       });
-    </script>
-    
-    <!-- 2023-12-14
+    });
+  </script>
+
+  <!-- 2023-12-14
       You can add a JavaScript snippet to disable right-click functionality on your images. This will prevent the standard
     right-click and save method. -->
-    <script>
-      document.addEventListener('contextmenu', function (e) {
-        if (e.target.tagName === 'IMG') {
-          e.preventDefault();
-        }
-      });
-    </script>
+  <script>
+    // document.addEventListener('contextmenu', function (e) {
+    //   if (e.target.tagName === 'IMG') {
+    //     e.preventDefault();
+    //   }
+    // });
+  </script>
 
-    <!-- add Roboto font from google fonts. this font is used to display chatbot response (beta Pulido v1.0). -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/css/fonts.min.css">
+  <!-- add Roboto font from google fonts. this font is used to display chatbot response (beta Pulido v1.0). -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/css/fonts.min.css">
 
-    <!-- font-awesome 6.4.2 css  -->
-    <link rel="stylesheet" media="screen"  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
-    <!-- MaterialDesign - Webfont 7.3.67 css  -->
-    <link rel="stylesheet" media="screen"  href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.3.67/css/materialdesignicons.min.css" integrity="sha512-nRzny9w0V2Y1/APe+iEhKAwGAc+K8QYCw4vJek3zXhdn92HtKt226zHs9id8eUq+uYJKaH2gPyuLcaG/dE5c7A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+  <!-- font-awesome 6.4.2 css  -->
+  <link rel="stylesheet" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/4.0.0/font/MaterialIcons-Regular.ttf"
+  <!-- MaterialDesign - Webfont 7.3.67 css  -->
+  <link rel="stylesheet" media="screen"
+    href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.3.67/css/materialdesignicons.min.css"
+    integrity="sha512-nRzny9w0V2Y1/APe+iEhKAwGAc+K8QYCw4vJek3zXhdn92HtKt226zHs9id8eUq+uYJKaH2gPyuLcaG/dE5c7A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+  <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/4.0.0/font/MaterialIcons-Regular.ttf"
     ref='stylesheet'> -->
 
-    <!-- simlerbar, tindy-slider css styles -->
-    <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}"/>
-    <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}"/>
-   
-    <!-- Main Theme Styles css-->
-    <link rel="stylesheet" media="screen" href="{% static 'homepageapp/css/theme.min.css' %}">
+  <!-- simlerbar, tindy-slider css styles -->
+  <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}" />
+  <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}" />
 
-    <!-- Automan theme css  -->
-    <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
+  <!-- Main Theme Styles css-->
+  <link rel="stylesheet" media="screen" href="{% static 'homepageapp/css/theme.min.css' %}">
 
-
+  <!-- Automan theme css  -->
+  <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
 
 
-    <style>
-      .navbar-toggle-icon-mdi {
-      font-size: 24px;  /* Adjust as needed */
-      vertical-align: middle;  /* Center the icon vertically */
-        }
-    </style>    
+  <meta name="csrf-token" content="{{ csrf_token }}">
 
 
-<meta name="csrf-token" content="{{ csrf_token }}">
+</head>
 
-  </head>
-  <!-- Body-->
-  <body class="bg-light">
-    <!-- Page loading spinner-->
-    <div class="page-loading active">
-      <div class="page-loading-inner">
-        <div class="page-spinner"></div><span>Loading...</span>
-      </div>
+<style>
+  .navbar-toggle-icon-mdi {
+    font-size: 24px;
+    /* Adjust as needed */
+    vertical-align: middle;
+    /* Center the icon vertically */
+  }
+</style>
+<!-- Body-->
+
+<body class="bg-light">
+  <!-- Page loading spinner-->
+  <div class="page-loading active">
+    <div class="page-loading-inner">
+      <div class="page-spinner"></div><span>Loading...</span>
     </div>
+  </div>
 
-    <main class="page-wrapper">
-      {% comment %}
-        {% include 'homepageapp/12_sign_in_and_sign_up_modal.html' %}
-      {% endcomment %}
-      <!-- navbar navbar-expand-lg navbar-light bg-light -->
-      <header class="navbar navbar-expand-lg fixed-top automan-glossy-metallic" data-scroll-header="">
-        <div class="container ">
-          <a class="navbar-brand me-3 me-xl-4" href="{% url 'homepageapp:homepage' %}">
-            <!-- <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68" alt="Amazing Automan LLC"></a> -->
-            <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68" alt="Amazing Automan LLC" oncontextmenu="return false;">
-          </a>
-          <!-- toggle button  -->
-          <button class="navbar-toggler btn-light ms-auto collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#HomepageNavbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="mdi mdi-apps navbar-toggle-icon-mdi me-2"></span>
-          </button> 
+  <main class="page-wrapper">
+    {% comment %}
+    {% include 'homepageapp/12_sign_in_and_sign_up_modal.html' %}
+    {% endcomment %}
+    <!-- navbar navbar-expand-lg navbar-light bg-light -->
+    <header class="navbar navbar-expand-lg fixed-top automan-glossy-metallic" data-scroll-header="">
+      <div class="container ">
+        <a class="navbar-brand me-3 me-xl-4" href="{% url 'homepageapp:homepage' %}">
+          <!-- <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68" alt="Amazing Automan LLC"></a> -->
+          <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68"
+            alt="Amazing Automan LLC" oncontextmenu="return false;">
+        </a>
+        <!-- toggle button  -->
+        <button class="navbar-toggler btn-light ms-auto collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#HomepageNavbarNav" aria-controls="navbarNav" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="mdi mdi-apps navbar-toggle-icon-mdi me-2"></span>
+        </button>
 
-          <a class="btn btn-outline-light btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}">Register</a>
-          <a class="btn btn-outline-light btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_login' %}">Login</a>
+        <a class="btn btn-outline-light btn-sm ms-2 order-lg-3"
+          href="{% url 'customer_users:customer_user_register' %}">Register</a>
+        <a class="btn btn-outline-light btn-sm ms-2 order-lg-3"
+          href="{% url 'customer_users:customer_user_login' %}">Login</a>
 
-          <div class="collapse navbar-collapse order-lg-2" id="HomepageNavbarNav">
+        <div class="collapse navbar-collapse order-lg-2" id="HomepageNavbarNav">
 
-            <ul class="navbar-nav navbar-nav-scroll" style="max-height: 35rem;">
-              <!-- register and login  -->
-              <!-- <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'customer_users:customer_user_register' %}">Register/Login</a></li> -->
-              
-              <!-- Appointments  -->
-              <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'appointments:create_appointment' %}">Service Appointment</a></li>
-              
-              <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'shops:search_by_vin_or_plate' %}">VIN Report</a></li>
-              <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'internal_users:internal_user_login' %}">Employee Portal</a></li>
-              <!-- More -->
-              <li class="nav-item dropdown py-2 me-lg-2">
-                <a class="nav-link dropdown-toggle align-items-center  border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fi-layers me-2"></i>More</a>
-                <ul class="dropdown-menu dropdown-menu-light">
-                  <li><a class="dropdown-item fw-normal" href="{% url 'homepageapp:services' %}"><i class="fi-car fs-base me-2"></i>Service List</a></li>
-                  <li class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="{% url 'homepageapp:about-us' %}"><i class="fi-friends fs-base me-2"></i>About Us</a></li>
+          <ul class="navbar-nav navbar-nav-scroll" style="max-height: 35rem;">
+            <!-- register and login  -->
+            <!-- <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'customer_users:customer_user_register' %}">Register/Login</a></li> -->
 
-                  <li class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="{% url 'shops:payment_checkout' %}"><i class="fi-cash fs-base me-2"></i>Payment System</a></li>
-                </ul>
-              </li>
-              {% comment %}
-              <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'shops:payment_checkout' %}">Our Shops</a></li>
-              {% endcomment %}
+            <!-- Appointments  -->
+            <li class="nav-item "><a class="nav-link nav-hover"
+                href="{% url 'appointments:create_appointment' %}">Service Appointment</a></li>
 
-            </ul>
-            <!-- Sign In button for mobile -->
-            <!-- <div class="text-end">
+            <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'shops:search_by_vin_or_plate' %}">VIN
+                Report</a></li>
+            <li class="nav-item "><a class="nav-link nav-hover"
+                href="{% url 'internal_users:internal_user_login' %}">Employee Portal</a></li>
+            <!-- More -->
+            <li class="nav-item dropdown py-2 me-lg-2">
+              <a class="nav-link dropdown-toggle align-items-center  border-light py-1 pe-lg-4" href="#"
+                data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fi-layers me-2"></i>More</a>
+              <ul class="dropdown-menu dropdown-menu-light">
+                <li><a class="dropdown-item fw-normal" href="{% url 'homepageapp:services' %}"><i
+                      class="fi-car fs-base me-2"></i>Service List</a></li>
+                <li class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'homepageapp:about-us' %}"><i
+                      class="fi-friends fs-base me-2"></i>About Us</a></li>
+
+                <li class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'shops:payment_checkout' %}"><i
+                      class="fi-cash fs-base me-2"></i>Payment System</a></li>
+              </ul>
+            </li>
+            {% comment %}
+            <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'shops:payment_checkout' %}">Our Shops</a>
+            </li>
+            {% endcomment %}
+
+          </ul>
+          <!-- Sign In button for mobile -->
+          <!-- <div class="text-end">
               <a class="btn btn-primary btn-sm ms-2 ms-lg-3 order-lg-3 d-none d-lg-block" href="{% url 'customer_users:customer_user_register' %}">
                 <i class="fi-user-plus me-2"></i>Register/Sign In
               </a>
             </div> -->
-
-            
-          </div>
-          <!-- end of navbarNav  -->
-
         </div>
-        <!-- end of container -->
-      </header>
-    
-     {% block content1-main %}
-      This is the main block.
-     {% endblock %}
+        <!-- end of navbarNav  -->
 
-    </main>
-   
-    {% comment %}
-    {% include 'we_have_ai_helpers/20_chatbot.html' %}
-    {% endcomment %}
-<!-- 2023-10-24; style for the fab-icon used in the Chatbot  -->
-    <!-- css modifed in 2023-10-28  -->
-    <style>
-      
-      #loadingMessage {
-          font-weight: 900;
-          font-family: 'Roboto', sans-serif;
-          color: #ed6c10;
-          font-style: italic;
-      }
+      </div>
+      <!-- end of container -->
+    </header>
+
+    {% block content1-main %}
+    This is the main block.
+    {% endblock %}
+
+  </main>
+
+  {% comment %}
+  {% include 'we_have_ai_helpers/20_chatbot.html' %}
+  {% endcomment %}
+  <!-- 2023-10-24; style for the fab-icon used in the Chatbot  -->
+  <!-- css modifed in 2023-10-28  -->
+  <style>
+    #loadingMessage {
+      font-weight: 900;
+      font-family: 'Roboto', 'sans-serif';
+      color: #ed6c10;
+      font-style: italic;
+    }
 
 
-      .card-hover:hover {
-        box-shadow: 0 4px 8px rgba(37, 37, 37, 0.2);
-      }
-      .fab-icon {
-        border-radius: 50%;  /* Makes the button circular */
-        width: 60px;         /* Set width of the button */
-        height: 60px;        /* Set height of the button */
-        text-align: center;  /* Center the robot icon */
-        padding: 0;          /* remove padding */
-        font-size: 24px;     /* Set icon size */
-        box-shadow: 0 2px 10px rgba(130, 205, 10, 0.3);  /* Optional: Add a little shadow for depth */
-        transition: transform 0.3s;  /* Optional: Smooth transition for hover effect */
+    .card-hover:hover {
+      box-shadow: 0 4px 8px rgba(37, 37, 37, 0.2);
+    }
+
+    .fab-icon {
+      border-radius: 50%;
+      /* Makes the button circular */
+      width: 60px;
+      /* Set width of the button */
+      height: 60px;
+      /* Set height of the button */
+      text-align: center;
+      /* Center the robot icon */
+      padding: 0;
+      /* remove padding */
+      font-size: 24px;
+      /* Set icon size */
+      box-shadow: 0 2px 10px rgba(130, 205, 10, 0.3);
+      /* Optional: Add a little shadow for depth */
+      transition: transform 0.3s;
+      /* Optional: Smooth transition for hover effect */
 
     }
 
     .fab-icon:hover {
-        transform: scale(1.1)  ;  /* Optional: Slightly enlarge button when hovered */
+      transform: scale(1.1);
+      /* Optional: Slightly enlarge button when hovered */
     }
 
     /* Glossy metallic look for the header */
     .glossy-metallic {
-        background: linear-gradient(160deg, #97989a , #d1d3d5 , #555d61 100%);
-        color: #fff;
-        border: none;
+      background: linear-gradient(160deg, #97989a, #d1d3d5, #555d61 100%);
+      color: #fff;
+      border: none;
     }
 
     #botResponse strong {
-    color: #9a3412; /* Choose a color that fits your UI for highlighting */
-    font-weight: bold;
-    
-}
+      color: #9a3412;
+      /* Choose a color that fits your UI for highlighting */
+      font-weight: bold;
 
-#userInput {
-    font-weight: bold; /* Bolder font */
-    font-size: 1rem; /* Adjust font size as needed */
-    color: #121212; /* Light color for text */
-    /* background: #393939; Dark background for metallic look */
-    background: #e5e7eb;
-    border: 1px #313232; /* Border color */
-    border-radius: 4px; /* Rounded corners */
-    padding: 8px; /* Padding inside the textarea */
-}
+    }
 
-/* Optional: Style for the placeholder text */
-#userInput::placeholder {
-    color: #aea9a9;
-    font-style: italic;
-}
-</style>
-    
-    <div id="chatbotUI" class="card card-hover card-lg position-fixed bottom-0 end-0 m-3 p-2 glossy-metallic" style="display:none; max-width: 500px; z-index:1000;">
-      <div class="card-header" style="background:transparent;">
-          <span class="float-end" id="closeChatbot" style="cursor:pointer;">
-            <i class="fas fa-times"></i>
-          </span>
-        <h5 class="card-title fw-bold">Ask Pulido <small>(beta 1.0)</small></h5>
-        <p class="fw-bold">Our virtual technican. Automotive questions only. </p>
+    #userInput {
+      font-weight: bold;
+      /* Bolder font */
+      font-size: 1rem;
+      /* Adjust font size as needed */
+      color: #121212;
+      /* Light color for text */
+      /* background: #393939; Dark background for metallic look */
+      background: #e5e7eb;
+      border: 1px #313232;
+      /* Border color */
+      border-radius: 4px;
+      /* Rounded corners */
+      padding: 8px;
+      /* Padding inside the textarea */
+    }
 
-      </div>
-       <!-- assign csrf_token into the card-body  -->
-        <form class="card-body m-1 p-1 " id='chatbotCardBody' data-csrf-token="{{ csrf_token }}" method="POST">
-            {% csrf_token %}
-            <textarea id="userInput" class="form-control" type="text" value=""></textarea>
-            <button id="askButton" class="btn btn-dark btn-sm mt-3"><i class=" fi-send fs-base me-2"></i>Send</button>
-            <div id="botResponse"  class="d-block mt-2 ">
-              <div id="loadingMessage" class="text-light" style="display:none;">Hmmm...Let me think...</div>
-            </div>
-        </form>
+    /* Optional: Style for the placeholder text */
+    #userInput::placeholder {
+      color: #aea9a9;
+      font-style: italic;
+    }
+  </style>
+
+  <div id="chatbotUI" class="card card-hover card-lg position-fixed bottom-0 end-0 m-3 p-2 glossy-metallic"
+    style="display:none; max-width: 500px; z-index:1000;">
+    <div class="card-header" style="background:transparent;">
+      <span class="float-end" id="closeChatbot" style="cursor:pointer;">
+        <i class="fas fa-times"></i>
+      </span>
+      <h5 class="card-title fw-bold">Ask Pulido <small>(beta 1.0)</small></h5>
+      <p class="fw-bold">Our virtual technican. Automotive questions only. </p>
+
     </div>
+    <!-- assign csrf_token into the card-body  -->
+    <form class="card-body m-1 p-1 " id='chatbotCardBody' data-csrf-token="{{ csrf_token }}" method="POST">
+      {% csrf_token %}
+      <textarea id="userInput" class="form-control" type="text" value=""></textarea>
+      <button id="askButton" class="btn btn-dark btn-sm mt-3"><i class=" fi-send fs-base me-2"></i>Send</button>
+      <div id="botResponse" class="d-block mt-2 ">
+        <div id="loadingMessage" class="text-light" style="display:none;">Hmmm...Let me think...</div>
+      </div>
+    </form>
+  </div>
 
-<!-- Button to enable chatbot -->
-<!-- pendint to extra styling  -->
+  <!-- Button to enable chatbot -->
+  <!-- pendint to extra styling  -->
 
-<button id="enableChatbot" class="btn btn-outline-success position-fixed automan-chatbot-toggle-button bottom-0 end-0 m-3 p-1 fab-icon" style="z-index: 1020; margin-bottom: 25px; margin-right: 25px;" aria-label="Talk to Virtual Assistant Pulido">
-    <img src="{% static 'core_operations/imgs/robot-icon-01-smaller.svg' %}" alt="Robot Icon" style="height: 2em; width: 2em;" />
-</button>
+  <button id="enableChatbot"
+    class="btn btn-outline-success position-fixed automan-chatbot-toggle-button bottom-0 end-0 m-3 p-1 fab-icon"
+    style="z-index: 1020; margin-bottom: 25px; margin-right: 25px;" aria-label="Talk to Virtual Assistant Pulido">
+    <img src="{% static 'core_operations/imgs/robot-icon-01-smaller.svg' %}" alt="Robot Icon"
+      style="height: 2em; width: 2em;" />
+  </button>
 
 
-    
-    <script>
+
+  <script>
 
 
-      $(document).ready(function(){
+    $(document).ready(function () {
 
-          $('#enableChatbot').on('click', function() {
-              $("#chatbotUI").show();
-              $(this).hide();
-          });
-
-          var chatbotEndpoint = "{% url 'we_have_ai_helpers:chatbot_response' %}";
-
-          $("#askButton").on("click",function(e){
-              e.preventDefault();
-              const getCSRFTokenViaCardBody = () => $('#chatbotCardBody').data('csrf-token');
-              let token = getCSRFTokenViaCardBody();
-              if (!token) {
-                console.log("fetching csrfToken with cardBody is not none...try out fetching from meta.");
-                token = getCSRFTokenViaMeta();
-              }
-              if (!token) {
-
-                token = getCookie("csrftoken");
-              }
-              if (!token) {
-                console.log("Error - CSRF token not found in the card body or meta tag.");
-                return;
-              }
-              // Disable the "Ask" button to display multiple requests being sent
-              $(this).prop('disabled', true);
-
-              $('#loadingMessage').show();
-              let userText = $("#userInput").val();
-              
-              $.ajax({
-                  url: chatbotEndpoint,
-                  type: "POST",
-                  dataType: "json",
-                  data: { "user_input": userText },
-                  headers: {
-                      "X-Requested-With": "XMLHttpRequest",
-                      "X-CSRFToken":  getCSRFTokenViaCardBody(), //getCookie("csrftoken")
-                  },
-                  success: function(data) {
-                      console.log("Success - bot response is : ", data.response);
-                      var messageContent = data.response;
-                      // var messageRole = data.response.role; // 'assistant'
-                      let messageRole='assistant'
-
-                        // Format the message
-                        var formattedMessage = `<strong>${messageRole}:</strong> ${messageContent}`;
-                      $("#botResponse").html(formattedMessage);
-                      // $("#botResponse").text(data.response);
-
-                      // Add a button to opt-in for human operators. 2023-11-17
-                      // var connectHumanButton = $('<button/>', {
-                      //     text: 'Connect with a Human Operator',
-                      //     id: 'connectHumanOperator',
-                      //     class: 'btn btn-primary',
-                      //     click: function() { showHumanOperatorChat(); }
-                      // });
-
-                       $('#loadingMessage').hide();
-                       $('#askButton').prop('disabled', false);
-                  },
-                  error: function(xhr, status, error) {
-                    console.error("Error - Status: ", status, " Detail: ", error, " XHR: ", xhr);
-                      // Consider providing more descriptive text based on the error status
-                      var errorMsg = "Sorry, there was an error processing your request.";
-                      if (xhr && xhr.responseJSON && xhr.responseJSON.detail) {
-                        errorMsg = xhr.responseJSON.detail;
-                      }
-                      $("#botResponse").text(errorMsg);
-                      $('#loadingMessage').hide();
-                      $('#askButton').prop('disabled', false);
-                  }
-              });
-          });
-          // end of askButton 
-
-          $("#closeChatbot").on('click', function() {
-              $("#chatbotUI").hide();
-              $("#enableChatbot").show();  // If you want to show the enable button again
-          });
-
+      $('#enableChatbot').on('click', function () {
+        $("#chatbotUI").show();
+        $(this).hide();
       });
 
-      function getCookie(name) {
-          let value = "; " + document.cookie;
-          let parts = value.split("; " + name + "=");
-          if (parts.length === 2) return parts.pop().split(";").shift();
-      }
+      var chatbotEndpoint = "{% url 'we_have_ai_helpers:chatbot_response' %}";
 
-      // another function to get CSRFToken. via meta 
-      function getCSRFTokenViaMeta() {
-          return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-      }
-    
-      function getCSRFTokenViaCardBodyFunc() {
-          return document.querySelector('#chatbotCardBody').getAttribute('data-csrf-token');
-      }
+      $("#askButton").on("click", function (e) {
+        e.preventDefault();
+        const getCSRFTokenViaCardBody = () => $('#chatbotCardBody').data('csrf-token');
+        let token = getCSRFTokenViaCardBody();
+        if (!token) {
+          console.log("fetching csrfToken with cardBody is not none...try out fetching from meta.");
+          token = getCSRFTokenViaMeta();
+        }
+        if (!token) {
 
-      
-    </script>
+          token = getCookie("csrftoken");
+        }
+        if (!token) {
+          console.log("Error - CSRF token not found in the card body or meta tag.");
+          return;
+        }
+        // Disable the "Ask" button to display multiple requests being sent
+        $(this).prop('disabled', true);
 
-    {% include 'homepageapp/11_homepageapp_footer.html' %}
+        $('#loadingMessage').show();
+        let userText = $("#userInput").val();
 
-  </body>
+        $.ajax({
+          url: chatbotEndpoint,
+          type: "POST",
+          dataType: "json",
+          data: { "user_input": userText },
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCSRFTokenViaCardBody(), //getCookie("csrftoken")
+          },
+          success: function (data) {
+            console.log("Success - bot response is : ", data.response);
+            var messageContent = data.response;
+            // var messageRole = data.response.role; // 'assistant'
+            let messageRole = 'assistant'
 
-  <!-- Back to top button-->
-  <a class="btn-scroll-top" href="#top" data-scroll>
-    <span class="btn-scroll-top-tooltip text-muted fs-sm me-2">Top</span>
-    <i class="btn-scroll-top-icon fi-chevron-up"> </i>
-  </a>
- 
+            // Format the message
+            var formattedMessage = `<strong>${messageRole}:</strong> ${messageContent}`;
+            $("#botResponse").html(formattedMessage);
+            // $("#botResponse").text(data.response);
+
+            // Add a button to opt-in for human operators. 2023-11-17
+            // var connectHumanButton = $('<button/>', {
+            //     text: 'Connect with a Human Operator',
+            //     id: 'connectHumanOperator',
+            //     class: 'btn btn-primary',
+            //     click: function() { showHumanOperatorChat(); }
+            // });
+
+            $('#loadingMessage').hide();
+            $('#askButton').prop('disabled', false);
+          },
+          error: function (xhr, status, error) {
+            console.error("Error - Status: ", status, " Detail: ", error, " XHR: ", xhr);
+            // Consider providing more descriptive text based on the error status
+            var errorMsg = "Sorry, there was an error processing your request.";
+            if (xhr && xhr.responseJSON && xhr.responseJSON.detail) {
+              errorMsg = xhr.responseJSON.detail;
+            }
+            $("#botResponse").text(errorMsg);
+            $('#loadingMessage').hide();
+            $('#askButton').prop('disabled', false);
+          }
+        });
+      });
+      // end of askButton 
+
+      $("#closeChatbot").on('click', function () {
+        $("#chatbotUI").hide();
+        $("#enableChatbot").show();  // If you want to show the enable button again
+      });
+
+    });
+
+    function getCookie(name) {
+      let value = "; " + document.cookie;
+      let parts = value.split("; " + name + "=");
+      if (parts.length === 2) return parts.pop().split(";").shift();
+    }
+
+    // another function to get CSRFToken. via meta 
+    function getCSRFTokenViaMeta() {
+      return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    }
+
+    function getCSRFTokenViaCardBodyFunc() {
+      return document.querySelector('#chatbotCardBody').getAttribute('data-csrf-token');
+    }
+
+
+  </script>
+
+  {% include 'homepageapp/11_homepageapp_footer.html' %}
+
+</body>
+
+<!-- Back to top button-->
+<a class="btn-scroll-top" href="#top" data-scroll>
+  <span class="btn-scroll-top-tooltip text-muted fs-sm me-2">Top</span>
+  <i class="btn-scroll-top-icon fi-chevron-up"> </i>
+</a>
+
 </html>

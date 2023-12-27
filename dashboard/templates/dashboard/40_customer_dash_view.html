@@ -1,4 +1,4 @@
-w{% extends 'dashboard/00_dashboard_base.html' %}
+{% extends 'dashboard/00_dashboard_base.html' %}
 {% load static %}
 {% block content-main %}
 
@@ -15,25 +15,27 @@ w{% extends 'dashboard/00_dashboard_base.html' %}
 </div>
 
 <div class="container-fluid my-1">
-    
+
     <h2>Customer Dashboard </h2>
     <!-- Display the date and logged in user -->
-        <div class="row">
-          <div class="col">
+    <div class="row">
+        <div class="col">
             Welcome. {{ user.user_first_name }} {{ user.user_last_name }}. Logged in as {{user.email}}
-            
-          </div>
-          <div class="col">
-              <p><strong>Date:</strong> {{ current_time |date}}</p>
-          </div>
+
         </div>
+        <div class="col">
+            <p><strong>Date:</strong> {{ current_time |date}}</p>
+        </div>
+    </div>
     <p class="title">Today is {{current_time|date}} </p>
- 
+
     <div class='row'>
-      <div class="col-12 btn-group my-1">
-        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-dash' %}"> <i class="uil-home-alt"></i>Main Customer Dash</a>
-        <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-create' %}"><i class ='uil-file-plus-alt'></i>New Customer</a>
-      </div>
+        <div class="col-12 btn-group my-1">
+            <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-dash' %}"> <i
+                    class="uil-home-alt"></i>Main Customer Dash</a>
+            <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-create' %}"><i
+                    class='uil-file-plus-alt'></i>New Customer</a>
+        </div>
     </div>
     <!-- end of an row of function buttons -->
 
@@ -43,82 +45,84 @@ w{% extends 'dashboard/00_dashboard_base.html' %}
                 <th>ID</th>
                 <th>first Name</th>
                 <th>Email</th>
-                <th>Phone Nbr</th>      
+                <th>Phone Nbr</th>
                 <th>Updated at</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
             {% for customer in page_obj %}
-                <tr>
-                    <td><a href ="{% url 'dashboard:customer-detail' pk=customer.customer_id %}">{{customer.customer_id}}</a></td>
-                    <td>{{ customer.get_customer_full_name}}</td>
-                    <td>
-                        {% for email in customer.emails.all %}
-                        {{email.email_address|truncatechars:30 }}
-                        {% endfor %}
-                    </td>
-                    <td>
-                        {% for phone in customer.phones.all %}
-                        <p>{{phone.phone_desc.phone_desc}}   {{phone.phone_number|phone2numeric }}</p>
-                        {% endfor %}
-                    </td>
+            <tr>
+                <td><a href="{% url 'dashboard:customer-detail' pk=customer.customer_id %}">{{customer.customer_id}}</a>
+                </td>
+                <td>{{ customer.get_customer_full_name}}</td>
+                <td>
+                    {% for email in customer.emails.all %}
+                    {{email.email_address|truncatechars:30 }}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for phone in customer.phones.all %}
+                    <p>{{phone.phone_desc.phone_desc}} {{phone.phone_number|phone2numeric }}</p>
+                    {% endfor %}
+                </td>
 
-                    <td>{{ customer.customer_last_updated_at  |date:"m/d/y"}}</td>
-                    <td class="table-action"><a class="action-icon"><i class="uil uil-edit"></i></a><a><i class="uil uil-trash-alt"></i></a></td>
-                    
-                </tr>
+                <td>{{ customer.customer_last_updated_at |date:"m/d/y"}}</td>
+                <td class="table-action"><a class="action-icon"><i class="uil uil-edit"></i></a><a><i
+                            class="uil uil-trash-alt"></i></a></td>
+
+            </tr>
             {% empty %}
-                <tr>
-                    <td colspan="4">No active customers found.</td>
-                </tr>
-                {% endfor %} 
+            <tr>
+                <td colspan="4">No active customers found.</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 
 </div>
-<div class ='row'>
-    <div class = 'col-12'>
-            <ul class="pagination justify-content-center">
-                <li class="page-item">
-                    {% if page_obj.has_previous %}
-                        <a class="page-link" href="?page=1">
-                            <span class= 'step-links' aria-hidden="True">&laquo; First (1) </span>
-                        </a>
-                </li>
-                <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}"  tabindex="-1" >
-                            <span class= 'step-links' >Previous ({{ page_obj.previous_page_number }})</span>
-                        </a>
-                    {% endif %}
-                </li>
-                <li class ="page-item active">
-                    <a class="page-link" href="?page={{ page_obj.number }}">
-                        <span>
-                            Current ({{ page_obj.number }})
-                        </span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    {% if page_obj.has_next %}
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">
-                            <span>Next ({{ page_obj.next_page_number }})</span>
-                        </a>
-                </li>
-                <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
-                            <span aria-hidden="true" >Last ({{ page_obj.paginator.num_pages }}) &raquo;</span>
-                        </a>
-                    {% endif %}
-        
-                </li>
-            </ul>
-  
+<div class='row'>
+    <div class='col-12'>
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                {% if page_obj.has_previous %}
+                <a class="page-link" href="?page=1">
+                    <span class='step-links' aria-hidden="True">&laquo; First (1) </span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1">
+                    <span class='step-links'>Previous ({{ page_obj.previous_page_number }})</span>
+                </a>
+                {% endif %}
+            </li>
+            <li class="page-item active">
+                <a class="page-link" href="?page={{ page_obj.number }}">
+                    <span>
+                        Current ({{ page_obj.number }})
+                    </span>
+                </a>
+            </li>
+            <li class="page-item">
+                {% if page_obj.has_next %}
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                    <span>Next ({{ page_obj.next_page_number }})</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                    <span aria-hidden="true">Last ({{ page_obj.paginator.num_pages }}) &raquo;</span>
+                </a>
+                {% endif %}
+
+            </li>
+        </ul>
+
     </div>
 </div>
 
-    {% else %}
-    <p>There are no matched customers found here.</p>
-    {% endif %}
-        
+{% else %}
+<p>There are no matched customers found here.</p>
+{% endif %}
+
 {% endblock %}

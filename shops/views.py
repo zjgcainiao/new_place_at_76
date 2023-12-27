@@ -203,9 +203,8 @@ async def search_by_vin_or_plate(request):
 
     return JsonResponse(flattened_data, safe=False)
 
-# 2023-11-13 requring io canvas and HttpResponse
-
-
+# 2023-11-13 requring io canvas and HttpResponse. server side pdf rendering.
+# not working yet.
 async def export_vin_data_to_pdf(request):
 
     # Fetch the data from the session or database

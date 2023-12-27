@@ -70,9 +70,7 @@ def get_main_dashboard(request):
         return HttpResponseForbidden("you don't have permission to access to this page.")
 
 # dashboard listview via function. Version 1
-
-
-def repair_order_dashboard(request):
+def get_repair_order_dash(request):
     repair_orders = RepairOrdersNewSQL02Model.objects.filter(
         repair_order_phase__gte=1, repair_order_phase__lte=5).prefetch_related('repair_order_customer')
     # repair_orders_v2 = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer_id', 'repair_order_customer_id__addresses').filter(repair_order_phase_id__in=[1,2,3,4,5])

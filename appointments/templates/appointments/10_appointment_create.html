@@ -2,26 +2,29 @@
 {% load crispy_forms_tags %}
 {% block content1-main %}
 
-<div class=" d-flex align-items-center justify-content-center m-5 p-5"> 
+<div class=" d-flex align-items-center justify-content-center m-5 p-5">
 
-      <form class ='card card-hover border border-dark' method="post" enctype="multipart/form-data">
-          <h4 class="card-header fw-bold">New Service Appointment</h4>
-          <div class="notice m-1">
-            <p class="fw-semibold m-2">Already have an account? <a href="{% url 'customer_users:customer_user_login' %}">Sign in</a> for a faster service. Not a member yet? <a href="{% url 'customer_users:customer_user_register' %}">Sign up</a> for a free account today! Having an account with us will make your future appointment bookings faster and easier.</p>
-          </div>
-          
-          <div class="card-body">
+    <form class='card card-hover border border-dark' method="post" enctype="multipart/form-data">
+        <h4 class="card-header fw-bold">New Service Appointment</h4>
+        <div class="notice m-1">
+            <p class="fw-semibold m-2">Already have an account? <a
+                    href="{% url 'customer_users:customer_user_login' %}">Sign in</a> for a faster service. Not a member
+                yet? <a href="{% url 'customer_users:customer_user_register' %}">Sign up</a> for a free account today!
+                Having an account with us will make your future appointment bookings faster and easier.</p>
+        </div>
+
+        <div class="card-body">
             {% csrf_token %}
             {% crispy form form.helper %}
-      </form>
+    </form>
 
 
-      <!-- This will be the container for the image previews -->
-      <div id="image-preview-container" class="d-flex flex-wrap">
-      </div>
+    <!-- This will be the container for the image previews -->
+    <div id="image-preview-container" class="d-flex flex-wrap">
+    </div>
 
-      <!-- Template for an individual image preview -->
-      <script type="text/template" id="image-preview-template">
+    <!-- Template for an individual image preview -->
+    <script type="text/template" id="image-preview-template">
           <div class="image-preview position-relative m-2">
               <img src="" alt="Preview" class="img-thumbnail" />
               <button class="btn btn-danger btn-sm position-absolute top-0 end-0" onclick="removeImage(this)">
@@ -35,163 +38,199 @@
 <!-- 2023-11-01 css style added to allow display images as thumbnails -->
 
 <style>
+    /* This container will hold all your image previews and will be a flex container */
+    .image-preview-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        /* This creates space between your thumbnails */
+        justify-content: center;
+        /* This centers the thumbnails horizontally */
+        align-items: center;
+        /* This centers the thumbnails vertically */
+        padding: 10px;
+    }
 
-  /* This container will hold all your image previews and will be a flex container */
-  .image-preview-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px; /* This creates space between your thumbnails */
-      justify-content: center; /* This centers the thumbnails horizontally */
-      align-items: center; /* This centers the thumbnails vertically */
-      padding: 10px;
-  }
+    /* The individual image preview item */
+    .image-preview {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+        /* Ensures nothing spills out of the border-radius */
+        position: relative;
+        display: flex;
+        justify-content: center;
+        /* Center the image in the div horizontally */
+        align-items: center;
+        /* Center the image in the div vertically */
+    }
 
-  /* The individual image preview item */
-  .image-preview {
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      overflow: hidden; /* Ensures nothing spills out of the border-radius */
-      position: relative;
-      display: flex;
-      justify-content: center; /* Center the image in the div horizontally */
-      align-items: center; /* Center the image in the div vertically */
-  }
+    .image-preview img {
+        width: auto;
+        /* Auto width allows the image to scale proportionally */
+        max-width: 100%;
+        /* Ensures the image doesn't overflow its container */
+        height: auto;
+        /* Auto height allows the image to scale proportionally */
+        max-height: 150px;
+        /* Adjust this value based on your preference */
+    }
 
-  .image-preview img {
-    width: auto; /* Auto width allows the image to scale proportionally */
-    max-width: 100%; /* Ensures the image doesn't overflow its container */
-    height: auto; /* Auto height allows the image to scale proportionally */
-    max-height: 150px; /* Adjust this value based on your preference */
-  }
+    /* The delete button on the top right corner of the image preview */
+    .image-preview .delete-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        border: none;
+        background: rgba(255, 0, 0, 0.7);
+        /* Semi-transparent red background */
+        color: white;
+        border-radius: 50%;
+        /* Circular button */
+        width: 25px;
+        height: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
 
-  /* The delete button on the top right corner of the image preview */
-  .image-preview .delete-btn {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      border: none;
-      background: rgba(255, 0, 0, 0.7); /* Semi-transparent red background */
-      color: white;
-      border-radius: 50%; /* Circular button */
-      width: 25px;
-      height: 25px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-  }
+    /* Media Queries for responsiveness */
+    @media (max-width: 768px) {
 
-  /* Media Queries for responsiveness */
-  @media (max-width: 768px) {
-      /* For tablets */
-      .image-preview {
-          max-width: calc(50% - 10px); /* Show two images per row, adjust the percentage as needed */
-          margin-bottom: 10px;
-      }
-  }
+        /* For tablets */
+        .image-preview {
+            max-width: calc(50% - 10px);
+            /* Show two images per row, adjust the percentage as needed */
+            margin-bottom: 10px;
+        }
+    }
 
-  @media (max-width: 480px) {
-      /* For mobile phones */
-      .image-preview {
-          max-width: 100%; /* Each image takes full width of the container */
-          margin-bottom: 10px;
-      }
-  }
+    @media (max-width: 480px) {
 
+        /* For mobile phones */
+        .image-preview {
+            max-width: 100%;
+            /* Each image takes full width of the container */
+            margin-bottom: 10px;
+        }
+    }
 </style>
 
 
 <!-- 2023-11-01 added for image uploading  -->
 
 <script>
-  $(document).ready(function() {
-      var fileInput = $('#id_appointment_images');
-      var imagePreviewContainer = $('#image-preview-container');
-      var imagePreviewTemplate = $('#image-preview-template').html();
+    $(function () {
+        var fileInput = $('#id_appointment_images');
+        var imagePreviewContainer = $('#image-preview-container');
+        var imagePreviewTemplate = $('#image-preview-template').html();
 
-      function updateImagePreview() {
-          imagePreviewContainer.empty();
-          var fileList = fileInput.prop('files');
+        function updateImagePreview() {
+            imagePreviewContainer.empty();
+            var fileList = fileInput.prop('files');
 
-          // Enforce the 5 images maximum restriction
-          if (fileList.length > 5) {
-              alert('You can only upload a maximum of 5 images.');
-              fileInput.val(''); // Clear the file input
-              return;
-          }
+            // Enforce the 5 images maximum restriction
+            if (fileList.length > 5) {
+                alert('You can only upload a maximum of 5 images.');
+                fileInput.val(''); // Clear the file input
+                return;
+            }
 
-          for (var i = 0, len = fileList.length; i < len; i++) {
-              var file = fileList[i];
-              var reader = new FileReader();
+            for (var i = 0, len = fileList.length; i < len; i++) {
+                var file = fileList[i];
+                var reader = new FileReader();
 
-              reader.onload = function(e) {
-                  var newImagePreview = $(imagePreviewTemplate);
-                  newImagePreview.find('img').attr('src', e.target.result);
-                  imagePreviewContainer.append(newImagePreview);
-              };
+                reader.onload = function (e) {
+                    var newImagePreview = $(imagePreviewTemplate);
+                    newImagePreview.find('img').attr('src', e.target.result);
+                    imagePreviewContainer.append(newImagePreview);
+                };
 
-              reader.readAsDataURL(file);
-          }
-      }
+                reader.readAsDataURL(file);
+            }
+        }
 
-      // Update the image preview when files are chosen
-      fileInput.change(updateImagePreview);
+        // Update the image preview when files are chosen
+        fileInput.change(updateImagePreview);
 
+        // 2023-06-06 
+        // adding a script so that when a dropdown list field has been updated, the corresponding field is also updated.
+        // Update the appointment_vehicle_make section, then have it update appointment_vehicle_model
 
-  });
+        $('#id_appointment_vehicle_make').change(function () {
+            var url = "/appts/get_models/" + $(this).val() + "/";
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    var select = $('#id_appointment_vehicle_model');
+                    select.empty();
+                    $.each(data, function (index, value) {
+                        select.append('<option value="' + value.model_id + '">' + value.model_name + '</option>');
+                    });
+                }
+            });
+        });
+    });
 
-  // Function to remove an image from the preview
-  function removeImage(button) {
-      var imagePreviewDiv = $(button).closest('.image-preview');
-      var imageIndex = imagePreviewDiv.index();
-      var fileList = Array.from($('#id_appointment_images').prop('files'));
+    // Function to remove an image from the preview
+    function removeImage(button) {
+        var imagePreviewDiv = $(button).closest('.image-preview');
+        var imageIndex = imagePreviewDiv.index();
+        var fileList = Array.from($('#id_appointment_images').prop('files'));
 
-      // Remove the file at the index
-      fileList.splice(imageIndex, 1);
+        // Remove the file at the index
+        fileList.splice(imageIndex, 1);
 
-      // Create a new DataTransfer object and populate with the updated file list
-      var newFileList = new DataTransfer();
-      fileList.forEach(function(file) {
-          newFileList.items.add(file);
-      });
+        // Create a new DataTransfer object and populate with the updated file list
+        var newFileList = new DataTransfer();
+        fileList.forEach(function (file) {
+            newFileList.items.add(file);
+        });
 
-      // Update the file input with the new file list
-      $('#id_appointment_images').prop('files', newFileList.files);
+        // Update the file input with the new file list
+        $('#id_appointment_images').prop('files', newFileList.files);
 
-      // Remove the image preview div
-      imagePreviewDiv.remove();
-  }
+        // Remove the image preview div
+        imagePreviewDiv.remove();
+    }
+
+    // this script is added to automatically format the phone number input field 2023-08-01
+    $('#id_appointment_phone_number').on('input', function () {
+        let x = $(this).val().replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+        $(this).val(!x[2] ? x[1] : `(${x[1]}) ${x[2]}` + (x[3] ? `-${x[3]}` : ''));
+    });
 
 </script>
 
 
 <!-- this script is added to automatically format the phone number input field 2023-08-01 -->
-<script>
-    $('#id_appointment_phone_number').on('input', function() {
+<!-- <script>
+    $('#id_appointment_phone_number').on('input', function () {
         let x = $(this).val().replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
         $(this).val(!x[2] ? x[1] : `(${x[1]}) ${x[2]}` + (x[3] ? `-${x[3]}` : ''));
     });
-</script>
+</script> -->
 
 <!-- 2023-06-06 
 adding a script so that when a dropdown list field has been updated, the corresponding field is also updated.
 Update the appointment_vehicle_make section, then have it update appointment_vehicle_model -->
-  
-<script>
-$(document).ready(function() {
-    $('#id_appointment_vehicle_make').change(function() {
-        var url = "/appts/get_models/" + $(this).val() + "/";
-        $.ajax({
-            url: url,
-            success: function(data) {
-                var select = $('#id_appointment_vehicle_model');
-                select.empty();
-                $.each(data, function(index, value) {
-                    select.append('<option value="' + value.model_id + '">' + value.model_name + '</option>');
-                });
-            }
+
+<!-- <script>
+    $(function () {
+        $('#id_appointment_vehicle_make').change(function () {
+            var url = "/appts/get_models/" + $(this).val() + "/";
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    var select = $('#id_appointment_vehicle_model');
+                    select.empty();
+                    $.each(data, function (index, value) {
+                        select.append('<option value="' + value.model_id + '">' + value.model_name + '</option>');
+                    });
+                }
+            });
         });
     });
-});
-</script>
+</script> -->
 {% endblock %}

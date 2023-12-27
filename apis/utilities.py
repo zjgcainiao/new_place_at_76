@@ -25,7 +25,6 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
     logger.info(
         f'Initiating an api request to { NHTSA_API_URL}.')
     print(f'Initiating an api request to { NHTSA_API_URL}.')
-    # print(url)
     vin_data_list = []
     number_of_downgraded_records = 0
     try:
@@ -50,9 +49,9 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
 
         if results:
             logger.info(
-                f'pulling results for vin {vin} and model year {year} was successful.')
+                f"result fetched successful for vin {vin} and model year {year}.")
             print(
-                f'pulling results for vin {vin} and model year {year} was successful.')
+                f"result fetched successful for vin {vin} and model year {year}.")
 
             updated_records = await decrement_version_for_vin_async(vin)
             number_of_downgraded_records = updated_records
@@ -152,7 +151,7 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
 # async function that fetchs a result for a single combo of license plate and state. Vendor: plate2vin
 
 async def fetch_single_plate_data_via_plate2vin_api(license_plate, state, api_url=PLATE2VIN_API_URL):
-    logger = logging.getLogger('external_api')
+    logger = logging.getLogger("external_api")
     url = api_url.strip()
     success = False
     payload = {
@@ -163,12 +162,12 @@ async def fetch_single_plate_data_via_plate2vin_api(license_plate, state, api_ur
     logger.info('attempting to read any api key stored in the .env...')
     try:
         plate2vin_api_key = config("PLATE2VIN_API_KEY")
-        logger.info('the api key found...')
+        logger.info("the api key found ...")
     except UndefinedValueError:
         logger.error(
-            'Error: The required environment variable PLATE2VIN_API_KEY is not set.')
+            "Error: The required environment variable`PLATE2VIN_API_KEY` is not set.")
         raise ValueError(
-            "The required environment variable PLATE2VIN_API_KEY is not set.")
+            "The required environment variable `PLATE2VIN_API_KEY` is not set.")
 
     headers = {
         'Authorization': plate2vin_api_key,
