@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-from core_operations.utilies import test_db_connection  # Adjust the import based on your file structure
+from core_operations.utilities import test_db_connection  # Adjust the import based on your file structure
 from google.oauth2 import service_account
 import os
 from dotenv import load_dotenv,  find_dotenv
