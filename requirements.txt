@@ -45,6 +45,7 @@ Faker==19.6.2
 filelock==3.12.2
 # filterpy==1.4.5
 firebase-admin==6.2.0
+fredapi==0.5.1
 frozenlist==1.4.0
 google-api-core==2.11.0
 google-api-python-client==2.83.0

@@ -8,7 +8,7 @@ class SearchLimitMiddleware(MiddlewareMixin):
     def __init__(self, get_response):
         self.get_response = get_response
 
-    def __call__(self, request):
+    async def __call__(self, request):
         # Check if user is on the search page
         if 'search_page_identifier' in request.path:
 
@@ -27,7 +27,7 @@ class SearchLimitMiddleware(MiddlewareMixin):
             if cookie_count >= search_limit or ip_count >= search_limit:
                 return redirect('signup_page_url')  # Redirect to signup page
 
-        response = self.get_response(request)
+        response = await self.get_response(request)
         
         # Set/update cookie
         if 'search_page_identifier' in request.path:

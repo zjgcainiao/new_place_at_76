@@ -1,5 +1,5 @@
-
-<h2>Work items</h2>
+<div class="container">
+    <h3 class="my-3">Work items</h3>
 
     <table class="table table-light">
         <thead>
@@ -16,13 +16,17 @@
                 <th>labor sale</th>
                 <th>tax</th>
                 <th>sale</th>
+                <th>Action</th>
 
             </tr>
         </thead>
         {% for line_item in line_items %}
         <tbody>
             <tr>
-                <td><a href = "{% url 'dashboard:part-labor-item-merge-view' pk=line_item.lineitems.get.repair_order_id  line_item_id=line_item.line_item_id %}">{{line_item.line_item_id}}</a></td>
+                <td>
+                    <a
+                        href="{% url 'dashboard:part-labor-item-merge-view' pk=line_item.lineitems.get.repair_order_id  line_item_id=line_item.line_item_id %}">{{line_item.line_item_id}}</a>
+                </td>
                 <td>{{line_item.line_item_canned_job.canned_job_title}}</td>
                 <td>{{line_item.line_item_description}}</td>
                 <td>{{line_item.line_item_cost}}</td>
@@ -34,8 +38,11 @@
                 <td>{{line_item.line_item_labor_sale}}</td>
                 <td>{{line_item.taxes.line_item_tax_charged}}</td>
                 <td>{{line_item.line_item_sale}}</td>
-            </tr>  
+                <td class="table-action">
+                    <a class="action-icon"><i class="uil uil-edit"></i></a><a><i class="uil uil-trash-alt"></i></a>
+                </td>
+            </tr>
         </tbody>
         {% endfor %}
     </table>
-
+</div>

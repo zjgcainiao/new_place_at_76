@@ -158,7 +158,7 @@ class LastestVinDataSerializer(serializers.ModelSerializer):
 class PlateDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = LicensePlateSnapShotsPlate2Vin
-        fields = ['__all__']
+        fields = ['id','license_plate', 'state', 'vin', 'trim','year','make','engine','drive_type','style','fuel','color_name','color_abbreviation','vin_data']
         depth = 1
 
 
@@ -177,7 +177,7 @@ class PlateAndVinDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LicensePlateSnapShotsPlate2Vin
-        fields = ['id', 'api_url', 'license_plate', 'state', 'vin', 
+        fields = ['id', 'license_plate', 'state', 'vin', 
                   'trim','year','make','engine','drive_type','style','fuel',
                   'color_name','color_abbreviation','vin_data',]
         depth = 2

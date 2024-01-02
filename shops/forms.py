@@ -71,8 +71,8 @@ class VINSearchForm(forms.Form):
             Div(
                 # Adjust the column sizes as needed
                 Hidden('action', 'action_vin_search'),
-                Field('vin'),
-                Field('year'),
+                Field('vin',wrapper_class='p-1 m-1'),
+                Field('year',wrapper_class='p-1 m-1'),
                 css_class='row m-1'
             ),
 

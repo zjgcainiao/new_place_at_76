@@ -16,7 +16,7 @@
 
 <div class="container-fluid my-1">
 
-    <h2>Customer Dashboard </h2>
+    <h2>Customer Dashboard</h2>
     <!-- Display the date and logged in user -->
     <div class="row">
         <div class="col">
@@ -27,8 +27,7 @@
             <p><strong>Date:</strong> {{ current_time |date}}</p>
         </div>
     </div>
-    <p class="title">Today is {{current_time|date}} </p>
-
+    <!-- end of date and logged in user -->
     <div class='row'>
         <div class="col-12 btn-group my-1">
             <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer-dash' %}"> <i

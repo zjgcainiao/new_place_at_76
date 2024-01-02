@@ -3,15 +3,15 @@
 {% block content-main %}
 
 <div class="row">
-   
+
     <div class="col-2 d-none d-lg-block">
-         <!-- ========== Left Sidebar Start ========== -->
+        <!-- ========== Left Sidebar Start ========== -->
         <div class="leftside-menu menuitem-active">
 
             <!-- Brand Logo Dark -->
-            <a href="{% url 'homepageapp:homepage' %} "  class="logo logo-dark">
+            <a href="{% url 'homepageapp:homepage' %} " class="logo logo-dark">
                 <span class="logo-lg">
-                    <img src="{% static '/homepageapp/2022-Logo-Transparent-small.png' %}" alt="dark logo">
+                    <img src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" alt="dark logo">
                 </span>
                 <span class="logo-sm">
                     <img src="assets/images/logo-dark-sm.png" alt="small logo">
@@ -28,7 +28,7 @@
 
             <!-- sidebar-left  -->
             <div class="h-100 show" id="leftside-menu-container" data-simplebar="init">
-                <div class="simplebar-wrapper" style="margin: 0px;">
+                <div class="simplebar-wrapper" style="margin: 5px;">
                     <div class="simplebar-height-auto-observer-wrapper">
                         <div class="simplebar-height-auto-observer">
 
@@ -36,85 +36,122 @@
                     </div>
                     <div class="simplebar-mask">
                         <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
-                            <div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: 100%; overflow: hidden scroll;">
+                            <div class="simplebar-content-wrapper" tabindex="0" role="region"
+                                aria-label="scrollable content" style="height: 100%; overflow: hidden scroll;">
                                 <div class="simplebar-content" style="padding: 0px;">
 
-                <!-- Leftbar User -->
-                <div class="leftbar-user">
-                    <a href="{% url 'homepageapp:homepage' %} " >
-                        <img src="{% static 'dashboard/images/users/avatar-1.jpg' %}" alt="user-image" height="42" class="rounded-circle shadow-sm">
-                        <span class="leftbar-user-name mt-2">Name: {{user}}</span>
-                    </a>
-                </div>
+                                    <!-- Leftbar User -->
+                                    <div class="leftbar-user">
+                                        <a href="{% url 'homepageapp:homepage' %} ">
+                                            <img src="{% static 'dashboard/images/users/avatar-1.jpg' %}"
+                                                alt="user-image" height="20" class="rounded-circle shadow-sm">
+                                            <span class="leftbar-user-name mt-2">Name: {{user}}</span>
+                                        </a>
+                                    </div>
 
-                <!-- <span class="account-user-avatar">
+                                    <!-- <span class="account-user-avatar">
                     <img src="{% static 'dashboard/images/users/avatar-1.jpg' %}" alt="user-image" width="32" class="rounded-circle">
                 </span> -->
+                                    <style>
+                                        .user-image {
+                                            max-width: 80%;
+                                            /* Makes sure the image is not wider than its container */
+                                            height: auto;
+                                            /* Keeps the aspect ratio of the image */
+                                            max-height: 150px;
+                                            /* Adjust the maximum height as needed */
 
-                <!--- Sidemenu -->
-                <ul class="side-nav">
-                    <!-- Leftbar User -->
-                    <div class ='container'>
-                        <div class="row my-1">
-                            <img src="{% static 'homepageapp/img/avatars/avatar_new_02.png' %}" alt="internal-user-image">
-                        </div>
-                        <div class="row my-1">
-                            <h3> {{internal_user.user_first_name}} {{internal_user.user_middle_name}} {{internal_user.user_last_name}} </h3>
-                        </div>
-                        
-                    </div>    
-                    <div class="row p-1 m-1">
-                        <div class="col">
-                            <button class="btn btn-outline-primary"> <a class='nav-link' href="{% url 'dashboard:repair-order-dash' %}">Back to Work Station</a> </button>
+                                            border-radius: 10%;
+                                            /* Optional: makes the image circular */
+                                        }
+                                    </style>
+                                    <!--- Sidemenu -->
+                                    <ul class="side-nav">
+                                        <!-- Leftbar User -->
+                                        <div class='container'>
+                                            <div class="row my-1">
+                                                <img class="user-image"
+                                                    src="{% static 'homepageapp/img/avatars/avatar_new_02.png' %}"
+                                                    alt="internal-user-image">
+                                            </div>
+                                            <div class="row my-1">
+                                                <h3> {{internal_user.user_first_name}}
+                                                    {{internal_user.user_middle_name}} {{internal_user.user_last_name}}
+                                                </h3>
+                                            </div>
+
+                                        </div>
+                                        <!-- end of leftbar user  -->
+
+                                        <div class="row p-1 m-1">
+                                            <div class="col">
+                                                <button class="btn btn-outline-primary"> <a class='nav-link'
+                                                        href="{% url 'dashboard:main-dash' %}">Back to Work
+                                                        Station</a> </button>
+                                            </div>
+                                        </div>
+                                        <li class="side-nav-title">Personal</li>
+
+                                        <li class="side-nav-item">
+                                            <a href="" class="side-nav-link">
+                                                <i class="uil-copy-alt"></i>
+                                                <span> User Info</span>
+
+                                            </a>
+                                            <a href="{% url 'internal_users:employement_info' %}" class="side-nav-link">
+                                                <i class="uil-file-lock-alt"></i>
+                                                <span> Employment Information</span>
+                                            </a>
+
+                                        </li>
+
+                                        <hr>
+
+                                        <li class="side-nav-title">Settings</li>
+
+                                        <li class="side-nav-item">
+                                            <a href="{% url 'internal_users:password_change'%}" class="side-nav-link">
+                                                <i class="uil-folder-plus"></i>
+                                                <span>Change Password</span>
+                                            </a>
+                                        </li>
+                                        <!-- end of one side-nav-item -->
+
+                                        <li class="side-nav-item">
+                                            <a href="{% url 'shift_management:schedule_shift'%}" class="side-nav-link">
+                                                <i class="mdi mdi-logout"></i>
+                                                <span>Schedule Shift</span>
+                                            </a>
+                                        </li>
+                                        <!-- end of one side-nav-item -->
+                                        <hr>
+                                        <li class="side-nav-item">
+                                            <a href="{% url 'internal_users:internal_user_logout'%}"
+                                                class="side-nav-link">
+                                                <i class="mdi mdi-logout"></i>
+                                                <span>Logout</span>
+                                            </a>
+                                        </li>
+                                        <!-- end of one side-nav-item -->
+                                    </ul>
+                                    <!--- End Sidemenu -->
+
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <li class="side-nav-title">Personal</li>
-
-                    <li class="side-nav-item">
-                        <a  href="" class="side-nav-link">
-                            <i class="uil-copy-alt"></i>
-                            <span> User Info</span>
-
-                        </a>
-                        <a href="{% url 'internal_users:employement_info' %}"  class="side-nav-link">
-                            <i class="uil-file-lock-alt"></i>
-                            <span> Employment Information</span>
-                        </a>
-                        
-                    </li>
-                    
-                    <hr>
-
-                    <li class="side-nav-title">Settings</li>
-
-                    <li class="side-nav-item">
-                        <a  href="{% url 'internal_users:password_change'%}"  class="side-nav-link">
-                            <i class="uil-folder-plus"></i>
-                            <span>Change Password</span>
-                        </a>
-                    </li>
-                    <!-- end of one side-nav-item -->
-
-                    <li class="side-nav-item">
-                        <a  href="{% url 'shift_management:schedule_shift'%}"  class="side-nav-link">
-                            <i class="mdi mdi-logout"></i>
-                            <span>Schedule Shift</span>
-                        </a>
-                    </li>
-                    <!-- end of one side-nav-item -->
-                    <hr>
-                    <li class="side-nav-item">
-                        <a  href="{% url 'internal_users:internal_user_logout'%}"  class="side-nav-link">
-                            <i class="mdi mdi-logout"></i>
-                            <span>Logout</span>
-                        </a>
-                    </li>
-                    <!-- end of one side-nav-item -->
-                </ul>
-                <!--- End Sidemenu -->
-                
-                <div class="clearfix"></div>
-                </div></div></div></div><div class="simplebar-placeholder" style="width: auto; height: 2017px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none; transform: translate3d(0px, 0px, 0px);"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 151px; transform: translate3d(0px, 197px, 0px); display: block;"></div></div></div>
+                    <div class="simplebar-placeholder" style="width: auto; height: 2017px;"></div>
+                </div>
+                <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
+                    <div class="simplebar-scrollbar"
+                        style="width: 0px; display: none; transform: translate3d(0px, 0px, 0px);"></div>
+                </div>
+                <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
+                    <div class="simplebar-scrollbar"
+                        style="height: 151px; transform: translate3d(0px, 197px, 0px); display: block;"></div>
+                </div>
+            </div>
         </div>
         <!-- ========== Left Sidebar End ========== -->
     </div>
@@ -126,19 +163,19 @@
     <!-- ============================================================== -->
     <div class="col-10">
         <div class="content-page m-1 p-1">
-            
+
             <!-- <div class="content">
                 <div class="container-fluid"> -->
-                    {% block content-submain %}
-                    {% endblock %}
-                <!-- </div>
+            {% block content-submain %}
+            {% endblock %}
+            <!-- </div>
             </div> -->
             <!-- content -->
         </div>
-    </div>  
-    
+    </div>
+
     <!-- ============================================================== -->
     <!-- End Page content -->
-    <!-- ============================================================== -->  
-</div>    
+    <!-- ============================================================== -->
+</div>
 {% endblock %}

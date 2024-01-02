@@ -117,6 +117,7 @@ def set_session_data(request, key, data):
 async def search_by_vin_or_plate(request):
     logger = logging.getLogger('django')
     plate_data={}
+    plate_data_id =''
     flattened_data = {} # initalize as an emtpy. if set it as None, this will cause an error about flaten_data not being iterable.
     if request.method == 'GET':
         vin_form = VINSearchForm()
@@ -176,7 +177,7 @@ async def search_by_vin_or_plate(request):
                 ).strip() if plate_form.cleaned_data['state'] else ''
 
             logger.info(
-                f'performing a manual single plate search for license_plate{ license_plate} and state {state}...')
+                f'performing a single plate search for license_plate {license_plate} and state {state}...')
             # print(
             #     f'performing a manual single plate search for license_plate {license_plate} and state {state}...')
 
@@ -185,27 +186,30 @@ async def search_by_vin_or_plate(request):
                 if not success:
                     plate_form.add_error(
                         None, 'Failed to fetch VIN for the given License Plate.')
-                elif plate_data:
+                elif plate_data and plate_data.id:
                     # Flatten the data only if plate_data is not empty
                     # Assuming `plate_data` is an instance of `LicensePlateSnapShotsPlate2Vin`
+                    
                     flattened_data = await database_sync_to_async(model_to_dict)(plate_data)
             except Exception as e:
                 plate_form.add_error(
                     None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
 
-            
+            plate_data_id= plate_data.id
             # flattened_data = await database_sync_to_async(model_to_dict)(plate_data)
-
-            return JsonResponse(flattened_data, safe=False)
+            return JsonResponse({'plate_data_id': plate_data_id})
+            # return JsonResponse(flattened_data, safe=False)
         else:
             # If the form is not valid, you can return an error message or empty data.
             return JsonResponse({'error': 'Invalid form data'}, status=400)
 
     # If no POST or no search
-    if not flattened_data:
-        return JsonResponse({'error': 'No data'}, status=404)
+    if not flattened_data or not plate_data_id:
 
-    return JsonResponse(flattened_data, safe=False)
+        return JsonResponse({'error': 'No data found'}, status=404)
+
+    # return JsonResponse(flattened_data, safe=False)
+    return JsonResponse({'plate_data_id': plate_data_id})
 
 # 2023-11-13 requring io canvas and HttpResponse. server side pdf rendering.
 # not working yet.

@@ -440,7 +440,8 @@ def line_item_labor_and_part_item_update_view(request, pk, line_item_id):
     line_item = LineItemsNewSQL02Model.objects.prefetch_related(
         'partitems_lineitems',
         'lineitem_laboritem',
-        'lineitem_noteitem').filter(line_item_id=line_item_id).first()  # to handle not found error by returning None
+        'lineitem_noteitem'
+        ).filter(line_item_id=line_item_id).first()  # to handle not found error by returning None
 
     # use .all() instead of .exists() to reduce the queries into DB.
     if line_item.partitems_lineitems.all():

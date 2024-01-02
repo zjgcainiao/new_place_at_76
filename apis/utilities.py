@@ -50,8 +50,8 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
         if results:
             logger.info(
                 f"result fetched successful for vin {vin} and model year {year}.")
-            print(
-                f"result fetched successful for vin {vin} and model year {year}.")
+            # print(
+            #     f"result fetched successful for vin {vin} and model year {year}.")
 
             updated_records = await decrement_version_for_vin_async(vin)
             number_of_downgraded_records = updated_records

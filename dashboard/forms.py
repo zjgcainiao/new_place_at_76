@@ -612,7 +612,7 @@ class LaborItemUpdateForm(forms.ModelForm):
     labor_item_symptom = forms.CharField(widget=forms.TextInput(
         attrs={"placeholder": 'include the noise, the incident that customer mentions'}), label='Symtoms')
     labor_item_is_user_entered_labor_rate = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': 'form-check'}), label='is manual labor rate?')
+        attrs={}), label='is manual labor rate?')
     labor_item_hours_charged = forms.FloatField(widget=forms.NumberInput())
     labor_item_work_performed = forms.CharField(
         widget=forms.Textarea(), label='work performed (labor)')
@@ -640,7 +640,7 @@ class LaborItemUpdateForm(forms.ModelForm):
             'labor_item_hours_charged': forms.NumberInput(attrs={'class': 'form-control', }),
             'labor_item_symptom': forms.TextInput(attrs={'class': 'form-control', }),
             'labor_item_parts_estimate': forms.NumberInput(attrs={'class': 'form-control', }),
-            'labor_item_is_come_back_invoice': forms.CheckboxInput(attrs={'class': 'form-check'})
+            'labor_item_is_come_back_invoice': forms.CheckboxInput(attrs={})
         }
 
         labels = {
@@ -669,12 +669,16 @@ class LaborItemUpdateForm(forms.ModelForm):
         self.helper.field_class = 'col-9'
 
 
+
+
 PartItemInlineFormSet = inlineformset_factory(LineItemsNewSQL02Model, PartItemModel,
                                               form=PartItemUpdateForm, extra=0,
+                                              can_delete=True,
                                               )
 LaborItemInlineFormSet = inlineformset_factory(LineItemsNewSQL02Model, LaborItemModel,
                                                form=LaborItemUpdateForm,
                                                extra=0,
+                                               can_delete=True,
                                                )
 
 RepairOrderFormSet = formset_factory(RepairOrderUpdateForm, extra=0)
@@ -700,6 +704,7 @@ class LineItemUpdateForm(forms.ModelForm):
             'line_item_id',
             'line_item_description',
             'line_item_category',
+            # 'line_item_parent_line_item',
         ]
         # exclude = [
         #     'line_item_parent_line_item_id',]
