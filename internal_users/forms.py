@@ -9,8 +9,8 @@ from django.contrib.auth import get_user_model
 from talent_management.models import TalentsModel
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
-from captcha.fields import ReCaptchaField
-from captcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox
 from django.contrib.auth import authenticate
 
 
@@ -21,11 +21,11 @@ class InternalUserCreationForm(forms.ModelForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(
         label='Repeat password', widget=forms.PasswordInput)
-
+    captcha =  ReCaptchaField(widget=ReCaptchaV2Invisible)
     class Meta:
         model = InternalUser
-        fields = ('user_id', 'email', 'user_first_name', 'user_last_name',
-                  )
+        fields = ['user_id', 'email', 'user_first_name', 'user_last_name',
+                  ]
     
     def clean_email(self):
         email = self.cleaned_data['email'].lower().strip()

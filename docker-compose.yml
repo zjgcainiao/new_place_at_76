@@ -1,17 +1,10 @@
-version: '3.8'
+version: "3.10"
 
 services:
   web:
     build: .
     command:
-      [
-        "daphne",
-        "-b",
-        "0.0.0.0",
-        "-p",
-        "8000",
-        "automanshop.asgi:application"
-      ]
+      ["daphne", "-b", "0.0.0.0", "-p", "8000", "automanshop.asgi:application"]
     volumes:
       - .:/app
     ports:
@@ -72,14 +65,10 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_USE_SSL=${REDIS_USE_SSL}
-    depends_on:
-      # - sqldb
-      - redis
-
-  # redis:
-  #   image: redis:latest
-  #   ports:
-  #     - "6379:6379"
+    # depends_on:
+    #   - web-secret
+    # - sqldb
+    # - redis
 
   celery:
     build: .
@@ -88,20 +77,21 @@ services:
       - .:/app
     depends_on:
       - web
+
       # - redis
 
-  beat:
-    build: .
-    command: celery -A automanshop  beat --loglevel=info
-    volumes:
-      - .:/app
-    depends_on:
-      - celery
-      # - redis
-    # volumes:
-    # - sql_data:/var/opt/mssql
-    # - /Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/05_databases/sqldata:/var/opt/mssql
+  # beat:
+  #   build: .
+  #   command: celery -A automanshop  beat --loglevel=info
+  #   volumes:
+  #     - .:/app
+  #   depends_on:
+  #     - celery
+  # - redis
+  # volumes:
+  # - sql_data:/var/opt/mssql
+  # - /Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/05_databases/sqldata:/var/opt/mssql
 
-    #       # Add other necessary environment variables for SQL Server
-    # volumes:
-    #   sql_data:
+  #       # Add other necessary environment variables for SQL Server
+  # volumes:
+  #   sql_data:

@@ -175,7 +175,7 @@ LOGGING = {
 
         'management_script': {  # Logger for management scripts
             'handlers': ['console', 'management_script_file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': False,
         },
     },
@@ -186,10 +186,10 @@ logger = logging.getLogger("django")
 # 2023-10-24 added OpenAI_API_key and OpenAI_API_key 2
 OPENAI_API_KEY = config("OPENAI_API_KEY")
 OPENAI_API_KEY2 = config("OPENAI_API_KEY2", default=OPENAI_API_KEY)
-if OPENAI_API_KEY2:
+if OPENAI_API_KEY:
     logger.info("loading openai api key succesfully.")
 else:
-    logger.info("there is no openai api key found during Django setting launch.")
+    logger.info("there is no openai api key found during Django server launch.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
@@ -276,7 +276,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'homepageapp',
     'appointments.apps.AppointmentsConfig',
-
+    'django_recaptcha',
     'apis',  # adding the apis.
     'internal_users',
     'customer_users',
@@ -374,7 +374,7 @@ AUTHENTICATION_BACKENDS = [
 # 2023-11-08
 
 # Use channels to manage ASGI
-ASGI_APPLICATION = 'automanshop.asgi.application'
+ASGI_APPLICATION = "automanshop.asgi.application"
 
 
 # Use os.getenv to get environment variables
@@ -528,6 +528,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 # Add Google ReCAPTCHA keys
 RECAPTCHA_PUBLIC_KEY = config("RECAPTCHA_PUBLIC_KEY")
 RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY")
+if not RECAPTCHA_PRIVATE_KEY or not RECAPTCHA_PUBLIC_KEY:
+    logger.error('missing google reCAPTCHA keys...')
+RECAPTCHA_DOMAIN = 'www.recaptcha.net'
 # ADD the following line for testing and local development
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 # Database

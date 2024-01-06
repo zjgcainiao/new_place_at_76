@@ -11,12 +11,12 @@ from django.core.validators import RegexValidator
 from core_operations.common_functions import is_valid_us_phone_number
 from core_operations.models import LIST_OF_STATES_IN_US
 
-from captcha.fields import ReCaptchaField
-from captcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox
 
 
 class CustomerUserRegistrationForm(UserCreationForm):
-    cust_user_email = forms.EmailField(help_text='We will important account updates and notifications to this email. Required.',
+    cust_user_email = forms.EmailField(help_text='Required. We will send important account updates and notifications to this email.',
                                        widget=forms.EmailInput(attrs={'type': 'email', 'class': 'form-control', }), label='Email')
     cust_user_phone_number = forms.CharField(
         max_length=15, required=False,
@@ -32,9 +32,11 @@ class CustomerUserRegistrationForm(UserCreationForm):
         max_length=30, required=False, help_text='Required.', label='First Name',
         widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control',
                                'placeholder:': 'first name, or business full name.'}))
-    # password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    # password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
-    # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(
+        api_params={'hl': 'en','onload': 'onloadCallback'}
+    ), label = 'please check the box below to verify you are not a robot.')
     class Meta:
         model = CustomerUser
         fields = ['cust_user_email', 'cust_user_phone_number', 'cust_user_first_name', 'cust_user_middle_name',
@@ -114,9 +116,13 @@ class CustomerUserRegistrationForm(UserCreationForm):
         email = email.strip()
         email = email.lower()
         if email:
+            new = CustomerUser.objects.filter(email=email)
+            if new.count():
+                raise ValidationError(" Email Already Exists.")
             return email
         else:
             raise ValidationError('email cannot be empty.')
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -137,15 +143,6 @@ class CustomerUserRegistrationForm(UserCreationForm):
         if commit:
             user.save()
         return user
-
-    # this function will have to expand for employee email verifications.
-    # a customer user.
-    # def clean_email(self):
-    #     email = self.cleaned_data['email'].lower()
-    #     new = CustomerUser.objects.filter(email=email)
-    #     if new.count():
-    #         raise ValidationError(" Email Already Exists.")
-    #     return email
 
 
 # the default login requires a phone number and a password
@@ -218,6 +215,6 @@ class AddressForm(forms.Form):
         country_code = cleaned_data['country_code'].strip()
 
         if not address or not city or not state or not zip_code:
-            raise forms.ValidationError("All address fields are required.")
+            raise ValidationError("All address fields are required.")
 
         return cleaned_data

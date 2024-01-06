@@ -1,36 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.31.2 (HEAD)
-  labels:
-    io.kompose.service: celery
-  name: celery
+  name: celery-worker
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: celery
+      app: celery-worker
   strategy:
     type: Recreate
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert
-        kompose.version: 1.31.2 (HEAD)
       labels:
-        io.kompose.network/new-76prolubepluscom-default: "true"
-        io.kompose.service: celery
+        app: celery-worker
     spec:
       containers:
-        - args:
-            - celery
-            - -A
-            - automanshop
-            - worker
-            - --loglevel=info
-          image: celery
+        - image: holleratme420/web:v1
+          command: ["celery"]
+          args: ["-A", "automanshop", "worker", "--loglevel=info"]
           name: celery
           resources: {}
           # volumeMounts:
@@ -39,6 +26,6 @@ spec:
       restartPolicy: Always
       # volumes:
       #   - name: celery-claim0
-      #     persistentVolumeClaim:
-      #       claimName: celery-claim0
+      #     # persistentVolumeClaim:
+          #   claimName: celery-claim0
 status: {}

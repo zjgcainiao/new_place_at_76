@@ -2,12 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: web-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: nginx
   rules:
-  - host: new76prolubeplus.com
-    http:
+  -  http:
       paths:
       - path: /
         pathType: Prefix
@@ -16,3 +14,8 @@ spec:
             name: web
             port:
               number: 80
+  # Uncomment and configure the TLS section when you have a TLS certificate
+  # tls:
+  # - hosts:
+  #   - shop_ai.com
+  #   secretName: shop-ai-tls

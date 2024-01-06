@@ -14,7 +14,7 @@
   <!-- Viewport-->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Favicon and Touch Icons-->
-  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'homepageapp/img/apple-touch-icon.png' %}">
+  <!-- <link rel="apple-touch-icon" sizes="180x180" href="{% static 'homepageapp/img/apple-touch-icon.png' %}"> -->
   <!-- <link rel="icon" type="image/png" sizes="32x32" href="{% static 'homepageapp/img/favicon-32x32.png' %}"> -->
   <!-- <link rel="icon" type="image/png" sizes="16x16" href="{% static 'homepageapp/img/logo/logo-2022.svg' %}"> -->
   <link rel="manifest" href="{% static 'homepageapp/img/site.webmanifest' %}">
@@ -34,7 +34,6 @@
   <!-- jQuery 3.7.0 js -->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
-  <!-- Vendor scrits: js libraries and plugins -->
   <!-- poper 2.9.2 js, bootstrap 5.3.0 js , simplebar js, smooth-scoll.polyfills js, tiny-slider js, jarallax and jarallax-element js  -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
     integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
@@ -223,22 +222,22 @@
     {% endcomment %}
     <!-- navbar navbar-expand-lg navbar-light bg-light -->
     <header class="navbar navbar-expand-lg fixed-top automan-glossy-metallic" data-scroll-header="">
-      <div class="container ">
+      <div class="container-fluid ">
         <a class="navbar-brand me-3 me-xl-4" href="{% url 'homepageapp:homepage' %}">
           <!-- <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68" alt="Amazing Automan LLC"></a> -->
-          <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68"
+          <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="50"
             alt="Amazing Automan LLC" oncontextmenu="return false;">
         </a>
         <!-- toggle button  -->
         <button class="navbar-toggler btn-light ms-auto collapsed" type="button" data-bs-toggle="collapse"
           data-bs-target="#HomepageNavbarNav" aria-controls="navbarNav" aria-expanded="false"
-          aria-label="Toggle navigation">
+          aria-label="Toggle homepage navigation">
           <span class="mdi mdi-apps navbar-toggle-icon-mdi me-2"></span>
         </button>
 
-        <a class="btn btn-outline-light btn-sm ms-2 order-lg-3"
+        <a class="btn btn-outline-light btn-sm ms-1 order-lg-3"
           href="{% url 'customer_users:customer_user_register' %}">Register</a>
-        <a class="btn btn-outline-light btn-sm ms-2 order-lg-3"
+        <a class="btn btn-outline-light btn-sm ms-1 order-lg-3"
           href="{% url 'customer_users:customer_user_login' %}">Login</a>
 
         <div class="collapse navbar-collapse order-lg-2" id="HomepageNavbarNav">
@@ -304,14 +303,14 @@
   <style>
     #loadingMessage {
       font-weight: 900;
-      font-family: 'Roboto', 'sans-serif';
-      color: #ed6c10;
+      font-family: 'Roboto', sans-serif;
+      color: #df6005;
       font-style: italic;
     }
 
 
     .card-hover:hover {
-      box-shadow: 0 4px 8px rgba(37, 37, 37, 0.2);
+      box-shadow: 0 4px 8px rgba(38, 37, 37, 0.2);
     }
 
     .fab-icon {

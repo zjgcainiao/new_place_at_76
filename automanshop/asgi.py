@@ -29,7 +29,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'automanshop.settings')
 django_asgi_app = get_asgi_application()
 
 application = ProtocolTypeRouter({
-    "http": get_asgi_application(),
+    "http": django_asgi_app,
     "websocket": AuthMiddlewareStack(
         URLRouter(
             websocket_urlpatterns

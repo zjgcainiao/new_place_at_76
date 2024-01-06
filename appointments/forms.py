@@ -63,8 +63,10 @@ class AppointmentCreationForm(forms.ModelForm):
     # Add the image field from AppointmentImages
     appointment_images = forms.ImageField(
         required=False,
-        label="Upload Image",
-        widget=forms.ClearableFileInput(attrs={'multiple': True},),
+        label=_("Images"),
+        widget=forms.ClearableFileInput(),
+        validators=[FileExtensionValidator(['png', 'jpg', 'jpeg']),
+            validate_file_size],
         help_text="up to 5 images(png, jpg, jpeg, etc). 8MB each"
     )
 
@@ -331,7 +333,7 @@ class AppointmentRequestFormV2(forms.ModelForm):
 
 class AppointmentImagesForm(forms.ModelForm):
     appointment_image = forms.ImageField(
-        widget=forms.ClearableFileInput(attrs={'multiple': True}),
+        widget=forms.ClearableFileInput(),
         validators=[FileExtensionValidator(['png', 'jpg', 'jpeg']),
                     validate_file_size],
         label=_('Images'),

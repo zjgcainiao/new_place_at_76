@@ -2,7 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    version: v1
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.31.2 (HEAD)
   labels:
     io.kompose.service: web
   name: web
@@ -16,22 +17,21 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert
+        kompose.cmd: kompose convert -f docker-compose.yml
         kompose.version: 1.31.2 (HEAD)
       labels:
         io.kompose.network/new-76prolubepluscom-default: "true"
         io.kompose.service: web
     spec:
       containers:
-        - image: web:latest
+        - image: holleratme420/web:v1
           name: web
-          imagePullPolicy: IfNotPresent
           env:
             - name: ACME_API_TOKEN
               valueFrom:
-                secretKeyRef:
-                  name: web-secret
-                  key: ACME_API_TOKEN
+                  secretKeyRef:
+                    name: web-secret
+                    key: ACME_API_TOKEN
             - name: ALLOWED_HOSTS
               valueFrom:
                 secretKeyRef:
@@ -52,6 +52,11 @@ spec:
                 secretKeyRef:
                   name: web-secret
                   key: AZURE_DB_PORT
+            - name: AZURE_DB_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: AZURE_DB_SERVER
             - name: AZURE_DB_USER
               valueFrom:
                 secretKeyRef:
@@ -61,7 +66,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: web-secret
-                  key:  CLOUDSQL_DB_DATABASE1
+                  key: CLOUDSQL_DB_DATABASE1
             - name: CLOUDSQL_DB_DATABASE2
               valueFrom:
                 secretKeyRef:
@@ -257,7 +262,11 @@ spec:
                 secretKeyRef:
                   name: web-secret
                   key: REDIS_PORT
-
+            - name: REDIS_USE_SSL
+              valueFrom:
+                secretKeyRef:
+                  name: web-secret
+                  key: REDIS_USE_SSL
             - name: SQL_DOCKERIZED
               valueFrom:
                 secretKeyRef:
@@ -293,31 +302,24 @@ spec:
                 secretKeyRef:
                   name: web-secret
                   key: USE_LOCAL_REDIS
-
+          args:
+            - "daphne"
+            - "-b"
+            - "0.0.0.0"
+            - "-p"
+            - "8000"
+            - "automanshop.asgi:application"
           ports:
             - containerPort: 8000
               hostPort: 8000
               protocol: TCP
-          args:
-            - daphne
-            - -b
-            - 0.0.0.0
-            - -p
-            - "8000"
-            - automanshop.asgi:application
           resources: {}
-            # requests:
-            #   memory: "128Mi"
-            #   cpu: "500m"
-            # limits:
-            #   memory: "256Mi"
-            #   cpu: "1000m"
           # volumeMounts:
           #   - mountPath: /app
           #     name: web-claim0
       restartPolicy: Always
       # volumes:
       #   - name: web-claim0
-      #     persistentVolumeClaim:
-      #       claimName: web-claim0
+          # persistentVolumeClaim:
+          #   claimName: web-claim0-pvc
 status: {}

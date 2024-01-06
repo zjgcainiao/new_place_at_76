@@ -5,6 +5,7 @@ static/
 migrations/
 testing_sql_db/
 stripe-payment-react/
+__pycache__
 __pycache__/
 my_app_logs/
 dashboard_react/

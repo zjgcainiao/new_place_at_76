@@ -168,7 +168,7 @@ async def search_by_vin_or_plate(request):
                 # Assuming 'vin' is the VIN you're interested in
 
                 return JsonResponse(flattened_data, safe=False)
-        # license plate search
+        # license plate search. enhanced with DRF api views
         elif action_value == 'action_plate_search':
             plate_form = LicensePlateSearchForm(request.POST)
             if plate_form.is_valid():
@@ -195,7 +195,8 @@ async def search_by_vin_or_plate(request):
                 plate_form.add_error(
                     None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
 
-            plate_data_id= plate_data.id
+            if not plate_data:
+                 plate_data_id= plate_data.id
             # flattened_data = await database_sync_to_async(model_to_dict)(plate_data)
             return JsonResponse({'plate_data_id': plate_data_id})
             # return JsonResponse(flattened_data, safe=False)

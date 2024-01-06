@@ -6,20 +6,22 @@ from core_operations.models import LIST_OF_STATES_IN_US
 from crispy_forms.layout import Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div, Button, Hidden
 from crispy_forms.bootstrap import FormActions, InlineCheckboxes, InlineField
 from django.urls import reverse
-
-
+from django_recaptcha.fields import ReCaptchaField
+from  django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox
 
 class VINSearchForm(forms.Form):
     # added this hiddent input for both VINSearchForm and LicensePlateSearchForm
 
     vin = forms.CharField(required=True,
-                          label='Vin', widget=forms.TextInput(
-                              attrs={'class': 'form-control', 'placeholer': 'enter full vin number.'}))
+                          label='VIN', widget=forms.TextInput(
+                              attrs={'class': 'form-control', 'placeholder': 'enter the full vin number. Example. 1HGCM82633A004352'}))
     year = forms.CharField(required=False,
                            label='Year of Vehicle (Optional)', widget=forms.TextInput(
                                attrs={'class': 'form-control', 'placeholder': 'enter model year'}), help_text="Optional. Enter only if you cannot get the result with vin only.")
     action = forms.CharField(widget=forms.HiddenInput(),
                              initial='action_vin_search')
+    captcha = ReCaptchaField(widget=ReCaptchaV2Invisible(), 
+                             label='please check the box below to verify you are not a robot.')
 
     def clean_vin(self):
         vin = self.cleaned_data['vin']
@@ -71,11 +73,11 @@ class VINSearchForm(forms.Form):
             Div(
                 # Adjust the column sizes as needed
                 Hidden('action', 'action_vin_search'),
-                Field('vin',wrapper_class='p-1 m-1'),
-                Field('year',wrapper_class='p-1 m-1'),
+                Field('vin',wrapper_class='col-md-6 p-1 m-1'),
+                Field('year',wrapper_class='col-md-6 p-1 m-1'),
                 css_class='row m-1'
             ),
-
+            Field ('captcha', wrapper_class='col-md-12 p-1 m-1'),
             FormActions(
                 Submit('vin search', 'Search', css_class='btn btn-outline-dark',
                        css_id='vin-search-button'),

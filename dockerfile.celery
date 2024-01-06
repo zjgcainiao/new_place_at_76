@@ -1,0 +1,13 @@
+# Use the "holleratme420/web:v1" image as the base image
+FROM holleratme420/web:v1
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Install Celery and any other necessary packages
+# RUN pip install celery 
+# Add other dependencies as needed
+
+
+# Start the Celery worker
+CMD ["celery", "-A", "automanshop", "worker", "--loglevel=info"]
