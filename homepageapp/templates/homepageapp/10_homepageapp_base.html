@@ -274,6 +274,9 @@
                 <li><a class="dropdown-item"
                     href="{% url 'shops:custom_checkout' product_id='prod_PKOol19RtrtGTG' %}"><i
                       class="fi-cash fs-base me-2"></i>Payment System</a></li>
+                <li class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'shops:verify_stripe_applepay' %}"><i
+                      class="fi-cash fs-base me-2"></i>Verify Apple Pay</a></li>
               </ul>
             </li>
             {% comment %}

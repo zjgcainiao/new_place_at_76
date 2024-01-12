@@ -29,7 +29,7 @@ WORKDIR /app
 # RUN apt-get update && apt-get install -y iputils-ping
 
 # Replace 'debian_version' with the correct version number for your base image. debian_version can be 8, 9,10, 11, 12.
-# debian_version 11 works for native M1 chip build. web:v1 works for native M1 chip build.
+# debian_version `11` works for `native M1 chip build`. web:v1 works for native M1 chip build.
 # if i need to build for platform , like (windows amd64), change to debian_version `10`.
 # Install dependencies in a single RUN layer to reduce image layers
 RUN apt-get update && apt-get install -y \
@@ -56,8 +56,8 @@ COPY . .
 
 
 # Upgrade pip and install Python dependencies
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
 
 # Clean up after package installations

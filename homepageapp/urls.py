@@ -9,6 +9,6 @@ urlpatterns = [
     # react app created in dashboard_react folder
     path('react/', views.GetReactAppView.as_view(),
          name='react-app'),
-    path('.well-known/apple-developer-merchantid-domain-association', views.verify_stripe_applepay, name='verify_stripe_applePay'),
+    path('.well-known/apple-developer-merchantid-domain-association/v2', views.verify_stripe_applepay, name='verify_stripe_applepay'),
 
 ]
