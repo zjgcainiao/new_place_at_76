@@ -238,6 +238,16 @@ STRIPE_SECRET_TEST_KEY = config("STRIPE_SECRET_TEST_KEY", default=None)
 STRIPE_PUBLIC_LIVE_KEY = config("STRIPE_PUBLIC_LIVE_KEY", default=None)
 STRIPE_SECRET_LIVE_KEY = config("STRIPE_SECRET_LIVE_KEY", default=None)
 
+STRIPE_LIVE_SECRET_KEY = STRIPE_SECRET_LIVE_KEY
+STRIPE_TEST_SECRET_KEY = STRIPE_SECRET_TEST_KEY
+
+# STRIPE_LIVE_MODE = False  # Change to True in production
+# DJSTRIPE_WEBHOOK_SECRET = "whsec_xxx"  # Get it from the section in the Stripe dashboard where you added the webhook endpoint
+# DJSTRIPE_USE_NATIVE_JSONFIELD = True  # We recommend setting to True for new installations
+# DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id
+
+
+# rest framework settings
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
@@ -293,6 +303,7 @@ INSTALLED_APPS = [
     'captcha',  # google reCAPTCHA connection
     'formtools',
     'crispy_forms',  # add django-cripsy-form
+    'crispy_forms_foundation',
     'crispy_bootstrap5',
     # 'social_django',
     # 'firebase_auth', # google firebase-auth
@@ -305,8 +316,10 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'CRMs',  # CRMs app
-
 ]
+# in testing, add `django_sslserver2` to the installed apps.
+if  DEBUG:
+    INSTALLED_APPS += ('django_sslserver2',)
 
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.
 # if os.environ.get('DJANGO._USE_DEBUG_TOOLBAR'):
@@ -511,6 +524,14 @@ GS_PROJECT_ID = 'vin-doctor'  # Replace with your Google Cloud project ID
 GS_DEFAULT_ACL = 'publicRead'
 GS_BUCKET_ACL = 'publicRead'
 GS_AUTO_CREATE_BUCKET = True
+
+
+# added 2024-01-11
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 
 # ----2023-04-03 add firebase auth package for external_users (customers) to use ---
 

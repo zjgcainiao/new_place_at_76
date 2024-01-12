@@ -29,7 +29,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from apis.user_permissions import IsInternalUser
 from rest_framework.permissions import IsAuthenticated
-
+from django.core.cache import cache
 
 # added on 2023-11-06
 class WIPDashboardViewSet(viewsets.ReadOnlyModelViewSet):
@@ -116,7 +116,33 @@ class VinNhtsaApiSnapshotViewSet(viewsets.ModelViewSet):
 class PlateAndVinDataViewSet(viewsets.ModelViewSet):
     queryset = LicensePlateSnapShotsPlate2Vin.objects.all()
     serializer_class = PlateAndVinDataSerializer
-    permission_classes = [IsAuthenticated, IsInternalUser]
+    # permission_classes = [IsAuthenticated, IsInternalUser]
+
+    def check_rate_limit(self, request):
+            client_ip = self.get_client_ip(request)
+            cache_key = f"search_count_{client_ip}"
+            search_count = cache.get(cache_key, 0)
+
+            if not request.user.is_authenticated and search_count >= 2:
+                return False
+
+            # Update the count in the cache
+            if not request.user.is_authenticated:
+                if search_count == 0:
+                    # Set the cache to expire after 24 hours
+                    cache.set(cache_key, 1, 86400)  # 86400 seconds = 24 hours
+                else:
+                    cache.incr(cache_key)
+            return True
+
+    def get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+    
 
     def get_queryset(self):
         """
@@ -128,6 +154,16 @@ class PlateAndVinDataViewSet(viewsets.ModelViewSet):
         if vin:
             queryset = queryset.filter(vin=vin)
         return queryset
+    
+    # def list(self, request, *args, **kwargs):
+    #     if not self.check_rate_limit(request):
+    #         return Response({"detail": "Daily search limit reached."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+    #     return super().list(request, *args, **kwargs)
+    # def retrieve(self, request, *args, **kwargs):
+    #     if not self.check_rate_limit(request):
+    #         return Response({"detail": "Daily search limit reached."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+    #     return super().retrieve(request, *args, **kwargs)
+    
 
     def create(self, request, *args, **kwargs):
         # Custom logic for creating a new instance

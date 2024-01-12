@@ -56,7 +56,7 @@ class InternalUserMiddleware:
             print(f'url visit to protected customer app(s). Implementing custom rules in InternalUserMiddleware...')
             # # Additional check for CustomerUser when visiting the customer_users app
             if not request.user.is_authenticated:
-                messages.error(request, f'Error. Customer Login Required. Please Login.')
+                messages.error(request, f'Error. Customer Login Required. Please Login. Create a new account if you do not have one.')
                 return redirect(self.customer_login_url)
             elif request.user.is_authenticated and isinstance(request.user, InternalUser):
                 # Redirect to the customer user login

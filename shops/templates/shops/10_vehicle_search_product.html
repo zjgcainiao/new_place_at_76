@@ -96,30 +96,23 @@
 
 
     /* Styles for the export buttons */
+
     .btn-export-pdf {
-        color: #fff;
-        /* Text color */
-        background-color: #031a30;
-        /* Dark background color */
-        border-color: #343a40;
-        /* Dark border */
+        background-color: transparent;
+        /* Green background */
+        color: rgb(10, 10, 10);
+        /* White text */
+        border: none;
+        padding: 5px 5px;
         margin: 5px 0;
-        /* Space around buttons */
-        width: 100%;
-        /* Full width for responsiveness */
-        padding: 5px;
-        /* Padding for a larger click area */
+        border-radius: 5px;
         transition: background-color 0.3s ease;
-        /* Smooth transition for hover effect */
     }
 
     .btn-export-pdf:hover {
-        color: #f2f6f7;
-        /* Text color on hover */
-        background-color: #3a7ec6;
-        /* lighter blue on hover */
-        border-color: #1d2124;
-        /* Dark border on hover */
+        background-color: #e79a71;
+        color: black;
+
     }
 
     /* Responsive styling for the buttons */
@@ -164,6 +157,7 @@
     .steel-plate-card .card-header {
         background-color: #f7f7f7;
         font-weight: bold;
+        font-family: 'Roboto', sans-serif;
     }
 
     .steel-plate-card .card-body p {
@@ -187,9 +181,28 @@
         margin-bottom: 20px;
         /* Space below the logo */
     }
+
+    .g-recaptcha {
+        border: none !important;
+    }
+
+    /* If the border is on an inner element, you might need to be more specific */
+    .g-recaptcha iframe,
+    .g-recaptcha div {
+        border: none !important;
+    }
+
+    /* Example of a specific CSS override */
+    .g-recaptcha>div,
+    .g-recaptcha iframe {
+        border: none !important;
+    }
 </style>
 
 <div class="container pt-5 my-5">
+    <!-- django messages section  -->
+    {% include 'homepageapp/14_homepageapp_messages_section.html' %}
+
     <ul class="nav nav-tabs" id="searchType" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="byPlate-tab" data-bs-toggle="tab" type="button"
@@ -224,18 +237,21 @@
 <!-- end of container  -->
 
 <!-- export to pdf  buttons-->
-<div class="container">
+<!-- <div class="container">
     <div class="row">
         <div class="col">
             <button id="exportPdfButtonClientSide" class="btn btn-export-pdf">Export to PDF via client-side</button>
         </div>
-        <!-- <div class="col">
+        <div class="col">
             <button id="exportPdfBackend" class="btn btn-export-pdf"
                 href="{% url 'shops:export_vin_data_to_pdf' %}">Export to PDF via server-side</button>
-        </div> -->
+        </div>
     </div>
-</div>
+</div> -->
 <!-- end of pdf buttons  -->
+
+
+
 
 <!-- custom section displayed only in the PDF -->
 <div id="customSectionForPdf" style="display: none;">
@@ -246,8 +262,25 @@
         be relied upon as a sole basis for making decisions without consulting primary, more accurate, more complete, or
         more timely sources of information.</p>
 </div>
-
-<!-- vinData Display  -->
+<!-- export to pdf buttons-->
+<div class="container">
+    <div class="row justify-content-start">
+        <div class="col-auto">
+            <button id="exportPdfButtonClientSide" class="btn btn-export-pdf">
+                <i class="fas fa-file-pdf"></i> Export
+            </button>
+        </div>
+        <!-- Uncomment below for server-side export functionality
+        <div class="col-auto">
+            <a id="exportPdfBackend" class="btn btn-export-pdf" href="{% url 'shops:export_vin_data_to_pdf' %}">
+                <i class="fas fa-print"></i> Export to PDF via server-side
+            </a>
+        </div>
+        -->
+    </div>
+</div>
+<!-- end of pdf buttons -->
+<!-- resultData Display  -->
 <div class="container mt-3" id="resultDataDisplay">
 
 </div>
@@ -265,11 +298,15 @@
         </div>
 
         <!-- Premium Content -->
+        <a href="{% url 'checkout_page' vin_number=vin_number %}" class="btn btn-primary">
+            Full VIN Report
+        </a>
         <div class="card bg-light">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="text-muted">Premium content available</div>
-                    <a href="{% url 'shops:payment_checkout'%}" class="btn btn-primary">Purchase to view</a>
+                    <a href="{% url 'shops:payment_checkout' proudct_id='prod_PKOol19RtrtGTG' %}"
+                        class="btn btn-primary">Purchase to view</a>
                 </div>
             </div>
         </div>
@@ -389,10 +426,6 @@
             If the plate data is available, it creates a card with the data and appends it to the display container.
             If the plate data is not available or there is an error fetching the data, appropriate error messages are displayed.
         */
-
-
-
-
         $('#vin-search-button').on("click", function (event) {
             // $("#vinSearchForm").submit(function(event){
 
@@ -505,7 +538,7 @@
                 if (plateData) {
                     const headerContent = `${plateData.license_plate}, ${plateData.state} -VIN:${plateData.vin} - ${plateData.year} ${plateData.make}`;
                     let basicCardHtml = `<div class="card steel-plate-card"><div class="card-header">${headerContent}</div><div class="card-body">`;
-
+                    product_id = 'prod_PKOol19RtrtGTG'
                     const fieldsToDisplay = ['year', 'make', 'style', 'drive_type', 'engine', 'fuel', 'trim', 'color_name', 'color_abbreviation'];
                     const fieldsPerRow = 3; // Number of fields per row
                     basicCardHtml += '<div class="row">';
@@ -521,6 +554,17 @@
                     });
 
                     basicCardHtml += '</div></div></div>'; // Close row and card-body, card
+                    // Append new HTML section for premium content
+                    basicCardHtml += `
+                        <div class="card bg-light mt-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="text-muted">Premium content available</div>
+                                    <a href="{% url 'shops:custom_checkout' product_id='prod_PKOol19RtrtGTG' %}" class="btn btn-primary">Purchase to view</a>
+                                </div>
+                            </div>
+                        </div>`;
+                    // basicCardHtml += '<div class="card mt-4"><div class="card-body"><h5 class="card-title">VIN Data</h5><p class="card-text">';
                     $('#resultDataDisplay').html(basicCardHtml);
                 } else {
                     $('#resultDataDisplay').html('<p>No detailed data found.</p>');

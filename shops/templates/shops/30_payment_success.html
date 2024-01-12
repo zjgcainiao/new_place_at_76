@@ -1,0 +1,28 @@
+{% extends 'homepageapp/10_homepageapp_base.html' %}
+{% load static %}
+{% block content1-main %}
+<style>
+    .main-content {
+        padding-top: 85px;
+        padding-left: 10px;
+        bottom: 10px;
+        font-family: 'Roboto', sans-serif;
+        /* Adjust this value based on your navbar's height */
+    }
+</style>
+<section class="bg-top-center bg-repeat-0 main-content"
+    style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); background-size: cover;">
+
+    <div clas="container pt-3 m-5">
+        <div class="card border-0">
+            <h3 class="card-header border-0">Payment Success</h3>
+            <div class="card-body">
+                <p class="card-text">
+                    Your order was successful! If you have any questions, please email
+                    <a href="mailto:info@76prolubeplus.com">info@76prolubeplus.com</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

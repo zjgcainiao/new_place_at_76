@@ -20,9 +20,14 @@ from django.contrib.contenttypes.models import ContentType
 from core_operations.models import US_COUNTRY_CODE
 from core_operations.common_functions import format_phone_number_to_shop_standard, deformat_phone_numbers
 from appointments.custom_validators import validate_vehicle_year, validate_file_size, validate_phone_number
-
+from django_recaptcha.fields import ReCaptchaField
+from  django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox, ReCaptchaV3
 
 class AppointmentCreationForm(forms.ModelForm):
+    
+    appointment_requested_datetime = forms.DateTimeField(required=False, 
+                                                         widget=forms.DateTimeInput(attrs={'type': 'datetime-local', }),
+                                                         label=_('Time Requested'))
 
     appointment_email = forms.EmailField(
         required=True,
@@ -67,9 +72,10 @@ class AppointmentCreationForm(forms.ModelForm):
         widget=forms.ClearableFileInput(),
         validators=[FileExtensionValidator(['png', 'jpg', 'jpeg']),
             validate_file_size],
-        help_text="up to 5 images(png, jpg, jpeg, etc). 8MB each"
+        help_text="Up to 5 images(png, jpg, jpeg, etc). 8MB each"
     )
-
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(), 
+                             label='please check the box below to verify you are not a robot.')
     class Meta:
         model = AppointmentRequest
         exclude = ('created_at', 'updated_at',)
@@ -195,22 +201,20 @@ class AppointmentCreationForm(forms.ModelForm):
         self.helper.form_tag = False
         self.helper.form_method = "post"
         self.helper.form_class = "form-horizontal"
-        # self.helper.label_class = 'col-md-3'
-        # self.helper.field_class = 'col-md-9'
+        self.helper.label_class = 'col-md-3'
+        self.helper.field_class = 'col-md-9'
+
         self.helper.layout = Layout(
-            Row(Fieldset(_('Time and Contact Info'),
-                Row(Column(Field('appointment_email', css_class='form-control'),
+            Fieldset(_('Time and Contact Info'),
+                Row(Column(Field('appointment_email', css_class='form-control',style="background-color: #cfe2f3"),
                            css_class='col-md-6',),
-                    Column(Field('appointment_phone_number', css_class='form-control', style="background-color: #cfe2f3"),
+                    Column(Field('appointment_phone_number', css_class='form-control', ),
                            css_class='col-md-6',),
                     css_class='p-1 m-1'),
                 Row(
-                    Column(Field('appointment_first_name', css_class='form-control'),
-                           css_class='col-md-6',),
-                    Column(Field('appointment_last_name', css_class='form-control'),
-                           css_class='col-md-6',),
+                    Column(Field('appointment_first_name', css_class='form-control'),css='col-md-6' ),
+                    Column(Field('appointment_last_name', css_class='form-control'),css='col-md-6 ' ),
                     css_class='p-1 m-1'),
-
                 Row(
                     # Column(Field('appointment_requested_date', css_class='form-control'),
                     #     css_class='col-md-6',),
@@ -222,7 +226,6 @@ class AppointmentCreationForm(forms.ModelForm):
                            css_class='col-md-6',),
                     css_class='p-1 m-1'),
             ),
-                css_class='p-1 m-1'),
 
             HTML("<hr>"),
 

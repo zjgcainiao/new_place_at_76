@@ -4,10 +4,11 @@ from datetime import datetime
 from crispy_forms.helper import FormHelper
 from core_operations.models import LIST_OF_STATES_IN_US
 from crispy_forms.layout import Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div, Button, Hidden
+# from crispy_forms_foundation.layout import Layout, Field, Fieldset, SplitDateTimeField, Row, Column, ButtonHolder, Submit, Hidden, Div, Button,FakeField, ButtonGroup
 from crispy_forms.bootstrap import FormActions, InlineCheckboxes, InlineField
 from django.urls import reverse
 from django_recaptcha.fields import ReCaptchaField
-from  django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox
+from  django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox, ReCaptchaV3
 
 class VINSearchForm(forms.Form):
     # added this hiddent input for both VINSearchForm and LicensePlateSearchForm
@@ -20,7 +21,7 @@ class VINSearchForm(forms.Form):
                                attrs={'class': 'form-control', 'placeholder': 'enter model year'}), help_text="Optional. Enter only if you cannot get the result with vin only.")
     action = forms.CharField(widget=forms.HiddenInput(),
                              initial='action_vin_search')
-    captcha = ReCaptchaField(widget=ReCaptchaV2Invisible(), 
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(), 
                              label='please check the box below to verify you are not a robot.')
 
     def clean_vin(self):
@@ -70,14 +71,14 @@ class VINSearchForm(forms.Form):
         self.helper.form_action = reverse(
             'shops:search_by_vin_or_plate')  # Use your URL name here
         self.helper.layout = Layout(
-            Div(
+            Row(
                 # Adjust the column sizes as needed
                 Hidden('action', 'action_vin_search'),
                 Field('vin',wrapper_class='col-md-6 p-1 m-1'),
                 Field('year',wrapper_class='col-md-6 p-1 m-1'),
-                css_class='row m-1'
+                css_class='p-1 m-1'
             ),
-            Field ('captcha', wrapper_class='col-md-12 p-1 m-1'),
+            Field('captcha', wrapper_class='col-md-12 p-1 m-1'),
             FormActions(
                 Submit('vin search', 'Search', css_class='btn btn-outline-dark',
                        css_id='vin-search-button'),
@@ -93,7 +94,10 @@ class LicensePlateSearchForm(forms.Form):
         attrs={'class': 'form-control', 'placeholder': 'Enter license plate number.'}))
     state = forms.ChoiceField(choices=[('', '--- None ---')] + list(LIST_OF_STATES_IN_US), widget=forms.Select(
         attrs={'class': 'form-select'}))
-
+    
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(), 
+                             label='please check the box below to verify you are not a robot.')
+    
     def clean_license_plate(self):
         license_plate = self.cleaned_data['license_plate']
         if len(license_plate) > 10:
@@ -123,9 +127,11 @@ class LicensePlateSearchForm(forms.Form):
                 Field('state', wrapper_class='col-md-6 p-1 m-1'),
                 css_class='row'
             ),
+            Column(Field('captcha', css_class=''),
+                   css_class='col-md-12 p-1 m-1 border-0'),
             # You can add FormActions for better control over the submit button's placement and styling
             FormActions(
-                Submit('plate_search', 'Search',
+                Button('plate_search', 'Search',
                        css_class='btn btn-outline-dark',
                        css_id='plate-search-button'),
                 css_class='d-grid gap-2')

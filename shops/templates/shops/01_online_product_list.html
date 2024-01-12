@@ -1,0 +1,24 @@
+{% extends 'homepageapp/10_homepageapp_base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content1-main %}
+
+<div class="container pt-5 m-5">
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{% static 'path_to_product_image' %}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}-{{product.id}}</h5>
+                    <p class="card-text">{{ product.description }}</p>
+                    <!-- link that leads to payment processing -->
+                    <a href="{% url 'shops:custom_checkout' product_id=product.id %}" class="btn btn-primary">Select</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

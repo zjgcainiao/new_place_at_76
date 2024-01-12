@@ -35,7 +35,7 @@ class LicenseVinSearchPermission(BasePermission):
 
 def handle_anonymous_user_license_vin_search(request):
     reset_interval = datetime.timedelta(days=182)  # Reset 
-    limit = 1
+    limit = 3
 
     search_count = request.session.get('plate_vin_search_count', 0)
     last_reset_str = request.session.get('plate_vin_search_last_reset', None)

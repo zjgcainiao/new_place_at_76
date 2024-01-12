@@ -3,137 +3,140 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content1-main %}
-<div class="bg-top-center">
-    <div class="d-flex align-items-center justify-content-center vh-100">
-      <div class="shadow-lg p-5 rounded">
-        <h3 class="mb-4 text-center">Hello there. Please sign in with your registered email.</h3>
-        <p class="mb-4 text-dark text-center">Register a new account <a href="{% url 'customer_users:customer_user_register' %}">here</a></p>
-        <form method="post"> 
-          <!--  id="customer_user_login_form" -->
-          {% csrf_token %}
-          {{form|crispy}}
+<div class="bg-top-center pt-5 m-5">
+  <div class="d-flex align-items-center justify-content-center vh-100">
+    <div class="shadow-lg p-5 rounded">
+      <h3 class="mb-4 text-center">Hello there. Please sign in with your registered email.</h3>
+      <p class="mb-4 text-dark text-center">Register a new account <a
+          href="{% url 'customer_users:customer_user_register' %}">here</a></p>
+      <form method="post">
+        <!--  id="customer_user_login_form" -->
+        {% csrf_token %}
+        {{form|crispy}}
 
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Login</button>
-          </div>
-        </form>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+      </form>
 
 
-        
-      </div>
+
     </div>
-    <!-- end of d-flex  -->
-    
-    <!-- 2023-11-08 added a customer support converation button  -->
-    {% comment %}
-        {% include 'customer_users/02_customer_user_support_conversation_ui.html' %}
+  </div>
+  <!-- end of d-flex  -->
+
+  <!-- 2023-11-08 added a customer support converation button  -->
+  {% comment %}
+  {% include 'customer_users/02_customer_user_support_conversation_ui.html' %}
 
 
-        <script src="{% static 'CRMs/js/support_conversation.js' %}"></script>
-    {% endcomment %}
+  <script src="{% static 'CRMs/js/support_conversation.js' %}"></script>
+  {% endcomment %}
 
 
-     <!-- added customized css styling  -->
-    <link href="{% static 'core_operations/css/automan-theme.css' %}" rel="stylesheet" >
-   
-    <div id="loading-spinner-new-conversation" class="automan-spinner-border-new-conversation text-primary" role="status" style="display: none;">
-      <span class="sr-only">launching a new customer support conversation</span>
-    </div>
+  <!-- added customized css styling  -->
+  <link href="{% static 'core_operations/css/automan-theme.css' %}" rel="stylesheet">
 
-    <form method="POST" id="new-support-conversation-form">
-      {% csrf_token %}
-      <btn class="automan-support-button" id="new_conversation_button" type="submit" value="Submit">
-        <img class="automan-support-icon" src="{% static 'core_operations/imgs/robot-icon-02-smaller.svg' %}" alt="Robot Icon" style="height: 2em; width: 2em;" />   
-          <!-- <i class="automan-support-icon fa fa-comments"></i> -->
-    
-        </btn>
-    </form>
-  
-    <div class="automan-support-window" id="support_conversation_window">
-    </div>
+  <div id="loading-spinner-new-conversation" class="automan-spinner-border-new-conversation text-primary" role="status"
+    style="display: none;">
+    <span class="sr-only">launching a new customer support conversation</span>
+  </div>
 
-    <script>
-      // Function to handle debounce
-      function debounce(func, wait, immediate) {
-        var timeout;
-        return function() {
-          var context = this, args = arguments;
-          var later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-          };
-          var callNow = immediate && !timeout;
-          clearTimeout(timeout);
-          timeout = setTimeout(later, wait);
-          if (callNow) func.apply(context, args);
+  <form method="POST" id="new-support-conversation-form">
+    {% csrf_token %}
+    <btn class="automan-support-button" id="new_conversation_button" type="submit" value="Submit">
+      <img class="automan-support-icon" src="{% static 'core_operations/imgs/robot-icon-02-smaller.svg' %}"
+        alt="Robot Icon" style="height: 2em; width: 2em;" />
+      <!-- <i class="automan-support-icon fa fa-comments"></i> -->
+
+    </btn>
+  </form>
+
+  <div class="automan-support-window" id="support_conversation_window">
+  </div>
+
+  <script>
+    // Function to handle debounce
+    function debounce(func, wait, immediate) {
+      var timeout;
+      return function () {
+        var context = this, args = arguments;
+        var later = function () {
+          timeout = null;
+          if (!immediate) func.apply(context, args);
         };
-      }
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+      };
+    }
 
-      $(document).ready(function() {
-          var debounceTimeout;
-          var ajaxCallTimeout;
-          var ajaxCallDuration = 10000; // 10 seconds for timeout
+    $(document).ready(function () {
+      var debounceTimeout;
+      var ajaxCallTimeout;
+      var ajaxCallDuration = 10000; // 10 seconds for timeout
 
-          $('#new_conversation_button').click(debounce(function(event) {
-              event.preventDefault();
-              var $button = $(this);
-              var $spinner = $('#loading-spinner-new-conversation');
-              var $form = $('#new-support-conversation-form');
-              var csrfToken = $form.find('[name=csrfmiddlewaretoken]').val();
+      $('#new_conversation_button').click(debounce(function (event) {
+        event.preventDefault();
+        var $button = $(this);
+        var $spinner = $('#loading-spinner-new-conversation');
+        var $form = $('#new-support-conversation-form');
+        var csrfToken = $form.find('[name=csrfmiddlewaretoken]').val();
 
-              // Disable the button and show the spinner
-              $button.prop('disabled', true);
-              $spinner.show();
+        // Disable the button and show the spinner
+        $button.prop('disabled', true);
+        $spinner.show();
 
-              // Clear any existing ajax call timeout
-              clearTimeout(ajaxCallTimeout);
+        // Clear any existing ajax call timeout
+        clearTimeout(ajaxCallTimeout);
 
-              // Set a new timeout for the AJAX call
-              ajaxCallTimeout = setTimeout(function() {
-                console.error('Timeout: Could not get a response from the server.');
-                $spinner.hide();
-                $button.prop('disabled', false);
-              }, ajaxCallDuration);
+        // Set a new timeout for the AJAX call
+        ajaxCallTimeout = setTimeout(function () {
+          console.error('Timeout: Could not get a response from the server.');
+          $spinner.hide();
+          $button.prop('disabled', false);
+        }, ajaxCallDuration);
 
-              $.ajax({
-                url: '/crms/new_conversation/',
-                type: 'POST',
-                data: JSON.stringify({}),
-                contentType: 'application/json',
-                dataType: 'json',
-                headers: {
-                  'X-Requested-With': 'XMLHttpRequest',
-                  'X-CSRFToken': csrfToken
-                },
-                success: function(data) {
-                  console.log('Fetch data success. Conversation UUID is: ', data.uuid);
-                  if (data.uuid) {
-                    renderConversationWindow(data.uuid);
-                  }
-                },
-                error: function(xhr, status, error) {
-                  console.error('Error:', error);
-                },
-                complete: function() {
-                  // Clear the ajax call timeout since the call is complete
-                  clearTimeout(ajaxCallTimeout);
-                  $spinner.hide();
-                  $button.prop('disabled', false);
-                },
-              });
-            
-          }, 300));
-          
-      });
-      // this function renders a conversation window with new convesation uid. enable wesocket for messaging 
-      function renderConversationWindow(uuid) {
+        $.ajax({
+          url: '/crms/new_conversation/',
+          type: 'POST',
+          data: JSON.stringify({}),
+          contentType: 'application/json',
+          dataType: 'json',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrfToken
+          },
+          success: function (data) {
+            console.log('Fetch data success. Conversation UUID is: ', data.uuid);
+            if (data.uuid) {
+              renderConversationWindow(data.uuid);
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error('Error:', error);
+          },
+          complete: function () {
+            // Clear the ajax call timeout since the call is complete
+            clearTimeout(ajaxCallTimeout);
+            $spinner.hide();
+            $button.prop('disabled', false);
+          },
+        });
 
-        // Determine if the app is running on localhost
-        // var isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
-        // var wsProtocol = isLocalhost ? "ws://" : "wss://";
-        var wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-        // Creating the HTML structure
-        var conversationHtml = `  
+      }, 300));
+
+    });
+    // this function renders a conversation window with new convesation uid. enable wesocket for messaging 
+    function renderConversationWindow(uuid) {
+
+      // Determine if the app is running on localhost
+      // var isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+      // var wsProtocol = isLocalhost ? "ws://" : "wss://";
+      var wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+      // Creating the HTML structure
+      var conversationHtml = `  
               <div class="card card-hover border-5">
                   <h4 class="card-header text-dark">Customer Support</h4>
                   <p class="text-muted ">(Support-Case-ID:${uuid})</p>
@@ -145,100 +148,101 @@
               </div>
             `;
 
-        // Append it to the body or a specific element
-        $('#support_conversation_window').append(conversationHtml);
+      // Append it to the body or a specific element
+      $('#support_conversation_window').append(conversationHtml);
 
-        // Make the support conversation window visible
-        $('.automan-support-window').fadeIn(1000); // This will smoothly fade in the window
+      // Make the support conversation window visible
+      $('.automan-support-window').fadeIn(1000); // This will smoothly fade in the window
 
-        // Establish the WebSocket connection
-        // use ws:// when its local server. use wss:// for production server.
-        const conversationSocket = new WebSocket(
-            wsProtocol + window.location.host + '/ws/conversations/' + uuid + '/'
-        );
+      // Establish the WebSocket connection
+      // use ws:// when its local server. use wss:// for production server.
+      const conversationSocket = new WebSocket(
+        wsProtocol + window.location.host + '/ws/conversations/' + uuid + '/'
+      );
 
-        //
-        conversationSocket.onopen = function(response) {
+      //
+      conversationSocket.onopen = function (response) {
 
-            // You can now safely send a message
-            // conversationSocket.send(JSON.stringify({ message: 'Hello Server!' }));
-              // const data = JSON.parse(response.data);
-              console.info('conversation started...a websocket connection is established...');
-            // document.querySelector('#conversation-log').value += (data.conversation_message + '\n');
+        // You can now safely send a message
+        // conversationSocket.send(JSON.stringify({ message: 'Hello Server!' }));
+        // const data = JSON.parse(response.data);
+        console.info('conversation started...a websocket connection is established...');
+        // document.querySelector('#conversation-log').value += (data.conversation_message + '\n');
+      };
+
+      // WebSocket event for receiving messages
+      conversationSocket.onmessage = function (response) {
+        try {
+          data = JSON.parse(response.data);
+          const message = data.conversation_message;
+          let direction = parseInt(0);  // 0 for outgoing, 1 for incoming
+
+          let formattedMessage = '';
+          if (direction === 0) {
+            formattedMessage = 'Operator: ' + message;
+          } else {
+            formattedMessage = 'Customer: ' + message;
+          }
+          document.querySelector('#conversation-log').value += (formattedMessage + '\n');
+          // $('#conversation-log').val(function(index, value) {
+          //     return value + (formattedMessage + '\n');
+          // });
+        } catch (error) {
+          console.error('Error Parsing received data. Expecting JSON:', error)
         };
+      };
 
-        // WebSocket event for receiving messages
-        conversationSocket.onmessage = function(response) {
-          try{
-            data = JSON.parse(response.data);
-            const message = data.conversation_message;
-            let direction = parseInt(0);  // 0 for outgoing, 1 for incoming
+      conversationSocket.onclose = function (e) {
+        console.log('WebSocket closed:', event);
+        if (event.wasClean) {
+          console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
+        } else {
+          // e.g., the server process killed or network down
+          console.log('Connection died');
+        }
+      };
 
-            let formattedMessage = '';
-            if (direction === 0) {
-                formattedMessage = 'Operator: ' + message;
-            } else {
-                formattedMessage = 'Customer: ' + message;
-            }
-            document.querySelector('#conversation-log').value += (formattedMessage  + '\n');
-            // $('#conversation-log').val(function(index, value) {
-            //     return value + (formattedMessage + '\n');
-            // });
-          }catch(error){
-            console.error('Error Parsing received data. Expecting JSON:', error)
-          }; 
-        };
+      // Send message event. via clicking 'conversation-message-send-button' button or pressing 'Enter' key
+      $('#conversation-message-send-button').on('click', function () {
+        // var messageInput = $('#conversation-message-input');
+        // var message = messageInput.val();
 
-        conversationSocket.onclose = function(e) {
-            console.log('WebSocket closed:', event);
-            if (event.wasClean) {
-                console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
-            } else {
-                // e.g., the server process killed or network down
-                console.log('Connection died');
+        const messageInputDom = document.querySelector('#conversation-message-input');
+        const conversation_message = messageInputDom.value;
+
+        // Determine the direction of the message
+        // For example, let's assume 1 is for messages from customer to operator; 0 is from operator to customer.
+        var messageDirection = 1;
+
+        if (conversationSocket.readyState === WebSocket.OPEN) {
+          conversationSocket.send(JSON.stringify({
+            'conversation_message': conversation_message,
+            'message_direction': messageDirection,
+          }));
+        } else {
+          console.error('WebSocket is not open: ' + conversationSocket.readyState);
+        }
+
+        messageInputDom.value = '';
+
+      });
+
+      // Press Enter to send message
+      $('#conversation-message-input').keyup(function (e) {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+          $('#conversation-message-send-button').click();
+        }
+      });
+      // Focus the input field for message
+      $('#conversation-message-input').focus();
     }
-        };
-
-        // Send message event. via clicking 'conversation-message-send-button' button or pressing 'Enter' key
-        $('#conversation-message-send-button').on('click', function() {
-            // var messageInput = $('#conversation-message-input');
-            // var message = messageInput.val();
-            
-            const messageInputDom = document.querySelector('#conversation-message-input');
-            const conversation_message = messageInputDom.value;
-            
-            // Determine the direction of the message
-            // For example, let's assume 1 is for messages from customer to operator; 0 is from operator to customer.
-            var messageDirection = 1; 
-
-            if (conversationSocket.readyState === WebSocket.OPEN) {
-                conversationSocket.send(JSON.stringify({
-                    'conversation_message': conversation_message,
-                    'message_direction': messageDirection,
-                }));
-            } else {
-                console.error('WebSocket is not open: ' + conversationSocket.readyState);
-            }
-            
-            messageInputDom.value='';
-
-        });
-
-        // Press Enter to send message
-        $('#conversation-message-input').keyup(function(e) {
-            if (e.key === 'Enter' || e.keyCode === 13) {
-                $('#conversation-message-send-button').click();
-            }
-        });
-        // Focus the input field for message
-        $('#conversation-message-input').focus();
-      }
   </script>
 
 </div>
 <!-- custom css style that makes the login form looks metal and glossy. -->
 <style>
-  body, html {
+  body,
+  html {
     height: 100%;
     background: linear-gradient(145deg, #c4c3c3, #4b4b4b);
   }
@@ -255,7 +259,8 @@
 
   .rounded {
     border-radius: 15px;
-    overflow: hidden; /* To make sure inner elements do not break the rounded corners */
+    overflow: hidden;
+    /* To make sure inner elements do not break the rounded corners */
     background: linear-gradient(315deg, #DADADA, #fff1f2);
     border: 1px solid #5a5a5a;
     position: relative;

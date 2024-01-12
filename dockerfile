@@ -41,7 +41,7 @@ RUN apt-get update && apt-get install -y \
     # install ping command, debian-version
     # iputils-ping \ 
     && curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc \
-    && curl https://packages.microsoft.com/config/debian/11/prod.list | tee /etc/apt/sources.list.d/mssql-release.list \
+    && curl https://packages.microsoft.com/config/debian/10/prod.list | tee /etc/apt/sources.list.d/mssql-release.list \
     && apt-get update \
     && apt-get upgrade -y \
     && ACCEPT_EULA=Y apt-get install -y msodbcsql18 mssql-tools18 \
@@ -73,6 +73,7 @@ EXPOSE 8000
 
 # Run the application. 
 RUN chmod +x scripts/web_pod_entrypoint.sh
+
 # # Create a non-root user for running the application (security best practice)
 # RUN groupadd celerygroup && useradd -r -g celerygroup celeryuser
 

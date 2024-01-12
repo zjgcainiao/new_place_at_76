@@ -12,7 +12,7 @@ from core_operations.common_functions import is_valid_us_phone_number
 from core_operations.models import LIST_OF_STATES_IN_US
 
 from django_recaptcha.fields import ReCaptchaField
-from django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox
+from django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox, ReCaptchaV3
 
 
 class CustomerUserRegistrationForm(UserCreationForm):
@@ -34,9 +34,11 @@ class CustomerUserRegistrationForm(UserCreationForm):
                                'placeholder:': 'first name, or business full name.'}))
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
-    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(
-        api_params={'hl': 'en','onload': 'onloadCallback'}
-    ), label = 'please check the box below to verify you are not a robot.')
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(), 
+                             label='please check the box below to verify you are not a robot.')
+    # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(
+    #     api_params={'hl': 'en','onload': 'onloadCallback'}
+    # ), label = 'please check the box below to verify you are not a robot.')
     class Meta:
         model = CustomerUser
         fields = ['cust_user_email', 'cust_user_phone_number', 'cust_user_first_name', 'cust_user_middle_name',
@@ -118,6 +120,11 @@ class CustomerUserRegistrationForm(UserCreationForm):
         if email:
             new = CustomerUser.objects.filter(email=email)
             if new.count():
+
+
+
+
+                
                 raise ValidationError(" Email Already Exists.")
             return email
         else:

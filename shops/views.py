@@ -1,4 +1,10 @@
 import io
+import requests
+import stripe
+import logging
+import json
+from django.urls import reverse
+from django.conf import settings
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from django.http import HttpResponse
@@ -6,13 +12,9 @@ from django.shortcuts import render, redirect
 from formtools.wizard.views import SessionWizardView
 from shops.forms import LicensePlateSearchForm, VINSearchForm
 from apis.utilities import fetch_and_save_single_vin_from_nhtsa_api, fetch_single_plate_data_via_plate2vin_api
-from django.db import models
-
-from dashboard.async_functions import fetch_latest_vin_data_from_snapshots, database_sync_to_async
+from django.views.decorators.csrf import csrf_exempt
+from dashboard.async_functions import database_sync_to_async
 from apis.utilities import fetch_latest_vin_data_func
-import stripe
-import logging
-import json
 from django.http import JsonResponse
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
@@ -20,38 +22,160 @@ from django.template.context_processors import csrf
 from crispy_forms.utils import render_crispy_form
 from django.views.decorators.http import require_http_methods
 
+# from shops.management.commands.load_stripe_products import Command
+
+
+if settings.DEBUG:
+    # testing mode
+    stripe.api_key = settings.STRIPE_SECRET_TEST_KEY
+else:
+    stripe.api_key = settings.STRIPE_SECRET_TEST_KEY
 
 logger = logging.getLogger('external_api')
-# renders the vehicle search page for all site viisters (not log in required)
 
-def vehicle_search_product(request):
-    flattened_data = None
+def online_product_list(request):
+    """
+    Renders the online product list page.
+    """
+    try:
+        # Fetching the JSON data from the URL
+        response = requests.get('https://storage.googleapis.com/vin-doctor.appspot.com/jsons/Stripe/products.json')
+        response.raise_for_status()  # Raises an HTTPError if the HTTP request returned an unsuccessful status code
+        data = response.json()
+        products = data.get('data', [])  # Safely get the 'data' key; returns an empty list if key doesn't exist
 
-    vin_form = VINSearchForm()
-    plate_form = LicensePlateSearchForm()
-    context = {
-        'vin_form': vin_form,
-        'plate_form': plate_form,
-    }
-    return render(request, 'shops/10_vehicle_search_product.html', context)
+    except requests.exceptions.RequestException as e:
+        # Handle any exceptions that occur during the HTTP request
+        print(e)
+        # Optionally, log the error here
+        return HttpResponse("An error occurred while fetching product data.", status=500)
 
+    except json.JSONDecodeError as e:
+        # Handle JSON parsing errors
+        print(e)
+        # Optionally, log the error here
+        return HttpResponse("An error occurred while parsing product data.", status=500)
 
-# standard django based checkout page, using ES6 module based stripe.js
+    # Render the template with product data
+    return render(request, 'shops/01_online_product_list.html', {'products': products})
 
-def payment_checkout(request):
-    return render(request, 'shops/21_payment_checkout.html')
+def calculate_order_amount(items):
+    """
+    Calculates the order amount based on the items.
+    """
+    # Replace this constant with a calculation of the order's amount
+    # Calculate the order total on the server to prevent
+    # people from directly manipulating the amount on the client
+    return 1400
 
-# react app based checkout.
+@csrf_exempt
+def stripe_webhook(request):
+    endpoint_secret = ''
+    # settings.STRIPE_WEBHOOK_SECRET 
+    endpoint_secret = "we_1OXcwJJQdPkpRk8HDIXvtZel" #"whsec_9fc3fe3c0a22d70e9d62a1b89b6e0abe158aa5c4c8a769b965c78bf422e7219c"
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret,
+            # settings.STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError as e:
+        #Invlaid Payload
 
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+            # Invalid signature
+        return HttpResponse(status=400)
+    
 
-def payment_checkout_react(request):
-    return render(request, 'shops/21_payment_checkout_react.html')
+    # Passed signature verification
+    return HttpResponse(status=200)
 
-# backend stripe charge function
+def create_payment_intent(request, product_id):
+    """
+    Creates a payment intent for the specified product.
+    """
+    try:
+        # Retrieve the product's price from Stripe
+        # Assuming each product has a single price associated with it
+        prices = stripe.Price.list(product=product_id, active=True, limit=1)
 
+        if not prices.data:
+            return JsonResponse({'error': 'Price not found for the specified product'}, status=404)
+
+        price = prices.data[0].unit_amount  # Price in cents
+        intent = stripe.PaymentIntent.create(
+            amount=price,
+            currency="usd",
+            automatic_payment_methods={"enabled": True},
+        )
+        return JsonResponse(
+            {'clientSecret': intent['client_secret']}
+        )
+    except Exception as e:
+        return JsonResponse({'error': f'{e}'}, status=403)
+
+def custom_checkout(request, product_id):
+    """
+    Renders the custom checkout page for the specified product.
+    """
+
+    return render(request, 'shops/21_checkout.html',{
+        'product_id': product_id,
+    })
+
+def prebuilt_chekcout(request, product_id):
+    """
+    Renders the prebuilt checkout page for the specified product.
+    """
+    if settings.DEBUG:
+        # testing mode
+        YOUR_DOMAIN = 'http://localhost:8000/shops'
+    else:
+        YOUR_DOMAIN = 'https://www.new76prolubeplus.com/shops'
+
+    prices = stripe.Price.list(product=product_id, active=True, limit=1)
+    price_id = prices.data[0].id # Price in cents
+    if not prices.data:
+        return JsonResponse({'error': 'Price not found for the specified product'}, status=404)
+
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    'price': 'price_1OVk2bJQdPkpRk8HOXVcVfEN', # price_id, # 'price_1OVk2bJQdPkpRk8HOXVcVfEN',
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=YOUR_DOMAIN + '/payment_success',
+            cancel_url=YOUR_DOMAIN + '/payment_cancelled',
+            automatic_tax={'enabled': True},
+        )
+    except Exception as e:
+        return str(e)
+
+    return redirect(checkout_session.url, code=303)
+
+def payment_success(request):
+    """
+    Renders the payment success page.
+    """
+    return render(request, 'shops/30_payment_success.html')
+
+def payment_cancelled(request):
+    """
+    Renders the payment cancelled page.
+    """
+    return render(request, 'shops/31_payment_cancelled.html')
 
 def stripe_charge(request):
-
+    """
+    Handles the Stripe charge request.
+    """
     if request.method == 'POST':
         token = request.POST['stripeToken']
         stripe.Charge.create(
@@ -62,63 +186,30 @@ def stripe_charge(request):
         )
         return redirect('some_view_name')
 
-
-# async def search_by_plate(request):
-
-#     plate_data = []
-#     success = False
-
-#     if request.method == 'POST':
-#         form = LicensePlateSearchForm(request.POST or None)
-#         if form.is_valid():
-#             license_plate = form.cleaned_data['license_plate']
-#             state = form.cleaned_data['state'].upper()
-
-#             try:
-#                 plate_data= await fetch_single_plate_data_via_plate2vin_api(license_plate, state)
-#                 if not plate_data or not isinstance(plate_data, models.Model):
-#                     form.add_error(
-#                         None, 'Failed to fetch information for the given license plate.')
-#                 # Assuming `plate_data` is an instance of `LicensePlateSnapShotsPlate2Vin`:
-#                 plate_data = await database_sync_to_async(model_to_dict)(plate_data)
-#             except Exception as e:
-#                 form.add_error(
-#                     None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
-
-#     return JsonResponse(plate_data)
-
-
-# async def search_by_vin(request):
-#     logger = logging.getLogger('django')
-#     vin_data_list = []
-#     # count = 0
-#     if request.method == 'POST' and 'action' in request.POST:
-#         form = VINSearchForm(request.POST)
-#         if form.is_valid():
-#             vin = form.cleaned_data['vin']
-#             year = form.cleaned_data['year']
-#             logger.info(
-#                 f'performing a manual single vin search on webpage for vin {vin} and model year {year}...')
-
-#             vin_data_list, number_of_downgraded_records, created = await fetch_and_save_single_vin_from_nhtsa_api(vin, year)
-#     else:
-#         form = VINSearchForm()
-
-#     return json.dumps(vin_data_list)
-
+def payment_checkout_react(request):
+    """
+    Renders the payment checkout page for React app.
+    """
+    return render(request, 'shops/21_payment_checkout_react.html')
 
 @database_sync_to_async
 def set_session_data(request, key, data):
+    """
+    Sets the session data with the specified key and data.
+    """
     request.session[key] = data
     request.session.modified = True  # Ensure the session is saved
 
-# used in shops/search_by_vin_or_plate
-# 2023-11-04
-async def search_by_vin_or_plate(request):
+async def vehicle_search_product(request):
+    """
+    Performs a vehicle search based on VIN or license plate.
+    """
     logger = logging.getLogger('django')
     plate_data={}
     plate_data_id =''
-    flattened_data = {} # initalize as an emtpy. if set it as None, this will cause an error about flaten_data not being iterable.
+    flattened_data = {}
+
+
     if request.method == 'GET':
         vin_form = VINSearchForm()
         plate_form = LicensePlateSearchForm()
@@ -128,15 +219,13 @@ async def search_by_vin_or_plate(request):
         }
         return render(request, 'shops/10_vehicle_search_product.html', context)
 
-    # AJAX POST request handling
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest' and 'action' in request.POST:
         action_value = request.POST['action']
-        # defined in forms.py
+
         if action_value == 'action_vin_search':
             vin_form = VINSearchForm(request.POST)
             print(f'user is submitting vin_form....')
             if vin_form.is_valid():
-                # process the data in vin_form.cleaned_data
                 vin = vin_form.cleaned_data['vin']
                 year = vin_form.cleaned_data['year']
                 logger.info(
@@ -149,28 +238,25 @@ async def search_by_vin_or_plate(request):
                 else:
                     year = None
 
-                # Fetch the latest vin from VinNhtsaApiSnapshots model
                 await fetch_and_save_single_vin_from_nhtsa_api(vin)
 
                 latest_vin_data = await fetch_latest_vin_data_func(vin)
 
-                # Convert to list of dictionaries if it's a QuerySet
                 if isinstance(latest_vin_data, QuerySet):
                     latest_vin_data = await database_sync_to_async(list)(latest_vin_data.values())
 
-                # save a copy into request.session. aysnc
-                # await set_session_data(request, 'latest_vin_data', latest_vin_data)
                 flattened_data['vin'] = vin
                 flattened_data = {
                     f"{item['variable_name']} (var_id:{item['variable_id']})": item['value']
                     for item in latest_vin_data
                 }
-                # Assuming 'vin' is the VIN you're interested in
 
                 return JsonResponse(flattened_data, safe=False)
-        # license plate search. enhanced with DRF api views
+
         elif action_value == 'action_plate_search':
             plate_form = LicensePlateSearchForm(request.POST)
+            license_plate = ''
+            state = ''
             if plate_form.is_valid():
                 license_plate = plate_form.cleaned_data['license_plate']
                 state = plate_form.cleaned_data['state'].upper(
@@ -178,8 +264,8 @@ async def search_by_vin_or_plate(request):
 
             logger.info(
                 f'performing a single plate search for license_plate {license_plate} and state {state}...')
-            # print(
-            #     f'performing a manual single plate search for license_plate {license_plate} and state {state}...')
+            print(
+                f'performing a manual single plate search for license_plate {license_plate} and state {state}...')
 
             try:
                 plate_data, success = await fetch_single_plate_data_via_plate2vin_api(license_plate, state)
@@ -187,57 +273,38 @@ async def search_by_vin_or_plate(request):
                     plate_form.add_error(
                         None, 'Failed to fetch VIN for the given License Plate.')
                 elif plate_data and plate_data.id:
-                    # Flatten the data only if plate_data is not empty
-                    # Assuming `plate_data` is an instance of `LicensePlateSnapShotsPlate2Vin`
-                    
                     flattened_data = await database_sync_to_async(model_to_dict)(plate_data)
             except Exception as e:
                 plate_form.add_error(
                     None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
 
-            if not plate_data:
-                 plate_data_id= plate_data.id
-            # flattened_data = await database_sync_to_async(model_to_dict)(plate_data)
+            if plate_data:
+                 plate_data_id = plate_data.id
+
             return JsonResponse({'plate_data_id': plate_data_id})
-            # return JsonResponse(flattened_data, safe=False)
-        else:
-            # If the form is not valid, you can return an error message or empty data.
-            return JsonResponse({'error': 'Invalid form data'}, status=400)
 
-    # If no POST or no search
-    if not flattened_data or not plate_data_id:
-
+    if not flattened_data or not plate_data_id or not plate_data_id.strip:
         return JsonResponse({'error': 'No data found'}, status=404)
 
-    # return JsonResponse(flattened_data, safe=False)
     return JsonResponse({'plate_data_id': plate_data_id})
 
-# 2023-11-13 requring io canvas and HttpResponse. server side pdf rendering.
-# not working yet.
 async def export_vin_data_to_pdf(request):
-
-    # Fetch the data from the session or database
+    """
+    Exports the VIN data to a PDF file.
+    """
     latest_vin_data = database_sync_to_async(request.session.get)(
         'latest_vin_data')
 
-    # Create a byte stream buffer
     buf = io.BytesIO()
-
-    # Create a canvas
     c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
-
-    # Initialize Y position
     y_position = 72
 
-    # Draw the data into the canvas
     for entry in latest_vin_data:
         c.drawString(72, y_position, f"{entry['key']}: {entry['value']}")
-        y_position += 15  # Move down the y position for the next line
+        y_position += 15
 
-    # Finish up the page and save the buffer
     c.showPage()
     c.save()
     buf.seek(0)
 
-    # Return the buffer as a PDF response
     return HttpResponse(buf.getvalue(), content_type='application/pdf')

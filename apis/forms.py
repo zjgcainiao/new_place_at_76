@@ -17,7 +17,6 @@ class VehicleModelForm(forms.ModelForm):
 
 # Create your views here.
 
-
 class RepairOrderModelForm(forms.ModelForm):
     class Meta:
         model = RepairOrdersNewSQL02Model

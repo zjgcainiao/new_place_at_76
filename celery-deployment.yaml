@@ -16,14 +16,19 @@ spec:
     spec:
       containers:
         - image: holleratme420/web:v1
-          command: ["celery"]
-          args: ["-A", "automanshop", "worker", "--loglevel=info"]
+          args:
+            - celery
+            - -A
+            - automanshop
+            - beat
+            - --loglevel=info
           name: celery
           resources: {}
           # volumeMounts:
           #   - mountPath: /app
           #     name: celery-claim0
       restartPolicy: Always
+  
       # volumes:
       #   - name: celery-claim0
       #     # persistentVolumeClaim:

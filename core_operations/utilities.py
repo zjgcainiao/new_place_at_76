@@ -1,6 +1,9 @@
 import logging
 from django.db import connections
 from django.db.utils import OperationalError
+# from customer_users.models import CustomerUser
+# from internal_users.models import InternalUser
+
 
 logger = logging.getLogger("django_db")
 
@@ -61,3 +64,15 @@ def anonymize_ip(ip):
             parts[3] = '0'
         return '.'.join(parts)
     return ip
+
+
+# get_user_details function is used to get the user details.
+
+def get_user_details(request):
+    is_authenticated = request.user.is_authenticated or False
+
+            
+    return {
+        "is_authenticated": request.user.is_authenticated,
+        # Add other user details you need
+    }

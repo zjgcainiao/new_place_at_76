@@ -20,7 +20,8 @@ import pyodbc
 import json
 import os
 from dashboard.forms import CustomerUpdateForm
-
+import requests
+from django.http import HttpResponse
 # from .serializers import *
 
 from django.db.models import Count
@@ -184,112 +185,16 @@ class EmailDataView(APIView):
         return Response({'status': 'success'})
 
 
-# try to list all repair ordes 2022-11-05
-# model repairOrder
-def all_repair_orders(request):
-    # load the environment
+
+
+def verify_stripe_applepay(request):
+    cloud_url = 'https://storage.googleapis.com/vin-doctor.appspot.com/stripe/apple-developer-merchantid-domain-association'
+
     try:
-        server = config("DB_SERVER")
-    except KeyError as e:
-        raise RuntimeError(
-            "Erro. Could not find any database server information. Make sure server info is available in the environemnt") from e
+        response = requests.get(cloud_url)
+        response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+    except requests.RequestException as e:
+        # Handle any exceptions that occur during the HTTP request
+        return HttpResponse(str(e), status=500)
 
-    user = os.getenv("DB_USER")
-    password = os.getenv("DB_PASSWORD")
-    databaseName = os.getenv("DB_HOST")
-    # how to use pymssql, visit https://pymssql.readthedocs.io/en/stable/ref/pymssql.html#module-level-symbols
-    # pymssql.connect(server='.', user=None, password=None, database='', timeout=0, login_timeout=60, charset='UTF-8', as_dict=False, host='', appname=None, port='1433', conn_properties=None, autocommit=False, tds_version=None)
-    conn = pyodbc.connect(server, user, password, databaseName)
-    c1 = conn.cursor()
-    c1.execute("""
-        SELECT TOP (50) 
-       a.[RepairOrderId]
-      -- ,a.[RepairOrderPhaseId]
-      ,f.[Phase] as ' Repair Order Phase'
-      ,concat(b.[FirstName], ' ', b.[LastName]) as 'Customer Name'
-      ,b.[LastVisited]
-      ,b.[FirstVisited]
-      ,b.[NewCustFollowUpDate]
-      ,[TimeIn] as 'Repair Order TimeIn'
-      ,[TimeOut] as 'Repair Order TimeOut'
-      ,[DatePosted] as 'Repair Order Posted Date'
-      ,[OdometerIn]
-      ,[OdometerOut]
-      ,[StatusDescription]
-      ,[ScheduleDate]
-      ,[ScheduledHours]
-      ,[PromiseDate]
-      ,[ReasonForVisitId]    
-      ,[Location]
-      ,a.[CustId]
-      ,a.[VehicleId]
-      ,c.year 'manuf year'
-      ,c.[Vin]
-      ,c.[License]
-      ,c.[LicenseState]
-      ,c.EngineId
-      ,d.[NumberOfCylinders]
-      ,d.[ValvesPerCylinder]
-      ,d.[FuelDeliveryMethodType]
-      ,c.[MakeId]
-      ,c.[SubModelId]
-      ,e.[Name] as 'model Name'
-      ,[CategoryId]
-      ,[RoPrinted]
-      ,[InvoicePrinted]
-      ,a.[LastChangeDate]
-      ,a.[AppointmentRequestUid]
-      ,a.[Notes]
-      ,a.[OrderTotal]
-      ,a.[ShopSuppliesAmt]
-      ,a.[TotalTaxAmt]
-      ,a.[LaborSale]
-      ,a.[PartsSale]
-      ,a.[DiscountAmt]
-      ,a.[Observations]
-      ,a.[CreatedAsEstimate]
-      ,[TaxAmtHazMat]
-      ,[TaxAmtShopSupplies]
-      ,[PrintedDate]
-      ,[PartDiscountDescriptionId]
-      ,a.[TaxExempt]
-      ,[LaborRateDescriptionId]
-      ,[RateVersionDate]
-      ,[FromQuickEst]
-      ,[HazWasteAmt]
-      ,[BalanceDueAdjustment]
-      ,a.[timestamp]
-      ,[MarginPct]
-      ,[TireFeeSale]
-      ,a.[EngineHoursIn]
-      ,a.[EngineHoursOut]
-      ,a.[RecordVersion]
-  FROM [ShopMgt].[SM].[RepairOrder] as a
-  left join [ShopMgt].[SM].[Customers] as b  on a.[CustId]=b.[custID]
-  left join  [ShopMgt].[SM].[Vehicle] as c on c.[VehicleId]=a.[vehicleID]
-  left join [ShopMgt].[DMV].[Engine] as d on d.EngineId=c.[engineid]
-  left join  [ShopMgt].[SM].[RepairOrderPhase] as f on f.[RepairOrderPhaseId]=a.[RepairOrderPhaseId]
-  left join [ShopMgt].[DMV].[Make] as e on e.MakeId=c.MakeId
-  where f.[Phase] not in ('DELETED')
-  order by [TimeIn] desc
-    """)
-    all_repair_orders = []
-    data = c1.fetchall()
-
-    for row in data:
-        repair_id = row[0]    # repair ID
-        # getting the customer name. column number may change due to the sql script
-        customer_name = row[2]
-        # get the status of the repair order; EST/RO/INV/DELETED/SCHEDULED
-        repair_status = row[1]
-        vin = row[20]         # vin number
-        make = row[29]         # make of the vehicle
-        time_out = row[7]      # repair_order_time_out
-        last_visit_date = row[2]  # last date visted
-        vehicle_year = row[19]    # vehicle year
-        repair_total_amount = row[36]  # total repair amount
-        RO = {'repair_id': repair_id, 'repair_status': repair_status, 'time_out': time_out, 'repair_total_amount': repair_total_amount,
-              'customer_name': customer_name, 'make': make, 'vehicle_year': vehicle_year, 'vin': vin, 'last_visit_date': last_visit_date}
-
-        all_repair_orders.append(RO)
-    return render(request, 'polls/repair_order_dashboard.html', {'all_repair_orders': all_repair_orders})
+    return HttpResponse(response.content, content_type='text/plain')
