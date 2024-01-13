@@ -114,7 +114,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     user_discharge_date = models.DateTimeField(null=True, blank=True)
 
     user_is_active = models.BooleanField(_('active'), default=True,
-                                         help_text=_('Designates whether this user should be treated as active. if the value is False; it means the account has been deactivated.'))
+                    help_text=_('Designates whether this user should be treated as active. if the value is False; it means the account has been deactivated.'))
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     user_is_admin = models.BooleanField(default=False)
@@ -133,8 +133,9 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         first_name = self.user_first_name.strip().capitalize()
+        middle_name = self.user_middle_name.strip().capitalize()
         last_name = self.user_last_name.strip().capitalize()
-        return f'{first_name} {last_name}'
+        return f'{first_name} {middle_name} {last_name}'
 
     @property
     def get_user_full_name(self):

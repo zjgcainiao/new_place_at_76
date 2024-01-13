@@ -10,18 +10,18 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xxl-4 col-lg-6">
-                    <div class="card">
+                    <div class="card card-hover">
                         <!-- Logo -->
-                        <div class="card-header py-4 text-center bg-light">
+                        <div class="card-header py-4 text-center bg-faded-light">
                             <a href="{% url 'homepageapp:homepage' %}">
                                 <img src="{% static 'internal_users/images/logo-174x150.png' %}" alt="logo">
                             </a>
                         </div>
-                        <div class="card-body py-4">
-                            <div class="text-center w-75 m-auto">
-                                <h4 class="text-dark-50 text-center pb-0 " style="font-family: 'Orbitron', sans-serif;">
+                        <div class="card-body py-2 m-1">
+                            <div class="text-center w-95 m-auto">
+                                <h4 class="text-dark-70 text-center pb-0" style="font-family: 'Orbitron', sans-serif;">
                                     Employee Login</h4>
-                                <p class="text-muted mb-4"> Enter your email address and password. First Time employee
+                                <p class="fw-normal mb-4"> Enter your email address and password. First Time employee
                                     will have to register first.</p>
                             </div>
                             <form method="post">
@@ -38,7 +38,7 @@
                                 <div class="my-3">
                                     <label class="form-label">{{ form.password.label_tag }}</label>
                                     <a href="{% url 'internal_users:password_reset' %}"
-                                        class="text-muted float-end"><small>Forgot your password?</small></a>
+                                        class="fw-bold float-end"><small>Forgot your password?</small></a>
                                     <div class="input-group input-group-merge">
                                         {{ form.password }}
                                         <div class="input-group-text" data-password="true">
@@ -55,12 +55,13 @@
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="checkbox-signin"
                                             name="remember_me" unchecked>
-                                        <label class="form-check-label" for="checkbox-signin">Remember me</label>
+                                        <label class="form-check-label" for="checkbox-signin"
+                                            style="font-family: 'Orbitron',sans-serif; ">Remember me</label>
                                     </div>
                                 </div>
 
                                 <div class="mb-3 mb-0 text-center">
-                                    <button class="btn btn-outline-primary" type="submit"> Log In </button>
+                                    <button class="btn btn-outline-dark" type="submit"> Log In </button>
                                 </div>
 
                             </form>
