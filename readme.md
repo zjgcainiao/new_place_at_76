@@ -1,13 +1,17 @@
 # Python-based integrated automotive repair shop management system
 
+Copyright (C) Yin Wang 2023-2024 (info@76prolubeplus.com).
+_last updated: Jan 2024_
+
 ## 0. Prerequisites
 
 `Django framework v4.2` + `Daphne v4.0` + `Microsoft SQL Server 2019`. Provides API capablities for future frontend web application and mobile application.
 
-1. python 3.10 or later
-2. django 4.2.9 or later
-3. daphne 4.0.0 or later
-4. ms sql server 2019 or later. recommend to use docker image `mcr.microsoft.com/mssql/server:2019-latest` to run ms sql server.
+1. python 3.10
+2. django 4.2.9
+3. django REST framework 3.14.0
+4. daphne 4.0.0
+5. ms sql server 2022. recommend to use docker image `mcr.microsoft.com/mssql/server:2022-latest` to run ms sql server. For Apple M1, M2 chip based environment, please use `mcr.microsoft.com/azure-sql-edge` instead.
 
 ```zsh
 # create new virtual environment
@@ -74,9 +78,6 @@ docker rm -f local-myapp || true && \
 docker run -p 8000:8000 --env-file .env --name local-myapp myapp:latest daphne -b 0.0.0.0 -p 8000 automanshop.asgi:application
 ```
 
-Copyright (C) Yin Wang 2023-2024 (info@76prolubeplus.com).
-_last updated: Jan 2024_
-
 ## 1. Introduction
 
 A data-driven, full-fledging automotive repair shop management system, including:
@@ -98,7 +99,7 @@ A data-driven, full-fledging automotive repair shop management system, including
 - user management system is responsible to handle two types of user accounts: employee user account and customer user account. Employee user account is used to access the centralized dashboard, while customer user account is used to access the customer portal.
 - provides periodic tasks (`celery`, `celery-beat`) that are scheduled to run at a specific time, such as sending email to remind customer about the upcoming appointment, sending email to remind customer about the upcoming vehicle inspection, etc.
 - provides the dockerized capacity to deploy the system on the containers, such as `docker`, `docker-compose`, `kubernetes`, etc.
-- provides real-time webSocket-based chat capablities to facilitate the communication between the customer and the employee, especially when the customer is waiting for the repair to be done and we need to ask the customer for additional information.
+- provides real-time webSocket-based chatting capablities to facilitate the communication between the customer and the employee, especially when the customer is waiting for the repair to be done and we need to ask the customer for additional information.
 
 ## 2. System Architecture
 

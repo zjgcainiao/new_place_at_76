@@ -239,8 +239,8 @@ class CustomerUserChangeForm(forms.Form):
 
 # address validting form
 class AddressForm(forms.Form):
-    address_line_1 = forms.CharField(max_length=100,required=True)
-    address_line_2 = forms.CharField(max_length=100, required=False)
+    address_line_1 = forms.CharField(max_length=100,required=True, label='Street Address, including Apt, Suite, Unit, etc.')
+    address_line_2 = forms.CharField(max_length=100, required=False, label='company name, c/o, etc.')
     city = forms.CharField(max_length=50,required=True)
     state = forms.ChoiceField(choices=[('', '--- None ---')] + list(LIST_OF_STATES_IN_US), 
                               validators=[validate_us_state],

@@ -29,6 +29,7 @@ import json
 
 #     return render(request, 'core_operations/50_validate_address.html', {'form': form})
 def validate_address_manual(request):
+    GOOGLE_MAP_API_KEY = settings.GOOGLE_MAP_API_KEY or None
     form = AddressForm()
     if request.method == 'POST':
         form = AddressForm(request.POST)
@@ -38,7 +39,7 @@ def validate_address_manual(request):
             state = form.cleaned_data['state'].strip()
             zip_code = form.cleaned_data['zip_code'].strip()
 
-            gmaps = googlemaps.Client(key=settings.GOOGLE_MAP_API_KEY)
+            gmaps = googlemaps.Client(key=GOOGLE_MAP_API_KEY)
             geocode_results = gmaps.geocode(f"{address}, {city}, {state} {zip_code}")
 
             if geocode_results:
@@ -47,8 +48,10 @@ def validate_address_manual(request):
                 return JsonResponse({'suggestions': suggested_addresses})
         
         return JsonResponse({'suggestions': []})
+    
 
-    return render(request, 'core_operations/50_validate_address.html', {'form': form})
+    return render(request, 'core_operations/50_validate_address.html', {'form': form,
+                                                                        'GOOGLE_MAP_API_KEY': GOOGLE_MAP_API_KEY})
 
 def validate_address_manual_method2(request):
     address = request.GET.get('addressInput')

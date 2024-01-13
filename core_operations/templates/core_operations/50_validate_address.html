@@ -11,6 +11,10 @@
         url: "{% url 'core_operations:validate_address_manual' %}", // The URL of your Django view
         type: 'POST',
         contentType: 'application/json',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken, // Add CSRF token if required
+        },
         data: JSON.stringify({
           address_line_1: $('#address_line_1').val(),
           address_line_2: $('#address_line_2').val(),
@@ -42,7 +46,7 @@
 </script>
 <div class="container pt-5 m-5">
   <h2>Validate Addresses VIA GoogleMaps(python)</h2>
-  <form id='validate-address-form' method="post">
+  <form>
     {% csrf_token %}
     {% crispy form form.helper %}
     <button type="submit">Validate</button>
@@ -53,22 +57,44 @@
 
 
 <hr>
-<script>
-  var GOOGLE_MAP_API_KEY = '{{ GOOGLE_MAP_API_KEY }}';
-</script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxgqROE2ywDmhTrbEgoUwQyPhZogXU1AU&libraries=places">
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAP_API_KEY }}&libraries=places">
 </script>
 
-</script>
 <script>
 
   // the following script is create an autocomplete search bar for address based on google maps api
 
   function initAutocomplete() {
-    const input = document.getElementById('addressInput');
-    var autocomplete = new google.maps.places.Autocomplete(input);
+    // First, try to get the element with ID 'addressInput'
+    var input = document.getElementById('addressInput');
+
+    // If not found, search for any input with 'address' in its ID
+    if (!input) {
+      var allInputs = document.getElementsByTagName('input');
+      for (var i = 0; i < allInputs.length; i++) {
+        if (allInputs[i].id.includes('address')) {
+          input = allInputs[i];
+          break;
+        }
+      }
+    }
+
+    // Initialize autocomplete only if a suitable input is found
+    if (input) {
+      var autocomplete = new google.maps.places.Autocomplete(input);
+
+      // Listener for place changes on the autocomplete
+      autocomplete.addListener('place_changed', function () {
+        var place = autocomplete.getPlace();
+        console.log(place); // Use place details as needed
+      });
+    }
   }
-  google.maps.event.addDomListener(window, 'load', initAutocomplete);
+
+  // Using standard window.onload event
+  window.onload = function () {
+    initAutocomplete();
+  };
 
   autocomplete.addListener('place_changed', function () {
     var place = autocomplete.getPlace();
@@ -79,7 +105,7 @@
     var address = document.getElementById('autocomplete').value;
     // Make an AJAX POST request to your Django backend
     // Include CSRF token if needed
-    fetch('/your-backend-endpoint/', {
+    fetch("{% url 'core_operations:validate_address_manual' %}", {
       method: 'POST',
       body: JSON.stringify({ 'address': address }),
       headers: {
@@ -100,6 +126,6 @@
   <h2>Validation version 2 </h2>
   <form>
     {% csrf_token %}
-    <input id="addressInput" type="text" placeholder="Enter address">
+    <input id="addressInput_disabled" type="text" placeholder="Enter address">
   </form>
   {% endblock %}
