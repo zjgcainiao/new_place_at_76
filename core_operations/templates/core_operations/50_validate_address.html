@@ -106,7 +106,7 @@
     // Make an AJAX POST request to your Django backend
     // Include CSRF token if needed
     // not completed yet
-    fetch("{% url 'core_operations:validate_address_manual/v2' %}", {
+    fetch("{% url 'core_operations:validate_address_manual_method2' %}", {
       method: 'POST',
       body: JSON.stringify({ 'address': address }),
       headers: {
