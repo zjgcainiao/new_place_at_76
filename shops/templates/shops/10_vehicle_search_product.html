@@ -281,12 +281,12 @@
 </div>
 <!-- end of pdf buttons -->
 <!-- resultData Display  -->
-<div class="container mt-3" id="resultDataDisplay">
+<div class="container mt-2" id="resultDataDisplay">
 
 </div>
 
 <!-- search result container  -->
-<div class="container my-4">
+<div class="container my-3">
     <div id="searchResults">
         {% if vehicle %}
         <!-- Basic Information Card -->
@@ -304,7 +304,9 @@
         <div class="card bg-light">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div class="text-muted">Premium content available</div>
+                    <div class="text-muted">Premium content available, including safety recalls, manufacturing
+                        information.
+                    </div>
                     <a href="{% url 'shops:payment_checkout' proudct_id='prod_PKOol19RtrtGTG' %}"
                         class="btn btn-primary">Purchase to view</a>
                 </div>
@@ -328,8 +330,6 @@
     $(function () {
         // Once the document is loaded, you can use jsPDF and html2canvas
         const exportPdfButton = document.getElementById('exportPdfButtonClientSide');
-
-
 
         exportPdfButton.addEventListener('click', () => {
             // Ensure 'content' points to the existing table you want to capture
@@ -499,7 +499,7 @@
             $('#resultDataDisplay').empty().html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
             $.ajax({
                 type: 'POST',
-                url: "{% url 'shops:search_by_vin_or_plate' %}", // URL to your Django view `"{% url 'shops:search_by_vin_or_plate' %}"`
+                url: form.attr('action'), // `"{% url 'shops:search_by_vin_or_plate' %}"`
                 data: formData,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',

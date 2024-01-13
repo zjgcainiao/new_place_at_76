@@ -121,14 +121,15 @@ class LicensePlateSearchForm(forms.Form):
         self.helper.form_action = reverse('shops:search_by_vin_or_plate')
         self.helper.layout = Layout(
             # Use Div to create a Bootstrap grid structure for responsiveness
-            Div(
-                Hidden('action', 'action_plate_search'),
-                Field('license_plate', wrapper_class='col-md-6 p-1 m-1'),
-                Field('state', wrapper_class='col-md-6 p-1 m-1'),
-                css_class='row'
+            Hidden('action', 'action_plate_search'),
+            Row(
+                Field('license_plate', wrapper_class='col-md-6 mb-3'),
+                Field('state', wrapper_class='col-md-6 mb-3'),
+                css_class='form-row m-1'
             ),
-            Column(Field('captcha', css_class=''),
-                   css_class='col-md-12 p-1 m-1 border-0'),
+            Row(Column(Field('captcha', css_class=''),
+                   css_class='col-md-12'),
+                   css_class='form-row  m-1 '),
             # You can add FormActions for better control over the submit button's placement and styling
             FormActions(
                 Button('plate_search', 'Search',

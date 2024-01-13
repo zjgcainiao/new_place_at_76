@@ -45,7 +45,6 @@ class CustomerEmailForm(forms.ModelForm):
 
         return instance
 
-
 class CustomerAddressForm(forms.ModelForm):
     address_type_id = forms.ChoiceField(choices=EMAIL_TYPES, label='type')
     email_address = forms.EmailField()
