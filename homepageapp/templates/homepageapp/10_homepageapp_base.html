@@ -9,7 +9,7 @@
   <meta name="description"
     content="Tesla &amp; general automotive repair &amp; oil change. AI-driven modern auto repair shop.">
   <meta name="keywords"
-    content="oil changes, a/c services, service lights on; radiator problems; detailed vehicle reports">
+    content="oil changes, a/c services, service lights on; radiator problems; detailed vehicle reports;">
   <meta name="author" content="Automan001@76prolubeplus.com">
   <!-- Viewport-->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -80,17 +80,6 @@
   <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/4.0.0/font/MaterialIcons-Regular.ttf"
     ref='stylesheet'> -->
 
-  <!-- simlerbar, tindy-slider css styles -->
-  <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}" />
-  <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}" />
-
-  <!-- Main Theme Styles css-->
-  <link rel="stylesheet" media="screen" href="{% static 'homepageapp/css/theme.min.css' %}">
-
-  <!-- Automan theme css  -->
-  <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
-
-
   <!-- add Roboto, Roboto-condensed font from google fonts. this font is used to display chatbot response (beta Pulido v1.0). -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/css/fonts.min.css">
 
@@ -98,6 +87,19 @@
 
   <!-- 2023-12-25 add new Orbitron font from google fonts  -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- simlerbar, tindy-slider css styles -->
+  <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}" />
+  <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}" />
+
+  <!-- Vendor Main Theme Styles css -->
+  <link rel="stylesheet" media="screen" href="{% static 'homepageapp/css/theme.min.css' %}">
+
+
+  <!-- Automan theme css.  -->
+  <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
+
+
 
 </head>
 
@@ -417,7 +419,7 @@
 
   <button id="enableChatbot"
     class="btn btn-outline-success position-fixed automan-chatbot-toggle-button bottom-0 end-0 m-3 p-1 fab-icon"
-    style="z-index: 1030; margin-bottom: 5px; margin-right: 5px;" aria-label="Talk to Virtual Assistant Pulido">
+    style="z-index: 1030; margin-bottom: 10px; margin-right: 10px;" aria-label="Talk to Virtual Assistant Pulido">
     <img src="{% static 'core_operations/imgs/robot-icon-01-smaller.svg' %}" alt="Robot Icon"
       style="height: 2em; width: 2em;" />
   </button>
@@ -552,7 +554,7 @@
 </body>
 
 <!-- Back to top button-->
-<a class="btn-scroll-top" href="#top" data-scroll>
+<a class="btn-scroll-top" href="#top">
   <span class="btn-scroll-top-tooltip text-muted fs-sm me-2">Top</span>
   <i class="btn-scroll-top-icon fi-chevron-up"> </i>
 </a>

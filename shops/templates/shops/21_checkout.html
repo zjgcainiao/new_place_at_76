@@ -62,11 +62,11 @@
     }
 
     /* Variables */
-    * {
+    /* * {
         box-sizing: border-box;
-    }
+    } */
 
-    body {
+    /* body {
         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         font-size: 16px;
         -webkit-font-smoothing: antialiased;
@@ -75,11 +75,11 @@
         align-content: center;
         height: 100vh;
         width: 100vw;
-    }
+    } */
 
     form {
         width: auto;
-        min-width: 500px;
+        min-width: 420px;
         align-self: center;
         box-shadow: 0px 0px 0px 0.5px rgba(50, 50, 93, 0.1),
             0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07);
@@ -100,13 +100,13 @@
     }
 
     #payment-element {
-        margin-bottom: 24px;
+        margin-bottom: 10px;
     }
 
     /* Buttons and links */
     button {
-        background: #5469d4;
-        font-family: Arial, sans-serif;
+        background: #a5aec4;
+        font-family: 'Roboto', sans-serif;
         color: #ffffff;
         border-radius: 4px;
         border: 0;
@@ -215,7 +215,7 @@
 </style>
 
 
-<div class="container main-content">
+<div class="container pt-5 m-5">
     <div class="card">
         <h3 class="card-header automan-glossy-metallic">
             Payment Checkout
@@ -240,7 +240,7 @@
                     <!-- Elements will create form elements here -->
                 </div>
 
-                <button id="submit" class='btn automan-glossy-metallic py-1 my-1 ' type="submit">
+                <button id="submit" class='btn automan-glossy-metallic py-1 m-1 ' type="submit">
                     <div class="spinner hidden" id="spinner"></div>
                     <span id="button-text">Submit Payment</span>
                 </button>
@@ -269,8 +269,6 @@
 <script>
 
     // The items the customer wants to buy
-
-
     // const items = [{ id: "prod_PKOol19RtrtGTG" }];
     var product_id = "{{product_id}}" // 'prod_PKOol19RtrtGTG';
     // console.log('product_id fetched is: ', product_id);

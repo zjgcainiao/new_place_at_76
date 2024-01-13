@@ -66,12 +66,12 @@ class InternalUserCreationForm(forms.ModelForm):
             #     'shops:search_by_vin_or_plate')  # Use your URL name here
             self.helper.layout = Layout(
                 Row (
-                    Column(Field('email',css_class='form-control'),css_class='col-md-12 mb-3'),
+                    Column(Field('email',css_class='form-control'),css_class='col-md-12 mb-2'),
                 css_class='form-group m-1'),
                 Row (
-                    Column(Field('user_first_name',css_class='form-control'),css_class='col-md-6 mb-3'),
-                    Column(Field('user_middle_name',css_class='form-control'),css_class='col-md-6 mb-3'),
-                    Column(Field('user_last_name',css_class='form-control'),css_class='col-md-6 mb-3'),
+                    Column(Field('user_first_name',css_class='form-control'),css_class='col-md-6 mb-2'),
+                    Column(Field('user_middle_name',css_class='form-control'),css_class='col-md-6 mb-2'),
+                    Column(Field('user_last_name',css_class='form-control'),css_class='col-md-6 mb-2'),
                 css_class='form-group m-1'),
 
                 Row (
@@ -174,12 +174,12 @@ class InternalUserRegistrationFormV2(forms.ModelForm):
                 Column(Field('user_first_name',css_class='form-control'),css_class='col-md-6 mb-3'),
                 Column(Field('user_middle_name',css_class='form-control'),css_class='col-md-6 mb-3'),
                 Column(Field('user_last_name',css_class='form-control'),css_class='col-md-6 mb-3'),
-            css_class='form-group '),
+            css_class='form-row '),
 
             Row (
                 Column(Field('password1',css_class='form-control p-1 m-1'),css_class='col-md-6 mb-3'),
                 Column(Field('password2',css_class='form-control p-1 m-1'),css_class='col-md-6 mb-3'),
-                css_class='form-group'),
+                css_class='form-row'),
             
             Row('captcha',css_class='form-group'),
 

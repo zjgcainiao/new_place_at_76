@@ -72,7 +72,10 @@ def calculate_order_amount(items):
 def stripe_webhook(request):
     endpoint_secret = ''
     # settings.STRIPE_WEBHOOK_SECRET 
-    endpoint_secret = "we_1OXcwJJQdPkpRk8HDIXvtZel" #"whsec_9fc3fe3c0a22d70e9d62a1b89b6e0abe158aa5c4c8a769b965c78bf422e7219c"
+    if settings.DEBUG:
+        endpoint_secret="whsec_9fc3fe3c0a22d70e9d62a1b89b6e0abe158aa5c4c8a769b965c78bf422e7219c"
+    else:
+        endpoint_secret = "we_1OY2A6JQdPkpRk8H8NHjgxOy" #"whsec_9fc3fe3c0a22d70e9d62a1b89b6e0abe158aa5c4c8a769b965c78bf422e7219c"
     payload = request.body
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
