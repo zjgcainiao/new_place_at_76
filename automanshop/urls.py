@@ -28,4 +28,5 @@ urlpatterns = [
     path('3dmodels/', include('we_create_3d_models.urls')),
     path('aihelpers/', include('we_have_ai_helpers.urls')),
     path('crms/', include('CRMs.urls')),
+    path('core_operations/', include('core_operations.urls')),
 ]

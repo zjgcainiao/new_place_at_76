@@ -1,4 +1,5 @@
 # exclude assets/ folder and /static folder and their contents from uploading to github.
+
 dist/
 assets/
 static/
@@ -21,6 +22,7 @@ dashboard_react/.vite/*
 */.vite/
 
 */management/
+
 lib64/
 bin
 conda-meta
@@ -57,7 +59,7 @@ venv/
 # mac file system extension
 .DS_STORE
 
-# .gitignore
+.gitignore
 .gcloudignore
 .git
 

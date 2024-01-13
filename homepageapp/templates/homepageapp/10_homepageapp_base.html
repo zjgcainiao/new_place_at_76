@@ -203,7 +203,7 @@
       preloader.remove();
     }, 2000);
 
-    $(document).on('contextmenu', 'img', function (e) {
+    $().on('contextmenu', 'img', function (e) {
       e.preventDefault();
     });
   });
@@ -275,13 +275,14 @@
                     href="{% url 'shops:custom_checkout' product_id='prod_PKOol19RtrtGTG' %}"><i
                       class="fi-cash fs-base me-2"></i>Payment System</a></li>
                 <li class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'shops:verify_stripe_applepay' %}"><i
-                      class="fi-cash fs-base me-2"></i>Verify Apple Pay</a></li>
+
               </ul>
             </li>
             {% comment %}
             <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'shops:online_product_list' %}">Store</a>
             </li>
+            <li><a class="dropdown-item" href="{% url 'homepageapp:verify_stripe_applepay' %}"><i
+                  class="fi-cash fs-base me-2"></i>Verify Apple Pay</a></li>
             {% endcomment %}
 
           </ul>
@@ -317,7 +318,7 @@
     }
 
     .card-hover:hover {
-      box-shadow: 0 4px 8px rgba(38, 37, 37, 0.2);
+      box-shadow: 0 4px 8px rgba(230, 61, 5, 0.2);
     }
 
     .fab-icon {
@@ -337,7 +338,7 @@
       /* Optional: Add a little shadow for depth */
       transition: transform 0.3s;
       /* Optional: Smooth transition for hover effect */
-      margin-bottom: 100px;
+      margin-bottom: 10px;
     }
 
     /* This CSS code block defines the hover effect for the .fab-icon class.

@@ -5,35 +5,44 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 import re
 from django.core.validators import RegexValidator
-
 # import common functions from common_functions.py
 # testing to combine common functions into one centralized location.
 from core_operations.common_functions import is_valid_us_phone_number
-from core_operations.models import LIST_OF_STATES_IN_US
-
+from core_operations.constants import LIST_OF_STATES_IN_US
+from core_operations.validators import validate_us_state, validate_zip_code
 from django_recaptcha.fields import ReCaptchaField
 from django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox, ReCaptchaV3
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Row, Column, Field, Button, ButtonHolder, Submit,HTML
+from django import forms
+
 
 
 class CustomerUserRegistrationForm(UserCreationForm):
     cust_user_email = forms.EmailField(help_text='Required. We will send important account updates and notifications to this email.',
-                                       widget=forms.EmailInput(attrs={'type': 'email', 'class': 'form-control', }), label='Email')
+                                       widget=forms.EmailInput(attrs={'type': 'email', 'class': 'form-control', }), 
+                                       label='Email',
+                                       required=True)
     cust_user_phone_number = forms.CharField(
-        max_length=15, required=False,
+        max_length=15, 
+        required=False,
         widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control',
                                'placeholder:': 'ex. 213-445-9990 or 2134459990. US phone number only.'}),
         help_text='Optional but recommended. We will text important updates to this phone number.', label='Phone Number')
     cust_user_last_name = forms.CharField(
-        max_length=30, required=False, help_text='Optional.', label='Last Name', widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }))
+        max_length=30, required=False, help_text='Your Last Name or Family Name. Optional.', label='Last Name', widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }))
 
     cust_user_middle_name = forms.CharField(
-        max_length=30, required=False, help_text='Optional.', label='Middle Name')
+        max_length=30, required=False, help_text='Your Middle Name. Optional.', label='Middle Name')
     cust_user_first_name = forms.CharField(
-        max_length=30, required=False, help_text='Required.', label='First Name',
+        max_length=30, required=False, 
+        help_text='Your First Name. Optional.', label='First Name',
         widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control',
-                               'placeholder:': 'first name, or business full name.'}))
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput)
+                               'placeholder:': 'ex. John, Kelly, or if it is a business ABC Company or ABC Inc.'}))
+    password1 = forms.CharField(label='Password', 
+                                widget=forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', 'placeholder': 'Enter Password'}))
+    password2 = forms.CharField(label='Repeat password', 
+                                widget=forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', 'placeholder': 'Confirm Password'}))
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(), 
                              label='please check the box below to verify you are not a robot.')
     # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(
@@ -41,13 +50,10 @@ class CustomerUserRegistrationForm(UserCreationForm):
     # ), label = 'please check the box below to verify you are not a robot.')
     class Meta:
         model = CustomerUser
-        fields = ['cust_user_email', 'cust_user_phone_number', 'cust_user_first_name', 'cust_user_middle_name',
-                  'cust_user_last_name', 'password1', 'password2']  # 'username',
+        fields = ['cust_user_email', 'cust_user_phone_number', 
+                  'cust_user_first_name', 'cust_user_middle_name','cust_user_last_name', 
+                  'password1', 'password2']  # 'username',
         # required = ['cust_user_phone_number', 'cust_user_first_name', 'password1', 'password2']
-        widgets = {
-            'password1': forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', 'placeholder': 'Enter Password'}),
-            'password2': forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', 'placeholder': 'Confirm Password'}),
-        }
         labels = {
             'password1': 'Password',
             'password2': 'Repeat Password',
@@ -55,6 +61,37 @@ class CustomerUserRegistrationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False # True
+        self.helper.form_method = 'POST'
+        self.helper.layout = Layout(
+            Row(
+                Column(Field('cust_user_email', css_class='form-control'), css_class=' col-md-6 mb-0'),
+                Column(Field('cust_user_phone_number', css_class='form-control'), css_class=' col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column(Field('password1',css_class='form-control'), css_class='col-md-6 mb-0'),
+                Column(Field('password2',css_class='form-control'), css_class='col-md-6 mb-0'),
+                css_class='form-row' # form-group, form-row
+            ),
+             Row(
+                Column(Field('cust_user_first_name',css_class='form-control'), css_class='col-md-4 mb-0'),
+                Column(Field('cust_user_middle_name',css_class='form-control'), css_class='col-md-4 mb-0'),
+                Column(Field('cust_user_last_name',css_class='form-control'), css_class='col-md-4 mb-0'),
+                
+                css_class='form-row' # form-group, form-row
+            ),
+            Field('captcha',css_class=''),
+            HTML("<hr>"),
+            ButtonHolder(
+                Submit('submit', 'Register', css_class='btn-outline-primary justify-content-center'),
+                         
+                    # Column(Reset('Reset This Form', 'Reset Form', css_class='btn-outline-dark'),
+                    #         css_class='col col-6'),
+                    
+            css_class='row justify-content-center'),
+        )
 
     # cust_user_phone_number = forms.CharField(required=True, max_length=20,
     #                                           help_text='enter your phone number. Support US-only numbers. We will not spam you. ')
@@ -120,11 +157,6 @@ class CustomerUserRegistrationForm(UserCreationForm):
         if email:
             new = CustomerUser.objects.filter(email=email)
             if new.count():
-
-
-
-
-                
                 raise ValidationError(" Email Already Exists.")
             return email
         else:
@@ -190,6 +222,8 @@ class CustomerUserLoginForm(AuthenticationForm):
         model = CustomerUser
         # fields = ['cust_user_email', 'password']
 
+    def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
 
 class CustomerUserChangeForm(forms.Form):
     field_name = forms.CharField(widget=forms.HiddenInput())
@@ -205,13 +239,33 @@ class CustomerUserChangeForm(forms.Form):
 
 # address validting form
 class AddressForm(forms.Form):
-    address_line_1 = forms.CharField(max_length=100)
+    address_line_1 = forms.CharField(max_length=100,required=True)
     address_line_2 = forms.CharField(max_length=100, required=False)
-    city = forms.CharField(max_length=50)
-    state = forms.CharField(max_length=2)
-    zip_code = forms.CharField(max_length=10)
-    country_code = forms.CharField(max_length=10)
+    city = forms.CharField(max_length=50,required=True)
+    state = forms.ChoiceField(choices=[('', '--- None ---')] + list(LIST_OF_STATES_IN_US), 
+                              validators=[validate_us_state],
+                              widget=forms.Select(attrs={'class': 'form-select'}))
+    zip_code = forms.CharField(max_length=5,required=True,validators=[validate_zip_code])
+    country_code = forms.CharField(max_length=10, required=False, initial='US', disabled=True)
 
+    def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.helper = FormHelper()
+            self.helper.layout = Layout(
+                Row(
+                    Column(Field('address_line_1', css_class='form-control'), css_class=' col-md-6 mb-0'),
+                    Column(Field('address_line_2', css_class='form-control'), css_class=' col-md-6 mb-0'),
+                    css_class='form-row'
+                ),
+                Row(
+                    Column(Field('city',css_class='form-control'), css_class='col-md-4 mb-0'),
+                    Column(Field('state',css_class='form-control'), css_class='col-md-4 mb-0'),
+                    Column(Field('zip_code',css_class='form-control'), css_class='col-md-4 mb-0'),
+                    
+                    css_class='form-row' # form-group, form-row
+                ),
+                Column(Field('country_code',css_class='border-0'),css_class='col-md-12 mb-0'),
+            )
     def clean(self):
         cleaned_data = super().clean()
         address = f"{cleaned_data['address_line_1']} {cleaned_data['address_line_2']}".strip(

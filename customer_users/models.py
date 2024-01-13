@@ -75,10 +75,8 @@ class CustomerUser(AbstractBaseUser):
         Customer, on_delete=models.SET_NULL, null=True, related_name='users_customers')
     cust_user_linkage_is_confirmed = models.BooleanField(default=False)
     cust_user_last_linked_date = models.DateTimeField(null=True)
-
     # cust_user_linked_firebaseuser = models.ForeignKey(
     #     FirebaseUser, on_delete=models.SET_NULL, null=True,related_name='cust_user_firebaseuser')
-
     customer_user_lastest_ip_address = models.GenericIPAddressField(null=True)
 
     cust_user_created_at = models.DateTimeField(auto_now_add=True)
@@ -86,7 +84,6 @@ class CustomerUser(AbstractBaseUser):
 
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-
 
     USERNAME_FIELD = 'cust_user_email'  # or 'email_address'
     # 'cust_user_phone_number','cust_user_email',

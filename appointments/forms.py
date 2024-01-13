@@ -207,14 +207,14 @@ class AppointmentCreationForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(_('Time and Contact Info'),
                 Row(Column(Field('appointment_email', css_class='form-control',style="background-color: #cfe2f3"),
-                           css_class='col-md-6',),
+                           css_class='col-md-6 mb-0',),
                     Column(Field('appointment_phone_number', css_class='form-control', ),
-                           css_class='col-md-6',),
-                    css_class='p-1 m-1'),
+                           css_class='col-md-6 mb-0',),
+                    css_class='form-row p-1 m-1'),
                 Row(
                     Column(Field('appointment_first_name', css_class='form-control'),css='col-md-6' ),
                     Column(Field('appointment_last_name', css_class='form-control'),css='col-md-6 ' ),
-                    css_class='p-1 m-1'),
+                    css_class='form-row p-1 m-1'),
                 Row(
                     # Column(Field('appointment_requested_date', css_class='form-control'),
                     #     css_class='col-md-6',),
@@ -224,7 +224,7 @@ class AppointmentCreationForm(forms.ModelForm):
                            css_class='col-md-6',),
                     Column(Field('appointment_reason_for_visit', css_class='form-select'),
                            css_class='col-md-6',),
-                    css_class='p-1 m-1'),
+                    css_class='form-row p-1 m-1'),
             ),
 
             HTML("<hr>"),
@@ -244,14 +244,14 @@ class AppointmentCreationForm(forms.ModelForm):
                            css_class='col-md-4 ',),
                     css_class='p-1'),
                 ),
-                css_class='p-1 m-1'),
+                css_class='form-row p-1 m-1'),
 
             HTML("<hr>"),
 
             Row(
                 Column(Field('appointment_concern_description', css_class='form-control'),
                        css_class='col-md-12'),
-                css_class='p-1 m-1'),
+                css_class='form-row p-1 m-1'),
 
             HTML("<hr>"),
 

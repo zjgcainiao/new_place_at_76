@@ -1,8 +1,6 @@
 # 2023-04-01. ChatGPT 4.0 generated.
 # -----------------
-from django.conf import settings
 from django.shortcuts import render, resolve_url, redirect
-import googlemaps
 from django.http import HttpResponseForbidden
 from internal_users.forms import InternalUserCreationForm, InternalUserChangeForm, InternalUserRegistrationFormV2, InternalUserLoginForm, InternalUserPasswordResetForm
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeDoneView, PasswordChangeView, PasswordResetView, PasswordResetConfirmView, PasswordContextMixin
@@ -29,6 +27,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
 from internal_users.mixins import InternalUserRequiredMixin
+
 
 logger = logging.getLogger('django')
 
@@ -294,3 +293,4 @@ def activate_internal_user_account(request, token):
         logger.info(
             f'activating user {user.user_first_name} (ID: {user.pk}) was unsuccessful. ')
         return render(request, 'internal_users/11_activation_invalid.html')
+

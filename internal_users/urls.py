@@ -17,7 +17,7 @@ urlpatterns = [
     path("internal_user_api/", return_current_internal_user_json,
          name="internal_user_api"),
     # path('login/', auth_views.LoginView.as_view(template_name='internal_users/login.html'), name='login'),
-    path('firebase-auth/', firebase_authenticate, name='firebase_authenticate'),
+    path('firebase_auth/', firebase_authenticate, name='firebase_authenticate'),
     path('login/', internal_user_login, name='internal_user_login'),
     # path('login/v2/', MyLoginView.as_view(), name='login-v2'),
     path('logout/', InternalUserLogoutView.as_view(),
@@ -40,4 +40,5 @@ urlpatterns = [
          success_url='/password_reset/complete/'), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='internal_users/32_password_reset_complete.html'), name='password_reset_complete'),
+
 ]

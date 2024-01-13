@@ -552,8 +552,15 @@ RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY")
 if not RECAPTCHA_PRIVATE_KEY or not RECAPTCHA_PUBLIC_KEY:
     logger.error('missing google reCAPTCHA keys...')
 RECAPTCHA_DOMAIN = 'www.recaptcha.net'
+
 # ADD the following line for testing and local development
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
+
+
+
+# GOOGLE MAP API KEY FOR GOOGLE PLACES
+GOOGLE_MAP_API_KEY = config("GOOGLE_MAP_API_KEY",default=None)
+
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
