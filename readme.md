@@ -9,8 +9,6 @@
 3. daphne 4.0.0 or later
 4. ms sql server 2019 or later. recommend to use docker image `mcr.microsoft.com/mssql/server:2019-latest` to run ms sql server.
 
-4.2.9 Django framework + Daphne + Microsoft SQL Server.
-
 ```zsh
 # create new virtual environment
 python -m venv myenv
@@ -37,7 +35,33 @@ python manage.py runsslserver 8443 \
 
 ```
 
-AI assistant capablity (aka, Pulido) requires a chatGPT API key. Please contact the author for more information.
+Before running the server, find the file name `env.example` and rename it to `.env`. Then, update the `.env` file with your own database information.
+
+```zsh
+#!/bin/bash
+
+# Define the file names
+source_file="env.example"
+destination_file=".env"
+
+# Check if the source file exists and is not a directory
+if [ -f "$source_file" ]; then
+    # Rename the file
+    mv "$source_file" "$destination_file"
+    echo "File renamed successfully."
+else
+    # Error message if file does not exist or is a directory
+    echo "Error: '$source_file' does not exist or is a directory."
+fi
+
+
+```
+
+- Use the [command listed here](https://gist.github.com/barbietunnie/d83c4bb7c0eb2ee4e3e71f91697a68f6) to generate a new secret key for the django project.
+
+- AI assistant capablity (aka, Pulido) requires a chatGPT API key. Please contact the author for more information.
+
+### Dockerized deployment
 
 To test dockierized deployment, please run the following commands:
 
