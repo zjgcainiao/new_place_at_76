@@ -105,7 +105,8 @@
     var address = document.getElementById('autocomplete').value;
     // Make an AJAX POST request to your Django backend
     // Include CSRF token if needed
-    fetch("{% url 'core_operations:validate_address_manual' %}", {
+    // not completed yet
+    fetch("{% url 'core_operations:validate_address_manual/v2' %}", {
       method: 'POST',
       body: JSON.stringify({ 'address': address }),
       headers: {
@@ -122,10 +123,4 @@
 
 </script>
 
-<div class="container pt-5 m-5">
-  <h2>Validation version 2 </h2>
-  <form>
-    {% csrf_token %}
-    <input id="addressInput_disabled" type="text" placeholder="Enter address">
-  </form>
-  {% endblock %}
+{% endblock %}
