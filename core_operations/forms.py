@@ -8,19 +8,21 @@ import json
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Field
 from django.core.exceptions import ValidationError
-from core_operations.validators import validate_us_state, validate_zip_code, 
+from core_operations.validators import validate_us_state, validate_zip_code
 from core_operations.constants import LIST_OF_STATES_IN_US
 
 # address validting form
 class AddressForm(forms.Form):
-    address_line_1 = forms.CharField(max_length=100,required=True, label='Street Address, including Apt, Suite, Unit, etc.',
-                                     required=True,
-                                     placeholder='ex. 123 Main St. Apt 330')
+    address_line_1 = forms.CharField(max_length=100,
+                                     required=True, 
+                                     label='Street Address, including Apt, Suite, Unit, etc.',
+                                     widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'ex. 1234 Main St, apt E120'}),
+                                     )
     address_line_2 = forms.CharField(max_length=100, 
                                      required=False, 
                                      label='company name, c/o, etc.',
-                                        placeholder='ex. c/o Jane Doe'
-                                     )
+                                     widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'ex. c/o Jane Doe'}),
+                                       )
     city = forms.CharField(max_length=50,required=True)
     state = forms.ChoiceField(choices=[('', '--- None ---')] + list(LIST_OF_STATES_IN_US), 
                               validators=[validate_us_state],
@@ -39,7 +41,7 @@ class AddressForm(forms.Form):
                 Row(
                     Column(Field('address_line_1', css_class='form-control'), css_class=' col-md-8 mb-0'),
                     Column(Field('address_line_2', css_class='form-control'), css_class=' col-md-4 mb-0'),
-                    css_class='form-group'
+                    css_class='form-row'
                 ),
                 Row(
                     Column(Field('city',css_class='form-control'), css_class='col-md-4 mb-0'),
