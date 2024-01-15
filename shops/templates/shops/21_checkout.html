@@ -267,7 +267,6 @@
 <script src="https://js.stripe.com/v3/">
 </script>
 <script>
-
     // The items the customer wants to buy
     // const items = [{ id: "prod_PKOol19RtrtGTG" }];
     var product_id = "{{product_id}}" // 'prod_PKOol19RtrtGTG';
@@ -280,7 +279,7 @@
 <!-- <script>
 
     // This is your test publishable API key.
-    const stripe = Stripe("pk_test_51O27ZHJQdPkpRk8HuzWAElLfKatvTuF6cfeCloCfB4lumooZcazJhvZKETo4FE7NWxX73E1BqmhFwZH7b2i5RVS900ooTWV626");
+    const stripe = Stripe("pk_test_asasa");
 
     // let elements;
 
@@ -445,5 +444,69 @@
 
     });
 </script> -->
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAP_API_KEY }}&libraries=places">
+</script>
 
+<script>
+
+    // the following script is create an autocomplete search bar for address based on google maps api
+
+    function initAutocomplete() {
+        // First, try to get the element with ID 'addressInput'
+        var input = document.getElementById('addressInput');
+
+        // If not found, search for any input with 'address' in its ID
+        if (!input) {
+            var allInputs = document.getElementsByTagName('input');
+            for (var i = 0; i < allInputs.length; i++) {
+                if (allInputs[i].id.includes('address_')) {
+                    input = allInputs[i];
+                    break;
+                }
+            }
+        }
+
+        // Initialize autocomplete only if a suitable input is found
+        if (input) {
+            var autocomplete = new google.maps.places.Autocomplete(input);
+
+            // Listener for place changes on the autocomplete
+            autocomplete.addListener('place_changed', function () {
+                var place = autocomplete.getPlace();
+                console.log(place); // Use place details as needed
+            });
+        }
+    }
+
+    // Using standard window.onload event
+    window.onload = function () {
+        initAutocomplete();
+    };
+
+    // autocomplete.addListener('place_changed', function () {
+    //   var place = autocomplete.getPlace();
+    //   console.log(place); // Use place details as needed
+    // });
+
+    function handleAddressSelection() {
+        var address = document.getElementById('autocomplete').value;
+        // Make an AJAX POST request to your Django backend
+        // Include CSRF token if needed
+        // not completed yet
+        fetch("{% url 'core_operations:validate_address_manual_method2' %}", {
+            method: 'POST',
+            body: JSON.stringify({ 'address': address }),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken, // Add CSRF token if required
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Handle the response
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+</script>
 {% endblock %}

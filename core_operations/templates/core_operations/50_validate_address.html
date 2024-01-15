@@ -49,12 +49,10 @@
   <form>
     {% csrf_token %}
     {% crispy form form.helper %}
-    <button type="submit">Validate</button>
+    <button type="submit" class="btn btn-sm btn-outline-primary">Validate</button>
   </form>
   <ul id="address-suggestions"></ul>
 </div>
-
-
 
 <hr>
 <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAP_API_KEY }}&libraries=places">
@@ -72,7 +70,7 @@
     if (!input) {
       var allInputs = document.getElementsByTagName('input');
       for (var i = 0; i < allInputs.length; i++) {
-        if (allInputs[i].id.includes('address')) {
+        if (allInputs[i].id.includes('address_')) {
           input = allInputs[i];
           break;
         }
