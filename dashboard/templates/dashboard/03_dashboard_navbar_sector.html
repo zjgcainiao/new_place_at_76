@@ -1,66 +1,68 @@
-           {% load static %}
-           <!-- ========== Topbar Start ========== -->   
-            <div class="navbar-custom" style="background: linear-gradient(0deg, rgba(235,235,235,1) 0%, rgba(245,245,245,1) 100%);">
-                <div class="topbar container-fluid">
-                    <div class="d-flex align-items-center gap-lg-2 gap-1">
-                        <!-- Topbar Brand Logo -->
-                        <div class="logo-topbar">
-                            <!-- Logo light -->
-                            <a href="{% url 'homepageapp:homepage' %} " class="logo-light">
-                                <!-- <span class="logo-lg"> -->
-                                    <img src="{% static 'dashboard/images/logo-2022.svg' %}" width="80" alt="logo">
-                                <!-- </span> -->
-                                <!-- <span class="logo-sm">
-                                    <img src="assets/images/logo-sm.png" alt="small logo">
-                                </span> -->
-                            </a>
-                        </div>
+{% load static %}
+<!-- ========== Topbar Start ========== -->
+<div class="navbar-custom" style="background: linear-gradient(0deg, rgba(235,235,235,1) 0%, rgba(245,245,245,1) 100%);">
+    <div class="topbar container-fluid">
+        <div class="d-flex align-items-center gap-lg-2 gap-1">
+            <!-- Topbar Brand Logo -->
+            <a class='navbar-brand' href="{% url 'homepageapp:homepage' %} ">
+                <!-- <span class="logo-lg"> -->
+                <img class="logo-topbar logo" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}"
+                    width="80" alt="logo">
+                <!-- </span> -->
+                <!-- Brand Logo  -->
+                <!-- <a href="{% url 'homepageapp:homepage' %} " class="logo logo-light">
+                    <img src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" alt="small logo">
+                </a> -->
+            </a>
 
-                        <!-- Sidebar Menu Toggle Button -->
-                        <button class="button-toggle-menu">
-                            <i class="mdi mdi-menu"></i>
-                        </button>  
-                    </div>
-                    <!-- end of d-flex  -->
+            <!-- Sidebar Menu Toggle Button -->
+            <button class="button-toggle-menu">
+                <i class="mdi mdi-menu"></i>
+            </button>
+        </div>
+        <!-- end of d-flex  -->
 
-                    <ul class="topbar-menu d-flex align-items-center gap-3">
-                        <li class="dropdown">
-                            {% if user.is_authenticated %}
-                            <a class="nav-link dropdown-toggle arrow-none nav-user px-2" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <span class="account-user-avatar">
-                                    <img src="{% static 'dashboard/images/users/avatar-1.jpg' %}" alt="user-image" width="32" class="rounded-circle">
-                                </span>
-                                
-                                <span class="d-lg-flex flex-column gap-1 d-none">
-                                    <p class="my-0 fw-normal">Hi {{user.user_first_name}} (Email: {{user.email |truncatechars:15}})</p>
-                                    <h6 class="my-0 fw-normal">Auth Group: {{user.user_auth_group}}</h6>
-                                </span>
-                                
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated profile-dropdown">
+        <ul class="topbar-menu d-flex align-items-center gap-3">
+            <li class="dropdown">
+                {% if user.is_authenticated %}
+                <a class="nav-link dropdown-toggle arrow-none nav-user px-2" data-bs-toggle="dropdown" href="#"
+                    role="button" aria-haspopup="false" aria-expanded="false">
+                    <span class="account-user-avatar">
+                        <img src="{% static 'dashboard/images/users/avatar-1.jpg' %}" alt="user-image" width="32"
+                            class="rounded-circle">
+                    </span>
 
-                                <!-- item-->
-                                <a href="{% url 'internal_users:internal_user_dashboard' %}" class="dropdown-item">
-                                    <i class="mdi mdi-account-circle me-1"></i>
-                                    <span>My Profile - Employee Info</span>
-                                </a>
+                    <span class="d-lg-flex flex-column gap-1 d-none">
+                        <p class="my-0 fw-normal">Hi {{user.user_first_name}} (Email: {{user.email |truncatechars:15}})
+                        </p>
+                        <h6 class="my-0 fw-normal">Auth Group: {{user.user_auth_group}}</h6>
+                    </span>
 
-                                <!-- item-->
-                                <a href="{% url 'internal_users:internal_user_logout' %}" class="dropdown-item">
-                                    <i class="mdi mdi-logout me-1"></i>
-                                    <span>Logout</span>
-                                </a>
-                            </div>
-                                {% else %}
-                                <span class="d-lg-flex flex-column gap-1 d-none">
-                                    <h5 class="my-0">NO INFORMATION</h5>
-                                    <h6 class="my-0 fw-normal">No internal user logged in.</h6>
-                                </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated profile-dropdown">
 
-                            {% endif %}
-                        </li>
-                    </ul>
+                    <!-- item-->
+                    <a href="{% url 'internal_users:internal_user_profile' %}" class="dropdown-item">
+                        <i class="mdi mdi-account-circle me-1"></i>
+                        <span>My Profile - Employee Info</span>
+                    </a>
+
+                    <!-- item-->
+                    <a href="{% url 'internal_users:internal_user_logout' %}" class="dropdown-item">
+                        <i class="mdi mdi-logout me-1"></i>
+                        <span>Logout</span>
+                    </a>
                 </div>
-                <!-- end of topbar container-fluid -->
-            </div>
-            <!-- ========== Topbar End ========== -->
+                {% else %}
+                <span class="d-lg-flex flex-column gap-1 d-none">
+                    <h5 class="my-0">NO INFORMATION</h5>
+                    <h6 class="my-0 fw-normal">No internal user logged in.</h6>
+                </span>
+
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+    <!-- end of topbar container-fluid -->
+</div>
+<!-- ========== Topbar End ========== -->

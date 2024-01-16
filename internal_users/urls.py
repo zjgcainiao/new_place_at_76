@@ -9,7 +9,7 @@ urlpatterns = [
     #     path('profile/', fetch_internal_user_dashboard,
     #          name='internal_user_dashboard'),
     path('profile/', UserInfoView.as_view(),
-         name='internal_user_dashboard'),
+         name='internal_user_profile'),
     path('profile/employment',  internal_user_view_employement,
          name='employement_info'),
 

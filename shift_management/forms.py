@@ -9,7 +9,11 @@ TIME_CHOICES = [(time(hour, minute), f"{hour:02d}:{minute:02d}")
 
 class ScheduleShiftForm(forms.ModelForm):
     # This field will be set by the calendar
-    date = forms.DateField(widget=forms.HiddenInput())
+    # date = forms.DateField(widget=forms.HiddenInput())
+    date = forms.DateField(widget=forms.DateInput(
+        format='%Y-%m-%d',   # Adjust format as needed
+        attrs={'type': 'date', 'disabled': True}
+    ))
     shift_start_time = forms.ChoiceField(help_text="Start time of the shift", choices=TIME_CHOICES, widget=forms.TimeInput(
         format="%H:%M",  # '14:30',
         attrs={"type": "time"},

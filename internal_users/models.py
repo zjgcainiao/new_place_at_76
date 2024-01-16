@@ -90,7 +90,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
         (AUTH_GROUP_LEVEL_88, 'master-shi-fu-group'),
     )
     user_id = models.AutoField(primary_key=True)
-    user_first_name = models.CharField(_('first name'), max_length=50)
+    user_first_name = models.CharField(_('first name'), max_length=50,blank=False, null=False)
     user_middle_name = models.CharField(
         _('middle name'), max_length=50, null=True)
     user_last_name = models.CharField(_('last name'), max_length=50)
@@ -132,10 +132,9 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        first_name = self.user_first_name.strip().capitalize()
-        middle_name = self.user_middle_name.strip().capitalize()
-        last_name = self.user_last_name.strip().capitalize()
-        return f'{first_name} {middle_name} {last_name}'
+
+        return self.get_user_full_name
+
 
     @property
     def get_user_full_name(self):
@@ -147,7 +146,9 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
         name_fields = [first_name, middle_name, last_name]
         full_name = ' '.join(
             [field for field in name_fields if field is not None])
-        return full_name.strip() if full_name.strip() else "No available user name."
+        return full_name.strip() if full_name.strip() else "User's full name is not available."
+    
+
 
     class Meta:
         db_table = 'internalusers_new_03'

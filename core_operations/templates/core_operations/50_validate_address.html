@@ -3,7 +3,7 @@
 {% block content1-main %}
 
 <script>
-  $(document).ready(function () {
+  $(function () {
     $('#validate-address-form').on('submit', function (e) {
       e.preventDefault(); // Prevents the default form submission action
 
@@ -63,10 +63,10 @@
   // the following script is create an autocomplete search bar for address based on google maps api
 
   function initAutocomplete() {
-    // First, try to get the element with ID 'addressInput'
-    var input = document.getElementById('addressInput');
+    // First, try to get the element with ID 'address_line_1'
+    var input = document.getElementById('address_line_1');
 
-    // If not found, search for any input with 'address' in its ID
+    // If not found, search for any input with 'address_' in its ID
     if (!input) {
       var allInputs = document.getElementsByTagName('input');
       for (var i = 0; i < allInputs.length; i++) {
@@ -77,14 +77,47 @@
       }
     }
 
+    if (!input) return;
     // Initialize autocomplete only if a suitable input is found
     if (input) {
-      var autocomplete = new google.maps.places.Autocomplete(input);
+      var autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ['geocode'],
+        componentRestrictions: { 'country': 'us' }
+      });
 
       // Listener for place changes on the autocomplete
       autocomplete.addListener('place_changed', function () {
         var place = autocomplete.getPlace();
         console.log(place); // Use place details as needed
+
+        // Iterate through address components and fill the form fields
+        for (var i = 0; i < place.address_components.length; i++) {
+          var addressType = place.address_components[i].types[0];
+
+          switch (addressType) {
+            case 'street_number':
+              // If your form separates street number, handle it here
+              break;
+            case 'route':
+              // Combine with street_number if needed and set to address_line_1
+              break;
+            case 'subpremise':
+              // Set to address_line_2 if applicable
+              break;
+            case 'locality':
+              document.getElementById('id_city').value = place.address_components[i].long_name;
+              break;
+            case 'administrative_area_level_1':
+              // Set the state. You might need to map Google's state to your dropdown values
+              break;
+            case 'postal_code':
+              document.getElementById('id_zip_code').value = place.address_components[i].long_name;
+              break;
+            case 'country':
+              // Handle country if your form needs it
+              break;
+          }
+        }
       });
     }
   }

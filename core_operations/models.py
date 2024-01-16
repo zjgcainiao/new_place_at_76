@@ -2,86 +2,10 @@ from django.db import models
 import re
 import datetime
 from django.utils import timezone
+from django.db import models
+from core_operations.constants import US_COUNTRY_CODE, NUMBER_OF_DAYS_IN_A_YEAR
+from core_operations.constants import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE, CURRENT_TIME_SHOW_PRECISE_TIME_WITH_TIMEZONE, CURRENT_TIME_WITH_OUT_TIMEZONE
 # constant value across the whole talent_managment app,
-
-CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE = timezone.now().date()
-CURRENT_TIME_SHOW_PRECISE_TIME_WITH_TIMEZONE = timezone.now()
-CURRENT_TIME_WITH_OUT_TIMEZONE = datetime.datetime
-
-NUMBER_OF_DAYS_IN_A_YEAR = 365
-US_COUNTRY_CODE = '1'
-LIST_OF_STATES_IN_US = (
-    ('AL', 'Alabama'),
-    ('AK', 'Alaska'),
-    ('AZ', 'Arizona'),
-    ('AR', 'Arkansas'),
-    ('CA', 'California'),
-    ('CO', 'Colorado'),
-    ('CT', 'Connecticut'),
-    ('DE', 'Delaware'),
-    ('FL', 'Florida'),
-    ('GA', 'Georgia'),
-    ('HI', 'Hawaii'),
-    ('ID', 'Idaho'),
-    ('IL', 'Illinois'),
-    ('IN', 'Indiana'),
-    ('IA', 'Iowa'),
-    ('KS', 'Kansas'),
-    ('KY', 'Kentucky'),
-    ('LA', 'Louisiana'),
-    ('ME', 'Maine'),
-    ('MD', 'Maryland'),
-    ('MA', 'Massachusetts'),
-    ('MI', 'Michigan'),
-    ('MN', 'Minnesota'),
-    ('MS', 'Mississippi'),
-    ('MO', 'Missouri'),
-    ('MT', 'Montana'),
-    ('NE', 'Nebraska'),
-    ('NV', 'Nevada'),
-    ('NH', 'New Hampshire'),
-    ('NJ', 'New Jersey'),
-    ('NM', 'New Mexico'),
-    ('NY', 'New York'),
-    ('NC', 'North Carolina'),
-    ('ND', 'North Dakota'),
-    ('OH', 'Ohio'),
-    ('OK', 'Oklahoma'),
-    ('OR', 'Oregon'),
-    ('PA', 'Pennsylvania'),
-    ('RI', 'Rhode Island'),
-    ('SC', 'South Carolina'),
-    ('SD', 'South Dakota'),
-    ('TN', 'Tennessee'),
-    ('TX', 'Texas'),
-    ('UT', 'Utah'),
-    ('VT', 'Vermont'),
-    ('VA', 'Virginia'),
-    ('WA', 'Washington'),
-    ('WV', 'West Virginia'),
-    ('WI', 'Wisconsin'),
-    ('WY', 'Wyoming'),
-)
-EMAIL_TYPES = [
-    (4, "4-Unassigned"),
-    (1, "1-Personal"),
-    (2, "2-Work"),
-    (3, "3-Other"),
-
-]
-
-# custom field.
-# This field will format the phone number into a standard format "+18182234567"
-
-# VehicleNoteType is from old database's VehicleNoteType
-VEHICLE_NOTE_TYPES = [
-    (1, "Shop Warranty Notes"),
-    (2, "Customer Notes"),
-    (3, "Techninican Notes"),
-    (4, "Transmission Notes"),
-    (5, "GVW Notes"),
-]
-
 
 class FormattedPhoneNumberField(models.CharField):
     def __init__(self, *args, **kwargs):
@@ -129,7 +53,8 @@ class FormattedPhoneNumberField(models.CharField):
             return formatted_phone_number
         return super().pre_save(model_instance, add)
 
-# custom field
+# custom field for the talent model.
+# this custom field is not efficient, should be decommissioned soon. use @property instead.
 
 
 class YearsOfWorkField(models.DecimalField):
@@ -162,3 +87,6 @@ class YearsOfWorkField(models.DecimalField):
             setattr(model_instance, self.attname, years_of_work)
             return years_of_work
         return super().pre_save(model_instance, add)
+
+
+

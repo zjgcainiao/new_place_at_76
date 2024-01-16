@@ -12,7 +12,7 @@ from datetime import datetime
 from homepageapp.models import GVWsModel, SubmodelsModel, BrakesModel, EnginesModel, TransmissionsModel, BodyStylesModel, CategoryModel
 from django.urls import reverse, reverse_lazy
 # using crispy_forms to control the search form.
-from core_operations.models import EMAIL_TYPES, LIST_OF_STATES_IN_US
+from core_operations.constants import EMAIL_TYPES, LIST_OF_STATES_IN_US
 from django.core.exceptions import ValidationError
 
 
@@ -153,8 +153,8 @@ class CustomerUpdateForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
         self.helper.form_method = "post"
-        self.helper.label_class = 'col-3'
-        self.helper.field_class = 'col-9'
+        # self.helper.label_class = 'col-3'
+        # self.helper.field_class = 'col-9'
         self.helper.layout = Layout(
             Fieldset(_('customer_info'),
                      Row(Column(Field('customer_first_name', css_class='form-control'),

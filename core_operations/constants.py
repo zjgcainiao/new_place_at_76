@@ -1,3 +1,33 @@
+from django.utils import timezone
+import datetime
+CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE = timezone.now().date()
+CURRENT_TIME_SHOW_PRECISE_TIME_WITH_TIMEZONE = timezone.now()
+CURRENT_TIME_WITH_OUT_TIMEZONE = datetime.datetime
+
+NUMBER_OF_DAYS_IN_A_YEAR = 365
+US_COUNTRY_CODE = '001'
+EMAIL_TYPES = [
+    (4, "4-Unassigned"),
+    (1, "1-Personal"),
+    (2, "2-Work"),
+    (3, "3-Other"),
+
+]
+VEHICLE_NOTE_TYPES = [
+    (1, "Shop Warranty Notes"),
+    (2, "Customer Notes"),
+    (3, "Techninican Notes"),
+    (4, "Transmission Notes"),
+    (5, "GVW Notes"),
+]
+
+#checkout the AuditHistory model in shift_managment/models.py. 2024-01-16
+AUDIT_HISTORY_ACTION_CHOICES = [
+    ('created', 'Created'),
+    ('updated', 'Updated'),
+    ('deleted', 'Deleted')
+]
+
 LIST_OF_STATES_IN_US = (
     ('AL', 'Alabama'),
     ('AK', 'Alaska'),
@@ -230,7 +260,6 @@ POPULAR_NHTSA_VARIABLE_IDS = [NHTSA_API_VARIBLE_ID_MAPPING[name]
 # run `python manage.py fetch_nhtsa_group_names_distinct` to update this distinct list
 POPULAR_NHTSA_GROUP_NAMES = [
     'general',
-
 
     'mechanical / brake',
     'mechanical / drivetrain',

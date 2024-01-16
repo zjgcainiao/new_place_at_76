@@ -53,17 +53,6 @@
   <script src="{% static 'homepageapp/js/theme.min.js' %}"></script>
 
 
-  <!-- 2023-12-14
-      You can add a JavaScript snippet to disable right-click functionality on your images. This will prevent the standard
-    right-click and save method. -->
-  <!-- <script>
-    document.addEventListener('contextmenu', function (e) {
-      if (e.target.tagName === 'IMG') {
-        e.preventDefault();
-      }
-    });
-  </script> -->
-
 
   <!-- font-awesome 6.4.2 css  -->
   <link rel="stylesheet" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
@@ -100,17 +89,9 @@
   <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
 
 
-
 </head>
 
-<style>
-  .navbar-toggle-icon-mdi {
-    font-size: 24px;
-    /* Adjust as needed */
-    vertical-align: middle;
-    /* Center the icon vertically */
-  }
-</style>
+
 
 <!-- Page loading styles-->
 <style>
@@ -195,6 +176,7 @@
     /* Center the icon vertically */
   }
 </style>
+
 <!-- Page loading scripts-->
 <script>
 
@@ -230,7 +212,7 @@
       <div class="container-fluid">
         <a class="navbar-brand me-3 me-xl-4" href="{% url 'homepageapp:homepage' %}">
           <!-- <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68" alt="Amazing Automan LLC"></a> -->
-          <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="50"
+          <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68"
             alt="Amazing Automan LLC" oncontextmenu="return false;">
         </a>
         <!-- toggle button  -->

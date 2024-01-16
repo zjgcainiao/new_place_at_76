@@ -30,7 +30,7 @@ from dashboard.forms import LiteEmailUpdateForm, CustomerCreateForm, CustomerEma
 from django.core.paginator import Paginator
 from django.db.models import Max
 from django.views.generic import TemplateView
-from core_operations.models import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE, LIST_OF_STATES_IN_US
+from core_operations.constants import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE, LIST_OF_STATES_IN_US
 # You can do the same sort of thing manually by testing on request.user.is_authenticated, but the decorator is much more convenient!
 from internal_users.mixins import InternalUserRequiredMixin
 from django.core.serializers import serialize

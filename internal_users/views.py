@@ -214,13 +214,13 @@ def firebase_authenticate(request):
 def fetch_internal_user_dashboard(request):
     if isinstance(request.user, InternalUser) and request.user.is_authenticated:
         internal_user = request.user
-        return render(request, 'internal_users/60_internal_user_dashboard.html', {'internal_user': internal_user})
+        return render(request, 'internal_users/60_internal_user_dashboard.html', {'user': internal_user})
     else:
         messages.error(
             f'the current user does not have sufficient access to the page. Our employees need to login in.')
         return reverse_lazy('internal_users:internal_user_login')
 
-
+# currently used to return the user's dashboard, aka the profile page.
 class UserInfoView(TemplateView, InternalUserRequiredMixin):
 
     template_name = 'internal_users/72_internal_user_view_user_info.html'

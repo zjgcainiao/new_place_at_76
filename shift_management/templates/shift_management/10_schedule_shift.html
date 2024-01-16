@@ -1,76 +1,149 @@
-
-
 {% extends 'dashboard/00_dashboard_base.html' %}
 {% load humanize %}
 {% load crispy_forms_tags %}
 {% block content-main %}
-    <style>
-        #scheduleShiftForm,#scheduleShiftSection {
-            display: none;
-        }
-    </style>
-        
-    <div class="container rounded my-1">
-        <h3>Schedule work shift</h3>
-        <div class="row">
-            <div class="col-9 col-mb-6">
-                <!-- The div where FullCalendar will render the calendar -->
-                <div id="calendar"></div>
-            </div>
-            <!-- The form used to schedule shifts -->
-            <div id="scheduleShiftSection" class="col-3 col-mb-6">
-                <div class="card card-hover card-dark">
-                    <div class="card-body">
-                        <form id="scheduleShiftForm" method="post" action="{% url 'shift_management:schedule_shift' %}">
-                            {% csrf_token %}
-                            {{ form|crispy }}
-3
-                            <!-- <span class="input-group-text"><i class="ri-time-line"></i></span> -->
+<style>
+    /* Ensure WebKit compatibility */
+    .btn-close-custom {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        font-size: 24px;
+        /* Adjust size as needed */
+        color: #000;
+        /* Adjust color as needed */
+    }
 
-                            <button class='btn btn-outline-primary' type="submit">Submit</button>
-                        </form>
-                    </div>
-                    <!-- end of card-body  -->
-                </div>
-                <!-- end of card  -->
-            </div>
-        </div>
-    </div>
+    .btn-close-custom:hover {
+        color: rgba(255, 77, 0, 0.95);
+        /* Adjust hover color as needed */
+    }
 
+    /* Ensure WebKit compatibility */
+    #calendarSection,
+    #scheduleShiftSection {
+        -webkit-transition: width 0.5s ease;
+        transition: width 0.5s ease;
+    }
+
+    #scheduleShiftSection {
+        -webkit-overflow-scrolling: touch;
+        overflow: hidden;
+        position: relative;
+    }
+</style>
 <!-- this is the script needed to acgivate standard bundle version of FullCalendar at FullCalendar.io.  -->
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js" integrity="sha256-alsi6DkexWIdeVDEct5s7cnqsWgOqsh2ihuIZbU6H3I=" crossorigin="anonymous"></script>
-<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.9/main.min.js'></script>
+<script async src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"
+    integrity="sha256-alsi6DkexWIdeVDEct5s7cnqsWgOqsh2ihuIZbU6H3I=" crossorigin="anonymous"></script>
+<!-- <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.9/main.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.9/main.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.9/main.min.js'></script>
-<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/list@6.1.9/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/list@6.1.9/main.min.js'></script> -->
+
+<div class="container pt-2 m-2">
+    <h3>Schedule work shift</h3>
+    <div class="row">
+        <!-- Calendar Section -->
+        <div id="calendarSection" class="col">
+            <!-- where FullCalendar.js renders -->
+            <div id="calendar"></div>
+        </div>
+        <!-- The form used to schedule shifts -->
+        <div id="scheduleShiftSection" class="col-lg-3 col-mb-6" style="display: none;">
+            <div class="card card-hover card-dark">
+                <!-- Close Button -->
+                <button id="closeScheduleForm" class="btn-close-custom">
+                    <i class="ri-close-fill"></i> <!-- Example icon from Remix Icon -->
+                </button>
+                <div class="card-body">
+                    <form id="scheduleShiftForm" method="post" action="{% url 'shift_management:schedule_shift' %}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+
+                        <!-- <span class="input-group-text"><i class="ri-time-line"></i></span> -->
+
+                        <button class='btn btn-outline-primary' type="submit">Submit</button>
+                    </form>
+                </div>
+                <!-- end of card-body  -->
+            </div>
+            <!-- end of card  -->
+        </div>
+    </div>
+</div>
+
+
+
 
 <script>
-    $( function() {
-    // var calendarEl = document.getElementById('calendar');
-    var calendarEl = $('#calendar')[0];
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        // plugins: [ 'dayGrid', 'timeGrid', 'list' ],
-        events: [
-            {% for date, name in us_holidays %}
+
+    document.getElementById('closeScheduleForm').addEventListener('click', function () {
+        // Hide the schedule form
+        document.getElementById('scheduleShiftSection').style.display = 'none';
+
+        // Reset the width of the calendar section
+        document.getElementById('calendarSection').classList.remove('col-lg-9');
+        document.getElementById('scheduleShiftSection').classList.add('col-lg-3');
+    });
+
+    $(function () {
+
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            // ... other FullCalendar configurations ...
+
+            dateClick: function (info) {
+                // Format the clicked date and set it to the form's date field
+                var formattedDate = info.dateStr; // The date in 'YYYY-MM-DD' format
+                document.getElementById('id_date').value = formattedDate;
+
+                // Show the schedule form
+                document.getElementById('scheduleShiftSection').style.display = 'block';
+
+                // Adjust the width of the calendar section
+                document.getElementById('calendarSection').classList.add('col-lg-9');
+                document.getElementById('scheduleShiftSection').classList.remove('col-lg-3');
+            }
+        });
+
+        calendar.render();
+        // var calendarEl = document.getElementById('calendar');
+        var calendarEl = $('#calendar')[0];
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            // plugins: [ 'dayGrid', 'timeGrid', 'list' ],
+            events: [
+                {% for date, name in us_holidays %}
             {
             title: "{{ name }}",
             start: "{{ date }}",
             // color: 'red' // Color for US holidays
-            },
-            {% endfor %}
+        },
+        {% endfor %}
         ],
 
-        dateClick: function(info) {
+        dateClick: function (info) {
             // document.getElementById('selectedDate').value = info.dateStr;
             // Show a modal or other UI for shift scheduling, then submit the form
-            
+            // Format the clicked date and set it to the form's date field
+            var formattedDate = info.dateStr; // The date in 'YYYY-MM-DD' format
+            $('#id_date').value = formattedDate;
+
+            // Show the schedule form
+            // $('#scheduleShiftSection').style.display = 'block';
+
+            // Adjust the width of the calendar section
+            // $('#calendarSection').classList.add('col-lg-9');
+            // $('#scheduleShiftSection').classList.remove('col-lg-3');
             // Display the form. This could be done using a modal, for example.
             // If using Bootstrap, you'd initialize and show the modal here.
             // For simplicity, we can just display the form by un-hiding it
             // document.getElementById("scheduleShiftForm").style.display = "block";
 
-            $('#selectedDate').val(info.dateStr);
+            $('#selectedDate').val(formattedDate);
             $("#scheduleShiftSection").css("display", "block");
             $("#scheduleShiftForm").css("display", "block");
 
@@ -81,21 +154,21 @@
 
 </script>
 <script>
-    $("#scheduleShiftForm").on("submit",function(event) {
-    event.preventDefault();  // Prevent the form from submitting the traditional way
-    
-    $.ajax({
-        url: $(this).attr('action'),
-        type: $(this).attr('method'),
-        data: $(this).serialize(),
-        success: function(response) {
-            // Handle success, such as adding the new shift to the calendar or displaying a success message
-        },
-        error: function(error) {
-            // Handle errors, such as displaying an error message or highlighting invalid form fields
-        }
+    $("#scheduleShiftForm").on("submit", function (event) {
+        event.preventDefault();  // Prevent the form from submitting the traditional way
+
+        $.ajax({
+            url: $(this).attr('action'),
+            type: $(this).attr('method'),
+            data: $(this).serialize(),
+            success: function (response) {
+                // Handle success, such as adding the new shift to the calendar or displaying a success message
+            },
+            error: function (error) {
+                // Handle errors, such as displaying an error message or highlighting invalid form fields
+            }
+        });
     });
-});
 
 </script>
 {% endblock %}
