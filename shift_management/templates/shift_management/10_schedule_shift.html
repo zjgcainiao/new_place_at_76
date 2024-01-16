@@ -76,80 +76,67 @@
 </div>
 
 
-
+<script type="text/javascript">
+    // This will make the us_holidays data available as a JavaScript variable
+    var usHolidays = {{ holidays_events | safe }};
+    console.log(usHolidays)
+</script>
 
 <script>
 
-    document.getElementById('closeScheduleForm').addEventListener('click', function () {
-        // Hide the schedule form
-        document.getElementById('scheduleShiftSection').style.display = 'none';
 
-        // Reset the width of the calendar section
-        document.getElementById('calendarSection').classList.remove('col-lg-9');
-        document.getElementById('scheduleShiftSection').classList.add('col-lg-3');
-    });
 
     $(function () {
 
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            // ... other FullCalendar configurations ...
 
-            dateClick: function (info) {
-                // Format the clicked date and set it to the form's date field
-                var formattedDate = info.dateStr; // The date in 'YYYY-MM-DD' format
-                document.getElementById('id_date').value = formattedDate;
-
-                // Show the schedule form
-                document.getElementById('scheduleShiftSection').style.display = 'block';
-
-                // Adjust the width of the calendar section
-                document.getElementById('calendarSection').classList.add('col-lg-9');
-                document.getElementById('scheduleShiftSection').classList.remove('col-lg-3');
-            }
-        });
-
-        calendar.render();
         // var calendarEl = document.getElementById('calendar');
         var calendarEl = $('#calendar')[0];
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            // plugins: [ 'dayGrid', 'timeGrid', 'list' ],
-            events: [
-                {% for date, name in us_holidays %}
-            {
-            title: "{{ name }}",
-            start: "{{ date }}",
-            // color: 'red' // Color for US holidays
-        },
-        {% endfor %}
-        ],
+            // plugins: ['dayGrid', 'timeGrid', 'list'],
+            events: usHolidays,
 
-        dateClick: function (info) {
-            // document.getElementById('selectedDate').value = info.dateStr;
-            // Show a modal or other UI for shift scheduling, then submit the form
-            // Format the clicked date and set it to the form's date field
-            var formattedDate = info.dateStr; // The date in 'YYYY-MM-DD' format
-            $('#id_date').value = formattedDate;
+            dateClick: function (info) {
+                // document.getElementById('selectedDate').value = info.dateStr;
+                // Show a modal or other UI for shift scheduling, then submit the form
+                // Format the clicked date and set it to the form's date field
+                var formattedDate = info.dateStr; // The date in 'YYYY-MM-DD' format
+                $('#id_date').value = formattedDate;
 
-            // Show the schedule form
-            // $('#scheduleShiftSection').style.display = 'block';
+                // Show the schedule form
+                // $('#scheduleShiftSection').style.display = 'block';
 
-            // Adjust the width of the calendar section
-            // $('#calendarSection').classList.add('col-lg-9');
-            // $('#scheduleShiftSection').classList.remove('col-lg-3');
-            // Display the form. This could be done using a modal, for example.
-            // If using Bootstrap, you'd initialize and show the modal here.
-            // For simplicity, we can just display the form by un-hiding it
-            // document.getElementById("scheduleShiftForm").style.display = "block";
+                // Adjust the width of the calendar section
+                // $('#calendarSection').classList.add('col-lg-9');
+                // $('#scheduleShiftSection').classList.remove('col-lg-3');
+                // Display the form. This could be done using a modal, for example.
+                // If using Bootstrap, you'd initialize and show the modal here.
+                // For simplicity, we can just display the form by un-hiding it
+                // document.getElementById("scheduleShiftForm").style.display = "block";
 
-            $('#selectedDate').val(formattedDate);
-            $("#scheduleShiftSection").css("display", "block");
-            $("#scheduleShiftForm").css("display", "block");
+                $('#selectedDate').val(formattedDate);
+                $("#scheduleShiftSection").css("display", "block");
+                $("#scheduleShiftForm").css("display", "block")
 
-        },
-    });
-    calendar.render();
+            },
+            // After calendar renders, check its size
+            viewDidMount: function (viewInfo) {
+                checkCalendarWidth(viewInfo.el);
+            },
+            // Also check on window resize
+            windowResize: function (view) {
+                checkCalendarWidth(view.el);
+            }
+        });
+        calendar.render();
+
+        function checkCalendarWidth(calendarElement) {
+            if (calendarElement.offsetWidth < 600) { // Again, adjust 600px as needed
+                $(calendarElement).addClass('hide-event-titles');
+            } else {
+                $(calendarElement).removeClass('hide-event-titles');
+            }
+        }
     });
 
 </script>

@@ -31,8 +31,7 @@ class Shift(models.Model):
     created_by = models.ForeignKey(
         InternalUser, related_name='shift_created', on_delete=models.SET_NULL, null=True, blank=True)
 
-    shift_last_updated_at = models.DateTimeField(
-        null=True, auto_now=True)
+    updated_at = models.DateTimeField( null=True, auto_now=True)
 
     modified_by = models.ForeignKey(
         InternalUser, related_name='modified_shifts', on_delete=models.SET_NULL, null=True, blank=True)
@@ -72,8 +71,8 @@ class TimeClock(models.Model):
     internal_user = models.ForeignKey(
         InternalUser, on_delete=models.CASCADE, related_name="timeclock_changes")
     shift=models.ForeignKey(Shift, on_delete=models.SET_NULL, related_name="timelog", null=True, blank=True)
-    clock_in_time = models.DateTimeField(null=True, blank=True)
-    clock_out_time = models.DateTimeField(null=True, blank=True)
+    clock_in = models.DateTimeField(null=True, blank=True)
+    clock_out = models.DateTimeField(null=True, blank=True)
     break_duration = models.DurationField(default=timedelta(minutes=0))
 
     @property
@@ -84,17 +83,17 @@ class TimeClock(models.Model):
         return None
 
     def __str__(self):
-        return f"TimeLog for {self.talent} on {self.clock_in_time.date()}"
+        return f"TimeLog for {self.talent} on {self.clock_in.date()}"
 
 
     def save(self, *args, **kwargs):
-        if self.clock_in_time and self.clock_out_time:
-            self.hours_worked = self.clock_out_time - self.clock_in_time
+        if self.clock_in and self.clock_out:
+            self.hours_worked = self.clock_out_time - self.clock_in
         super().save(*args, **kwargs)
 
     class Meta:
         db_table = 'timeclocks_new_03'
-        ordering = ['-clock_in_time']
+        ordering = ['-id', '-clock_in']
 
 class AuditHistory(models.Model):
     """

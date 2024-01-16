@@ -38,26 +38,31 @@
         margin-right: 5px;
     }
 
-    /* Optional: Add transition for smooth opening and closing */
     #leftside-menu-container {
+        background-color: transparent;
+        border-radius: 5px;
+        font-family: 'Roboto', sans-serif;
+        opacity: 1;
+        /* Adjusted opacity */
+        font-weight: 700;
         transition: all 0.4s ease;
     }
 
     @media (max-width: 991px) {
         #leftside-menu-container {
-            /* Hide the sidebar on smaller screens */
+            /* Initially hide the sidebar on smaller screens */
             display: none;
+        }
+
+        #leftside-menu-container.collapse.show {
+            /* Show the sidebar when toggled on smaller screens */
+            display: block;
         }
     }
 
     @media (min-width: 992px) {
-        #leftside-menu-container.collapse {
-            /* Override Bootstrap's collapse behavior on larger screens */
-            display: block;
-        }
-
-        #leftside-menu-container.collapse.show {
-            /* Ensure the sidebar is shown when expanded */
+        #leftside-menu-container {
+            /* Always show the sidebar on larger screens */
             display: block;
         }
     }
@@ -66,7 +71,7 @@
     //For instance, to automatically close the sidebar when a menu item is clicked, you might add something like this:
     document.querySelectorAll('.leftside-menu .nav-link').forEach(function (element) {
         element.addEventListener('click', function () {
-            let sidebar = new bootstrap.Collapse(document.getElementById('leftside-menu-container'));
+            let sidebar = new bootstrap.Collapse($('#leftside-menu-container'));
             sidebar.hide();
         });
     });
@@ -75,47 +80,32 @@
 <!-- <div class="container-fluid"> -->
 <div class="row">
 
-    <div class="col-lg-2">
-
-        <!-- Sidebar Hover Menu Toggle Button -->
-        <div class="button-sm-hover" data-bs-toggle="tooltip" data-bs-placement="right" title="">
-            <i class="ri-checkbox-blank-circle-line align-middle">LOL</i>
-        </div>
+    <div class="col-sm-3 col-lg-2">
         <!--leftside-menu-container   -->
         <div class="container" id="leftside-menu-container">
             <!-- Sidebar content here -->
             <div class="simplebar-wrapper" style="margin: 5px;">
-                <div class="simplebar-mask">
+                <div class="simplebar-mask ">
                     <div class="simplebar-offset" style="right: 5px; bottom: 5px;">
                         <div class="simplebar-content-wrapper" tabindex="0" role="region"
                             aria-label="scrollable content" style="height: 90%; overflow: hidden scroll;">
                             <div class="simplebar-content" style="padding: 5px;">
                                 <!--- Sidemenu -->
-                                <ul class="side-nav">
+                                <ul class="side-nav my-5 pt-5">
                                     <!-- Leftbar User -->
-                                    <div class='container'>
-                                        <!-- <div class="row my-1">
-                                            <img class="user-image"
-                                                src="{% static 'homepageapp/img/avatars/avatar_new_02.png' %}"
-                                                width="60" alt="internal-user-image">
-                                        </div> -->
-                                        <div class="row my-1">
-                                            <h3>
-                                                {{internal_user.get_user_full_name}}
-                                            </h3>
-                                        </div>
+                                    <li class="side-nav-title">Work</li>
 
-                                    </div>
+                                    <li class="side-nav-item nav-link">
+                                        <a href="{% url 'dashboard:main-dash' %}" class="side-nav-link">
+                                            <i class="uil-copy-alt"></i>
+                                            <span> Main Dash</span>
+
+                                        </a>
+
+                                    </li>
                                     <!-- end of leftbar user  -->
 
-                                    <div class="row p-1 m-1">
-                                        <div class="col-auto">
-                                            <button class="btn btn-outline-primary">
-                                                <a class='nav-link link-hover' href="{% url 'dashboard:main-dash' %}">
-                                                    Main Dash
-                                                </a> </button>
-                                        </div>
-                                    </div>
+
                                     <li class="side-nav-title">Personal</li>
 
                                     <li class="side-nav-item">
@@ -131,8 +121,6 @@
                                         </a>
 
                                     </li>
-
-                                    <hr>
 
                                     <li class="side-nav-title">Settings</li>
 
@@ -151,7 +139,7 @@
                                         </a>
                                     </li>
                                     <!-- end of one side-nav-item -->
-                                    <hr>
+
                                     <li class="side-nav-item">
                                         <a href="{% url 'internal_users:internal_user_logout'%}" class="side-nav-link">
                                             <i class="mdi mdi-logout"></i>
@@ -183,8 +171,8 @@
     <!-- end of col-2  -->
 
     <!-- Toggle Button -->
-    <div class="col-12 d-lg-none">
-        <button class="btn btn-outline-dark" type="button" data-bs-toggle="collapse"
+    <div class="m-1 d-lg-none">
+        <button class="btn btn-outline-dark " type="button" data-bs-toggle="collapse"
             data-bs-target="#leftside-menu-container" aria-expanded="false" aria-controls="leftside-menu-container">
             <i class="fas fa-bars"></i>
         </button>

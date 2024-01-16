@@ -27,7 +27,9 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
 from internal_users.mixins import InternalUserRequiredMixin
-
+import json
+from datetime import datetime
+from core_operations.utilities import parse_raw_json
 
 logger = logging.getLogger('django')
 
@@ -240,12 +242,28 @@ def internal_user_view_employement(request):
         # next step is allow user to enter the birthday so that he can confirm the real employee information before displaying it.
         talent = TalentsModel.objects.filter(
             talent_email=email)
+        print('talent is ', talent)
         if talent.exists():
             talent_instance = talent.get()
+    
             form = EmploymentInfoForm(instance=talent_instance)
+            # Convert JSON string to dictionary
+            # Assuming talent.talent_HR_remarks_json is a correctly formatted JSON string
+            json_string = talent_instance.talent_HR_remarks_json
+            print(f'json_string is {json_string}')
+
+            hr_remarks_dict = parse_raw_json(json_string)
+
+            print(f'hr_remarks_dict is {hr_remarks_dict}')
+            # Convert dictionary to a list of dictionaries and sort by date
+            hr_remarks_list = [{"date": key, "description": value} for key, value in hr_remarks_dict.items()]
+            hr_remarks_list.sort(key=lambda x: datetime.strptime(x["date"], "%Y-%m-%d"), reverse=True)
+            print(f'hr_remarks_list after sorting and processing is {hr_remarks_list}')
             # crispy_form = render_crispy_form(form)
             # qs = RepairOrdersNewSQL02Model.objects.select_related('repair_order_customer').prefetch_related('repair_order_customer__addresses')
-            return render(request, 'internal_users/70_employment_information.html', {"talent": talent_instance, "form": form})
+            return render(request, 'internal_users/70_employment_information.html', {"talent": talent_instance, "form": form,
+                                                                                     "hr_remarks_list": hr_remarks_list,
+                                                                                     })
         else:
             return HttpResponseForbidden('No talent found with the given email.')
     else:
