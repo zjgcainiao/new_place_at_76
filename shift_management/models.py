@@ -126,7 +126,7 @@ class AuditHistory(models.Model):
     ]
 
     action = models.CharField(max_length=10, choices=AUDIT_HISTORY_ACTION_CHOICES)
-    changed_by = models.ForeignKey(InternalUser, on_delete=models.SET_NULL, null=True)
+    modified_by = models.ForeignKey(InternalUser, on_delete=models.SET_NULL, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     description = models.TextField(null=True, blank=True)
 

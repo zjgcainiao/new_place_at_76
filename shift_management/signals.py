@@ -3,17 +3,25 @@ from django.dispatch import receiver
 from shift_management.models import Shift
 from shift_management.models import AuditHistory
 from shift_management.tasks import add_audit_history_record
-
+from django.contrib.contenttypes.models import ContentType
+import logging
+logger=logging.getLogger('django.db')
 # trigger the Celery tasks instead of directly performing the operations.
 @receiver(post_save, sender=Shift)
 def create_update_shift_handler(sender, instance, created, **kwargs):
+    logger.info("create_update_shift_handler: instance={}, created={}".format(instance, created))
+
     action = 'created' if created else 'updated'
+    content_type = ContentType.objects.get_for_model(instance)
     add_audit_history_record.delay(
         action, 
-        instance.modified_by_id, 
+        instance.modified_by, 
         f"Shift {action}: {instance.id}", 
-        instance.id)
-
+        instance.id,
+        instance,
+        content_type.id,
+        # content_type.id  # Passing the ID of the ContentType instance 
+    )
 
 # @receiver(post_save, sender=Shift)
 # def create_update_shift_handler(sender, instance, created, **kwargs):
