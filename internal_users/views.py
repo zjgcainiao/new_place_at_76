@@ -120,15 +120,14 @@ def internal_user_login(request):
                 request, user, backend='internal_users.internal_user_auth_backend.InternalUserBackend')
             if not remember_me:  # if 'remember_me' box is not checked, then set the session to expire when the user closes the browser.
                 request.session.set_expiry(60*60*24*14) # 14 days
-            return redirect('internal_users:internal_user_dashboard')
+            return redirect('internal_users:internal_user_profile')
         else:
             # Invalid credentials, handle error
             messages.error(request, "Invalid email or password.")
             pass
     else:
         form = InternalUserLoginForm()
-        # if isinstance(request.user, CustomerUser):
-        #     redirect('customer_users:customer_user_dashboard')
+
     return render(request, 'internal_users/20_login.html', {'form': form})
 
 

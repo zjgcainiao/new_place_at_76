@@ -490,9 +490,6 @@ DEFAULT_FROM_EMAIL = email_sender  # replace with your email
 # DEFAULT_FILE_STORAGE = 'myapp.custom_storage.NASStorage'
 # NAS_STORAGE_LOCATION = '192.168.1.30'  # NAS server IP or hostname
 
-# # django < 4.2
-# Import the required packages
-# from storages.backends.gcloud import GoogleCloudStorage
 
 # the google service account's credential json file stored online
 google_credential_path = os.environ.get("GOOGLE_CREDENTIAL_PATH")
@@ -541,7 +538,7 @@ CACHES = {
 # initialize the firebase auth app.
 
 default_app = firebase_admin.initialize_app(cred)
-logger.info('initializing the firebase auth app...')
+logger.info('initializing the firebase auth app in the django project...')
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'

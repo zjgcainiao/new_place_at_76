@@ -2,25 +2,28 @@
 {% load static %}
 
 {% block content1-main %}
-<div class="container my-5 pt-5">
-    <div class ='row'>
+<div class="container  pt-5 m-5">
+    <div class='card card-dark'>
         <h3> WEBSITE EMAIL SENDING TESTING </h3>
-        <form method="post" action="{% url 'automatic_emails:send_email' %}"> 
-            {% csrf_token %} 
-            <div class="my-3">
-                <label for="exampleFormControlInput1" class="form-label">Receipt email address</label>
-                <input type="text" class="form-control" name="email" id="exampleFormControlInput1" placeholder="Receipt email address">
-            </div>
-            <div class="mb-3">
-                <label for="exampleInputSubject" class="form-label">Subject</label>
-                <input type="text" class="form-control" name="subject" id="exampleInputSubject">
-            </div>
-            <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">Message</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" name="message" rows="3"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Send</button>
-        </form>
+        <div class="card-body p-2 m-2">
+            <form method="post" action="{% url 'automatic_emails:send_email' %}">
+                {% csrf_token %}
+                <div class="my-3">
+                    <label for="exampleFormControlInput1" class="form-label">Receipt email address</label>
+                    <input type="text" class="form-control" name="email" id="exampleFormControlInput1"
+                        placeholder="Receipt email address">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputSubject" class="form-label">Subject</label>
+                    <input type="text" class="form-control" name="subject" id="exampleInputSubject">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Message</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" name="message" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

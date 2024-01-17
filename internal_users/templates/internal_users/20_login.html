@@ -1,15 +1,31 @@
 {% extends 'internal_users/00_base.html' %}
 {% load crispy_forms_tags %}
 {% load i18n %}
-
+{% load static %}
 {% block content-main %}
 
-{% load static %}
+
+<!-- jQuery 3.6.4 Js -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"
+    integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $('.password-eye').click(function () {
+            // toggle the type attribute
+            const type = $(this).siblings('input').attr('type') === 'password' ? 'text' : 'password';
+            $(this).siblings('input').attr('type', type);
+
+            // toggle the eye icon
+            $(this).toggleClass('fa fa-eye fa-eye-slash');
+        });
+    });
+
+</script>
 <div class="authentication-bg">
     <div class="account-pages pt-2 pt-sm-5 pb-4 pb-sm-5">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-xxl-4 col-lg-6">
+                <div class="col-xxl-6 col-lg-8">
                     <div class="card card-hover">
                         <!-- Logo -->
                         <div class="card-header py-4 text-center bg-faded-light">
@@ -17,9 +33,9 @@
                                 <img src="{% static 'internal_users/images/logo-174x150.png' %}" alt="logo">
                             </a>
                         </div>
-                        <div class="card-body py-2 m-1">
+                        <div class="card-body pt-2 m-2">
                             <div class="text-center w-95 m-auto">
-                                <h4 class="text-dark-70 text-center pb-0" style="font-family: 'Orbitron', sans-serif;">
+                                <h4 class="text-dark-80 text-center pb-0" style="font-family: 'Orbitron', sans-serif;">
                                     Employee Login</h4>
                                 <p class="fw-normal mb-4"> Enter your email address and password. First Time employee
                                     will have to register first.</p>
@@ -41,7 +57,7 @@
                                         class="fw-bold float-end"><small>Forgot your password?</small></a>
                                     <div class="input-group input-group-merge">
                                         {{ form.password }}
-                                        <div class="input-group-text" data-password="true">
+                                        <div class="input-group-text" data-bs-password="true">
                                             <span class="password-eye"></span>
                                         </div>
                                         {% if form.password.errors %}

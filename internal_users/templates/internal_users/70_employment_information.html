@@ -5,7 +5,6 @@
     <h3 calss="card-title p-2 m-2">Personal Information</h3>
     <div class="card-body">
       <div class='row'>
-
         <div class='col-12 m-1'>
           <h5 class='card-text'>Email {{ talent.talent_email}}</h5><small> This email will be used as your employee
             username
@@ -44,42 +43,45 @@
 
   <div class="card card-hover p-2 m-2">
     <h3 class='card-title p-2 m-2'>Employment Information</h3>
-    <div class='row p-2 m-2'>
-      <div class='col-md-5 m-1'>
-        <p>Employee ID: {{ talent.talent_employee_id }}</p>
-      </div>
-      <div class='col-md-5 m-1'>
-        <p>Pay Type: {{ talent.talent_pay_type}}-{{ talent.get_talent_pay_type_display}}</p>
-      </div>
-      <div class='col-md-5 m-1'>
-        <p>Pay Rate: {{ talent.talent_pay_rate}}</p>
-      </div>
-      <div class='col-md-5 m-1'>
-        <p>Pay Frequency: {{ talent.talent_pay_frequency}}-{{ talent.get_talent_pay_frequency_display}}</p>
-      </div>
+    <div class="card-body">
+      <div class='row p-2 m-2'>
+        <div class='col-md-5 m-1'>
+          <p>Employee ID: {{ talent.talent_employee_id }}</p>
+        </div>
+        <div class='col-md-5 m-1'>
+          <p>Pay Type: {{ talent.talent_pay_type}}-{{ talent.get_talent_pay_type_display}}</p>
+        </div>
+        <div class='col-md-5 m-1'>
+          <p>Pay Rate: {{ talent.talent_pay_rate}}</p>
+        </div>
+        <div class='col-md-5 m-1'>
+          <p>Pay Frequency: {{ talent.talent_pay_frequency}}-{{ talent.get_talent_pay_frequency_display}}</p>
+        </div>
 
-      <div class='col-md-5 m-1'>
-        <p>Department: {{ talent.talent_department}}</p>
-      </div>
-      <div class='col-md-5 m-1'>
-        <p>Supervisor: {{ talent.talent_supervisor}}</p>
-      </div>
-      <div class='col-md-5 m-1'>
-        <p>Hire Date: {{ talent.talent_hire_date|date}}</p>
-      </div>
-      <div class='col-md-5 m-1'>
-        <p>Last Updated at: {{ talent.talent_last_udpated_date|date}}</p>
+        <div class='col-md-5 m-1'>
+          <p>Department: {{ talent.talent_department}}</p>
+        </div>
+        <div class='col-md-5 m-1'>
+          <p>Supervisor: {{ talent.talent_supervisor}}</p>
+        </div>
+        <div class='col-md-5 m-1'>
+          <p>Hire Date: {{ talent.talent_hire_date|date}}</p>
+        </div>
+        <div class='col-md-5 m-1'>
+          <p>Last Updated at: {{ talent.talent_last_udpated_date|date}}</p>
+        </div>
       </div>
     </div>
-    <!-- end-of-card -->
+
   </div>
+  <!-- end-of-card -->
 
   <div class="card card-hover p-2 m-2">
     <h3 class='card-title p-2 m-2'>Comments</h3>
     <div class="card-body ">
       <div class='row'>
         <div class='col-md-12 m-1'>
-          <p>Remarks from HR (sorted from newest to oldest):</p>
+          <p>Remarks from HR <small>(sorted from newest to oldest)</small>:</p>
           <ul>
             {% for remark in hr_remarks_list %}
             <li><strong>{{ remark.date }}:</strong> {{ remark.description }}</li>
@@ -87,14 +89,11 @@
           </ul>
         </div>
 
-
       </div>
+      <!-- </div>end of card-body  -->
     </div>
-
-
+    <!-- end-of-card -->
   </div>
-  <!-- end-of-card -->
+
 </div>
-
-
 {% endblock %}

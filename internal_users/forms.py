@@ -15,6 +15,7 @@ from django.contrib.auth import authenticate
 from django.urls import reverse
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field, HTML, ButtonHolder, Submit, Row, Column, Button, Hidden
+from crispy_forms.bootstrap import PrependedText, FormActions
 class InternalUserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
@@ -240,7 +241,55 @@ class InternalUserLoginForm(AuthenticationForm):
     )
     class Meta:
         model = InternalUser
-
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # self.helper = FormHelper()
+        # self.helper.form_class = 'form-horizontal'
+        # self.helper.form_tag = False
+        # self.helper.form_method = "post"
+        # self.helper.form_action = reverse(
+        #     'shops:search_by_vin_or_plate')  # Use your URL name here
+        # self.helper.layout = Layout(
+        #     Div(
+        #         Field('username', css_class='my-3'),
+        #         HTML("""
+        #             {% if form.username.errors %}
+        #             <div class="alert alert-danger" role="alert">
+        #                 {{ form.username.errors }}
+        #             </div>
+        #             {% endif %}
+        #         """),
+        #         css_class='form-label'
+        #     ),
+        #     Div(
+        #         'password',
+        #         HTML("""
+        #             <div class="input-group-append">
+        #                 <span class="input-group-text password-eye"></span>
+        #             </div>
+        #             <a href="{% url 'internal_users:password_reset' %}" class="fw-bold float-end">
+        #                 <small>Forgot your password?</small>
+        #             </a>
+        #             {% if form.password.errors %}
+        #             <div class="alert alert-danger" role="alert">
+        #                 {{ form.password.errors }}
+        #             </div>
+        #             {% endif %}
+        #         """),
+        #         css_class='input-group my-3',
+        #     ),
+        #     Div(
+        #         Field('remember_me', css_class='form-check-input', style="font-family: 'Orbitron',sans-serif;"),
+        #         HTML("""
+        #             <label class="form-check-label" for="checkbox-signin">Remember me</label>
+        #         """),
+        #         css_class='form-check'
+        #     ),
+        #     FormActions(
+        #         Submit('submit', 'Log In', css_class='btn btn-outline-dark')
+        #     )
+        # )
 
 class InternalUserPasswordResetForm(PasswordResetForm):
 
