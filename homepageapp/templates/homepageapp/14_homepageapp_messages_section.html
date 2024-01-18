@@ -8,8 +8,8 @@
 {% if messages %}
 <div id="homepageapp-message-container" class="container" style="padding-top: 50px;">
     <!-- Adjust the padding-top value to match your navbar's height -->
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+    <div class="container justify-content-center">
+        <div class="p-1 m-1">
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                 {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}<strong>Important:</strong>{% endif %}

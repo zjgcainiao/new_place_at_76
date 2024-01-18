@@ -223,7 +223,13 @@ class CustomerUserLoginForm(AuthenticationForm):
         # fields = ['cust_user_email', 'password']
 
     def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            # ... other fields ...
+            Field('password', template='password_field_with_toggle.html'),
+            # ... other fields ...
+        )
 
 class CustomerUserChangeForm(forms.Form):
     field_name = forms.CharField(widget=forms.HiddenInput())

@@ -90,7 +90,9 @@
   <!-- Automan theme css. built for this website. will be used to replace other themes -->
   <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
 
-
+    <!-- chatbot_conversation.js in the core_operations 2024-01-18 -->
+    
+  <script src="{% static 'core_operations/js/chatbot_conversation.js' %}" defer></script>
 </head>
 
 
@@ -502,414 +504,7 @@
 
 
   <script>
-    // Function to handle debounce
-    function debounce(func, wait, immediate) {
-      var timeout;
-      return function () {
-        var context = this, args = arguments;
-        var later = function () {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-      };
-    }
-
-    // function 2 - renderConversationWindow
-    // this function renders a conversation window with new convesation uid. enable wesocket for messaging 
-    function renderConversationWindow(uuid) {
-
-      // Determine if the app is running on localhost
-      // var isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
-      // var wsProtocol = isLocalhost ? "ws://" : "wss://";
-      var wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-      // Creating the HTML structure
-      var conversationHtml = `  
-        <div class="card card-hover border-5 p-1 m-1">
-            <div class="card-header text-dark d-flex justify-content-between align-items-center">
-                <h4>Customer Support (Beta)</h4>
-                <button class="btn btn-sm btn-outline-danger" id="end-conversation-button" type="button">&times;</button>
-            </div>
-            <p class="text-muted">(Support-Case-ID:${uuid})</p>
-            <div class="card-body m-1">
-                <textarea id="conversation-log" class='form-control mb-2 conversation-log' readonly></textarea>
-                <div class="input-group mb-4">
-                    <input id="conversation-message-input" type="text" class="form-control" placeholder="Type your message...">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-dark" id="conversation-message-send-button" type="button">Send</button>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-      `;
-
-      // Append it to the body or a specific element
-      $('#support_conversation_window').append(conversationHtml);
-
-      // Make the support conversation window visible
-      $('.automan-support-window').fadeIn(1000); // This will smoothly fade in the window
-
-      // Establish the WebSocket connection
-      // use ws:// when its local server. use wss:// for production server.
-      const conversationSocket = new WebSocket(
-        wsProtocol + window.location.host + '/ws/conversations/' + uuid + '/'
-      );
-
-      //
-      conversationSocket.onopen = function (response) {
-
-        // You can now safely send a message
-        // conversationSocket.send(JSON.stringify({ message: 'Hello Server!' }));
-        // const data = JSON.parse(response.data);
-        console.info('conversation started...a websocket connection is established...');
-        localStorage.setItem('activeSupportConversationUUID', uuid);
-
-        // document.querySelector('#conversation-log').value += (data.conversation_message + '\n');
-      };
-
-      // WebSocket event for receiving messages
-      conversationSocket.onmessage = function (response) {
-        try {
-          data = JSON.parse(response.data);
-          const message = data.conversation_message;
-          let direction = parseInt(0);  // 0 for outgoing, 1 for incoming
-
-          let formattedMessage = '';
-          if (direction === 0) {
-            formattedMessage = 'Operator: ' + message;
-          } else {
-            formattedMessage = 'Customer: ' + message;
-          }
-          document.querySelector('#conversation-log').value += (formattedMessage + '\n');
-          // $('#conversation-log').val(function(index, value) {
-          //     return value + (formattedMessage + '\n');
-          // });
-        } catch (error) {
-          console.error('Error Parsing received data. Expecting JSON:', error)
-        };
-      };
-
-      conversationSocket.onclose = function (e) {
-        console.log('WebSocket closed:', event);
-        if (event.wasClean) {
-          console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
-        } else {
-          // e.g., the server process killed or network down
-          console.log('Connection died');
-        }
-      };
-
-      // Send message event. via clicking 'conversation-message-send-button' button or pressing 'Enter' key
-      $('#conversation-message-send-button').on('click', function () {
-        // var messageInput = $('#conversation-message-input');
-        // var message = messageInput.val();
-
-        const messageInputDom = document.querySelector('#conversation-message-input');
-        const conversation_message = messageInputDom.value;
-
-        // Determine the direction of the message
-        // For example, let's assume 1 is for messages from customer to operator; 0 is from operator to customer.
-        var messageDirection = 1;
-
-        if (conversationSocket.readyState === WebSocket.OPEN) {
-          conversationSocket.send(JSON.stringify({
-            'conversation_message': conversation_message,
-            'message_direction': messageDirection,
-          }));
-        } else {
-          console.error('WebSocket is not open: ' + conversationSocket.readyState);
-        }
-
-        messageInputDom.value = '';
-
-      });
-
-      // Press Enter to send message
-      $('#conversation-message-input').keyup(function (e) {
-        if (e.key === 'Enter' || e.keyCode === 13) {
-          $('#conversation-message-send-button').click();
-        }
-      });
-      // Focus the input field for message
-      $('#conversation-message-input').focus();
-
-      // End conversation event
-      $('#end-conversation-button').on('click', function () {
-        // Perform any cleanup, like closing WebSocket connections
-        conversationSocket.close();
-
-        // Remove the conversation window
-        $('.automan-support-window').fadeOut(500, function () {
-          $(this).remove();
-        });
-
-        // Remove the session data
-        localStorage.removeItem('activeSupportConversationUUID');
-      });
-
-    };
-    // end of function renderConversationWindow 
-
-    // function 3. intiiate an conversation with a human operator.
-    function initiateNewConversation() {
-      var $button = $('#new_conversation_button');
-      var $spinner = $('#loading-spinner-new-conversation');
-      var $form = $('#new-support-conversation-form');
-      var csrfToken = $form.find('[name=csrfmiddlewaretoken]').val();
-      $('automan-support-window').show();
-      // Disable the button and show the spinner
-      $button.prop('disabled', true);
-      $spinner.show();
-
-      // Clear any existing ajax call timeout
-      clearTimeout(ajaxCallTimeout);
-
-      // Set a new timeout for the AJAX call
-      ajaxCallTimeout = setTimeout(function () {
-        console.error('Timeout: Could not get a response from the server.');
-        $spinner.hide();
-        $button.prop('disabled', false);
-      }, ajaxCallDuration);
-
-      $.ajax({
-        url: '/crms/new_conversation/',
-        type: 'POST',
-        data: JSON.stringify({}),
-        contentType: 'application/json',
-        dataType: 'json',
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRFToken': csrfToken
-        },
-        success: function (data) {
-          console.log('Fetch data success. Conversation UUID is: ', data.uuid);
-          if (data.uuid) {
-            renderConversationWindow(data.uuid);
-          }
-        },
-        error: function (xhr, status, error) {
-          console.error('Error:', error);
-        },
-        complete: function () {
-          // Clear the ajax call timeout since the call is complete
-          clearTimeout(ajaxCallTimeout);
-          $spinner.hide();
-          $button.prop('disabled', false);
-        },
-      });
-
-    };
-
-
-    // handle the case where the user navigates away from the page or closes the browser while a support conversation is active:
-    $(window).on('beforeunload', function () {
-      // Retrieve the active conversation UUID from localStorage
-      var activeUUID = localStorage.getItem('activeSupportConversationUUID');
-
-      // If there's an active conversation
-      if (activeUUID) {
-        // Check if the WebSocket connection is open
-        if (conversationSocket && conversationSocket.readyState === WebSocket.OPEN) {
-          // Send a message to the server indicating the user might be leaving
-          conversationSocket.send(JSON.stringify({
-            message: 'User might be leaving, hold the conversation.',
-            uuid: activeUUID
-          }));
-        }
-
-        // Optionally, you can also clear the active conversation UUID from localStorage
-        // But this depends on how you want to handle page reloads and revisits
-        localStorage.removeItem('activeSupportConversationUUID');
-      }
-
-      // Additional cleanup if necessary
-      // ...
-    });
-
-
-    // jQuery code
-    $(function () {
-      var debounceTimeout;
-      var ajaxCallTimeout;
-      var ajaxCallDuration = 10000; // 10 seconds for timeout
-      // 2024-01-18 
-      // added to check if an existing conversation_window with uuid is available in local storage. 
-      // if yes, render the conversation window using the exsiting conversation uuid.
-      var existingUUID = localStorage.getItem('activeSupportConversationUUID');
-      if (existingUUID) {
-        renderConversationWindow(existingUUID);
-      }
-
-      $('#enableChatbot').on('click', function () {
-        // Check if the '#confirmationDialog' element exists
-        if ($('#confirmationDialog').length > 0) {
-          // If the element exists, fade it in to show the confirmation dialog
-          $('#confirmationDialog').fadeIn();
-        } else {
-          // If the element does not exist, show the chatbot UI directly
-          $("#chatbotUI").show();
-          (this).hide();
-        }
-      });
-
-
-      // Click event handler for #chooseChatbot button
-      $('#chooseChatbot').on('click', async function () {
-        $('#confirmationDialog').fadeOut();
-        $("#chatbotUI").fadeIn();
-        $('#enableChatbot').hide();
-      });
-
-
-      $('#chooseHumanSupport').click(debounce(function (event) {
-        event.preventDefault();
-        $('#confirmationDialog').fadeOut();
-        var $button = $('enableChatBot');
-        var $spinner = $('#loading-spinner-new-conversation');
-        var $form = $('#new-support-conversation-form');
-        var csrfToken = $form.find('[name=csrfmiddlewaretoken]').val();
-
-        // Disable the button and show the spinner
-        $button.prop('disabled', true);
-        $spinner.show();
-
-        // Clear any existing ajax call timeout
-        clearTimeout(ajaxCallTimeout);
-
-        // Set a new timeout for the AJAX call
-        ajaxCallTimeout = setTimeout(function () {
-          console.error('Timeout: Could not get a response from the server.');
-          $spinner.hide();
-          $button.prop('disabled', false);
-        }, ajaxCallDuration);
-
-        $.ajax({
-          url: '/crms/new_conversation/',
-          type: 'POST',
-          data: JSON.stringify({}),
-          contentType: 'application/json',
-          dataType: 'json',
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': csrfToken
-          },
-          success: function (data) {
-            console.log('Fetch data success. Conversation UUID is: ', data.uuid);
-            if (data.uuid) {
-              renderConversationWindow(data.uuid);
-            }
-          },
-          error: function (xhr, status, error) {
-            console.error('Error:', error);
-          },
-          complete: function () {
-            // Clear the ajax call timeout since the call is complete
-            clearTimeout(ajaxCallTimeout);
-            $spinner.hide();
-            $button.prop('disabled', false);
-          },
-        });
-
-      }, 300));
-
-
-      // Click event handler for #cancelDialog button
-      $('#cancelDialog').on('click', function () {
-        $('#confirmationDialog').fadeOut();
-      });
-
-      // Close button for the customer support window
-      $('#closeConversationButton').on('click', function () {
-        $('.automan-support-window').fadeOut(500, function () {
-          $(this).remove();
-        });
-
-        $('#enableChatbot').fadeIn(); // Show the enableChatbot button again
-      });
-
-
-      // option 2 -- interaction with AI assistant
-      var chatbotEndpoint = "{% url 'we_have_ai_helpers:chatbot_response' %}";
-
-      $("#askButton").on("click", function (e) {
-        e.preventDefault();
-        const getCSRFTokenViaCardBody = () => $('#chatbotCardBody').data('csrf-token');
-        let token = getCSRFTokenViaCardBody();
-        if (!token) {
-          console.log("fetching csrfToken with cardBody is not none...try out fetching from meta.");
-          token = getCSRFTokenViaMeta();
-        }
-        if (!token) {
-
-          token = getCookie("csrftoken");
-        }
-        if (!token) {
-          console.log("Error - CSRF token not found in the card body or meta tag.");
-          return;
-        }
-        // Disable the "Ask" button to display multiple requests being sent
-        $(this).prop('disabled', true);
-
-        $('#loadingMessage').show();
-        let userText = $("#userInput").val();
-
-        $.ajax({
-          url: chatbotEndpoint,
-          type: "POST",
-          dataType: "json",
-          data: { "user_input": userText },
-          headers: {
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRFToken": getCSRFTokenViaCardBody(), //getCookie("csrftoken")
-          },
-          success: function (data) {
-            console.log("Success - bot response is : ", data.response);
-            var messageContent = data.response;
-            // var messageRole = data.response.role; // 'assistant'
-            let messageRole = 'assistant'
-
-            // Format the message
-            var formattedMessage = `<strong>${messageRole}:</strong> ${messageContent}`;
-            $("#botResponse").html(formattedMessage);
-            // $("#botResponse").text(data.response);
-
-            // Add a button to opt-in for human operators. 2023-11-17
-            // var connectHumanButton = $('<button/>', {
-            //     text: 'Connect with a Human Operator',
-            //     id: 'connectHumanOperator',
-            //     class: 'btn btn-primary',
-            //     click: function() { showHumanOperatorChat(); }
-            // });
-
-            $('#loadingMessage').hide();
-            $('#askButton').prop('disabled', false);
-          },
-          error: function (xhr, status, error) {
-            console.error("Error - Status: ", status, " Detail: ", error, " XHR: ", xhr);
-            // Consider providing more descriptive text based on the error status
-            var errorMsg = "Sorry, there was an error processing your request.";
-            if (xhr && xhr.responseJSON && xhr.responseJSON.detail) {
-              errorMsg = xhr.responseJSON.detail;
-            }
-            $("#botResponse").text(errorMsg);
-            $('#loadingMessage').hide();
-            $('#askButton').prop('disabled', false);
-          }
-        });
-      });
-      // end of askButton 
-
-      $("#closeChatbot").on('click', function () {
-        $("#chatbotUI").hide();
-        $("#enableChatbot").fadeIn();  // If you want to show the enable button again
-      });
-
-    });
-
+    // homepagebase based function to get cookies
     function getCookie(name) {
       let value = "; " + document.cookie;
       let parts = value.split("; " + name + "=");
@@ -926,33 +521,445 @@
     }
 
 
+    // // Function to handle debounce
+    // function debounce(func, wait, immediate) {
+    //   var timeout;
+    //   return function () {
+    //     var context = this, args = arguments;
+    //     var later = function () {
+    //       timeout = null;
+    //       if (!immediate) func.apply(context, args);
+    //     };
+    //     var callNow = immediate && !timeout;
+    //     clearTimeout(timeout);
+    //     timeout = setTimeout(later, wait);
+    //     if (callNow) func.apply(context, args);
+    //   };
+    // }
+
+    // // function 2 - renderConversationWindow
+    // // this function renders a conversation window with new convesation uid. enable wesocket for messaging 
+    // function renderConversationWindow(uuid) {
+
+    //   // Determine if the app is running on localhost
+    //   // var isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+    //   // var wsProtocol = isLocalhost ? "ws://" : "wss://";
+    //   var wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    //   // Creating the HTML structure
+    //   var conversationHtml = `  
+    //     <div class="card card-hover border-5 p-1 m-1">
+    //         <div class="card-header text-dark d-flex justify-content-between align-items-center">
+    //             <h4>Customer Support (Beta)</h4>
+    //             <button class="btn btn-sm btn-outline-danger" id="end-conversation-button" type="button">&times;</button>
+    //         </div>
+    //         <p class="text-muted">(Support-Case-ID:${uuid})</p>
+    //         <div class="card-body m-1">
+    //             <textarea id="conversation-log" class='form-control mb-2 conversation-log' readonly></textarea>
+    //             <div class="input-group mb-4">
+    //                 <input id="conversation-message-input" type="text" class="form-control" placeholder="Type your message...">
+    //                 <div class="input-group-append">
+    //                     <button class="btn btn-outline-dark" id="conversation-message-send-button" type="button">Send</button>
+    //                 </div>
+    //             </div>
+                
+    //         </div>
+    //     </div>
+    //   `;
+
+    //   // Append it to the body or a specific element
+    //   $('#support_conversation_window').append(conversationHtml);
+
+    //   // Make the support conversation window visible
+    //   $('.automan-support-window').fadeIn(1000); // This will smoothly fade in the window
+
+    //   // Establish the WebSocket connection
+    //   // use ws:// when its local server. use wss:// for production server.
+    //   const conversationSocket = new WebSocket(
+    //     wsProtocol + window.location.host + '/ws/conversations/' + uuid + '/'
+    //   );
+
+    //   //
+    //   conversationSocket.onopen = function (response) {
+
+    //     // You can now safely send a message
+    //     // conversationSocket.send(JSON.stringify({ message: 'Hello Server!' }));
+    //     // const data = JSON.parse(response.data);
+    //     console.info('conversation started...a websocket connection is established...');
+    //     localStorage.setItem('activeSupportConversationUUID', uuid);
+
+    //     // document.querySelector('#conversation-log').value += (data.conversation_message + '\n');
+    //   };
+
+    //   // WebSocket event for receiving messages
+    //   conversationSocket.onmessage = function (response) {
+    //     try {
+    //       data = JSON.parse(response.data);
+    //       const message = data.conversation_message;
+    //       let direction = parseInt(0);  // 0 for outgoing, 1 for incoming
+
+    //       let formattedMessage = '';
+    //       if (direction === 0) {
+    //         formattedMessage = 'Operator: ' + message;
+    //       } else {
+    //         formattedMessage = 'Customer: ' + message;
+    //       }
+    //       $('#conversation-log').value += (formattedMessage + '\n');
+    //       // $('#conversation-log').val(function(index, value) {
+    //       //     return value + (formattedMessage + '\n');
+    //       // });
+    //     } catch (error) {
+    //       console.error('Error Parsing received data. Expecting JSON:', error)
+    //     };
+    //   };
+
+    //   conversationSocket.onclose = function (e) {
+    //     console.log('WebSocket closed:', event);
+    //     if (event.wasClean) {
+    //       console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
+    //     } else {
+    //       // e.g., the server process killed or network down
+    //       console.log('Connection died');
+    //     }
+    //   };
+
+    //   // Send message event. via clicking 'conversation-message-send-button' button or pressing 'Enter' key
+    //   $('#conversation-message-send-button').on('click', function () {
+    //     // var messageInput = $('#conversation-message-input');
+    //     // var message = messageInput.val();
+
+    //     const messageInputDom = document.querySelector('#conversation-message-input');
+    //     const conversation_message = messageInputDom.value;
+
+    //     // Determine the direction of the message
+    //     // For example, let's assume 1 is for messages from customer to operator; 0 is from operator to customer.
+    //     var messageDirection = 1;
+
+    //     if (conversationSocket.readyState === WebSocket.OPEN) {
+    //       conversationSocket.send(JSON.stringify({
+    //         'conversation_message': conversation_message,
+    //         'message_direction': messageDirection,
+    //       }));
+    //     } else {
+    //       console.error('WebSocket is not open: ' + conversationSocket.readyState);
+    //     }
+
+    //     messageInputDom.value = '';
+
+    //   });
+
+    //   // Press Enter to send message
+    //   $('#conversation-message-input').keyup(function (e) {
+    //     if (e.key === 'Enter' || e.keyCode === 13) {
+    //       $('#conversation-message-send-button').click();
+    //     }
+    //   });
+    //   // Focus the input field for message
+    //   $('#conversation-message-input').focus();
+
+    //   // End conversation event
+    //   $('#end-conversation-button').on('click', function () {
+    //     // Perform any cleanup, like closing WebSocket connections
+    //     conversationSocket.close();
+
+    //     // Remove the conversation window
+    //     $('.automan-support-window').fadeOut(500, function () {
+    //       $(this).remove();
+    //     });
+
+    //     // Remove the session data
+    //     localStorage.removeItem('activeSupportConversationUUID');
+    //   });
+
+    // };
+    // // end of function renderConversationWindow 
+
+    // // function 3. intiiate an conversation with a human operator.
+    // function initiateNewConversation() {
+    //   var $button = $('#new_conversation_button');
+    //   var $spinner = $('#loading-spinner-new-conversation');
+    //   var $form = $('#new-support-conversation-form');
+    //   var csrfToken = $form.find('[name=csrfmiddlewaretoken]').val();
+    //   $('automan-support-window').show();
+    //   // Disable the button and show the spinner
+    //   $button.prop('disabled', true);
+    //   $spinner.show();
+
+    //   // Clear any existing ajax call timeout
+    //   clearTimeout(ajaxCallTimeout);
+
+    //   // Set a new timeout for the AJAX call
+    //   ajaxCallTimeout = setTimeout(function () {
+    //     console.error('Timeout: Could not get a response from the server.');
+    //     $spinner.hide();
+    //     $button.prop('disabled', false);
+    //   }, ajaxCallDuration);
+
+    //   $.ajax({
+    //     url: '/crms/new_conversation/',
+    //     type: 'POST',
+    //     data: JSON.stringify({}),
+    //     contentType: 'application/json',
+    //     dataType: 'json',
+    //     headers: {
+    //       'X-Requested-With': 'XMLHttpRequest',
+    //       'X-CSRFToken': csrfToken
+    //     },
+    //     success: function (data) {
+    //       console.log('Fetch data success. Conversation UUID is: ', data.uuid);
+    //       if (data.uuid) {
+    //         renderConversationWindow(data.uuid);
+    //       }
+    //     },
+    //     error: function (xhr, status, error) {
+    //       console.error('Error:', error);
+    //     },
+    //     complete: function () {
+    //       // Clear the ajax call timeout since the call is complete
+    //       clearTimeout(ajaxCallTimeout);
+    //       $spinner.hide();
+    //       $button.prop('disabled', false);
+    //     },
+    //   });
+
+    // };
+
+
+    // // handle the case where the user navigates away from the page or closes the browser while a support conversation is active:
+    // $(window).on('beforeunload', function () {
+    //   // Retrieve the active conversation UUID from localStorage
+    //   var activeUUID = localStorage.getItem('activeSupportConversationUUID');
+
+    //   // If there's an active conversation
+    //   if (activeUUID) {
+    //     // Check if the WebSocket connection is open
+    //     if (conversationSocket && conversationSocket.readyState === WebSocket.OPEN) {
+    //       // Send a message to the server indicating the user might be leaving
+    //       conversationSocket.send(JSON.stringify({
+    //         message: 'User might be leaving, hold the conversation.',
+    //         uuid: activeUUID
+    //       }));
+    //     }
+
+    //     // Optionally, you can also clear the active conversation UUID from localStorage
+    //     // But this depends on how you want to handle page reloads and revisits
+    //     localStorage.removeItem('activeSupportConversationUUID');
+    //   }
+
+    // });
+
+
+    // // jQuery code
+    // $(function () {
+    //   var debounceTimeout;
+    //   var ajaxCallTimeout;
+    //   var ajaxCallDuration = 10000; // 10 seconds for timeout
+    //   // 2024-01-18 
+    //   // added to check if an existing conversation_window with uuid is available in local storage. 
+    //   // if yes, render the conversation window using the exsiting conversation uuid.
+    //   var existingUUID = localStorage.getItem('activeSupportConversationUUID');
+    //   if (existingUUID) {
+    //     renderConversationWindow(existingUUID);
+    //   }
+
+    //   $('#enableChatbot').on('click', function () {
+    //     // Check if the '#confirmationDialog' element exists
+    //     if ($('#confirmationDialog').length > 0) {
+    //       // If the element exists, fade it in to show the confirmation dialog
+    //       $('#confirmationDialog').fadeIn();
+    //     } else {
+    //       // If the element does not exist, show the chatbot UI directly
+    //       $("#chatbotUI").show();
+    //       (this).hide();
+    //     }
+    //   });
+
+
+    //   // Click event handler for #chooseChatbot button
+    //   $('#chooseChatbot').on('click', async function () {
+    //     $('#confirmationDialog').fadeOut();
+    //     $("#chatbotUI").fadeIn();
+    //     $('#enableChatbot').hide();
+    //   });
+
+
+    //   $('#chooseHumanSupport').click(debounce(function (event) {
+    //     event.preventDefault();
+    //     $('#confirmationDialog').fadeOut();
+    //     var $button = $('enableChatBot');
+    //     var $spinner = $('#loading-spinner-new-conversation');
+    //     var $form = $('#new-support-conversation-form');
+    //     var csrfToken = $form.find('[name=csrfmiddlewaretoken]').val();
+
+    //     // Disable the button and show the spinner
+    //     $button.prop('disabled', true);
+    //     $spinner.show();
+
+    //     // Clear any existing ajax call timeout
+    //     clearTimeout(ajaxCallTimeout);
+
+    //     // Set a new timeout for the AJAX call
+    //     ajaxCallTimeout = setTimeout(function () {
+    //       console.error('Timeout: Could not get a response from the server.');
+    //       $spinner.hide();
+    //       $button.prop('disabled', false);
+    //     }, ajaxCallDuration);
+
+    //     $.ajax({
+    //       url: '/crms/new_conversation/',
+    //       type: 'POST',
+    //       data: JSON.stringify({}),
+    //       contentType: 'application/json',
+    //       dataType: 'json',
+    //       headers: {
+    //         'X-Requested-With': 'XMLHttpRequest',
+    //         'X-CSRFToken': csrfToken
+    //       },
+    //       success: function (data) {
+    //         console.log('Fetch data success. Conversation UUID is: ', data.uuid);
+    //         if (data.uuid) {
+    //           renderConversationWindow(data.uuid);
+    //         }
+    //       },
+    //       error: function (xhr, status, error) {
+    //         console.error('Error:', error);
+    //       },
+    //       complete: function () {
+    //         // Clear the ajax call timeout since the call is complete
+    //         clearTimeout(ajaxCallTimeout);
+    //         $spinner.hide();
+    //         $button.prop('disabled', false);
+    //       },
+    //     });
+
+    //   }, 300));
+
+
+    //   // Click event handler for #cancelDialog button
+    //   $('#cancelDialog').on('click', function () {
+    //     $('#confirmationDialog').fadeOut();
+    //   });
+
+    //   // Close button for the customer support window
+    //   $('#closeConversationButton').on('click', function () {
+    //     $('.automan-support-window').fadeOut(500, function () {
+    //       $(this).remove();
+    //     });
+
+    //     $('#enableChatbot').fadeIn(); // Show the enableChatbot button again
+    //   });
+
+
+    //   // option 2 -- interaction with AI assistant
+    //   var chatbotEndpoint = "{% url 'we_have_ai_helpers:chatbot_response' %}";
+
+    //   $("#askButton").on("click", function (e) {
+    //     e.preventDefault();
+    //     const getCSRFTokenViaCardBody = () => $('#chatbotCardBody').data('csrf-token');
+    //     let token = getCSRFTokenViaCardBody();
+    //     if (!token) {
+    //       console.log("fetching csrfToken with cardBody is not none...try out fetching from meta.");
+    //       token = getCSRFTokenViaMeta();
+    //     }
+    //     if (!token) {
+
+    //       token = getCookie("csrftoken");
+    //     }
+    //     if (!token) {
+    //       console.log("Error - CSRF token not found in the card body or meta tag.");
+    //       return;
+    //     }
+    //     // Disable the "Ask" button to display multiple requests being sent
+    //     $(this).prop('disabled', true);
+
+    //     $('#loadingMessage').show();
+    //     let userText = $("#userInput").val();
+
+    //     $.ajax({
+    //       url: chatbotEndpoint,
+    //       type: "POST",
+    //       dataType: "json",
+    //       data: { "user_input": userText },
+    //       headers: {
+    //         "X-Requested-With": "XMLHttpRequest",
+    //         "X-CSRFToken": getCSRFTokenViaCardBody(), //getCookie("csrftoken")
+    //       },
+    //       success: function (data) {
+    //         console.log("Success - bot response is : ", data.response);
+    //         var messageContent = data.response;
+    //         // var messageRole = data.response.role; // 'assistant'
+    //         let messageRole = 'assistant'
+
+    //         // Format the message
+    //         var formattedMessage = `<strong>${messageRole}:</strong> ${messageContent}`;
+    //         $("#botResponse").html(formattedMessage);
+    //         // $("#botResponse").text(data.response);
+
+    //         // Add a button to opt-in for human operators. 2023-11-17
+    //         // var connectHumanButton = $('<button/>', {
+    //         //     text: 'Connect with a Human Operator',
+    //         //     id: 'connectHumanOperator',
+    //         //     class: 'btn btn-primary',
+    //         //     click: function() { showHumanOperatorChat(); }
+    //         // });
+
+    //         $('#loadingMessage').hide();
+    //         $('#askButton').prop('disabled', false);
+    //       },
+    //       error: function (xhr, status, error) {
+    //         console.error("Error - Status: ", status, " Detail: ", error, " XHR: ", xhr);
+    //         // Consider providing more descriptive text based on the error status
+    //         var errorMsg = "Sorry, there was an error processing your request.";
+    //         if (xhr && xhr.responseJSON && xhr.responseJSON.detail) {
+    //           errorMsg = xhr.responseJSON.detail;
+    //         }
+    //         $("#botResponse").text(errorMsg);
+    //         $('#loadingMessage').hide();
+    //         $('#askButton').prop('disabled', false);
+    //       }
+    //     });
+    //   });
+    //   // end of askButton 
+
+    //   $("#closeChatbot").on('click', function () {
+    //     $("#chatbotUI").hide();
+    //     $("#enableChatbot").fadeIn();  // If you want to show the enable button again
+    //   });
+
+    // });
+
+
   </script>
 
   <!-- Footer-->
   {% include 'homepageapp/11_homepageapp_footer.html' %}
-  <!-- <footer class="footer bg-faded-light ">
-    <div class="border-bottom border-light py-4">
-      <div class="container d-sm-flex align-items-center justify-content-between"><a class="d-inline-block"
-          href="{% url 'homepageapp:homepage' %}">
-          <div class="d-flex pt-3 pt-sm-0">
-          </div>
-      </div>
-    </div>
-
-    <div class="container d-lg-flex align-items-center justify-content-between fs-sm pb-3">
-      <div class="d-flex flex-wrap justify-content-center order-lg-2 mb-3"><a class="nav-link nav-link-dark fw-normal"
-          href="#">Terms of use</a><a class="nav-link nav-link-dark fw-normal" href="#">Privacy policy</a>
-
-      </div>
-      <p class="text-center text-lg-start order-lg-1 mb-lg-0"><span class="text-dark " style="font-family: 'Roboto';">
-          Amazing Automan LLC. &copy; All Rights Reserved. @2023 -
-          <script>document.write(new Date().getFullYear())</script>
-      </p>
-    </div>
-  </footer> -->
 
 </body>
+<style>
+  .btn-scroll-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1030; /* Adjust as needed to make it appear above other elements */
+}
 
+.btn-scroll-top-tooltip {
+    display: none; /* Hide tooltip text by default */
+    /* Add more styling as needed */
+}
+
+.btn-scroll-top:hover .btn-scroll-top-tooltip {
+    display: inline; /* Show tooltip text on hover */
+}
+
+</style>
+<script>
+  // Smooth scroll to top
+    $('.btn-scroll-top').on('click', function (e) {
+      e.preventDefault();
+      $('html, body').animate({ scrollTop: 0 }, '300');
+    });
+
+</script>
 <!-- Back to top button-->
 <a class="btn-scroll-top" href="#top">
   <span class="btn-scroll-top-tooltip text-muted fs-sm me-2">Top</span>
