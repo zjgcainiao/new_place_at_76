@@ -37,7 +37,7 @@
 
   @media (min-width: 500px) {
     .custom-img {
-      width: 500px;
+      width: 450px;
       /* or any other size */
     }
   }
@@ -54,12 +54,88 @@
   font-weight: 450;
 } 
 */
+  .section-with-navbar {
+    padding-top: 35px;
+    /* Adjust this value based on your navbar's height */
+    background-repeat: no-repeat;
+    /* Prevents the background image from repeating */
+    /* background-attachment: scroll; */
+    /* Optional: Fixes the background image during scroll */
+  }
+
+  @media (max-width: 768px) {
+    .section-with-navbar {
+      padding-top: 45px;
+      /* Smaller padding for smaller screens if your navbar height changes */
+    }
+  }
+
+  .article {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .automan-section,
+  .image-container {
+    /* transition: transform 0.4s ease-in-out; */
+    transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out, background 0.4s ease-in-out;
+  }
+
+  .image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .image-container img {
+    max-width: 100%;
+    height: auto;
+    transition: transform 0.4s ease-in-out;
+  }
+
+  .automan-section {
+    padding: 10px;
+    border-radius: 5px;
+    border: transparent;
+    /* Optional: for a rounded corner effect */
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+    /* Default subtle shadow */
+  }
+
+  @media screen and (min-width: 992px) {
+
+    .automan-section:hover,
+    .image-container:hover {
+      /* transform: scale(1.05); */
+      transform: translateY(-10px);
+      /* Creates the elevated effect */
+      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+      /* Enhances shadow to give depth */
+      background: linear-gradient(60deg, #e6e7e9, #eed7cd 60%, #c0c5ca 100%);
+      /* Linear gradient background */
+      -webkit-transform: translateY(-10px);
+      /* Webkit compatibility */
+      -webkit-box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+      /* Webkit compatibility */
+      -webkit-background: linear-gradient(60deg, #e6e7e9, #eed7cd 60%, #c0c5ca 100%);
+      /* Webkit compatibility */
+    }
+  }
+
+  @media screen and (max-width: 991px) {
+    .image-container {
+      order: -1;
+      /* To make image appear on top on smaller screens */
+    }
+  }
 </style>
 
 
 
 <!-- Page header-->
-<section class="bg-top-center bg-repeat-1 mt-5"
+<section class="bg-top-center section-with-navbar "
   style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); background-size: cover;">
   <!-- django messages section  -->
   {% include 'homepageapp/14_homepageapp_messages_section.html' %}
@@ -67,7 +143,8 @@
     <article class="row pt-lg-3 pt-xl-4">
       <div class="col-md-8 pt-3 pt-md-3 pt-lg-5 automan-section">
         <header>
-          <h2 class="text-dark pb-2 mb-4 me-md-n5">The Future of Auto Repair is Here at Automan Shop!</h2>
+          <h3 class="pb-2 mb-4 me-md-5" style="font-family: 'Orbitron', sans-serif; font-weight: 700;">A Data-powered
+            Automotive Repair and Servicing Shop.</h3>
         </header>
         <div class="content-body">
           <p class="fs-lg text-dark opacity-80">At Automan Shop, we're not just fixing cars - we're revolutionizing the
@@ -75,82 +152,86 @@
             waiting to be analyzed.</p>
           <p class="fs-lg text-dark opacity-80">Gone are the days of ambiguous repair statuses and surprise delays.
             We're here to ensure transparency, accuracy, and speed like you've never experienced before.</p>
-          <p class="fs-lg text-dark opacity-100">Why Automan Shop stands out:</p>
-          <ul class="fs-lg text-dark opacity-100">
-            <li class="p-1 m-1"><i class="fas fa-cogs"></i> <strong>System Integration</strong>. Real-time tracking of
-              tasks, from appointments to repairs, all at the tip of your fingers.</li>
-            <li class="p-1 m-1"><i class="fa-solid fa-screwdriver-wrench"></i> <strong> Data-powered Vehicle
-                Service.</strong> Never be in the dark again with our constant updates on repair progress and digital
-              payment gateways. We bring live updates to you.</li>
-            <li class="p-1 m-1"><i class="fa-solid fa-credit-card"></i> <strong> Digital Payment Gateways.</strong>
-              Don't have time to pay at our stores? You can now pay online with Stripe.</li>
-            <li class="p-1 m-1"><i class="fa-solid fa-shield-halved"></i> <strong> Privacy Protection.</strong> We
-              securely store your data, such as email, credit card information with SHA256 encryption, meeting the
-              industry standard. </li>
-            <li class="p-1 m-1"><i class="fa-solid fa-file-shield"></i> <strong> Advanced Vehicle Reports.</strong> Dive
-              deep into vehicle data, extracting specs, warranty details, and even safety recalls from our vast digital
-              archives.</li>
-            <li class="p-1 m-1"><i class="fa-solid fa-robot"></i> <strong> Articial Intellgience at its best.</strong>
-              Meet Pulido, our virtual assistant. From smart service estimates to AI-assisted parts recommendations
-              [launching soon], we're bringing the future to you.</li>
-          </ul>
-          <p class="fs-lg text-dark opacity-80">Be a part of the automotive future. Book a service with Automan Shop and
+          <p class="fs-lg text-dark opacity-100">Be a part of the automotive future. Book a service with Automan Shop
+            and
             experience the next generation of auto repairs!</p>
 
 
-          <a class="btn btn-sm btn-outline-primary w-sm-auto m-1"
+          <a class="btn btn-sm btn-outline-primary w-sm-auto  mb-2"
             href="{% url 'appointments:create_appointment' %}">Service Appointment</a>
         </div>
       </div>
       <!-- end of column  -->
-      <!-- <div class="d-flex align-items-center vh-100">
-        <figure class="col-md-4 p-md-4 mx-auto">
-          <img class="d-block mt-4 ms-auto cust-img" src="{% static 'homepageapp/img/2023-05-27-tesla-roadster-sports-car-tesla-motors-car.png' %}" alt="Car">
-        </figure>
-      </div> -->
-      <figure class="col-md-4 p-md-4 mx-auto">
-        <img class=" d-flex mt-4 ms-auto cust-img align-items-center justify-content-between "
+
+      <figure class="col-md-4 p-md-4 image-container mb-2">
+        <img class=" d-block mt-4 ms-auto cust-img"
           src="{% static 'homepageapp/img/2023-05-27-tesla-roadster-sports-car-tesla-motors-car.png' %}" alt="Car">
       </figure>
     </article>
   </div>
 
   <!-- end of container -->
+</section>
+<section class="container  automan-section p-2 mt-5">
+  <div class="d-flex align-items-center justify-content-between mb-2 pb-2">
+    <h4 class=" my-2 mb-sm-0" style="font-family: 'Orbitron', sans-serif;">What do we do
+      differently:</h4>
+  </div>
 
-  <!-- updated on 2023-11-03 
+  <ul class="fs-lg text-dark opacity-80 p-1 m-1">
+    <li class="p-1 m-1"><i class="fas fa-cogs"></i> <strong>System Integration</strong>. Real-time tracking of
+      tasks, from appointments to repairs, all at the tip of your fingers.</li>
+    <li class="p-1 m-1"><i class="fa-solid fa-screwdriver-wrench"></i> <strong> Data-powered Vehicle
+        Service.</strong> Never be in the dark again with our constant updates on repair progress and digital
+      payment gateways. We bring live updates to you.</li>
+    <li class="p-1 m-1"><i class="fa-solid fa-credit-card"></i> <strong> Digital Payment Gateways.</strong>
+      Don't have time to pay at our stores? You can now pay online with Stripe.</li>
+    <li class="p-1 m-1"><i class="fa-solid fa-shield-halved"></i> <strong> Privacy Protection.</strong> We
+      securely store your data, such as email, credit card information with SHA256 encryption, meeting the
+      industry standard. </li>
+    <li class="p-1 m-1"><i class="fa-solid fa-file-shield"></i> <strong> Online VIN report.</strong> Dive
+      deep into vehicle data, extracting specs, warranty details, and even safety recalls from our vast digital
+      archives. Constantly get updates from your reports when you sign up an account with us.</li>
+    <li class="p-1 m-1"><i class="fa-solid fa-robot"></i> <strong> Articial Intellgience at its best.</strong>
+      Meet Pulido, our virtual assistant. From smart service estimates to AI-assisted parts recommendations
+      [launching soon], we're bringing the future to you.</li>
+  </ul>
+</section>
+
+<!-- updated on 2023-11-03 
   service list the shop provides  -->
 
-  <section class="container mt-5 p-3">
-    <!-- Added padding bottom for spacing -->
-    <div class="d-flex align-items-center justify-content-between mb-4 pb-2">
-      <!-- Increased bottom margin and bottom padding for more space -->
-      <h2 class="h3 text-dark my-2 mb-sm-0">Popular Services</h2>
-      <a class="btn  btn-outline-dark fw-normal" href="{% url 'homepageapp:services' %}">
-        <!-- Changed button class for an outlined style -->
-        View all
-        <i class="fi-arrow-long-right fs-sm mt-0 ps-1 ms-2"></i>
-      </a>
-    </div>
-    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 g-md-4">
-      {% for icon in service_icons %}
-      <!-- Increased gutter classes for more space between cards -->
-      <!-- Item -->
-      <div class="col">
-        <!-- Removed specific col sizing to allow automatic responsiveness -->
-        <div class="card h-100 card-body bg-transparent border-0 text-center card-hover-glare hover-shadow">
-          <!-- Added h-100 for equal height, hover-shadow for interactive hover effect -->
-          <img class="d-block mx-auto my-4" src="{% static icon.img_src %}" alt="{{ icon.alt }}"
-            ondragstart="return false;" style="width: auto; height: 70px;">
-          <!-- <div class="icon" alt="{{ icon.alt }}"  ondragstart="return false;" style="background-image: url('{% static icon.img_src %}');width: auto; height: 70px;"></div> -->
-          <!-- Added my-4 for more vertical spacing, and inline style for consistent icon size -->
-          <p class="fw-bold mb-0">{{ icon.title }}</p>
-          <!-- Removed stretched-link and added mb-0 to remove unnecessary link behavior and bottom margin -->
-        </div>
+<section class="container p-2 mt-5">
+  <!-- Added padding bottom for spacing -->
+  <div class="d-flex align-items-center justify-content-between mb-4 pb-2">
+    <!-- Increased bottom margin and bottom padding for more space -->
+    <h4 class="text-dark my-2 mb-sm-0" style="font-family: 'Orbitron', sans-serif;">Popular Services</h4>
+    <a class="btn  btn-outline-dark fw-normal" href="{% url 'homepageapp:services' %}">
+      <!-- Changed button class for an outlined style -->
+      View all
+      <i class="fi-arrow-long-right fs-sm mt-0 ps-1 ms-2"></i>
+    </a>
+  </div>
+  <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 g-md-4">
+    {% for icon in service_icons %}
+    <!-- Increased gutter classes for more space between cards -->
+    <!-- Item -->
+    <div class="col">
+      <!-- Removed specific col sizing to allow automatic responsiveness -->
+      <div class="card h-100 card-body bg-transparent border-0 text-center card-hover-glare hover-shadow">
+        <!-- Added h-100 for equal height, hover-shadow for interactive hover effect -->
+        <img class="d-block mx-auto my-4" src="{% static icon.img_src %}" alt="{{ icon.alt }}"
+          ondragstart="return false;" style="width: auto; height: 70px;">
+        <!-- <div class="icon" alt="{{ icon.alt }}"  ondragstart="return false;" style="background-image: url('{% static icon.img_src %}');width: auto; height: 70px;"></div> -->
+        <!-- Added my-4 for more vertical spacing, and inline style for consistent icon size -->
+        <p class="fw-bold mb-0">{{ icon.title }}</p>
+        <!-- Removed stretched-link and added mb-0 to remove unnecessary link behavior and bottom margin -->
       </div>
-      {% endfor %}
     </div>
-  </section>
-  <!-- end of service list section  -->
+    {% endfor %}
+  </div>
+</section>
+<!-- end of service list section  -->
 
 
-  {% endblock %}
+{% endblock %}

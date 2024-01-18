@@ -1,4 +1,5 @@
 # exclude assets/ folder and /static folder and their contents from uploading to github.
+frontends/
 dist/
 assets/
 static/

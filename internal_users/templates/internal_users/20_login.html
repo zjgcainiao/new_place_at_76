@@ -1,24 +1,28 @@
 {% extends 'internal_users/00_base.html' %}
 {% load crispy_forms_tags %}
 {% load i18n %}
-{% load static %}
+{% load static %}   
 {% block content-main %}
 
 
-<!-- jQuery 3.6.4 Js -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"
-    integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+
 <script>
     $(document).ready(function () {
-        $('.password-eye').click(function () {
-            // toggle the type attribute
-            const type = $(this).siblings('input').attr('type') === 'password' ? 'text' : 'password';
-            $(this).siblings('input').attr('type', type);
+            $('.password-eye').click(function () {
+                // Find the input field that is a sibling of the .password-eye span
+                var input = $(this).closest('.input-group').find('input');
 
-            // toggle the eye icon
-            $(this).toggleClass('fa fa-eye fa-eye-slash');
+                // Toggle the type attribute of the input field
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    $(this).addClass('active'); // Add class if you want to change the icon
+                } else {
+                    input.attr('type', 'password');
+                    $(this).removeClass('active'); // Remove class if you want to change the icon back
+                }
+            });
         });
-    });
+
 
 </script>
 <div class="authentication-bg">

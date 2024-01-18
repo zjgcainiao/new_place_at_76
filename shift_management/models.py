@@ -18,7 +18,7 @@ class Shift(models.Model):
 
     worked_by = models.ForeignKey(
         TalentsModel, on_delete=models.CASCADE, related_name='shifts')
-    # the employee's 
+    # the employee's user (user type: InternalUser) information.
     internal_user = models.ForeignKey(
         InternalUser, on_delete=models.CASCADE, related_name="shift_changes")
     start_date = models.DateField(null=True, blank=True)
