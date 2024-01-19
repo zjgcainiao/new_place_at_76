@@ -12,7 +12,7 @@ class InternalUserAdmin(UserAdmin):
     add_form = InternalUserCreationForm
     form = InternalUserChangeForm
     model = InternalUser
-    list_display = ('user_id', 'email', 'user_first_name', 'user_last_name',
+    list_display = ('id', 'email', 'user_first_name', 'user_last_name',
                     'is_staff', 'is_superuser', 'user_is_active', 'user_created_at')
     list_filter = ('email', 'is_staff', 'user_is_active', 'is_superuser')
     fieldsets = (
@@ -31,7 +31,7 @@ class InternalUserAdmin(UserAdmin):
         }),
     )
     search_fields = ('email',)
-    ordering = ('user_id',)
+    ordering = ('id',)
     filter_horizontal = ('groups', 'user_permissions',)
 
 

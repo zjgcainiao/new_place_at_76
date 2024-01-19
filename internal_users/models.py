@@ -89,7 +89,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
         (AUTH_GROUP_LEVEL_21, 'service-technican-group'),
         (AUTH_GROUP_LEVEL_88, 'master-shi-fu-group'),
     )
-    user_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     user_first_name = models.CharField(_('first name'), max_length=50,blank=False, null=False)
     user_middle_name = models.CharField(
         _('middle name'), max_length=50, null=True)
@@ -152,5 +152,6 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         db_table = 'internalusers_new_03'
+        ordering = ['-id']
         verbose_name = 'internaluser'
         verbose_name_plural = 'internalusers'

@@ -27,7 +27,7 @@ class InternalUserCreationForm(forms.ModelForm):
                               label='please check the box below to verify you are not a robot.')
     class Meta:
         model = InternalUser
-        fields = ['user_id', 'email', 
+        fields = ['id', 'email', 
                   'user_first_name', 'user_middle_name','user_last_name',
                   'password1', 'password2', 
                   ]
@@ -136,7 +136,7 @@ class InternalUserRegistrationFormV2(forms.ModelForm):
 
     class Meta:
         model = InternalUser
-        fields = ['user_id', 'email', 
+        fields = ['id', 'email', 
                   'user_first_name', 'user_middle_name','user_last_name',
                   'password1', 'password2', 
                   ]
