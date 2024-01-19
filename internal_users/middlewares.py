@@ -10,7 +10,7 @@ from django.contrib import messages
 
 class InternalUserMiddleware:
     # Define apps that need to pass through the middleware check
-    PROTECTED_APPS = ['talents', 'apis','dashboard', 'admin', 'talent_management',]  # 'appointments'
+    PROTECTED_APPS = ['talents','dashboard', 'admin', 'talent_management',]  # 'appointments'
     PROTECTED_CUSTOMER_APPS = ['customer_users',]  # 'appointments'
 
     # login_url = reverse('internal_users:internal_user_login')

@@ -260,6 +260,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',  # default authentications
         # added to allow simpleJWTToken used between a React Native frontend and this application.
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication',
     ]
 }
 SIMPLE_JWT = {
