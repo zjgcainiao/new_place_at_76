@@ -44,7 +44,7 @@ class InternalUserAdmin(UserAdmin):
 class MyAdminSite(AdminSite):
     login_form = AdminAuthenticationForm
 
-
+# a new admin site instance
 my_admin_site = MyAdminSite()
 
 admin.site.register(InternalUser, InternalUserAdmin)
