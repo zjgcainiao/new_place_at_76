@@ -395,13 +395,7 @@
       z-index: 2000;
     }
 
-    .dialog-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      text-align: center;
-    }
-
+    
     .shadow-lg {
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     }
@@ -426,18 +420,77 @@
       cursor: pointer;
       /* Pointer cursor on hover */
     }
+
+    .confirmation-dialog {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    z-index: 1050; /* Sit on top */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.dialog-content {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: auto; /* Could be percentage or fixed width */
+    max-width: 90%; /* Ensures padding inside the viewport */
+}
+
+/* Style for the buttons */
+.dialog-content button {
+    margin: 10px;
+    /* width: 150px; Fixed width for all buttons */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease; /* Smooth transition */
+}
+
+/* Hover effect for buttons */
+.dialog-content button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* For the Cancel button, a different hover effect might be suitable */
+#cancelDialog:hover {
+    background-color: #f44336; /* Slightly darker */
+    color: white;
+}
+.button-group {
+  min-width: 150px; /* Adjust as needed */
+
+  display: flex;
+  justify-content: center; /* Center buttons horizontally */
+  align-items: center; /* Align buttons vertically */
+  gap: 10px; /* Spacing between buttons */
+  padding: 10px; /* Padding around the button group */
+}
+
+/* You can keep the previous button styles */
+
   </style>
 
   <!-- added confirmationDiag to integrate the chatbot and customer support window -->
-  <div id="confirmationDialog" class="confirmation-dialog" style="display: none;">
-    <div class="dialog-content">
-      <h4>Welcome!</h4>
-      <p>Please choose your preferred support option:</p>
-      <button id="chooseChatbot" class="btn btn-primary">AI Assistant</button>
-      <button id="chooseHumanSupport" class="btn btn-secondary">Customer Support (Human)</button>
+<div id="confirmationDialog" class="confirmation-dialog" style="display: none;">
+  <div class="dialog-content">
+    <h4>Welcome!</h4>
+    <p>Please choose your preferred support option:</p>
+    <div class="button-group"> <!-- Button group container -->
+      <button id="chooseChatbot" class="btn btn-primary">Virtual Assistant</button>
+      <button id="chooseHumanSupport" class="btn btn-secondary">Human Support</button>
       <button id="cancelDialog" class="btn btn-danger">Cancel</button>
     </div>
   </div>
+</div>
+
 
   <!-- customer support window ui  -->
   <!-- 2023-11-08 added a customer support converation button  -->

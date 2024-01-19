@@ -85,7 +85,7 @@ class CustomerUserRegistrationForm(UserCreationForm):
             Field('captcha',css_class=''),
             HTML("<hr>"),
             ButtonHolder(
-                Submit('submit', 'Register', css_class='btn-outline-primary justify-content-center'),
+                Submit('submit', 'Register', css_class='automan-btn-primary justify-content-center'),
                          
                     # Column(Reset('Reset This Form', 'Reset Form', css_class='btn-outline-dark'),
                     #         css_class='col col-6'),
