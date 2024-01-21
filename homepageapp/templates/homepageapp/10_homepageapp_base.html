@@ -91,8 +91,10 @@
   <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
 
     <!-- chatbot_conversation.js in the core_operations 2024-01-18 -->
-    
-  <script src="{% static 'core_operations/js/chatbot_conversation.js' %}" defer></script>
+    <script type="text/javascript">
+      var chatbotEndpoint = "{% url 'we_have_ai_helpers:chatbot_response' %}";
+    </script>
+  <script src="{% static 'core_operations/js/chatbot_conversation.js' %}" ></script>
 </head>
 
 
@@ -903,8 +905,9 @@
 
 
     //   // option 2 -- interaction with AI assistant
+    //     {% comment %}
     //   var chatbotEndpoint = "{% url 'we_have_ai_helpers:chatbot_response' %}";
-
+    //   {% endcomment %}
     //   $("#askButton").on("click", function (e) {
     //     e.preventDefault();
     //     const getCSRFTokenViaCardBody = () => $('#chatbotCardBody').data('csrf-token');

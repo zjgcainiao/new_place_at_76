@@ -81,10 +81,14 @@ urlpatterns = [
          name='vehicle-delete'),
 
     path('tech_dash/<int:technician_id>/',
-         views.technician_dash_view, name='technician-dash'),
+         views.technician_dash_view, name='technician_dash'),
 
     path('repairorders/', views.RepairOrderListView.as_view(),
          name='repairorders-list'),
     # path('repairorders/<int:repair_order_id>/lineitems/', views.repair_order_and_line_items_detail, name='repairorder-lineitem-detail'),
     # path('dataimport/email', views.EmailDataView.as_view(), name='import-email-data')
+
+     path('stock_dash/', views.get_stock_dash, name='stock_dash'),
+    path('track_stocks/', views.track_stocks_performance, name='track_stocks'),
+
 ]

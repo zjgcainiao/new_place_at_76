@@ -70,3 +70,4 @@ def handle_autocomplete_address(request):
         # Process the address as needed
         return JsonResponse({'status': 'success', 'address': address})
     return JsonResponse({'status': 'error'})
+

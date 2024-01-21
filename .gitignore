@@ -1,5 +1,6 @@
 # exclude assets/ folder and /static folder and their contents from uploading to github.
 frontends/
+yfinance.cache
 dist/
 assets/
 static/
