@@ -88,7 +88,7 @@ urlpatterns = [
     # path('repairorders/<int:repair_order_id>/lineitems/', views.repair_order_and_line_items_detail, name='repairorder-lineitem-detail'),
     # path('dataimport/email', views.EmailDataView.as_view(), name='import-email-data')
 
-     path('stock_dash/', views.get_stock_dash, name='stock_dash'),
-    path('track_stocks/', views.track_stocks_performance, name='track_stocks'),
+#      path('stock_dash/', views.get_stock_dash, name='stock_dash'),
+#     path('track_stocks/', views.track_stocks_performance, name='track_stocks'),
 
 ]
