@@ -39,7 +39,7 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"
         integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
 
-    <!-- Popper Js 2.9 and bootstrap JS 5.3 -->
+    <!-- Popper Js 2.9 and bootstrap JS 5.3 js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
         integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -48,26 +48,72 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 </head>
+<style>
+    /* Add these styles for the form fields' gradient background */
+    .form-group .form-control,
+    .form-control,
+    .form-select {
+        background: transparent;
+        /* Make the input field background white */
+        border: 1px solid #ced4da;
+        /* Add a border if needed */
+    }
+
+    /* Make labels bolder */
+    .form-label,
+    label {
+        font-weight: bold;
+        font-family: 'Orbitron', sans-serif;
+        /* Adjust font-weight as needed */
+    }
+
+    /* Metallic border style for form inputs */
+
+    /* Metallic effect enhancement on form control focus */
+    .form-select,
+    .form-control:focus {
+        border-color: #303946;
+        /* Metallic color */
+        outline: 1px;
+        /* Light grey border to start with */
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1) inset,
+            /* Inner shadow for depth */
+            0px 0px 8px rgba(127, 127, 127, 0.6);
+        /* Glow effect for metallic feel */
+        transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
+        /* Remove default focus outline */
+        box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+        /* Metallic glow on focus */
+    }
+</style>
 
 <body class="authentication-bg">
     <!-- Begin page -->
-    <div class="wrapper ">
+    <main class="page-wrapper ">
 
         {% block content-main %}
         <h1>this is the main content block on the main block. internal_user app.</h1>
         {% endblock %}
 
+        <footer class="footer footer-alt mt-3 text-center">
+
+            Amazing Automan LLC. Copyright @2023-
+            <script>document.write(new Date().getFullYear())</script>
+        </footer>
 
 
-
-    </div>
+    </main>
     <!-- END wrapper -->
-    <footer class="footer footer-alt m-1">
+
+
+</body>
+<div class="container mt-3">
+    <footer class="footer footer-alt mt-3 text-center">
 
         Amazing Automan LLC. Copyright @2023-
         <script>document.write(new Date().getFullYear())</script>
     </footer>
+</div>
 
-</body>
 
 </html>

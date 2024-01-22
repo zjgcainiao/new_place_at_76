@@ -2,7 +2,7 @@
 # -----------------
 from django.shortcuts import render, resolve_url, redirect
 from django.http import HttpResponseForbidden
-from internal_users.forms import InternalUserCreationForm, InternalUserChangeForm, InternalUserRegistrationFormV2, InternalUserLoginForm, InternalUserPasswordResetForm
+from internal_users.forms import InternalUserCreationForm, InternalUserChangeForm, InternalUserRegistrationFormV2, InternalUserLoginForm, InternalUserPasswordResetForm,InternalUserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeDoneView, PasswordChangeView, PasswordResetView, PasswordResetConfirmView, PasswordContextMixin
 from internal_users.models import InternalUser
 from talent_management.models import TalentsModel
@@ -40,8 +40,9 @@ logger = logging.getLogger('django')
 def register(request):
     if request.method == 'POST':
         # form = InternalUserCreationForm(request.POST)
+        form = InternalUserCreationForm(request.POST)
         # version 2 of registeration -- via InternalUserRegistrationFormV2
-        form = InternalUserRegistrationFormV2(request.POST)
+       
         if form.is_valid():
             # Save the user's information
             user = form.save(commit=False)
@@ -70,7 +71,7 @@ def register(request):
             for error in list(form.errors.values()):
                 messages.error(request, error)
     else:
-        form = InternalUserRegistrationFormV2()
+        form = InternalUserCreationForm()
     return render(request, 'internal_users/10_register.html', {'form': form})
 
 

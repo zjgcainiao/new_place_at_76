@@ -76,66 +76,12 @@
     align-items: center;
     justify-content: center;
   }
-
-  .automan-section,
-  .image-container {
-    /* transition: transform 0.4s ease-in-out; */
-    transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out, background 0.4s ease-in-out;
-  }
-
-  .image-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .image-container img {
-    max-width: 100%;
-    height: auto;
-    transition: transform 0.4s ease-in-out;
-  }
-
-  .automan-section {
-    padding: 10px;
-    border-radius: 5px;
-    border: transparent;
-    /* Optional: for a rounded corner effect */
-    box-shadow: 0 4px 2px rgba(0, 0, 0, 0.1);
-    /* Default subtle shadow */
-  }
-
-  @media screen and (min-width: 992px) {
-
-    .automan-section:hover,
-    .image-container:hover {
-      /* transform: scale(1.05); */
-      transform: translateY(-10px);
-      /* Creates the elevated effect */
-      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
-      /* Enhances shadow to give depth */
-      background: linear-gradient(60deg, #e6e7e9, #eed7cd 60%, #c0c5ca 100%);
-      /* Linear gradient background */
-      -webkit-transform: translateY(-10px);
-      /* Webkit compatibility */
-      -webkit-box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
-      /* Webkit compatibility */
-      -webkit-background: linear-gradient(60deg, #e6e7e9, #eed7cd 60%, #c0c5ca 100%);
-      /* Webkit compatibility */
-    }
-  }
-
-  @media screen and (max-width: 991px) {
-    .image-container {
-      order: -1;
-      /* To make image appear on top on smaller screens */
-    }
-  }
 </style>
 
 
 
 <!-- Page header-->
-<section class="bg-top-center section-with-navbar "
+<section class="bg-top-center section-with-navbar"
   style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); background-size: cover;">
   <!-- django messages section  -->
   {% include 'homepageapp/14_homepageapp_messages_section.html' %}
@@ -152,9 +98,8 @@
             waiting to be analyzed.</p>
           <p class="fs-lg text-dark opacity-80">Gone are the days of ambiguous repair statuses and surprise delays.
             We're here to ensure transparency, accuracy, and speed like you've never experienced before.</p>
-          <p class="fs-lg text-dark opacity-100">Be a part of the automotive future. Book a service with Automan Shop
-            and
-            experience the next generation of auto repairs!</p>
+          <p class="fs-lg text-dark opacity-80">Be a part of the automotive future. sign up a account and try out our
+            vin report!</p>
 
 
           <a class="btn btn-sm btn-outline-primary w-sm-auto  mb-2"
@@ -163,7 +108,7 @@
       </div>
       <!-- end of column  -->
 
-      <figure class="col-md-4 p-md-4 image-container mb-2">
+      <figure class="col-md-4 p-md-4 automan-image-container mb-2">
         <img class=" d-block mt-4 ms-auto cust-img"
           src="{% static 'homepageapp/img/2023-05-27-tesla-roadster-sports-car-tesla-motors-car.png' %}" alt="Car">
       </figure>
@@ -172,27 +117,28 @@
 
   <!-- end of container -->
 </section>
-<section class="container  automan-section p-2 mt-5">
+<section class="container automan-section p-2 mt-5">
   <div class="d-flex align-items-center justify-content-between mb-2 pb-2">
     <h4 class=" my-2 mb-sm-0" style="font-family: 'Orbitron', sans-serif;">What do we do
       differently:</h4>
   </div>
 
-  <ul class="fs-lg text-dark opacity-80 p-1 m-1">
-    <li class="p-1 m-1"><i class="fas fa-cogs"></i> <strong>System Integration</strong>. Real-time tracking of
+  <ul class="fs-lg text-dark opacity-80 p-2 m-2">
+    <li class="p-1 m-1"><span class="fas fa-cogs me-2"></span> <strong>System Integration</strong>. Real-time tracking
+      of
       tasks, from appointments to repairs, all at the tip of your fingers.</li>
-    <li class="p-1 m-1"><i class="fa-solid fa-screwdriver-wrench"></i> <strong> Data-powered Vehicle
+    <li class="p-1 m-1"><i class="fa-solid fa-screwdriver-wrench me-2"></i> <strong> Data-powered Vehicle
         Service.</strong> Never be in the dark again with our constant updates on repair progress and digital
       payment gateways. We bring live updates to you.</li>
-    <li class="p-1 m-1"><i class="fa-solid fa-credit-card"></i> <strong> Digital Payment Gateways.</strong>
+    <li class="p-1 m-1"><i class="fa-solid fa-credit-card me-2"></i> <strong> Digital Payment Gateways.</strong>
       Don't have time to pay at our stores? You can now pay online with Stripe.</li>
-    <li class="p-1 m-1"><i class="fa-solid fa-shield-halved"></i> <strong> Privacy Protection.</strong> We
+    <li class="p-1 m-1"><i class="fa-solid fa-shield-halved me-2"></i> <strong> Privacy Protection.</strong> We
       securely store your data, such as email, credit card information with SHA256 encryption, meeting the
       industry standard. </li>
-    <li class="p-1 m-1"><i class="fa-solid fa-file-shield"></i> <strong> Online VIN report.</strong> Dive
+    <li class="p-1 m-1"><i class="fa-solid fa-file-shieldn me-2"></i> <strong> Online VIN report.</strong> Dive
       deep into vehicle data, extracting specs, warranty details, and even safety recalls from our vast digital
       archives. Constantly get updates from your reports when you sign up an account with us.</li>
-    <li class="p-1 m-1"><i class="fa-solid fa-robot"></i> <strong> Articial Intellgience at its best.</strong>
+    <li class="p-1 m-1"><i class="fa-solid fa-robot me-2"></i> <strong> Articial Intellgience at its best.</strong>
       Meet Pulido, our virtual assistant. From smart service estimates to AI-assisted parts recommendations
       [launching soon], we're bringing the future to you.</li>
   </ul>
@@ -218,14 +164,17 @@
     <!-- Item -->
     <div class="col">
       <!-- Removed specific col sizing to allow automatic responsiveness -->
-      <div class="card h-100 card-body bg-transparent border-0 text-center card-hover-glare hover-shadow">
+      <div class="card h-100 bg-transparent border-0 text-center card-hover-glare hover-shadow">
         <!-- Added h-100 for equal height, hover-shadow for interactive hover effect -->
-        <img class="d-block mx-auto my-4" src="{% static icon.img_src %}" alt="{{ icon.alt }}"
-          ondragstart="return false;" style="width: auto; height: 70px;">
-        <!-- <div class="icon" alt="{{ icon.alt }}"  ondragstart="return false;" style="background-image: url('{% static icon.img_src %}');width: auto; height: 70px;"></div> -->
-        <!-- Added my-4 for more vertical spacing, and inline style for consistent icon size -->
-        <p class="fw-bold mb-0">{{ icon.title }}</p>
-        <!-- Removed stretched-link and added mb-0 to remove unnecessary link behavior and bottom margin -->
+        <div class="card-body my-1">
+          <img class="d-block mx-auto m-2" src="{% static icon.img_src %}" alt="{{ icon.alt }}"
+            ondragstart="return false;" style="width: auto; max-height: 70px;">
+          <!-- <div class="icon" alt="{{ icon.alt }}"  ondragstart="return false;" style="background-image: url('{% static icon.img_src %}');width: auto; height: 70px;"></div> -->
+          <!-- Added my-4 for more vertical spacing, and inline style for consistent icon size -->
+          <p class="fw-bold mb-1">{{ icon.title }}</p>
+          <!-- Removed stretched-link and added mb-0 to remove unnecessary link behavior and bottom margin -->
+        </div>
+
       </div>
     </div>
     {% endfor %}

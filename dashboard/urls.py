@@ -1,8 +1,8 @@
 from django.urls import include, path
 from dashboard.views import get_repair_order_dash, dashboard_detail_v1, dashboard_detail_v2
 from dashboard.views import WIPDashboardView, get_main_dashboard
-from dashboard.views import DashboardDetailView, RepairOrderUpdateView, PartItemUpdateView, LaborItemUpdateView
-from dashboard.views import repair_order_update, repair_order_and_line_items_detail, line_item_labor_and_part_item_update_view
+from dashboard.views import DashboardDetailView, RepairOrderUpdateView, LineItemUpdateView, LaborItemUpdateView
+from dashboard.views import repair_order_update, repair_order_and_line_items_detail, line_item_labor_and_part_item_update_merge_view
 from dashboard.views import chat_sidebar_view, SearchView
 from dashboard import views
 
@@ -21,8 +21,8 @@ urlpatterns = [
     # the dashboard detail page.
     path('v2/detail/<int:pk>/', dashboard_detail_v1, name='repair_order_detail'),
 
-    path('chats/customers/<int:customer_id>/',
-         chat_sidebar_view, name='dashboard-chats'),
+#     path('chats/customers/<int:customer_id>/',
+#          chat_sidebar_view, name='dashboard-chats'),
 
     path('v2/detail_v2/<int:pk>/', dashboard_detail_v2,
          name='dashboard-detail-v2'),
@@ -34,10 +34,13 @@ urlpatterns = [
          repair_order_update, name='repair-order-update-v2'),
     #  path('ros/<int:repair_order_id>/lineitems/', repair_order_and_line_items_detail, name='workitem-lineitem-detail'),
 
+
     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/',
-         PartItemUpdateView.as_view(), name='part-item-update-view'),
+         LineItemUpdateView.as_view(), name='part-item-update-view'),
+
+     # this is the current one 
     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/merge/',
-         line_item_labor_and_part_item_update_view, name='part-labor-item-merge-view'),
+         line_item_labor_and_part_item_update_merge_view, name='part-labor-item-merge-view'),
 
     # customer dash
     path('customers/', views.get_customer_dash, name='customer-dash'),

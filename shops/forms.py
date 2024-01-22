@@ -71,12 +71,13 @@ class VINSearchForm(forms.Form):
         self.helper.form_action = reverse(
             'shops:search_by_vin_or_plate')  # Use your URL name here
         self.helper.layout = Layout(
-            Row(
-                # Adjust the column sizes as needed
+                            # Adjust the column sizes as needed
                 Hidden('action', 'action_vin_search'),
-                Field('vin',wrapper_class='col-md-6 p-1 m-1'),
-                Field('year',wrapper_class='col-md-6 p-1 m-1'),
-                css_class='p-1 m-1'
+            Row(
+
+                Field('vin',wrapper_class='col-md-6  m-1'),
+                Field('year',wrapper_class='col-md-6  m-1'),
+                css_class='form-row m-1'
             ),
             Field('captcha', wrapper_class='col-md-12 p-1 m-1'),
             FormActions(
@@ -123,13 +124,13 @@ class LicensePlateSearchForm(forms.Form):
             # Use Div to create a Bootstrap grid structure for responsiveness
             Hidden('action', 'action_plate_search'),
             Row(
-                Field('license_plate', wrapper_class='col-md-6 mb-3'),
-                Field('state', wrapper_class='col-md-6 mb-3'),
+                Field('license_plate', css_class='col-md-6 p-1 mb-3'),
+                Field('state', css_class='col-md-6 p-1 mb-3'),
                 css_class='form-row m-1'
             ),
             Row(Column(Field('captcha', css_class=''),
-                   css_class='col-md-12'),
-                   css_class='form-row  m-1 '),
+                   css_class='col-md-12 m-1'),
+                   css_class='form-row  '),
             # You can add FormActions for better control over the submit button's placement and styling
             FormActions(
                 Button('plate_search', 'Search',

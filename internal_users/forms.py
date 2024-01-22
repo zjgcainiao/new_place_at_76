@@ -16,19 +16,28 @@ from django.urls import reverse
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field, HTML, ButtonHolder, Submit, Row, Column, Button, Hidden
 from crispy_forms.bootstrap import PrependedText, FormActions
+import re
 class InternalUserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    user_full_name = forms.CharField(label='Full Name', 
+                        required=True,
+                        max_length=255,
+                        help_text='Required. John R. Doe or John Doe.',
+                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your full name'}))
+    
+    password1 = forms.CharField(label='Password', 
+                                widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter Password'}))
     password2 = forms.CharField(
-        label='Repeat password', widget=forms.PasswordInput)
-    captcha =  ReCaptchaField(widget=ReCaptchaV2Invisible,
-                              label='please check the box below to verify you are not a robot.')
+        label='Repeat password', widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Repeat Password'}))
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(),
+                             label='please check the box below to verify you are not a robot.')
+    # captcha =  ReCaptchaField(widget=ReCaptchaV2Invisible,
+    #                           label='please check the box below to verify you are not a robot.')
     class Meta:
         model = InternalUser
         fields = ['id', 'email', 
-                  'user_first_name', 'user_middle_name','user_last_name',
+                  'user_full_name',
                   'password1', 'password2', 
                   ]
     
@@ -38,6 +47,18 @@ class InternalUserCreationForm(forms.ModelForm):
         if new.count():
             raise ValidationError(" Email Already Exist.")
         return email
+    
+    def clean_user_full_name(self):
+        full_name = self.cleaned_data['user_full_name'].strip()
+        # Check if the name is empty
+        if not full_name:
+            raise ValidationError("Full name is required.")
+        
+        # Check for not-allowed characters (adjust the regex as needed)
+        if re.search(r'[^a-zA-Z\s]', full_name):
+            raise ValidationError("Full name contains invalid characters.")
+        
+        return full_name
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -50,6 +71,14 @@ class InternalUserCreationForm(forms.ModelForm):
     def save(self, commit=True):
         # Save the provided password in hashed format
         user = super().save(commit=False)
+        full_name = self.cleaned_data['user_full_name']
+        name_parts = full_name.split()
+
+        user.user_first_name = name_parts[0]
+        user.user_middle_name = ' '.join(name_parts[1:-1]) if len(name_parts) > 2 else ''
+        user.user_last_name = name_parts[-1] if len(name_parts) > 1 else ''
+
+        
         user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
@@ -64,25 +93,22 @@ class InternalUserCreationForm(forms.ModelForm):
             self.helper.form_tag = False
             self.helper.form_method = "post"
             # self.helper.form_action = reverse(
-            #     'shops:search_by_vin_or_plate')  # Use your URL name here
+            #     'internal_users:internal_user_register')  # Use your URL name here
             self.helper.layout = Layout(
                 Row (
-                    Column(Field('email',css_class='form-control'),css_class='col-md-12 mb-2'),
-                css_class='form-group m-1'),
-                Row (
-                    Column(Field('user_first_name',css_class='form-control'),css_class='col-md-6 mb-2'),
-                    Column(Field('user_middle_name',css_class='form-control'),css_class='col-md-6 mb-2'),
-                    Column(Field('user_last_name',css_class='form-control'),css_class='col-md-6 mb-2'),
-                css_class='form-group m-1'),
+                    Column(Field('email',wrapper_class=' px-1 mt-1'),css_class='col-md-6'),
+                    Column(Field('user_full_name',wrapper_class='px-1 mt-1'),css_class='col-md-6'),
+                css_class='form-group'),
+
 
                 Row (
-                    Column(Field('password1',css_class='form-control'),css_class='col-md-6 mb-3'),
-                    Column(Field('password2',css_class='form-control'),css_class='col-md-6 mb-3'),
-                    css_class='form-group m-1'),    
-                'captcha',
-                ButtonHolder(
-                    Submit('submit', 'Submit',css_class='btn btn-outline-primary'),
-                ),
+                    Column(Field('password1',wrapper_class='px-1 mt-1'),css_class='col-md-6 '),
+                    Column(Field('password2',wrapper_class='px-1 mt-1'),css_class='col-md-6 '),
+                    css_class='form-group'),    
+                Row('captcha',css_class='form-group mt-1'),
+                Row(ButtonHolder(
+                    Submit('submit', 'Submit',css_class='btn btn-primary'),
+                ),css='m-1'),
             )
 # version 2 --- via UserCreationForm, AuthenticationForm
 # 2023-04-26-chat-GPT-enabled
@@ -91,7 +117,7 @@ class InternalUserCreationForm(forms.ModelForm):
 class InternalUserRegistrationFormV2(forms.ModelForm):
     email = forms.EmailField(
         required=True, 
-        help_text='Required. Enter the very email address that is registed with the company.')
+        help_text='Required. Enter the personal email address that is registered with the company.')
     user_first_name = forms.CharField(
         max_length=50, required=True, help_text='Required.')
     user_middle_name = forms.CharField(
@@ -140,14 +166,14 @@ class InternalUserRegistrationFormV2(forms.ModelForm):
                   'user_first_name', 'user_middle_name','user_last_name',
                   'password1', 'password2', 
                   ]
-        widgets = {
-            'email': forms.EmailInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'user_first_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'user_middle_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'user_last_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
-            'password1': forms.PasswordInput(attrs={'class': 'form-control', }),
-            'password2': forms.PasswordInput(attrs={'class': 'form-control', }),
-        }
+        # widgets = {
+        #     'email': forms.EmailInput(attrs={'type': 'text', 'class': 'form-control', }),
+        #     'user_first_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
+        #     'user_middle_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
+        #     'user_last_name': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', }),
+        #     'password1': forms.PasswordInput(attrs={'class': 'form-control', }),
+        #     'password2': forms.PasswordInput(attrs={'class': 'form-control', }),
+        # }
         labels = {
             'email': 'Email',
             'user_first_name': 'First Name',
@@ -175,7 +201,7 @@ class InternalUserRegistrationFormV2(forms.ModelForm):
                 Column(Field('user_first_name',css_class='form-control'),css_class='col-md-6 mb-3'),
                 Column(Field('user_middle_name',css_class='form-control'),css_class='col-md-6 mb-3'),
                 Column(Field('user_last_name',css_class='form-control'),css_class='col-md-6 mb-3'),
-            css_class='form-row '),
+            css_class='form-group'),
 
             Row (
                 Column(Field('password1',css_class='form-control p-1 m-1'),css_class='col-md-6 mb-3'),
@@ -184,7 +210,7 @@ class InternalUserRegistrationFormV2(forms.ModelForm):
             
             Row('captcha',css_class='form-group'),
 
-            Row (
+            ButtonHolder (
                 Button('submit', 'Submit',css_class='btn btn-outline-primary'),
             ),
         )

@@ -7,21 +7,21 @@
     /* .nav-tabs {
     border-bottom: 2px solid #dee2e6;
     } */
-
+    /* The first block of CSS styles applies to all .nav-link elements that are children of .nav-tabs: */
     .nav-tabs .nav-link {
-        border: 1px solid transparent;
+        border: 2px solid transparent;
         border-top-left-radius: 0.25rem;
         border-top-right-radius: 0.25rem;
         background: #f8f9fa;
         /* #f8f9fa;  Light grey background. orange400 */
-        margin-right: 5px;
+        margin: 5px;
     }
 
     .nav-tabs .nav-link.active {
         color: #495057;
         background-color: #fed7aa;
         /* orange200 */
-        border-color: #dee2e6 #dee2e6 #fff;
+        border-color: #dee2e6;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
             0 2px 4px -1px rgba(0, 0, 0, 0.06);
         /* Soft shadow for active tab */
@@ -29,14 +29,14 @@
 
     /* added for btn-export-pdf and rest of form customization 2023-11-06 */
 
-
     .tab-content>.tab-pane {
         border: 1px solid #dee2e6;
         border-top: none;
         /* Hide top border */
         background: linear-gradient(145deg, #ffffff, #e6e6e6);
-        padding: 15px;
-        box-shadow: inset 20px 20px 60px #bebebe,
+        margin: 5px;
+        padding: 10px;
+        box-shadow: inset 20px 20px 60px #7f8080,
             inset -20px -20px 60px #ffffff;
         /* Inward shadows for a matte look */
     }
@@ -56,6 +56,7 @@
     /* added for btn-export-pdf and rest of form customization 2023-11-06 */
 
     /* Add these styles for the form fields' gradient background */
+    .form-group .form-control,
     .form-control,
     .form-select {
         background: transparent;
@@ -68,50 +69,45 @@
     .form-label,
     label {
         font-weight: bold;
+        font-family: 'Orbitron', sans-serif;
         /* Adjust font-weight as needed */
     }
 
     /* Metallic border style for form inputs */
-    .form-group .form-control,
-    .form-control {
-        border: 1px solid #ccc;
-        /* Light grey border to start with */
-        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.075) inset,
-            /* Inner shadow for depth */
-            0px 0px 8px rgba(102, 175, 233, 0.6);
-        /* Glow effect for metallic feel */
-        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-        /* Transition for focus */
-    }
 
     /* Metallic effect enhancement on form control focus */
+    .form-select,
     .form-control:focus {
-        border-color: #9eadc0;
+        border-color: #303946;
         /* Metallic color */
-        outline: 0;
+        outline: 1px;
+        /* Light grey border to start with */
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1) inset,
+            /* Inner shadow for depth */
+            0px 0px 8px rgba(127, 127, 127, 0.6);
+        /* Glow effect for metallic feel */
+        transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
         /* Remove default focus outline */
         box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
         /* Metallic glow on focus */
     }
 
-
     /* Styles for the export buttons */
-
     .btn-export-pdf {
         background-color: transparent;
         /* Green background */
         color: rgb(10, 10, 10);
         /* White text */
         border: none;
-        padding: 5px 5px;
-        margin: 5px 0;
+        padding: 5px;
+        margin: 5px;
         border-radius: 5px;
         transition: background-color 0.3s ease;
     }
 
     .btn-export-pdf:hover {
-        background-color: #e79a71;
-        color: black;
+        background-color: #e89d74;
+        color: rgb(81, 78, 78);
 
     }
 
@@ -124,7 +120,7 @@
     }
 
     .steel-plate-card {
-        background: linear-gradient(145deg, #a3adbe, #cfd9df, #e2ebf0, #cfd9df, #8e9aaf);
+        background: linear-gradient(100deg, #cfd9df, #e2ebf0, #cfd9df, #8e9aaf);
         color: #333;
         font-family: 'Roboto', sans-serif;
         border: 1px solid #707070;
@@ -144,13 +140,13 @@
     .steel-plate-card::after {
         content: '';
         position: absolute;
-        top: 2px;
-        right: 2px;
-        bottom: 2px;
-        left: 2px;
+        top: 5px;
+        right: 5px;
+        bottom: 5px;
+        left: 5px;
         z-index: -1;
         background: linear-gradient(145deg, #e2ebf0, #cfd9df, #8e9aaf);
-        border-radius: 3px;
+        border-radius: 5px;
     }
 
 
@@ -224,7 +220,7 @@
                     class="btn btn-outline-secondary">Search</button> -->
             <!-- </form> -->
         </div>
-        <div class="tab-pane fade" id="byVIN" role="tabpanel" aria-labelledby="byVIN-tab">
+        <div class="tab-pane fade show" id="byVIN" role="tabpanel" aria-labelledby="byVIN-tab">
 
             <!-- By VIN Form -->
             {% crispy vin_form vin_form.helper %}
@@ -265,9 +261,9 @@
 <!-- export to pdf buttons-->
 <div class="container">
     <div class="row justify-content-start">
-        <div class="col-auto">
+        <div class="col">
             <button id="exportPdfButtonClientSide" class="btn btn-export-pdf">
-                <i class="fas fa-file-pdf"></i> Export
+                Export to <i class="fas fa-file-pdf me-3"></i>
             </button>
         </div>
         <!-- Uncomment below for server-side export functionality
@@ -301,11 +297,11 @@
         <a href="{% url 'checkout_page' vin_number=vin_number %}" class="btn btn-primary">
             Full VIN Report
         </a>
-        <div class="card bg-light">
+        <div class="card card-hover bg-light">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="text-muted">Premium content available, including safety recalls, manufacturing
-                        information.
+                        information and battery information for electric vehicles
                     </div>
                     <a href="{% url 'shops:payment_checkout' proudct_id='prod_PKOol19RtrtGTG' %}"
                         class="btn btn-primary">Purchase to view</a>
@@ -320,16 +316,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <!-- Include the libraries -->
-<!-- <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script> -->
 <!-- new vendor html to image js -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js" integrity="sha512-7tWCgq9tTYS/QkGVyKrtLpqAoMV9XIUxoou+sPUypsaZx56cYR/qio84fPK9EvJJtKvJEwt7vkn6je5UVzGevw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 <script>
-    // document.addEventListener('DOMContentLoaded', (event) => {
     $(function () {
         // Once the document is loaded, you can use jsPDF and html2canvas
-        const exportPdfButton = document.getElementById('exportPdfButtonClientSide');
+        const exportPdfButton = $('#exportPdfButtonClientSide');
 
         exportPdfButton.addEventListener('click', () => {
             // Ensure 'content' points to the existing table you want to capture
@@ -339,29 +333,7 @@
                 console.error('Element `#resultDataDisplay` to capture not found');
                 return;
             }
-            // if (typeof html2canvas !== 'function' || !window.jspdf?.jsPDF) {
-            //     console.error('Required libraries are not loaded');
-            //     return;
-            // }
-            // html2canvas(customSection, { scale: 2 }).then(customCanvas => {
-            //     html2canvas(content, { scale: 2 }).then(contentCanvas => {
-            //         const pdf = new window.jspdf.jsPDF();
-            //         const imgWidth = 210; // A4 width in mm
 
-            //         // Add custom section
-            //         let imgHeight = customCanvas.height * imgWidth / customCanvas.width;
-            //         pdf.addImage(customCanvas.toDataURL('image/jpeg', 0.7), 'JPEG', 0, 0, imgWidth, imgHeight);
-
-            //         // Add a page break for content section
-            //         pdf.addPage();
-            //         imgHeight = contentCanvas.height * imgWidth / contentCanvas.width;
-            //         pdf.addImage(contentCanvas.toDataURL('image/jpeg', 0.7), 'JPEG', 0, 0, imgWidth, imgHeight);
-
-            //         pdf.save('download.pdf');
-            //     });
-            // }).catch(error => {
-            //     console.error('Error generating PDF:', error);
-            // });
 
             // Check if the content exists and is part of the document
             if (typeof html2canvas == 'function') {
@@ -375,7 +347,6 @@
                             console.error('jsPDF not found');
                             return;
                         }
-
 
                         //         // Add custom section
                         //         let imgHeight = customCanvas.height * imgWidth / customCanvas.width;
@@ -559,7 +530,8 @@
                         <div class="card bg-light mt-4">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div class="text-muted">Premium content available</div>
+                                    <div class="text-muted">Premium content available, including safety recalls, manufacturing
+                        information and battery information for electric vehicles</div>
                                     <a href="{% url 'shops:custom_checkout' product_id='prod_PKOol19RtrtGTG' %}" class="btn btn-primary">Purchase to view</a>
                                 </div>
                             </div>

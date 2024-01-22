@@ -5,7 +5,7 @@
 
 {% block content-main %}
 <div class="authentication-bg">
-    <div class="">
+    <div class="account-pages pt-2 pt-sm-5 pb-4 pb-sm-5">
         <div class="container m-1 p-1">
             <div class="row justify-content-center">
                 <div class="col-xxl-9 col-md-12">
@@ -28,44 +28,21 @@
                             <form method="POST">
                                 {% csrf_token %}
                                 {% crispy form form.helper %}
-
-                                {% comment %}
-                                {% for field in form %}
-                                <div class="my-3">
-                                    <label class="form-label">{{field.label_tag}}</label>
-                                    {{field}}
-                                </div>
-                                {% endfor %}
-
-                                <div class="mb-3">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" id="checkbox-signup">
-                                        <label class="form-check-label" for="checkbox-signup">I accept <a href="#"
-                                                class="text-muted">Terms and Conditions</a></label>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 text-center">
-                                    <button class="btn btn-primary" type="submit"> Register </button>
-                                </div>
-                                {% endcomment %}
                             </form>
                         </div> <!-- end card-body -->
                     </div>
                     <!-- end card -->
 
-                    <div class="row my-2">
-                        <div class="col-12 text-center">
-                            <p class="text-muted">Exsiting Users Click Here to<a
-                                    href="{% url 'internal_users:internal_user_login' %}" class="text-muted ms-1"><b>Log
-                                        In</b></a></p>
-                        </div> <!-- end col-->
-                    </div>
-                    <!-- end row -->
-
                 </div> <!-- end col -->
             </div>
             <!-- end row -->
+            <div class="row mb-3">
+                <div class="text-center fw-normal">
+                    <p>Exsiting Users Click Here to <a href="{% url 'internal_users:internal_user_login' %}"
+                            class="fw-bold ms-1"><strong>Log
+                                In</strong></a></p>
+                </div> <!-- end col-->
+            </div>
         </div>
         <!-- end container -->
     </div>
