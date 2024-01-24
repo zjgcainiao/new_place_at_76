@@ -427,7 +427,7 @@ class LineItemUpdateView(UpdateView, LoginRequiredMixin):
     #     response = super().form_valid(form)
     #     return redirect(reverse('dashboard:dashboard_detail',args=self.kwargs['line_item_id']))
 
-
+# 2024-01-21 this is the current version of the line item update merge view
 def line_item_labor_and_part_item_update_merge_view(request, pk, line_item_id):
     repair_order_id = pk  # pk is repair_order_id in repairorder model.
     line_item = LineItemsNewSQL02Model.objects.prefetch_related(
@@ -437,7 +437,7 @@ def line_item_labor_and_part_item_update_merge_view(request, pk, line_item_id):
         ).filter(
             line_item_id=line_item_id).first()  # to handle not found error by returning None
 
-    # use .all() instead of .exists() to reduce the queries into DB.
+    # use .all() instead of .exists() to reduce the number of queries into DB.
     if line_item.partitems_lineitems.all():
         Formset = PartItemInlineFormSet
     elif line_item.lineitem_laboritem.all():
@@ -450,7 +450,6 @@ def line_item_labor_and_part_item_update_merge_view(request, pk, line_item_id):
 
     # in one single line item, some data is from lineitem table, some is either from partitem or laboritem table.
     if request.method == 'POST':
-
         form = LineItemUpdateForm(request.POST, instance=line_item)
         formset = Formset(request.POST, instance=line_item)
 

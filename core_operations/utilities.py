@@ -79,7 +79,6 @@ def get_user_details(request):
 
 
 import json
-from datetime import datetime
 
 def parse_raw_json(json_string):
     try:
@@ -91,3 +90,27 @@ def parse_raw_json(json_string):
         print("Error parsing JSON:", e)
         return {}
 
+from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
+
+def parse_to_two_digit_decimal(value):
+    try:
+        # Attempt to convert and round the value
+        if value is not None:
+            return Decimal(str(value)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    except (InvalidOperation, ValueError, TypeError) as e:
+        # Log the error, adjust the logging as per your application's logging setup
+        print(f"Error formatting decimal value '{value}': {e}")
+    # Return None if there's an error or if the input value is None
+    return None
+
+from datetime import datetime
+
+def format_date(date_str, date_format='%Y-%m-%d %H:%M:%S'):
+    try:
+        if date_str is not None:
+            return datetime.strptime(date_str, date_format)
+    except ValueError as e:
+        # Log the error, adjust the logging as per your application's logging setup
+        print(f"Error parsing date string '{date_str}': {e}")
+    # Return None if there's an error or if the input date_str is None
+    return None

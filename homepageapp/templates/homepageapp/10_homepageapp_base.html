@@ -45,8 +45,8 @@
   <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax.min.js' %}"></script>
   <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script>
   <!-- jQuery 3.7.1 js -->
-<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
-  integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <!-- Main theme js-->
   <script src="{% static 'homepageapp/js/theme.min.js' %}"></script>
 
@@ -352,7 +352,19 @@
       font-weight: bold;
 
     }
+    #chatbotUI {
+        min-width: 300px; /* Minimum width */
+        max-width: 90%; /* Don't let it exceed 90% of the screen width */
+        width: auto; /* Default width */
+    }
 
+    /* Medium screens (Greater than or equal to 768px) */
+    @media (min-width: 768px) {
+        #chatbotUI {
+            min-width: 450px; /* Slightly larger minimum width for medium screens */
+          
+        }
+    }
     #userInput {
       font-weight: bold;
       /* Bolder font */
@@ -385,8 +397,8 @@
       position: fixed;
       left: 0;
       top: 0;
-      width: 100%;
-      height: 100%;
+      max-width: 90%;
+      max-height: 90%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -420,15 +432,17 @@
       /* Pointer cursor on hover */
     }
 
-    .confirmation-dialog {
+.confirmation-dialog {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    left: 0;
-    top: 0;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); 
+    /* # Center the dialog */
     width: 100%; /* Full width */
     height: 100%; /* Full height */
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-    z-index: 1050; /* Sit on top */
+    background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+    z-index: 2000; /* Sit on top */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -436,17 +450,36 @@
 
 
 .dialog-content {
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: auto; /* Could be percentage or fixed width */
-    max-width: 90%; /* Ensures padding inside the viewport */
+    text-align: center;
+    background: #fefefe;
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-width: 95%; /* Don't let it get too wide on large screens */
+    width: auto; /* Shrink on small screens */
+    margin: 5px; /* Ensure some space around the content */
 }
 
-/* Style for the buttons */
+/* Style for the buttons and button-group */
+
+.dialog-content .button-group {
+    display: flex;
+    flex-direction: row; /* Align buttons in a row */
+    justify-content: center; /* Center buttons horizontally */
+    align-items: center; /* Center buttons vertically */
+    gap: 10px; /* Add space between buttons */
+    margin-top: 10px; /* Space between text and buttons */
+}
+
+/* Small screens (less than 768px) */
+@media (max-width: 767px) {
+    .dialog-content .button-group {
+        flex-direction: column; /* Stack buttons vertically */
+    }
+}
+
 .dialog-content button {
-    margin: 10px;
+    margin: 5px;
     /* width: 150px; Fixed width for all buttons */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease; /* Smooth transition */
@@ -479,13 +512,13 @@
 
   <!-- added confirmationDiag to integrate the chatbot and customer support window -->
 <div id="confirmationDialog" class="confirmation-dialog" style="display: none;">
-  <div class="dialog-content">
+  <div class="dialog-content p-2 m-2">
     <h4>Welcome!</h4>
-    <p>Please choose your preferred support option:</p>
+    <p class="fw-normal">Please choose your preferred support option:</p>
     <div class="button-group"> <!-- Button group container -->
-      <button id="chooseChatbot" class="btn btn-primary">Virtual Assistant</button>
-      <button id="chooseHumanSupport" class="btn btn-secondary">Human Support</button>
-      <button id="cancelDialog" class="btn btn-danger">Cancel</button>
+      <button id="chooseChatbot" class="btn btn-outline-primary">AI Pulido</button>
+      <button id="chooseHumanSupport" class="btn btn-outline-secondary">Human Support (soon)</button>
+      <button id="cancelDialog" class="btn btn-outline-danger">Cancel</button>
     </div>
   </div>
 </div>
@@ -506,7 +539,7 @@
   <!-- ----------------------------UI for chatbot --------------------------------  -->
 
   <!-- AI assitant: chatbotUI  -->
-  <div id="chatbotUI" class="card card-hover card-lg position-fixed bottom-0 end-0 m-3 p-2 glossy-metallic"
+  <div id="chatbotUI" class="card card-hover card-lg position-fixed bottom-0 end-0 p-1 m-2  glossy-metallic"
     style="display:none; min-width: 560px; z-index:1000;">
     <div class="card-header" style="background:transparent;">
       <span class="float-end" id="closeChatbot" style="cursor:pointer;">
@@ -532,7 +565,7 @@
     class="btn btn-outline-success position-fixed automan-chatbot-toggle-button bottom-0 end-0 m-3 p-1 fab-icon"
     style="z-index: 1030; margin-bottom: 10px; margin-right: 10px;" aria-label="Talk to Virtual Assistant Pulido">
     <img src="{% static 'core_operations/imgs/robot-icon-01-smaller.svg' %}" alt="Robot Icon"
-      style="height: 2em; width: 2em;" />
+      style="height: 1.5em; width: 1.5em;" />
   </button>
 
   <!-- added customized css styling  -->

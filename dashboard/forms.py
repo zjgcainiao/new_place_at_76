@@ -553,15 +553,15 @@ class PartItemUpdateForm(forms.ModelForm):
             'part_item_commission_amount',
 
 
-            # 'part_item_is_MPlg_item',
-            # 'part_item_is_changed_MPlg_item',
-            # 'part_item_part_type',
-            # 'part_item_size',
-            # 'part_item_is_tire',
-            # 'part_item_meta',
-            # 'part_item_added_from_supplier',
-            # 'part_item_purchased_from_vendor',
-            # 'part_item_purchased_from_supplier',
+            'part_item_is_MPlg_item',
+            'part_item_is_changed_MPlg_item',
+            'part_item_part_type',
+            'part_item_size',
+            'part_item_is_tire',
+            'part_item_meta',
+            'part_item_added_from_supplier',
+            'part_item_purchased_from_vendor',
+            'part_item_purchased_from_supplier',
             'part_item_shipping_description',
             'part_item_shipping_cost',
         ]
@@ -605,13 +605,44 @@ class PartItemUpdateForm(forms.ModelForm):
         self.helper.form_method = "post"
         self.helper.label_class = 'col-3'
         self.helper.field_class = 'col-9'
+        self.helper.layout = Layout(
+                    Row(Column(Field('part_item_quantity', css_class='form-control'),
+                            css_class='col-8'),
+                        Column(Field('part_item_is_quantity_confirmed', style='margin-left: 0;',wrapper_class='form-check form-switch p-1 m-1'),
+                            css_class='col-4'),
+                        Column (Field('part_item_unit_cost', rows="3", css_class='form-control mb-2'),
+                                css_class='col-8'),
+                        Column (Field('part_item_is_user_entered_unit_cost', rows="3", css_class='form-control mb-2'),
+                                css_class='col-4'),
+                        css_class='form-group p-1 m-1'),
 
+                    Row(Column(Field('labor_item_hours_charged', css_class='form-control mb-2'),
+                        css_class='col-6'),
+                        Column(
+                            Field('labor_item_is_user_entered_labor_rate', style='margin: 5px;',wrapper_class='form-check form-switch p-1 m-1'),
+                            css_class='col-6'
+                            ),
+                    css_class='form-group p-1 m-1'),
+
+                    
+                    Row(
+                        Column(Field('labor_item_parts_estimate', css_class='form-control mb-2'),
+                        css_class='col-6'),
+                        Column(Field('labor_item_is_come_back_invoice', style='margin-left: 0;',wrapper_class='form-check form-switch p-1 m-1'),
+                            css_class='col-6'),
+                        css_class='form-group m-1 p-1'),
+
+
+                )
 
 class LaborItemUpdateForm(forms.ModelForm):
     labor_item_symptom = forms.CharField(widget=forms.TextInput(
         attrs={"placeholder": 'include the noise, the incident that customer mentions'}), label='Symtoms')
     labor_item_is_user_entered_labor_rate = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={}), label='is manual labor rate?')
+       attrs={'class': 'form-check-input', 'role': 'switch'}), label='is manual labor rate?')
+    labor_item_is_come_back_invoice = forms.BooleanField(widget=forms.CheckboxInput(
+        attrs={'class': 'form-check-input', 'role': 'switch'}), label='is come-back invoice')
+    
     labor_item_hours_charged = forms.FloatField(widget=forms.NumberInput())
     labor_item_work_performed = forms.CharField(
         widget=forms.Textarea(), label='work performed (labor)')
@@ -626,9 +657,8 @@ class LaborItemUpdateForm(forms.ModelForm):
             'labor_item_hours_charged',
             'labor_item_is_come_back_invoice',
             'labor_item_parts_estimate',
-            'labor_rate_description_id',
+            'labor_rate_description',
             'labor_item_is_user_entered_labor_rate',
-
             # 'labor_item_is_MPlg_item',
             # 'labor_item_is_Changed_MPlg_item',
         ]
@@ -636,39 +666,63 @@ class LaborItemUpdateForm(forms.ModelForm):
 
             # 'line_item': forms.TextInput(attrs={'class': 'form-control',
             #                                     'readonly': 'readonly'}),
-            'labor_item_hours_charged': forms.NumberInput(attrs={'class': 'form-control', }),
-            'labor_item_symptom': forms.TextInput(attrs={'class': 'form-control', }),
-            'labor_item_parts_estimate': forms.NumberInput(attrs={'class': 'form-control', }),
-            'labor_item_is_come_back_invoice': forms.CheckboxInput(attrs={})
+            'labor_item_hours_charged': forms.NumberInput(attrs={'class': 'form-control'}),
+            'labor_item_symptom': forms.TextInput(attrs={'class': 'form-control', 
+                                                         'placeholder': 'Include the noise, the incident that customer mentions'}),
+            'labor_item_parts_estimate': forms.NumberInput(attrs={'class': 'form-control'}),
+            'labor_item_is_come_back_invoice': forms.CheckboxInput(),
+            'labor_item_is_user_entered_labor_rate': forms.CheckboxInput(attrs={'class': 'form-check-input', 'role': 'switch'}),
         }
 
-        labels = {
-            # 'labor_item_is_user_entered_labor_rate': 'Is this part has been confirmed? '
-            'labor_item_is_come_back_invoice': 'as come-back invoice?',
-
-        }
 
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
         # add a "form-control" class to each form input
         # for enabling bootstrap
-        for name, field in self.fields.items():
-            # check widget type
-            if isinstance(field.widget, (forms.TextInput, forms.Textarea, forms.Select)):
-                field.widget.attrs.update({'class': 'form-control'})
+        # for name, field in self.fields.items():
+        #     # check widget type
+        #     if isinstance(field.widget, (forms.TextInput, forms.Textarea, forms.Select)):
+        #         field.widget.attrs.update({'class': 'form-control'})
 
         # self.fields['appointment_vehicle_make'].choices = [(make.pk, make.make_name) for make in MakesNewSQL02Model.objects.all()]
 
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
+        self.helper.form_class = 'form-inline'
         self.helper.form_tag = False
         self.helper.form_method = "post"
-        self.helper.label_class = 'col-3'
-        self.helper.field_class = 'col-9'
+        # self.helper.label_class = 'col-3'
+        # self.helper.field_class = 'col-9'
+        self.helper.layout = Layout(
+            Row(Column(Field('labor_item_symptom', css_class='form-control'),
+                    css_class='col-12'),
+                   
+                Column (Field('labor_item_work_performed', rows="3", css_class='form-control mb-2'),
+                        css_class='col-12'),
+                css_class='form-group p-1 m-1'),
+
+            Row(Column(Field('labor_item_hours_charged', css_class='form-control mb-2'),
+                   css_class='col-6'),
+                Column(
+                    Field('labor_item_is_user_entered_labor_rate', style='margin: 5px;',wrapper_class='form-check form-switch p-1 m-1'),
+                    css_class='col-6'
+                    ),
+            css_class='form-group p-1 m-1'),
+
+            
+            Row(
+                Column(Field('labor_item_parts_estimate', css_class='form-control mb-2'),
+                   css_class='col-6'),
+                Column(Field('labor_item_is_come_back_invoice', style='margin-left: 0;',wrapper_class='form-check form-switch p-1 m-1'),
+                    css_class='col-6'),
+                css_class='form-group m-1 p-1'),
 
 
+        )
 
+RepairOrderFormSet = formset_factory(RepairOrderUpdateForm, extra=0)
+CustomerFormSet = formset_factory(CustomerUpdateForm, extra=0)
+AddressFormSet = formset_factory(AddressUpdateForm, extra=0)
 
 PartItemInlineFormSet = inlineformset_factory(LineItemsNewSQL02Model, PartItemModel,
                                               form=PartItemUpdateForm, extra=0,
@@ -680,9 +734,7 @@ LaborItemInlineFormSet = inlineformset_factory(LineItemsNewSQL02Model, LaborItem
                                                can_delete=True,
                                                )
 
-RepairOrderFormSet = formset_factory(RepairOrderUpdateForm, extra=0)
-CustomerFormSet = formset_factory(CustomerUpdateForm, extra=0)
-AddressFormSet = formset_factory(AddressUpdateForm, extra=0)
+
 
 # LineItem  UpdateForm. Parent formto PartItemUpdateForm and LaborItemUpdateForm.
 

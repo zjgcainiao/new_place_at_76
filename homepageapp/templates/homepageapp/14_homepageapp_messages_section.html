@@ -1,19 +1,54 @@
 <style>
-    #homepageapp-message-container {
+    #automan-message-container {
         transition: opacity 0.5s, height 0.5s, padding-top 0.5s;
         overflow: hidden;
         /* Prevents content from spilling during collapse */
     }
+
+    .btn-close {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: transparent;
+        border: black;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: rbg(0 0 0 / 50%) 0px 0px 0px 1px;
+    }
+
+    /* Style for the close icon (using a pseudo-element for demonstration) */
+    .btn-close::after {
+        content: 'x';
+        /* Multiplication sign (×) as close icon */
+        display: block;
+        color: #f45207;
+        /* Color of the close icon */
+    }
+
+    .alert {
+        position: relative;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
+    }
+
+    /* You might want to provide some padding to the right to ensure text does not go under the button */
+    .alert-dismissible {
+        padding-right: 4rem;
+        /* Adjust as needed */
+    }
 </style>
+
 {% if messages %}
-<div id="homepageapp-message-container" class="container" style="padding-top: 50px;">
+<div id="automan-message-container" class="container" style="padding-top: 50px;">
     <!-- Adjust the padding-top value to match your navbar's height -->
     <div class="container justify-content-center">
-        <div class="p-1 m-1">
+        <div class="card p-1 m-1">
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                 {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}<strong>Important:</strong>{% endif %}
-                <p>{{ message }}</p>
+                <p class="fw-normal">{{ message }}</p>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
                     onclick="checkEmpty(this)">
                 </button>
@@ -28,7 +63,7 @@
         const alert = button.closest('.alert');
         alert.remove();
 
-        const container = document.getElementById('homepageapp-message-container');
+        const container = document.getElementById('automan-message-container');
         // Check if there are no more alerts in the container
         if (container.getElementsByClassName('alert').length === 0) {
             // If no more alerts, start the fade-out and collapse animation

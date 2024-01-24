@@ -8,6 +8,40 @@
     border-bottom: 2px solid #dee2e6;
     } */
     /* The first block of CSS styles applies to all .nav-link elements that are children of .nav-tabs: */
+
+    .automan-error {
+        font-family: 'Orbitron', sans-serif;
+        /* Change to your preferred font */
+        color: maroon;
+        font-size: 1.1em;
+        font-weight: 700;
+        padding: 10px;
+        border: 3px solid maroon;
+        border-radius: 5px;
+        background: linear-gradient(145deg, #ffffff, #e6e6e6);
+        /* linear-gradient(145deg, silver, gray); */
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        animation: pulseError 1s;
+    }
+
+    @keyframes pulseError {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
     .nav-tabs .nav-link {
         border: 2px solid transparent;
         border-top-left-radius: 0.25rem;
@@ -258,7 +292,7 @@
         be relied upon as a sole basis for making decisions without consulting primary, more accurate, more complete, or
         more timely sources of information.</p>
 </div>
-<!-- export to pdf buttons-->
+<!-- export-to-pdf buttons-->
 <div class="container">
     <div class="row justify-content-start">
         <div class="col">
@@ -276,6 +310,7 @@
     </div>
 </div>
 <!-- end of pdf buttons -->
+
 <!-- resultData Display  -->
 <div class="container mt-2" id="resultDataDisplay">
 
@@ -325,15 +360,14 @@
         // Once the document is loaded, you can use jsPDF and html2canvas
         const exportPdfButton = $('#exportPdfButtonClientSide');
 
-        exportPdfButton.addEventListener('click', () => {
+        exportPdfButton.on('click', () => {
             // Ensure 'content' points to the existing table you want to capture
-            var content = document.querySelector('#resultDataDisplay');
-            var customSection = document.querySelector('#customSectionForPdf');
+            var content = $('#resultDataDisplay');
+            var customSection = $('#customSectionForPdf');
             if (!content) {
                 console.error('Element `#resultDataDisplay` to capture not found');
                 return;
             }
-
 
             // Check if the content exists and is part of the document
             if (typeof html2canvas == 'function') {
@@ -385,7 +419,11 @@
 
 <!-- customized script to display vin data  -->
 <script>
+
     $(function () {
+        customer_user_login_url = `{% url 'customer_users:customer_user_login' %}`;
+        console.log('customer_user_login_url: ' + customer_user_login_url);
+
         // btn-primary was added to the button for no reason.
         $('#vin-search-button').removeClass('btn-primary');
         $('#plate-search-button').removeClass('btn-primary');
@@ -417,13 +455,15 @@
 
             $.ajax({
                 type: 'POST',
-                url: form.attr('action'), //"{% url 'shops:search_by_vin_or_plate' %}", // URL to your Django view
+                url: form.attr('action'), //"{% url 'shops:search_by_vin_or_plate' %}"
                 data: formData,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                     xhr.setRequestHeader('X-CSRFToken', csrfToken); // Include the CSRF token in the header
                 },
                 success: function (response) {
+                    // for debugging
+
                     console.log(response);
                     // Clear any previous results and the loading spinner
                     $('#resultDataDisplay').empty();
@@ -449,11 +489,35 @@
                     // Append the table to resultDataDisplay div
                     $('#resultDataDisplay').append(table);
                 },
-                error: function () {
-                    $('#resultDataDisplay').html('<p>An error has occurred</p>');
-                }
+                error: function (xhr, status, error) {
+                    console.error('Error on AJAX request when fetching the vin data ID');
+                    // Check if the error is due to the search limit being reached
+                    if (xhr.status === 403) {
+                        // Parse the JSON response
+                        var response = JSON.parse(xhr.responseText);
+
+                        // Start constructing the error message
+                        var errorMessage = `<p class="automan-error">${response.error}</p>`;
+
+                        // If the response contains 'show_login_link', add a hyperlink
+                        if (response.show_login_link) {
+                            errorMessage += `<p>Please <a href="{% url 'customer_users:customer_user_login' %}" class="automan-login-link">create an account</a> to continue searching.</p>`;
+                        }
+                        // Display the error message
+
+                        $('#resultDataDisplay').html(errorMessage);
+                    } else {
+                        // Handle other types of errors and display message to the user
+                        $('#resultDataDisplay').empty().html(`<div class="alert alert-danger automan-error">An error occurred (Status:${status}):  ${error} </div>`);
+                    }
+                },
+            }).always(function () {
+                // 2024-01-23. This will be called after success or error, so the spinner will be removed in both cases
+                $('#resultDataDisplay .spinner-border').remove();  // Make sure to remove/hide the spinner
             });
         });
+
+        // license plate search
         $('#plate-search-button').click(function (event) {
             // $("#PlateSearchForm").submit(function(event){
 
@@ -468,7 +532,7 @@
             // Clear existing data and show a loading spinner 2023-12-27
             // var spinner =
             $('#resultDataDisplay').empty().html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
-            $.ajax({
+            jQuery.ajax({
                 type: 'POST',
                 url: form.attr('action'), // `"{% url 'shops:search_by_vin_or_plate' %}"`
                 data: formData,
@@ -479,7 +543,7 @@
                 success: function (response) {
                     console.log(response);
                     // Clear any previous results
-                    // $('#resultDataDisplay').empty();
+                    $('#resultDataDisplay').empty();
 
                     // read the plate_data_id from the response and fetch the data
                     if (response.plate_data_id) {
@@ -492,11 +556,30 @@
                 },
                 error: function (xhr, status, error) {
                     console.error('Error on AJAX request when fetching the plate data ID');
-                    // Handle errors here, such as displaying a message to the user
-                    $('#resultDataDisplay').html('<div class="alert alert-danger">An error occurred: ' + error + '</div>');
+                    // Check if the error is due to the search limit being reached
+                    if (xhr.status === 403) {
+                        // Parse the JSON response
+                        var response = JSON.parse(xhr.responseText);
+
+                        // Start constructing the error message
+                        var errorMessage = `<p class="automan-error">${response.error}</p>`;
+
+                        // If the response contains 'show_login_link', add a hyperlink
+                        if (response.show_login_link) {
+                            errorMessage += `<p>Please <a href="{% url 'customer_users:customer_user_login' %}" class="automan-login-link">create an account</a> to continue searching.</p>`;
+                        }
+                        // Display the error message
+
+                        $('#resultDataDisplay').html(errorMessage);
+                    } else {
+                        // Handle other types of errors and display message to the user
+                        $('#resultDataDisplay').empty().html(`<div class="alert alert-danger automan-error">An error occurred (Status:${status}):  ${error} </div>`);
+                    }
+
                 },
             });
         });
+
         // 2024-1-1 added for fetching and displaying plate data, including the `vin_data`
         function fetchAndDisplayPlateData(plateDataId) {
             const apiUrl = `/apis/plate_and_vin_data/${plateDataId}/?format=json`;

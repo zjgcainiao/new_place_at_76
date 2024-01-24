@@ -46,8 +46,8 @@
     </div>
     <hr>
     <div class="row">
-      {{ formset.management_form }}
-      {{formset.form|crispy}}
+      {{ formset.management_form|crispy }}
+      {% crispy formset.form formset.form.helper %}
     </div>
 
     {% comment %}

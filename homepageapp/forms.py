@@ -105,7 +105,7 @@ class PartItemModelForm(forms.ModelForm):
         fields = [
             'line_item',
             'part_item_part_no',
-            'part_discount_description_id',
+            'part_discount_description',
             'part_item_is_user_entered_unit_sale',
             'part_item_is_user_entered_unit_cost',
             'part_item_quantity',
