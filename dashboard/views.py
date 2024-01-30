@@ -2,6 +2,10 @@
 # 2023-04-02 created to display the index page of the main workstation page.
 # representing a modern version of old mitchell1 dashboard
 # WIP, search, etc.
+import re
+import logging
+import json
+from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
@@ -12,11 +16,11 @@ from django.db.models import Q, Prefetch
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponseForbidden, JsonResponse
 from homepageapp.models import RepairOrdersNewSQL02Model, CustomerAddressesNewSQL02Model, CustomersNewSQL02Model, AddressesNewSQL02Model, CustomerEmailsNewSQL02Model, RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model
-from homepageapp.models import VehiclesNewSQL02Model, EmailsNewSQL02Model, CustomerPhonesNewSQL02Model, PhonesNewSQL02Model, VehicleNotesModel, LicensePlateSnapShotsPlate2Vin
+from homepageapp.models import VehiclesNewSQL02Model, EmailsNewSQL02Model, CustomerPhonesNewSQL02Model, PhonesNewSQL02Model, VehicleNotesModel, LicensePlateSnapShotsPlate2Vin,PaymentsModel, LaborItemModel, NoteItemsNewSQL02Model
 # from homepageapp.forms import RepairOrderModelForm, CustomerModelForm, AddressModelForm, RepairOrderLineItemModelForm, PartItemModelForm, LaborItemModelForm
 from dashboard.forms import PartItemInlineFormSet, LaborItemInlineFormSet
 from django.forms.models import inlineformset_factory, modelformset_factory
-from datetime import datetime, timedelta
+
 from django.contrib import messages
 from homepageapp.models import TextMessagesModel, VinNhtsaApiSnapshots
 from django.core.exceptions import ObjectDoesNotExist
@@ -25,7 +29,7 @@ from django.views import View
 from internal_users.models import InternalUser
 from appointments.models import AppointmentRequest
 from dashboard.forms import SearchForm, CustomerUpdateForm, RepairOrderUpdateForm, VehicleUpdateForm, AddressUpdateForm, LineItemUpdateForm, PartItemUpdateForm, LaborItemUpdateForm, VehicleCreateForm
-from dashboard.forms import LiteEmailUpdateForm, CustomerCreateForm, CustomerEmailForm, CustomerAddressForm, VINSearchForm, LicensePlateSearchForm
+from dashboard.forms import LiteEmailUpdateForm, CustomerCreateForm, CustomerEmailForm, CustomerAddressForm, VINSearchForm, LicensePlateSearchForm, PartItemInlineFormSet, LaborItemInlineFormSet, NoteItemInlineFormSet
 # from dashboard.forms import LiteCustomerVehicleUpdateFormset
 from django.core.paginator import Paginator
 from django.db.models import Max
@@ -39,12 +43,12 @@ from django.db import models
 from asgiref.sync import sync_to_async
 from dashboard.async_functions import fetch_latest_vin_data_from_snapshots, database_sync_to_async
 from apis.api_vendor_urls import NHTSA_API_URL, PLATE2VIN_API_URL
-import logging
-import requests
-import json
+
 from decouple import config, UndefinedValueError, Csv
 from django.db.models.query import QuerySet
-import yfinance as yf
+from django.db.models import Exists, OuterRef
+
+logger = logging.getLogger('django')
 
 LiteVehicleUpdateFormset = inlineformset_factory(
     CustomersNewSQL02Model, VehiclesNewSQL02Model, edit_only=True,
@@ -52,22 +56,13 @@ LiteVehicleUpdateFormset = inlineformset_factory(
 
 # 2023-09-17 list all dashboards available
 
-
+@login_required(login_url='internal_users:internal_user_login')
 def get_main_dashboard(request):
     # Create the context with the current time.
     context = {
         'current_time': CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE,
     }
-
-    if request.user.is_authenticated:
-        if isinstance(request.user, InternalUser):
-            return render(request, 'dashboard/10_main_dashboard.html', context)
-        else:
-            # Handle what happens if the user is of type InternalUser
-            return HttpResponseForbidden("You don't have permission to access this page.")
-    else:
-        # Handle what happens if the user is of type InternalUser
-        return HttpResponseForbidden("you don't have permission to access to this page.")
+    return render(request, 'dashboard/10_main_dashboard.html', context)
 
 # dashboard listview via function. Version 1
 def get_repair_order_dash(request):
@@ -192,7 +187,7 @@ def dashboard_detail_v2(request, pk):
         'repair_order_customer__phones',
         'repair_order_customer__emails',
         'repair_order_customer__taxes',
-        # 'repair_order_customer__vehicle_customers',
+        # 'repair_order_customer__vehicle',
     ).get(pk=pk)
     # repair_order = RepairOrdersNewSQL02Model.objects.get(id=repair_order_id)
     repair_order_customer = repair_order.repair_order_customer
@@ -430,24 +425,30 @@ class LineItemUpdateView(UpdateView, LoginRequiredMixin):
 # 2024-01-21 this is the current version of the line item update merge view
 def line_item_labor_and_part_item_update_merge_view(request, pk, line_item_id):
     repair_order_id = pk  # pk is repair_order_id in repairorder model.
-    line_item = LineItemsNewSQL02Model.objects.prefetch_related(
-        'partitems_lineitems',
-        'lineitem_laboritem',
-        'lineitem_noteitem'
-        ).filter(
-            line_item_id=line_item_id).first()  # to handle not found error by returning None
-
+    # Fetch the line item without prefetching
+    line_item = get_object_or_404(
+        LineItemsNewSQL02Model.objects.prefetch_related(
+            'partitems_lineitems', 'lineitem_laboritem', 'lineitem_noteitem'
+        ),
+        line_item_id=line_item_id
+    )
+    if not line_item:
+        messages.error(f'Cannot find the line item by its given id {line_item_id}.')
+        return redirect('dashboard:repair_order_detail', pk=pk)
     # use .all() instead of .exists() to reduce the number of queries into DB.
-    if line_item.partitems_lineitems.all():
+    if line_item.line_item_type == 'part':
         Formset = PartItemInlineFormSet
-    elif line_item.lineitem_laboritem.all():
+    elif line_item.line_item_type == 'labor':
         Formset = LaborItemInlineFormSet
+    elif line_item.line_item_type == 'note':
+        Formset = NoteItemInlineFormSet
     else:
         Formset = None
-        messages.error(request,
-                       f'error fetching information for line item {line_item_id}. data not found or corrupted.')
+        messages.warning(request,
+                       f'error fetching labor or part item information for line item {line_item_id}. data empty or not found.')
         return redirect('dashboard:repair_order_detail', pk=pk)
 
+    
     # in one single line item, some data is from lineitem table, some is either from partitem or laboritem table.
     if request.method == 'POST':
         form = LineItemUpdateForm(request.POST, instance=line_item)
@@ -458,7 +459,7 @@ def line_item_labor_and_part_item_update_merge_view(request, pk, line_item_id):
             form.save()
             messages.success(
                 request, 'Line items have been updated successfully!')
-            return redirect('repair_order_detail', pk=pk)
+            return redirect('dashboard:repair_order_detail', pk=pk)
     else:
         formset = Formset(instance=line_item)
         form = LineItemUpdateForm(instance=line_item)
@@ -471,6 +472,37 @@ def line_item_labor_and_part_item_update_merge_view(request, pk, line_item_id):
         'line_item': line_item,
     }
     return render(request, 'dashboard/93_part_labor_item_update_view_v2.html', context)
+
+
+def lineitem_three_in_one_view(request, pk, line_item_id):
+    repair_order_id = pk # pk is repair_order_id in repairorder model.
+    # lineitem = get_object_or_404(LineItemsNewSQL02Model.objects.filter(pk=line_item_id))
+    lineitem = get_object_or_404(
+        LineItemsNewSQL02Model.objects.prefetch_related(
+            'partitems_lineitems', 'lineitem_laboritem', 'lineitem_noteitem'
+        ),
+        pk=line_item_id
+    )
+    line_item_type = lineitem.line_item_type or None
+    if line_item_type == 'part':
+        selected_formset = PartItemInlineFormSet
+    elif line_item_type == 'labor':
+        selected_formset = LaborItemInlineFormSet
+    elif line_item_type == 'note':
+        selected_formset = NoteItemInlineFormSet
+    else:
+        selected_formset = None
+
+    if request.method == "POST":
+        # Create formset instances and save them
+        pass
+    else:
+        selected_formset = selected_formset(instance=lineitem)
+    context = {
+        'repair_order_id': repair_order_id,
+        'selected_formset': selected_formset,
+    }
+    return render(request, 'dashboard/94_part_labor_note_formsets.html', context)
 
 
 class LaborItemUpdateView(UpdateView):
@@ -510,7 +542,10 @@ def chat_sidebar_view(request, customer_id):
 class SearchView(View, InternalUserRequiredMixin):
 
     # login_url = reverse_lazy('internal_users:internal_user_login')
-
+    def _parse_phone_number(self, phone_str):
+        """Extracts digits from common phone number formats."""
+        return re.sub(r'\D', '', phone_str)
+    
     async def get(self, request):
         form = SearchForm()
         context = {'appointments': None,
@@ -525,10 +560,12 @@ class SearchView(View, InternalUserRequiredMixin):
         if form.is_valid():
 
             search_query = form.cleaned_data['search_query']
-
+           # Check if search_query looks like a phone number
+            if re.search(r'\d', search_query):
+                search_query = self._parse_phone_number(search_query)
             # using sync_to_async to wrap around a search query processing in both appointments and repairorders models.
             appointments = await sync_to_async(self._get_appointments, thread_sensitive=True)(search_query)
-            repair_orders = await sync_to_async(self._get_repair_orders, thread_sensitive=True)(search_query)
+            repair_orders = await sync_to_async(self._get_active_repair_orders, thread_sensitive=True)(search_query)
             # Perform the search query in the appointments or other relevant models
             # appointments = AppointmentRequest.objects.filter(Q(appointment_phone_number__icontains=search_query) |
             #                                                  Q(appointment_email__icontains=search_query)).order_by('appointment_id')
@@ -563,23 +600,40 @@ class SearchView(View, InternalUserRequiredMixin):
     def _get_appointments(self, search_query):
         return list(AppointmentRequest.objects.filter(
             Q(appointment_phone_number__icontains=search_query) |
+            Q(appointment_phone_number_digits_only__icontains=search_query) |
             Q(appointment_email__icontains=search_query)
-        ).order_by('appointment_id'))
+        ).order_by('-appointment_id'))
 
-    def _get_repair_orders(self, search_query):
-        print('search any matched repair order records before creating one...')
+    def _get_active_repair_orders(self, search_query):
+        logger.info('search any matched repair order records before creating one...')
+
+        # Prefetch payment information related to each repair order to the attribute of "payments"
+        payment_prefetch = Prefetch(
+            'payment_repairorders',
+            queryset=PaymentsModel.objects.all(),
+            to_attr='payments'
+        )
         queryset = RepairOrdersNewSQL02Model.objects.prefetch_related(
+            'repair_order_customer',
+            'repair_order_phase',
+            'repair_order_vehicle',
+            'repair_order_vehicle__vehiclenotes_vehicle',
+            'repair_order_customer__taxes',
             'repair_order_customer__addresses',
             'repair_order_customer__phones',
-            'repair_order_customer__emails'
+            'repair_order_customer__emails',
+            payment_prefetch,
             # filtering out only active repair orders
         ).filter(
             repair_order_phase__gte=1,
             repair_order_phase__lte=5
         ).filter(
             Q(repair_order_customer__emails__email_address__icontains=search_query) |
-            Q(repair_order_customer__phones__phone_number__icontains=search_query)
+            Q(repair_order_customer__phones__phone_number__icontains=search_query) |
+            Q(repair_order_customer__phones__phone_number_digits_only__icontains=search_query) 
         )
+        # Execute the query and return the results
+        # repair_orders = await database_sync_to_async(list)(queryset)
 
         # .filter() calls in Django ORM does not get executed unless the queryset is evaluated.
         # when calling list() on the queset, the sql server executes the script

@@ -91,8 +91,6 @@ def format_string_with_underscore(string):
     return formatted_string
 
 # common function 04
-
-
 def deformat_phone_numbers(phone_number):
     # Remove non-digit characters from the phone number
     deformatted_number = ''.join(filter(str.isdigit, phone_number))
@@ -133,7 +131,6 @@ def get_latest_vehicle_make_list():
 
 
 # common function 07
-
 
 def get_latest_vehicle_model_list():
     models = ModelsNewSQL02Model.objects.exclude(model_name__isnull=True).exclude(

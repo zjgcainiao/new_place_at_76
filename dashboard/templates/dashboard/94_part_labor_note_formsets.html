@@ -1,0 +1,29 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load crispy_forms_tags %}
+{% block content-main %}
+
+<div class="container">
+  <h2>Create/Edit Line Item</h2>
+
+  <!-- Form for LineItem -->
+  <form method="post">
+    {% csrf_token %}
+
+    {% crispy lineitem_form form.helper %}
+
+    
+    <!-- Selected_Formset -->
+    <h3>Note Items</h3>
+    {{ selected_formset.management_form  }}
+    {% for form in selected_formset %}
+    <div class="border p-2 my-2">
+      {% crispy form form.helper %}
+    </div>
+    {% endfor %}
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,7 +1,11 @@
 from django.shortcuts import redirect
-from .models import UserSearchCount
+# from core_operations.models import UserSearchCount
 from django.urls import reverse
+import time
+import logging
+import cProfile, pstats, io
 
+logger = logging.getLogger('Django')
 class SearchLimitMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -45,3 +49,39 @@ class SearchLimitMiddleware:
         else:
             ip = request.META.get('REMOTE_ADDR')
         return ip
+    
+
+
+class ResponseTimeMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # Start profiling
+        profiler = cProfile.Profile()
+        profiler.enable()
+
+        # Process the request
+        response = self.get_response(request)
+
+        # Stop profiling
+        profiler.disable()
+
+        # Log response time
+        end_time = time.time()
+        response_time = end_time - request.start_time
+        logging.getLogger("django").info(f"Response time for {request.path}: {response_time:.2f} seconds")
+
+        # Write profiling results to a string stream
+        s = io.StringIO()
+        sortby = 'cumulative'  # Can be changed to 'time' or other modes
+        ps = pstats.Stats(profiler, stream=s).sort_stats(sortby)
+        ps.print_stats()
+
+        # Log profiling results
+        logger.info("Profiling data:\n" + s.getvalue())
+
+        return response
+
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        request.start_time = time.time()

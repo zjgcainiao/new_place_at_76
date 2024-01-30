@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content-main %}
 
-<div class="container my-1">
+<div class="container-fluid my-1">
   <!-- Breadcrumb-->
   <nav aria-label="Breadcrumb">
     <ol class="breadcrumb breadcrumb-dark">
@@ -16,57 +16,59 @@
   </nav>
   <a class='btn btn-secondary' href="{% url 'dashboard:repair_order_detail' pk=repair_order_id %}"><i
       class="fa-solid fa-arrow-left"></i> Go Back</a>
-  <h2> Update Line Item {{object.pk}}</h2>
+  <h2> Update Line Item {{line_item_id}}</h2>
 </div>
 <!-- end of container  -->
 
 <!-- form and formset  -->
-<div class='container my-1'>
-  <div class="card">
+<div class='container-fluid '>
+  <div class="card p-1 my-1">
+    <form method="post">
+      {% csrf_token %}
+
+      {% comment %}
+      <div class="row ">
+        <div class='col-3 m-1'>
+          <label class="form-label">Item ID: </label>{{ line_item_id}}
+        </div>
+        <div class='col-9 my-1'>
+          {{ line_item.line_item_description.label_tag }}
+          <textarea class="form-control" id='line_item_description_input' rows="5" on="trimTextarea()">
+                  {{ line_item.line_item_description  }}
+                </textarea>
+        </div>
+      </div>
+      {% endcomment %}
+      
+      <div class="row">
+        {{form|crispy}}
+      </div>
+      <hr>
+      <div class="row">
+        {{ formset.management_form |crispy}}
+        {% crispy formset.form formset.form.helper %}
+      </div>
+  
+      {% comment %}
+      {{ formset.management_form }}
+      {% for selected_form in formset %}
+      <div class="row my-1">
+        {% for field in selected_form %}
+        <div class='col-auto my-1'>
+          {{ field |as_crispy_field}}
+          <span class="text-danger">{{ field.errors }}</span>
+        </div>
+        {% endfor %}
+      </div>
+  
+      {% endfor %}
+      {% endcomment %}
+
+      <button type="submit" class="btn btn-outline-primary my-1" value="Save">Save Changes</button>
+    </form>
 
   </div>
-  <form method="post">
-    {% csrf_token %}
-    {% comment %}
-    <div class="row ">
-      <div class='col-3 m-1'>
-        <label class="form-label">Item ID: </label>{{ line_item_id}}
-      </div>
-      <div class='col-9 my-1'>
-        {{ line_item.line_item_description.label_tag }}
-        <textarea class="form-control" id='line_item_description_input' rows="3" on="trimTextarea()">
-                {{ line_item.line_item_description  }}
-              </textarea>
-
-      </div>
-    </div>
-    {% endcomment %}
-    <div class="row">
-      {{form|crispy}}
-    </div>
-    <hr>
-    <div class="row">
-      {{ formset.management_form|crispy }}
-      {% crispy formset.form formset.form.helper %}
-    </div>
-
-    {% comment %}
-    {{ formset.management_form }}
-    {% for selected_form in formset %}
-    <div class="row my-1">
-      {% for field in selected_form %}
-      <div class='col-auto my-1'>
-        {{ field |as_crispy_field}}
-        <span class="text-danger">{{ field.errors }}</span>
-      </div>
-      {% endfor %}
-    </div>
-
-    {% endfor %}
-    {% endcomment %}
-
-  </form>
-  <button type="submit" class="btn btn-outline-primary" value="Save">Save Changes</button>
+  
 </div>
 <!-- end of container -->
 

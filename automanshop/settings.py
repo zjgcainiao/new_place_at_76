@@ -342,6 +342,8 @@ MIDDLEWARE = [
     # custom InternalUserMiddleware that applies to certain apps
     "internal_users.middlewares.InternalUserMiddleware",
 
+    'core_operations.middlewares.ResponseTimeMiddleware',
+    
     # custom middleware that limits the number of search requests
     # "core_operations.middlewares.SearchLimitMiddleware",
 ]

@@ -9,19 +9,64 @@ from django.db.models import Prefetch
 from homepageapp.models import RepairOrderLineItemSquencesNewSQL02Model, PartItemModel, LineItemsNewSQL02Model, LaborItemModel, EmailsNewSQL02Model
 from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model, RepairOrdersNewSQL02Model, AddressesNewSQL02Model, CustomerAddressesNewSQL02Model, PhonesNewSQL02Model, CustomerEmailsNewSQL02Model, CustomerPhonesNewSQL02Model
 from datetime import datetime
-from homepageapp.models import GVWsModel, SubmodelsModel, BrakesModel, EnginesModel, TransmissionsModel, BodyStylesModel, CategoryModel
+from homepageapp.models import GVWsModel, SubmodelsModel, BrakesModel, EnginesModel, TransmissionsModel, BodyStylesModel, CategoryModel, NoteItemsNewSQL02Model
 from django.urls import reverse, reverse_lazy
 # using crispy_forms to control the search form.
 from core_operations.constants import EMAIL_TYPES, LIST_OF_STATES_IN_US
 from django.core.exceptions import ValidationError
+from crispy_forms.bootstrap import PrependedText
+from django.utils.safestring import mark_safe
 
+class AutomanBaseForm(forms.Form):  # Change to forms.ModelForm if you're working with model forms
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        for name, field in self.fields.items():
+            if isinstance(field.widget, forms.TextInput):
+                field.widget.attrs.update({'class': 'form-control text-input'})
+            elif isinstance(field.widget, forms.Textarea):
+                field.widget.attrs.update({'class': 'form-control textarea-input'})
+            elif isinstance(field.widget, forms.Select):
+                field.widget.attrs.update({'class': 'custom-select'})
+            elif isinstance(field.widget, forms.DateTimeInput):
+                field.widget.attrs.update({'class': 'datetime-input'})
 
-class SearchForm(forms.Form):
+class AutomanBaseModelForm(forms.ModelForm):  # Change to forms.ModelForm if you're working with model forms
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        for name, field in self.fields.items():
+            if isinstance(field.widget, forms.TextInput):
+                field.widget.attrs.update({'class': 'form-control text-input'})
+            elif isinstance(field.widget, forms.Textarea):
+                field.widget.attrs.update({'class': 'form-control textarea-input'})
+            elif isinstance(field.widget, forms.Select):
+                field.widget.attrs.update({'class': 'custom-select'})
+            elif isinstance(field.widget, forms.DateTimeInput):
+                field.widget.attrs.update({'class': 'datetime-input'})
+class SearchForm(AutomanBaseForm):
     search_query = forms.CharField(label='Search', widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholer': 'enter a phone number, license plate to search.'}))
+        attrs={'placeholder': 'enter a phone number, license plate to search.','type':'search'}))
 
-
-class CustomerEmailForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Initialize FormHelper
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_class = 'form-inline'
+        # Form layout
+        self.helper.layout = Layout(
+            Div(
+                # PrependedText is used to add the search icon as a prepended element to your input field
+                PrependedText('search_query', mark_safe('<span class="mdi mdi-magnify search-icon"></span>'), active=True,_class='form-control dropdown-toggle'),
+                Submit('submit', 'Search', css_class='btn btn-primary input-group-text'),
+                css_class='form-group  p-1 m-1',
+            ),
+            
+        )
+        
+class CustomerEmailForm(AutomanBaseModelForm):
     email_type_id = forms.ChoiceField(choices=EMAIL_TYPES, label='type')
     email_address = forms.EmailField()
 
@@ -244,13 +289,16 @@ class AddressUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
-        # add a "form-control" class to each form input
-        # for enabling bootstrap
-        # for name in self.fields.keys():
-        #     self.fields[name].widget.attrs.update({
-        #         'class': 'form-control',
-        #     })
-
+        for name, field in self.fields.items():
+            if isinstance(field.widget, forms.TextInput):
+                field.widget.attrs.update({'class': 'form-control text-input'})
+            elif isinstance(field.widget, forms.Textarea):
+                field.widget.attrs.update({'class': 'form-control textarea-input'})
+            elif isinstance(field.widget, forms.Select):
+                field.widget.attrs.update({'class': 'custom-select'})
+            elif isinstance(field.widget, forms.DateTimeInput):
+                field.widget.attrs.update({'class': 'datetime-input'})
+            # You can continue for other field types
 
 class VehicleUpdateForm(forms.ModelForm):
     vehicle_id = forms.CharField(required=False)
@@ -321,14 +369,17 @@ class VehicleUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
+
         for name, field in self.fields.items():
-            # check widget type
-            if isinstance(field.widget, (forms.TextInput, forms.Textarea, forms.Select)):
-                field.widget.attrs.update({'class': 'form-control'})
-            # Add form-check for any boolean values (typically CheckboxInput in Django)
-            elif isinstance(field.widget, forms.CheckboxInput):
-                field.widget.attrs.update({'class': 'form-check-input'})
-        # Set the queryset
+            if isinstance(field.widget, forms.TextInput):
+                field.widget.attrs.update({'class': 'form-control text-input'})
+            elif isinstance(field.widget, forms.Textarea):
+                field.widget.attrs.update({'class': 'form-control textarea-input'})
+            elif isinstance(field.widget, forms.Select):
+                field.widget.attrs.update({'class': 'custom-select'})
+            elif isinstance(field.widget, forms.DateTimeInput):
+                field.widget.attrs.update({'class': 'datetime-input'})
+            # You can continue for other field types
 
         # dynamically update the choices for the vhicle_license_state_field
 
@@ -511,24 +562,42 @@ class VehicleCreateForm(VehicleUpdateForm):
         # child form specific code
 
 
-class PartItemUpdateForm(forms.ModelForm):
+class PartItemUpdateForm(AutomanBaseModelForm):
     part_item_quantity = forms.IntegerField(
         min_value=0, max_value=100, widget=forms.NumberInput(attrs={'type': 'text', }), label='quantity', required=False)
+    
+    part_item_unit_cost = forms.DecimalField(
+        min_value=0, max_value=10000, widget=forms.NumberInput(attrs={'type': 'text', }), 
+        label='unit cost', required=False)
+    part_item_unit_price = forms.DecimalField(
+        min_value=0, max_value=10000, widget=forms.NumberInput(attrs={'type': 'text', }), 
+        label='unit cost', required=False)
+    part_item_unit_list = forms.DecimalField(
+        min_value=0, max_value=10000, widget=forms.NumberInput(attrs={'type': 'text', }), 
+        label='unit cost', required=False)
+    part_item_unit_sale = forms.DecimalField(
+        min_value=0, max_value=10000, widget=forms.NumberInput(attrs={'type': 'text', }), 
+        label='unit cost', required=False)
+    
+
+    part_item_part_no = forms.CharField(widget=forms.TextInput(
+        attrs={'type': 'text', }), label='part no', required=False)
+    
     part_item_is_quantity_confirmed = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': ''}), label='quantity confirmed?', required=False)
+        attrs={'class': 'toggle-swtich'}), label='quantity confirmed?', required=False)
 
     part_item_is_confirmed = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': ''}), label='part confirmed?', required=False)
+        attrs={'class': 'toggle-swtich'}), label='part confirmed?', required=False)
 
     part_item_is_user_entered_unit_sale = forms.BooleanField(widget=forms.CheckboxInput(
         attrs={'class': ''}), label='unit sale entered manually?', required=False)
     part_item_is_user_entered_unit_cost = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': ' '}), label='unit cost entered manually?', required=False)
+        attrs={'class': ' toggle-swtich'}), label='unit cost entered manually?', required=False)
 
     class Meta:
         model = PartItemModel
         fields = [
-            # 'line_item',
+            'line_item',
             'part_item_part_no',
             'part_discount_description_id',
             'part_item_quantity',
@@ -551,8 +620,6 @@ class PartItemUpdateForm(forms.ModelForm):
             'part_item_manufacture_id',
             'part_item_invoice_number',
             'part_item_commission_amount',
-
-
             'part_item_is_MPlg_item',
             'part_item_is_changed_MPlg_item',
             'part_item_part_type',
@@ -568,11 +635,9 @@ class PartItemUpdateForm(forms.ModelForm):
         widgets = {
             'part_item_quantity': forms.NumberInput(attrs={'type': 'text', }),
             'part_item_confirmed quantity': forms.NumberInput(attrs={'type': 'text', }),
-            'part_item_unit_price': forms.NumberInput(attrs={'type': 'text', }),
             'part_item_unit_list': forms.NumberInput(attrs={'type': 'text', }),
             'part_item_unit_sale': forms.NumberInput(attrs={'type': 'text', }),
             'part_item_unit_cost': forms.NumberInput(attrs={'type': 'text', }),
-            'part_item_unit_price': forms.NumberInput(attrs={'type': 'text', }),
             'part_item_unit_price': forms.NumberInput(attrs={'type': 'text', }),
             'part_item_shipping_description': forms.TextInput(attrs={}),
         }
@@ -594,17 +659,14 @@ class PartItemUpdateForm(forms.ModelForm):
         self.fields['part_item_unit_price'].validators.append(
             self.clean_unit_price)
 
-        for name, field in self.fields.items():
-            # check widget type
-            if isinstance(field.widget, (forms.TextInput, forms.Textarea, forms.Select)):
-                field.widget.attrs.update({'class': 'form-control'})
+
 
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
+        self.helper.form_class = 'form-inline'
         self.helper.form_tag = False
         self.helper.form_method = "post"
-        self.helper.label_class = 'col-3'
-        self.helper.field_class = 'col-9'
+        # self.helper.label_class = 'col-3'
+        # self.helper.field_class = 'col-9'
         self.helper.layout = Layout(
                     Row(Column(Field('part_item_quantity', css_class='form-control'),
                             css_class='col-8'),
@@ -616,19 +678,23 @@ class PartItemUpdateForm(forms.ModelForm):
                                 css_class='col-4'),
                         css_class='form-group p-1 m-1'),
 
-                    Row(Column(Field('labor_item_hours_charged', css_class='form-control mb-2'),
+                    Row(Column(Field('part_item_unit_price', css_class='form-control mb-2'),
+                        css_class='col-6'),
+                        Column(Field('part_item_unit_list', css_class='form-control mb-2'),
+                        css_class='col-6'),
+                        Column(Field('part_item_unit_sale', css_class='form-control mb-2'),
                         css_class='col-6'),
                         Column(
-                            Field('labor_item_is_user_entered_labor_rate', style='margin: 5px;',wrapper_class='form-check form-switch p-1 m-1'),
+                            Field('part_item_is_user_entered_unit_sale', style='margin: 5px;',wrapper_class='form-check form-switch p-1 m-1'),
                             css_class='col-6'
                             ),
                     css_class='form-group p-1 m-1'),
 
                     
                     Row(
-                        Column(Field('labor_item_parts_estimate', css_class='form-control mb-2'),
+                        Column(Field('part_item_vendor_id', css_class='form-control mb-2'),
                         css_class='col-6'),
-                        Column(Field('labor_item_is_come_back_invoice', style='margin-left: 0;',wrapper_class='form-check form-switch p-1 m-1'),
+                        Column(Field('part_item_is_tire', style='margin-left: 0;',wrapper_class='form-check form-switch p-1 m-1'),
                             css_class='col-6'),
                         css_class='form-group m-1 p-1'),
 
@@ -720,6 +786,34 @@ class LaborItemUpdateForm(forms.ModelForm):
 
         )
 
+class NoteItemUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = NoteItemsNewSQL02Model
+        fields =['note_item_id','note_item_text', 
+                 'note_item_tech_observation', ]
+        readonly_fields = ['note_item_id','note_item_created_at', 'note_item_last_updated_at']
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if isinstance(field.widget, forms.TextInput):
+                field.widget.attrs.update({'class': 'form-control text-input'})
+            elif isinstance(field.widget, forms.Textarea):
+                field.widget.attrs.update({'class': 'form-control textarea-input'})
+            elif isinstance(field.widget, forms.Select):
+                field.widget.attrs.update({'class': 'custom-select'})
+            elif isinstance(field.widget, forms.DateTimeInput):
+                field.widget.attrs.update({'class': 'datetime-input'})
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.form_tag = False
+        self.helper.form_method = "post"
+
+            # You can continue for other field types
+
+
 RepairOrderFormSet = formset_factory(RepairOrderUpdateForm, extra=0)
 CustomerFormSet = formset_factory(CustomerUpdateForm, extra=0)
 AddressFormSet = formset_factory(AddressUpdateForm, extra=0)
@@ -735,11 +829,19 @@ LaborItemInlineFormSet = inlineformset_factory(LineItemsNewSQL02Model, LaborItem
                                                )
 
 
-
+NoteItemInlineFormSet = inlineformset_factory(LineItemsNewSQL02Model, NoteItemsNewSQL02Model,
+                                               form=NoteItemUpdateForm,
+                                               extra=0,
+                                               can_delete=True,
+                                               )
 # LineItem  UpdateForm. Parent formto PartItemUpdateForm and LaborItemUpdateForm.
 
 
-class LineItemUpdateForm(forms.ModelForm):
+class LineItemUpdateForm(AutomanBaseModelForm):
+    line_item_description = forms.CharField(widget=forms.Textarea(
+        attrs={"type": "text", "class": "editable-field"}), 
+        label='Item Description:'),
+    
     line_item_category = forms.ModelChoiceField(
         queryset=CategoryModel.objects.all(),
         required=False,
@@ -755,8 +857,9 @@ class LineItemUpdateForm(forms.ModelForm):
             'line_item_id',
             'line_item_description',
             'line_item_category',
-            # 'line_item_parent_line_item',
+            'line_item_parent_line_item',
         ]
+        readonly_fields = ['line_item_id','line_item_parent_line_item','line_item_last_updated_at','line_item_created_at' ]
         # exclude = [
         #     'line_item_parent_line_item_id',]
 

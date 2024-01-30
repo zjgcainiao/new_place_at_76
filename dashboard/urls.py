@@ -3,7 +3,7 @@ from dashboard.views import get_repair_order_dash, dashboard_detail_v1, dashboar
 from dashboard.views import WIPDashboardView, get_main_dashboard
 from dashboard.views import DashboardDetailView, RepairOrderUpdateView, LineItemUpdateView, LaborItemUpdateView
 from dashboard.views import repair_order_update, repair_order_and_line_items_detail, line_item_labor_and_part_item_update_merge_view
-from dashboard.views import chat_sidebar_view, SearchView
+from dashboard.views import chat_sidebar_view, SearchView,lineitem_three_in_one_view
 from dashboard import views
 
 app_name = 'dashboard'
@@ -38,10 +38,15 @@ urlpatterns = [
     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/',
          LineItemUpdateView.as_view(), name='part-item-update-view'),
 
+    path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/three-in-one/',
+         lineitem_three_in_one_view, name='ineitem_three_in_one_view'),
+
+
+
      # this is the current one 
     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/merge/',
          line_item_labor_and_part_item_update_merge_view, name='part-labor-item-merge-view'),
-
+         
     # customer dash
     path('customers/', views.get_customer_dash, name='customer-dash'),
     path('customers/<int:pk>/', views.CustomerDetailView.as_view(),
