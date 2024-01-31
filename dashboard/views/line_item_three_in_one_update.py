@@ -2,7 +2,7 @@ from .base import render, login_required, get_object_or_404
 from homepageapp.models import LineItemsNewSQL02Model
 from dashboard.forms import PartItemInlineFormSet, LaborItemInlineFormSet, NoteItemInlineFormSet, LineItemUpdateForm
 
-def lineitem_three_in_one_view(request, pk, line_item_id):
+def line_item_three_in_one_update(request, pk, line_item_id):
     repair_order_id = pk # pk is repair_order_id in repairorder model.
     # lineitem = get_object_or_404(LineItemsNewSQL02Model.objects.filter(pk=line_item_id))
     lineitem = get_object_or_404(
@@ -33,7 +33,8 @@ def lineitem_three_in_one_view(request, pk, line_item_id):
     context = {
         'repair_order_id': repair_order_id,
         'selected_formset': selected_formset,
-        'form': form,
+        'form': form, # LineItemUpdateForm
+        'line_item_id': line_item_id,
 
     }
-    return render(request, 'dashboard/94_part_labor_note_formsets.html', context)
+    return render(request, 'dashboard/95_line_item_three_in_one_update.html', context)

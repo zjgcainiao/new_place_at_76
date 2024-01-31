@@ -17,7 +17,7 @@ class VehicleCreateView(CreateView, InternalUserRequiredMixin):
         self.object.created_by = self.request.user  # assuming the user is logged in
         self.object.save()
         messages.success(self.request, 'Update success.')
-        return redirect('dashboard:vehicle-detail', pk=self.object.pk)
+        return redirect('dashboard:vehicle_detail', pk=self.object.pk)
 
     def get_success_url(self):
-        return reverse('dashboard:vehicle-detail', kwargs={'pk': self.object.pk})
+        return reverse('dashboard:vehicle_detail', kwargs={'pk': self.object.pk})

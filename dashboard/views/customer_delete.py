@@ -7,7 +7,7 @@ class CustomerDeleteView(DeleteView, LoginRequiredMixin):
     model = CustomersNewSQL02Model
     template_name = 'dashboard/44_customer_delete.html'
     # Redirect to customer list after "deletion"
-    success_url = reverse_lazy('dashboard:customer-dash')
+    success_url = reverse_lazy('dashboard:customer_dash')
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()

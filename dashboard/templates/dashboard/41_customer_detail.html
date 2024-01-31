@@ -6,100 +6,113 @@
 {% if messages %}
 <div class="container">
     {% for message in messages %}
-    <li{% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show justify-content-center justify-content-between"{% endif %} role="alert">
+    <li{% if message.tags %}
+        class="alert alert-{{ message.tags }} alert-dismissible fade show justify-content-center justify-content-between"
+        {% endif %} role="alert">
         {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
         {{ message }}
         <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
-    </li>
-    {% endfor %}
+        </li>
+        {% endfor %}
 </div>
 {% endif %}
 
-<div class="container container-fluid" id ='customer-detail-container'>
+<div class="container container-fluid" id='customer-detail-container'>
     <!-- Breadcrumb-->
     <nav class="pt-0" aria-label="Breadcrumb">
         <ol class="breadcrumb breadcrumb-dark">
             <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'dashboard:main-dash' %}">Main Dash</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'dashboard:customer-dash' %}">Customers</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:customer_dash' %}">Customers</a></li>
             <li class="breadcrumb-item active">Customer Detail</li>
         </ol>
     </nav>
     <h4>Customer Detail - ID:{{customer.customer_id}}</h4>
 
-    <div class ='row'>
-        <div class ='col-5'>
-            <div class="card card-hover border border-light" >
-                <div class ='card-header text-dark mb-0'>ID:{{customer.customer_id}}. customer since {{customer.customer_first_visit_date|date:'Y-m-d'}}  <p class="text-muted font-13">Updated on: {{customer.customer_last_updated_at}}</p></div>
-                <div class = 'card-body text-dark'>
+    <div class='row'>
+        <div class='col-5'>
+            <div class="card card-hover border border-light">
+                <div class='card-header text-dark mb-0'>ID:{{customer.customer_id}}. customer since
+                    {{customer.customer_first_visit_date|date:'Y-m-d'}} <p class="text-muted font-13">Updated on:
+                        {{customer.customer_last_updated_at}}</p>
+                </div>
+                <div class='card-body text-dark'>
                     <div class="row">
                         <p class="col-6 card-text"> First Name: {{customer.customer_first_name}} </p>
-                        <p class="col-6 card-text" style="font-weight: bold; text-transform: uppercase;"> Last Name: {{customer.customer_last_name}} </p>
+                        <p class="col-6 card-text" style="font-weight: bold; text-transform: uppercase;"> Last Name:
+                            {{customer.customer_last_name}} </p>
                         <p class="col-6 card-text"> Spouse Name: {{customer.customer_spouse_name}} </p>
-                        <p class ='col-6 card-text'> Memo: {{customer.customer_memo_1}} </p>
-                        <p class ='col-6 card-text'> Okay to Charge: {{customer.customer_is_okay_to_charge}} </p>                  
-                        <p class ='col-6 card-text '>is in Social CRM: {{customer.customer_is_in_social_crm}}</p>
+                        <p class='col-6 card-text'> Memo: {{customer.customer_memo_1}} </p>
+                        <p class='col-6 card-text'> Okay to Charge: {{customer.customer_is_okay_to_charge}} </p>
+                        <p class='col-6 card-text '>is in Social CRM: {{customer.customer_is_in_social_crm}}</p>
                     </div>
 
-                    <p class ='card-text'>Last visit on: {{customer.customer_last_visit_date}} </p>
-                    <a href="{% url 'dashboard:customer-update' customer.customer_id %}" class="btn btn-outline-info">Update</a>
+                    <p class='card-text'>Last visit on: {{customer.customer_last_visit_date}} </p>
+                    <a href="{% url 'dashboard:customer-update' customer.customer_id %}"
+                        class="btn btn-outline-info">Update</a>
                 </div>
             </div>
         </div>
         <!-- end of column -->
-        <div class ='col-7'>
-            <div class="card card-hover border border-light" >
-                <div class ='card-header text-dark fw-bold'>Your Emails</div>
-                <div class = 'card-body text-dark'>
+        <div class='col-7'>
+            <div class="card card-hover border border-light">
+                <div class='card-header text-dark fw-bold'>Your Emails</div>
+                <div class='card-body text-dark'>
                     {% for email_form in email_forms %}
-                        <form class="email-form" method="post" id="customer-email-update-form-{{ form.instance.email_id }}" data-email-id="{{ form.instance.email_id }}" action="{% url 'dashboard:update-customer-email' email_id=email_form.instance.email_id %}">
-                            {% csrf_token %}
-                                <div class="form-display">
-                                    <div class="row">
-                                        <div class="col">ID: {{ email_form.email_id.value }} </div>
-                                        <div class="col">Type: {{ email_form.email_type_id.value }} </div>
-                                        <div class="col">{{ email_form.email_address.value |lower}} </div>
-                                        <div class="col">{{ email_form.email_description.value}} </div>
-                                        <div class="col">
-                                            
+                    <form class="email-form" method="post" id="customer-email-update-form-{{ form.instance.email_id }}"
+                        data-email-id="{{ form.instance.email_id }}"
+                        action="{% url 'dashboard:update-customer-email' email_id=email_form.instance.email_id %}">
+                        {% csrf_token %}
+                        <div class="form-display">
+                            <div class="row">
+                                <div class="col">ID: {{ email_form.email_id.value }} </div>
+                                <div class="col">Type: {{ email_form.email_type_id.value }} </div>
+                                <div class="col">{{ email_form.email_address.value |lower}} </div>
+                                <div class="col">{{ email_form.email_description.value}} </div>
+                                <div class="col">
 
-                                        </div>
-                                        <div class="col-auto"><button class="btn btn-outline-info edit-button mb-1" type="button">Edit</button> </div>
-                                    </div>
+
                                 </div>
+                                <div class="col-auto"><button class="btn btn-outline-info edit-button mb-1"
+                                        type="button">Edit</button> </div>
+                            </div>
+                        </div>
 
-                                <div class="form-edit" style="display:none;">
-                                    <div class="row align-items-left justify-content-center">
+                        <div class="form-edit" style="display:none;">
+                            <div class="row align-items-left justify-content-center">
 
-                                        <div class="col-5 vertical-align-middle ">{{ email_form.email_type_id |as_crispy_field}}</div>
-                                        <div class="col-5 float">{{ email_form.email_address |as_crispy_field}}</div> 
-                                        <div class="col-2">{{ email_form.email_can_send_notification|as_crispy_field}}</div>
-                                        <div class="col-12">{{ email_form.email_description |as_crispy_field}}</div>
-                                    </div>
-                                    <div class="row">
-                                        <button class="btn btn-outline-primary save-email-button" type="submit">Save</button>
-                                    </div>
+                                <div class="col-5 vertical-align-middle ">{{ email_form.email_type_id |as_crispy_field}}
                                 </div>
-                            
-                        </form>
-                        <!-- end of one email_form  -->
-                        {% empty %}
-                            no email record is found.
+                                <div class="col-5 float">{{ email_form.email_address |as_crispy_field}}</div>
+                                <div class="col-2">{{ email_form.email_can_send_notification|as_crispy_field}}</div>
+                                <div class="col-12">{{ email_form.email_description |as_crispy_field}}</div>
+                            </div>
+                            <div class="row">
+                                <button class="btn btn-outline-primary save-email-button" type="submit">Save</button>
+                            </div>
+                        </div>
+
+                    </form>
+                    <!-- end of one email_form  -->
+                    {% empty %}
+                    no email record is found.
                     {% endfor %}
-      
+
                 </div>
             </div>
             <!-- end of card  -->
 
-            <div class="card card-hover border border-light" >
-                <div class ='card-header text-dark fw-bold'>Your Phone numbers</div>
-                <div class = 'card-body text-dark'>
+            <div class="card card-hover border border-light">
+                <div class='card-header text-dark fw-bold'>Your Phone numbers</div>
+                <div class='card-body text-dark'>
                     <div class="row">
                         {% for phone in customer.phones.all %}
-                        <div class="col-6"><p class="editable" contenteditable="false">Phone Number: {{ phone.phone_number }}</p></div>
-                        
+                        <div class="col-6">
+                            <p class="editable" contenteditable="false">Phone Number: {{ phone.phone_number }}</p>
+                        </div>
+
                         <div class="editable col-6" contenteditable="false">Ext: {{ phone.phone_number_ext }}</div>
                         <div class="editable col-6" contenteditable="false">Memo {{ phone.phone_memo_01 }}</div>
                         {% endfor %}
@@ -116,9 +129,9 @@
 
     <div class="row">
         <div class="col-12">
-            <div class="card card-hover border border-light" >
-                <div class ='card-header text-dark fw-bold'>Vehicles</div>
-                <div class = 'card-body text-dark'>
+            <div class="card card-hover border border-light">
+                <div class='card-header text-dark fw-bold'>Vehicles</div>
+                <div class='card-body text-dark'>
                     <div class="row">
                         <table id="basic-datatable" class="table table-sm dt-responsive nowrap">
                             <thread>
@@ -134,12 +147,17 @@
 
                                 {% for vehicle in customer.vehicle_customers.all %}
                                 <tr>
-                                    <td><a href="{% url 'dashboard:vehicle-detail' pk=vehicle.vehicle_id %}"></a>{{vehicle.vehicle_id}}</td>
+                                    <td><a
+                                            href="{% url 'dashboard:vehicle_detail' pk=vehicle.vehicle_id %}"></a>{{vehicle.vehicle_id}}
+                                    </td>
                                     <td>{{vehicle.VIN_number}}</td>
                                     <td>{{vehicle.vehicle_year}}</td>
                                     <td>{{vehicle.vehicle_make.maker_name}}</td>
                                     <td class="table-action"><a class="action-icon">
-                                        <a class='btn' href="{% url 'dashboard:vehicle-update' vehicle.vehicle_id %}"><i class="uil uil-edit"></i></a><a><i class="uil uil-trash-alt"></i></a>
+                                            <a class='btn'
+                                                href="{% url 'dashboard:vehicle_update' vehicle.vehicle_id %}"><i
+                                                    class="uil uil-edit"></i></a><a><i
+                                                    class="uil uil-trash-alt"></i></a>
                                     </td>
                                 </tr>
                                 {% empty %}
@@ -155,7 +173,7 @@
         </div>
         <!-- end of column -->
         <!-- <div class="col-12"> -->
-            
+
         <!-- </div> -->
         <!-- end of column -->
 
@@ -165,19 +183,19 @@
 
 <br>
 <script>
-    $().ready(function(){
-        $('.edit-button').on("click", function() {
+    $().ready(function () {
+        $('.edit-button').on("click", function () {
             // e.preventDefault();
             const formRow = $(this).closest('.email-form');
-            const form =$(this).closest('form')
+            const form = $(this).closest('form')
             formRow.find('.form-display').hide();
             formRow.find('.form-edit').show();
             $(this).hide(); // hide edit button
-            
+
             form.find('.save-email-button').show() // show save button
             //loop through form fields to make them editable
 
-            form.find('input, select').each(function(){
+            form.find('input, select').each(function () {
                 $(this).prop('readonly', false)
 
             });
@@ -186,7 +204,7 @@
 
         });
 
-        $('.save-email-button').on("click", function(e) {
+        $('.save-email-button').on("click", function (e) {
             e.preventDefault();
 
             const form = $(this).closest('.email-form');
@@ -208,13 +226,13 @@
             //     // handle error
             //     }
             // });                        
-        
+
         });
 
-        $(".update-phone-btn").click(function() {
+        $(".update-phone-btn").click(function () {
             var parentCardBody = $(this).closest('.card-body');
             var editables = parentCardBody.find('.editable');
-            editables.each(function() {
+            editables.each(function () {
                 var isEditable = $(this).attr('contenteditable');
                 if (isEditable == 'false') {
                     $(this).attr('contenteditable', 'true');
@@ -237,7 +255,7 @@
         updateLabel();
 
         // Update on change
-        $switch.on('change', function() {
+        $switch.on('change', function () {
             updateLabel();
         });
 

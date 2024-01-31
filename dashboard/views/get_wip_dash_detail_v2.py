@@ -4,7 +4,7 @@ from homepageapp.models import RepairOrdersNewSQL02Model
 from dashboard.forms import RepairOrderUpdateForm, CustomerUpdateForm, AddressUpdateForm
 
 @login_required(login_url='internal_users:internal_user_login')
-def dashboard_detail_v2(request, pk):
+def get_wip_dash_detail_v2(request, pk):
     repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
         'repair_order_customer__addresses',
         'repair_order_customer__phones',

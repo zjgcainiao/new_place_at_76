@@ -80,7 +80,7 @@
                 </ol>
             </div>
             <!-- <div class="app-search d-lg-block"> -->
-            <form id='searchExistingsForm' method="post" action="{% url 'dashboard:search-appointments' %}">
+            <form id='searchExistingsForm' method="post" action="{% url 'dashboard:search_appointments' %}">
                 {% csrf_token %}
                 {% crispy form form.helper %}
             </form>
@@ -93,7 +93,7 @@
 
     <!--  Search Form -- Backup -->
     <!-- <div class="app-search d-lg-block">
-        <form method="post" action="{% url 'dashboard:search-appointments' %}">
+        <form method="post" action="{% url 'dashboard:search_appointments' %}">
             
             <div class="input-group">
                 <input type="search" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">

@@ -5,7 +5,7 @@ from dashboard.forms import VehicleUpdateForm
 
 class VehicleDetailView(DetailView, LoginRequiredMixin):
     model = VehiclesNewSQL02Model
-    success_url = reverse_lazy('dashboard:vehicle-dash')
+    success_url = reverse_lazy('dashboard:vehicle_dash')
     context_object_name = 'vehicle'
     template_name = 'dashboard/61_vehicle_detail.html'
 

@@ -1,3 +1,4 @@
+# dashboard/forms/__init__.py
 
 from .automan_base import AutomanBaseForm
 from .automan_base_model import AutomanBaseModelForm
@@ -24,3 +25,4 @@ from .formsets import RepairOrderFormSet,CustomerFormSet,PartItemInlineFormSet, 
                         LaborItemInlineFormSet,NoteItemInlineFormSet,LiteCustomerVehicleUpdateFormset, \
                         AddressFormset, EmailFormset, PhoneFormset
 # from .lite_customer_vehicle_update_formset import LiteCustomerVehicleUpdateFormset <--- could be redundant 
+from .line_item_create import LineItemCreateForm

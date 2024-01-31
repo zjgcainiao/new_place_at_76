@@ -6,9 +6,8 @@ from dashboard.forms import RepairOrderUpdateForm
 # dashboard detail view. version 1
 # modified to prefetch emails, phones, taxes to each repair_order_customer object
 
-
 @login_required(login_url='internal_users:internal_user_login')
-def dashboard_detail_v1(request, pk):
+def get_wip_dash_detail_v1(request, pk):
     repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
         Prefetch('repair_order_customer__addresses'),
         'repair_order_customer__phones',
@@ -39,7 +38,7 @@ def dashboard_detail_v1(request, pk):
         if form.is_valid():
             form.save()
             messages.success('redirecting...')
-            return redirect('dashboard:repair-order-dash')
+            return redirect('dashboard:wip_dash')
     else:
         # Display the form for updating the record
         form = RepairOrderUpdateForm(instance=repair_order)

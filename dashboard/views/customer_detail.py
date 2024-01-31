@@ -6,7 +6,7 @@ from dashboard.forms import CustomerUpdateForm, LiteEmailUpdateForm
 
 class CustomerDetailView(DetailView, LoginRequiredMixin):
     model = CustomersNewSQL02Model
-    success_url = reverse_lazy('customer-dash')
+    success_url = reverse_lazy('customer_dash')
     context_object_name = 'customer'
     template_name = 'dashboard/41_customer_detail.html'
     login_url = reverse_lazy('internal_users:internal_user_login')

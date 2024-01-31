@@ -112,4 +112,4 @@ class RepairOrdersNewSQL02Model(models.Model):
         verbose_name_plural = 'repairorders'
 
     def get_absolute_url(self):
-        return reverse('repair_order_detail', kwargs={'pk': self.pk})
+        return reverse('wip_detail_v1', kwargs={'pk': self.pk})

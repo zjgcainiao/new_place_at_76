@@ -6,9 +6,9 @@
 {% block content-main %}
 <div class="container container-fluid">
   <h1>WIP Dashboard V1 </h1>
-  <p>User is : {{user.user_first_name}}  {{user.email}}</p>
-  <a class =' btn btn-primary' href = "{% url 'homepageapp:homepage' %}">go back to Homepage</a>
-  <table >
+  <p>User is : {{user.user_first_name}} {{user.email}}</p>
+  <a class=' btn btn-primary' href="{% url 'homepageapp:homepage' %}">go back to Homepage</a>
+  <table>
     <thead>
       <tr>
         <th>Repair Order ID</th>
@@ -22,14 +22,16 @@
     </thead>
     <tbody>
       {% for repair_order in repair_orders %}
-          <tr>
-            <td><a href="{% url 'dashboard:repair_order_detail' pk=repair_order.repair_order_id %}"></a>{{ repair_order.repair_order_id }}</td>
-            <td>{{ repair_order.repair_order_customer.customer_first_name }} {{ repair_order.repair_order_customer.customer_last_name }}</td>
-            <td>{{ repair_order.repair_order_customer.addresses.get.address_line_01 }}</td>
-            <td>{{ repair_order.repair_order_customer.addresses.get.address_city }}</td>
-            <td>{{ repair_order.repair_order_customer.addresses.get.address_state }}</td>
-            <td>{{ repair_order.repair_order_customer.addresses.get.address_zip_code }}</td>
-          </tr>
+      <tr>
+        <td><a href="{% url 'dashboard:wip_detail_v1' pk=repair_order.repair_order_id %}"></a>{{
+          repair_order.repair_order_id }}</td>
+        <td>{{ repair_order.repair_order_customer.customer_first_name }} {{
+          repair_order.repair_order_customer.customer_last_name }}</td>
+        <td>{{ repair_order.repair_order_customer.addresses.get.address_line_01 }}</td>
+        <td>{{ repair_order.repair_order_customer.addresses.get.address_city }}</td>
+        <td>{{ repair_order.repair_order_customer.addresses.get.address_state }}</td>
+        <td>{{ repair_order.repair_order_customer.addresses.get.address_zip_code }}</td>
+      </tr>
 
       {% endfor %}
     </tbody>

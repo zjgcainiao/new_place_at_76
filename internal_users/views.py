@@ -65,7 +65,7 @@ def register(request):
             login(
                 request, user, backend='internal_users.intenral_user_auth_backend.InternalUserBackend')
             # form.save()
-            return redirect('dashboard:main-dash')
+            return redirect('dashboard:main_dash')
         # 2023-04-30- added a function to list all error values when there are errors.
         else:
             for error in list(form.errors.values()):
@@ -79,7 +79,7 @@ class InternalUserLoginView(LoginView):
 
     # template_name = 'internal_users/loginv2.html'
     template_name = 'internal_users/20_login.html'
-    success_url = reverse_lazy('dashboard:repair-order-dash')
+    success_url = reverse_lazy('dashboard:wip_dash')
     authentication_form = InternalUserLoginForm
 
     # adding this line will allow users to skip login when the user has been logged in before.

@@ -16,4 +16,4 @@ class VehicleDeleteView(DeleteView, InternalUserRequiredMixin):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('dashboard:vehicle-dash')
+        return reverse('dashboard:vehicle_dash')

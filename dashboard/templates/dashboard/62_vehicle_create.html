@@ -5,21 +5,21 @@
 
 {% block content-main %}
 <div class="container container-fluid my-1">
-    <!-- Breadcrumb-->
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb breadcrumb-dark">
-            <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'dashboard:main-dash' %}">Main Dash</a></li>
-            <li class="breadcrumb-item "><a href="{% url 'dashboard:vehicle-dash' %}">Vehicles</a></li>
-            <li class="breadcrumb-item active" area-current="page">Create Vehicle</li>
-        </ol>
-    </nav>
+  <!-- Breadcrumb-->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark">
+      <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+      <li class="breadcrumb-item "><a href="{% url 'dashboard:vehicle_dash' %}">Vehicles</a></li>
+      <li class="breadcrumb-item active" area-current="page">Create Vehicle</li>
+    </ol>
+  </nav>
 </div>
 
-  {% include 'dashboard/02_dashboard_messages_sector.html' %}
+{% include 'dashboard/02_dashboard_messages_sector.html' %}
 
 <div class="container container-fluid my-1">
-    <h2>Create New Vehicle Record</h2>
+  <h2>Create New Vehicle Record</h2>
   <div class="card card-hover border border-secondary">
     <form method="post" class="card-body ">
       {% csrf_token %}
@@ -30,147 +30,147 @@
 </div>
 
 <script>
-  $(document).ready(function(e) {
+  $(document).ready(function (e) {
     // e.preventuDefaults();
-    $('#go-back-btn').click(function() {
+    $('#go-back-btn').click(function () {
       window.history.back();
     });
 
     var isSearchVisible = false; // Add a flag to keep track of the search bar visibility
     var searchContainerRow = $("#vehicle_customer_search_container");
     // Assuming 'button-id-reassign-new-customer' is the ID of your edit button
-    $("#button-id-reassign-new-customer").click(function() {
+    $("#button-id-reassign-new-customer").click(function () {
       //  $("#id_vehicle_cust").prop("disabled", false);
-        if (isSearchVisible) {
-            // Hide everything if they are visible
-            $("#search-container").hide();
-            isSearchVisible = false;
-        } else {
-            $("#search-container").show();
-            isSearchVisible = true;
-        }
-    
+      if (isSearchVisible) {
+        // Hide everything if they are visible
+        $("#search-container").hide();
+        isSearchVisible = false;
+      } else {
+        $("#search-container").show();
+        isSearchVisible = true;
+      }
 
 
-    if ($("#search-container").length === 0) { // Check if the search container already exists
+
+      if ($("#search-container").length === 0) { // Check if the search container already exists
         // Create a search bar dynamically and insert it into the DOM
         var searchContainer = $('<div id="search-container" class="row my-1"><h3>what is the new customer`s phone number? Enter below. </h3></div>');
         var searchBar = $('<input type="search" id="customer-search-bar" placeholder="search a customer by entering the new phone number" class="form-control col-auto my-1 form-control">');
-        var spinnerIcon =$('<div class="spinner-border" role="status" id="customer-search-bar-spinner" style="display:none;"><span class="visually-hidden">Loading...</span></div>')
+        var spinnerIcon = $('<div class="spinner-border" role="status" id="customer-search-bar-spinner" style="display:none;"><span class="visually-hidden">Loading...</span></div>')
         searchContainer.append(searchBar).append(spinnerIcon);;
-        searchContainerRow.append(searchContainer);          
+        searchContainerRow.append(searchContainer);
         // searchContainerRow.append(searchContainer).append(searchBar).append(spinnerIcon);
 
-    }
+      }
 
-    // Search function. removed the search button due to form submission conflict
-    var searchTimeout;  // Declare a timeout variable
+      // Search function. removed the search button due to form submission conflict
+      var searchTimeout;  // Declare a timeout variable
 
-    $("#customer-search-bar").on("input", function() {
+      $("#customer-search-bar").on("input", function () {
         clearTimeout(searchTimeout);  // Clear the timeout if it's set
         // Set a new timeout
-        searchTimeout = setTimeout(function() {
+        searchTimeout = setTimeout(function () {
           // assign the search term entered and remove any possible phone numbers
-           var phone_number_entered = $("#customer-search-bar").val().replace(/\D/g, '');
+          var phone_number_entered = $("#customer-search-bar").val().replace(/\D/g, '');
 
-            
-            // Your AJAX call here
-            $.ajax({
-                url: $("#id_vehicle_id").data("url"), //"{% url 'dashboard:search_customer_by_phone' %}", //'/dashboard/search_customer_by_phone/', //
-                data: {
-                    'phone_number_entered': phone_number_entered,
-                },
-                dataType: 'json',
-                beforeSend: function(){
-                  $('#customer-search-bar-spinner').show();
-                },
-                complete: function(){
-                  $('#customer-search-bar-spinner').hide();
-                },
-                success: function(data) {
 
-                  // Remove old elements to aovid duplicates
-                  $('#temp-search-result-container').remove();
-                  $('#temp-search-result-card-body').remove();
-                  $('#temp-customer-dropdown').remove();
-                  $('#confirm-button').remove();
-                  $('#cancel-button').remove();
-                  $('#no-results-message').remove();  // Add this line to remove any existing 'No customer found' message
-                  
-                  var search_result_container = $("<div id='temp-search-result-container' class='card border border-primary card-hover'><div class='card-header mb-0 fw-bold'>Search results:</div></div>");
-                  var cardBody=$("<div class='card-body' id='temp-search-result-card-body'></div>")
-                  var dropdown = $("<select id='temp-customer-dropdown' class='form-select my-1' style='background-color: lightblue;'></select>");
+          // Your AJAX call here
+          $.ajax({
+            url: $("#id_vehicle_id").data("url"), //"{% url 'dashboard:search_customer_by_phone' %}", //'/dashboard/search_customer_by_phone/', //
+            data: {
+              'phone_number_entered': phone_number_entered,
+            },
+            dataType: 'json',
+            beforeSend: function () {
+              $('#customer-search-bar-spinner').show();
+            },
+            complete: function () {
+              $('#customer-search-bar-spinner').hide();
+            },
+            success: function (data) {
 
-                 if (!data.length) { // If no results
-                      var noResultsMessage = $('<div id="no-results-message">No customer found.</div>');
-                      $('#temp-search-result-container').remove();
-                      $('#customer-search-bar-spinner').hide();
-                      searchContainer.append(noResultsMessage);
-                      return;  // Exit out of the function
+              // Remove old elements to aovid duplicates
+              $('#temp-search-result-container').remove();
+              $('#temp-search-result-card-body').remove();
+              $('#temp-customer-dropdown').remove();
+              $('#confirm-button').remove();
+              $('#cancel-button').remove();
+              $('#no-results-message').remove();  // Add this line to remove any existing 'No customer found' message
+
+              var search_result_container = $("<div id='temp-search-result-container' class='card border border-primary card-hover'><div class='card-header mb-0 fw-bold'>Search results:</div></div>");
+              var cardBody = $("<div class='card-body' id='temp-search-result-card-body'></div>")
+              var dropdown = $("<select id='temp-customer-dropdown' class='form-select my-1' style='background-color: lightblue;'></select>");
+
+              if (!data.length) { // If no results
+                var noResultsMessage = $('<div id="no-results-message">No customer found.</div>');
+                $('#temp-search-result-container').remove();
+                $('#customer-search-bar-spinner').hide();
+                searchContainer.append(noResultsMessage);
+                return;  // Exit out of the function
+              }
+
+              $.each(data, function (key, value) {
+                dropdown.append($("<option></option>")
+                  .attr("value", value.customer_id)
+                  .text(value.get_customer_full_name + " (" + value.phone_numbers.join(", ") + ")"));
+              });
+              // Make the Confirm button align on the left in a new row
+              var confirmButton = $('<button id="confirm-button" class="btn btn-outline-primary my-1" style="float:left;">Confirm</button>');
+              // Add a Cancel button; on the right row
+              var cancelButton = $('<button id="cancel-button" class="btn btn-outline-danger my-1" style="float: right;">Cancel</button>');
+
+              // Append elements to cardBody
+              cardBody.append(dropdown).append(confirmButton).append(cancelButton);
+
+              // Append cardBody to search_result_container
+              search_result_container.append(cardBody);
+
+              // Append search_result_container to searchContainer
+              searchContainer.append(search_result_container);
+
+              // Add a click event for the Cancel button to remove the search bar and search results
+              $("#cancel-button").click(function () {
+                $("#search-container").hide();
+                isSearchVisible = false;
+
+                $('#temp-search-result-container').remove();
+                $('#temp-search-result-card-body').remove();
+                $('#temp-customer-dropdown').remove();
+                $('#confirm-button').remove();
+                $('#cancel-button').remove();
+              });
+              // Confirm function
+              $("#confirm-button").click(function () {
+                $("#id_vehicle_cust").prop("disabled", false);
+                var selectedCustomer = $("#temp-customer-dropdown").val();
+                $("#id_vehicle_cust").val(selectedCustomer);
+                $.ajax({
+                  url: "{% url 'dashboard:update_customer_assignment' %}",
+                  data: {
+                    'selectedCustomer': selectedCustomer,
+                    'vehicleId': $('#id_vehicle_id').val()
+                  },
+                  method: 'POST',
+                  dataType: 'json',
+                  success: function (response) {
+                    if (response.status === 'success') {
+                      // Show a success notification
+                      $("#id_vehicle_cust").prop("disabled", true);
+                      alert(response.message);
+                    } else {
+                      // Show an error notification
+                      alert(response.message);
+                    }
                   }
+                });
 
-                  $.each(data, function(key, value) {
-                      dropdown.append($("<option></option>")
-                          .attr("value", value.customer_id)
-                          .text(value.get_customer_full_name + " (" + value.phone_numbers.join(", ") + ")"));
-                  });
-                  // Make the Confirm button align on the left in a new row
-                  var confirmButton = $('<button id="confirm-button" class="btn btn-outline-primary my-1" style="float:left;">Confirm</button>');
-                  // Add a Cancel button; on the right row
-                  var cancelButton = $('<button id="cancel-button" class="btn btn-outline-danger my-1" style="float: right;">Cancel</button>'); 
-                
-                // Append elements to cardBody
-                cardBody.append(dropdown).append(confirmButton).append(cancelButton);
-
-                // Append cardBody to search_result_container
-                search_result_container.append(cardBody);
-
-                // Append search_result_container to searchContainer
-                searchContainer.append(search_result_container);
-                  
-                  // Add a click event for the Cancel button to remove the search bar and search results
-                  $("#cancel-button").click(function() {
-                      $("#search-container").hide();
-                      isSearchVisible = false;
-
-                      $('#temp-search-result-container').remove();
-                      $('#temp-search-result-card-body').remove();
-                      $('#temp-customer-dropdown').remove();
-                      $('#confirm-button').remove();
-                      $('#cancel-button').remove();
-                  });
-                  // Confirm function
-                  $("#confirm-button").click(function() {
-                      $("#id_vehicle_cust").prop("disabled", false);
-                      var selectedCustomer = $("#temp-customer-dropdown").val();
-                      $("#id_vehicle_cust").val(selectedCustomer);
-                      $.ajax({
-                        url: "{% url 'dashboard:update_customer_assignment' %}",  
-                        data: {
-                            'selectedCustomer': selectedCustomer,
-                            'vehicleId': $('#id_vehicle_id').val()
-                        },
-                        method: 'POST',
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.status === 'success') {
-                                // Show a success notification
-                                $("#id_vehicle_cust").prop("disabled", true);
-                                alert(response.message);
-                            } else {
-                                // Show an error notification
-                                alert(response.message);
-                            }
-                        }
-                    });
-                      
-                  });
-                }
-            })
+              });
+            }
+          })
         }, 1500);  // 1000 milliseconds = 1 second.
-    });
+      });
 
+    });
   });
-});
 </script>
 {% endblock %}

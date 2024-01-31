@@ -2,17 +2,18 @@
 {% load crispy_forms_tags %}
 {% block content-main %}
 <div class="container container-fluid">
-  <div class ='row justify-content-between'>
+  <div class='row justify-content-between'>
     <div class="col-8">
       <h3>Repair Order Update - ID:{{repair_order.repair_order_id}} - Status</h3>
     </div>
-    <div class ='col-2 '>
-      <h4 class ='text-left'>Today is {{current_time|date}} </h4>
+    <div class='col-2 '>
+      <h4 class='text-left'>Today is {{current_time|date}} </h4>
     </div>
-     
+
   </div>
-  
-  <a class='btn btn-outline-dark my-1' href = "{% url 'dashboard:repair-order-dash' %}"> <i class ='fa fa-arrow-circle-left'> </i> go back to dashboard</a>
+
+  <a class='btn btn-outline-dark my-1' href="{% url 'dashboard:wip_dash' %}"> <i class='fa fa-arrow-circle-left'> </i>
+    go back to dashboard</a>
 </div>
 
 
@@ -25,7 +26,7 @@
   <button type="submit">Save changes</button>
 </form>
 
-  {{ customer_form|crispy}}
-  <hr>
-  {{ address_form |crispy}}
+{{ customer_form|crispy}}
+<hr>
+{{ address_form |crispy}}
 {% endblock %}
