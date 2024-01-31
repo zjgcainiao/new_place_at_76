@@ -22,7 +22,7 @@
       <h4>{{repair_order.repair_order_id}} -- Customer:{{repair_order.repair_order_customer.get_customer_full_name}} --
         Status: {{repair_order.repair_order_phase.repair_order_phase_description}}</h4>
     </div>
-    <div class='col-md-2'>
+    <div class='col-md-4'>
       <h5 class='text-left'>Today is: {{current_time|date}} </h5>
     </div>
   </div>
@@ -150,19 +150,19 @@
         <div class="card-body">
           <h6 class="card-title">Engine</h6>
           <div class="row">
-            <p class="card-text col-3">Displacement CID: {{vehicle.engine_displacement_CID}}</p>
-            <p class="card-text col-3">displacement liter: {{vehicle.engine_displacement_liter}}</p>
-            <p class="card-text col-3">number of cylinder: {{vehicle.engine_number_of_cylinder}}</p>
-            <p class="card-text col-3">valve per cyclinder: {{vehicle.engine_valve_per_cyclinder}}</p>
-            <p class="card-text col-3">boost type: {{vehicle.engine_boost_type}}</p>
-            <p class="card-text col-3">head configuration type: {{vehicle.engine_head_configuration_type}}</p>
-            <p class="card-text col-3">vin code: {{vehicle.engine_vin_code}}</p>
-            <p class="card-text col-3">fuel system: {{vehicle.engine_fuel_system}}</p>
-            <p class="card-text col-3">fuel delivery method type: {{vehicle.engine_fuel_delivery_method_type}}</p>
-            <p class="card-text col-3">fuel type: {{vehicle.engine_fuel_type}}</p>
+            <p class="card-text col-3">Displacement CID: {{vehicle.vehicle_engine.engine_displacement_CID}}</p>
+            <p class="card-text col-3">displacement liter: {{vehicle.vehicle_engine.engine_displacement_liter}}</p>
+            <p class="card-text col-3">number of cylinder: {{vehicle.vehicle_engine.engine_number_of_cylinder}}</p>
+            <p class="card-text col-3">valve per cyclinder: {{vehicle.vehicle_engine.engine_valve_per_cyclinder}}</p>
+            <p class="card-text col-3">boost type: {{vehicle.vehicle_engine.engine_boost_type}}</p>
+            <p class="card-text col-3">head configuration type: {{vehicle.vehicle_engine.engine_head_configuration_type}}</p>
+            <p class="card-text col-3">vin code: {{vehicle.vehicle_engine.engine_vin_code}}</p>
+            <p class="card-text col-3">fuel system: {{vehicle.vehicle_engine.engine_fuel_system}}</p>
+            <p class="card-text col-3">fuel delivery method type: {{vehicle.vehicle_engine.engine_fuel_delivery_method_type}}</p>
+            <p class="card-text col-3">fuel type: {{vehicle.vehicle_engine.engine_fuel_type}}</p>
             <p class="card-text col-3">fuel control type: {{vehicle.engine_fuel_control_type}}</p>
-            <p class="card-text col-3">block configuration: {{vehicle.engine_block_configuration}}</p>
-            <p class="card-text col-3">fuel system configuration: {{vehicle.engine_fuel_system_configuration}}</p>
+            <p class="card-text col-3">block configuration: {{vehicle.vehicle_engine.engine_block_configuration}}</p>
+            <p class="card-text col-3">fuel system configuration: {{vehicle.vehicle_engine.engine_fuel_system_configuration}}</p>
           </div>
         </div>
         <!-- end of card body -->

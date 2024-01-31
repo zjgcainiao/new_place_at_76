@@ -39,13 +39,15 @@ urlpatterns = [
          LineItemUpdateView.as_view(), name='part-item-update-view'),
 
     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/three-in-one/',
-         lineitem_three_in_one_view, name='ineitem_three_in_one_view'),
+         lineitem_three_in_one_view, name='lineitem_three_in_one_view'),
 
 
 
      # this is the current one 
     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/merge/',
          line_item_labor_and_part_item_update_merge_view, name='part-labor-item-merge-view'),
+#     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/merge/',
+#          line_item_labor_and_part_item_update_merge_view, name='part-labor-item-merge-view'),
          
     # customer dash
     path('customers/', views.get_customer_dash, name='customer-dash'),
