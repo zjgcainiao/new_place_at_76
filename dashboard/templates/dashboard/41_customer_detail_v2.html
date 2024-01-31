@@ -57,7 +57,7 @@
                     </div>
 
                     <p class='card-text'>Last visit on: {{customer.customer_last_visit_date}} </p>
-                    <a href="{% url 'dashboard:customer-update' customer.customer_id %}"
+                    <a href="{% url 'dashboard:customer_update' customer.customer_id %}"
                         class="btn btn-outline-info">Update</a>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                     {% for email_form in email_forms %}
                     <form class="email-form" id="customer-email-update-form"
                         data-email-id="{{ form.instance.email_id }}"
-                        action="{% url 'dashboard:update-customer-email' email_id=email_form.instance.email_id %}">
+                        action="{% url 'dashboard:update_customer_email' email_id=email_form.instance.email_id %}">
                         {% csrf_token %}
 
                         <div class="form-display">
@@ -219,7 +219,7 @@
                                     <td>{{vehicle.vehicle_make.maker_name}}</td>
                                     <td class="table-action"><a class="action-icon">
                                             <a class='btn'
-                                                href="{% url 'dashboard:customer-update' customer.customer_id %}"><i
+                                                href="{% url 'dashboard:customer_update' customer.customer_id %}"><i
                                                     class="uil uil-edit"></i></a><a><i
                                                     class="uil uil-trash-alt"></i></a>
                                     </td>
@@ -253,7 +253,7 @@
 
                     <p class='card-text'>Last visit on: {{customer.customer_last_visit_date}} </p>
                     <p class='card-text small'> Updated at: {{customer.customer_last_updated_at}}</p>
-                    <a href="{% url 'dashboard:customer-update' customer.customer_id %}"
+                    <a href="{% url 'dashboard:customer_update' customer.customer_id %}"
                         class="btn btn-outline-info">Update</a>
                 </div>
             </div>

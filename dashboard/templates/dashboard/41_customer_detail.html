@@ -50,7 +50,7 @@
                     </div>
 
                     <p class='card-text'>Last visit on: {{customer.customer_last_visit_date}} </p>
-                    <a href="{% url 'dashboard:customer-update' customer.customer_id %}"
+                    <a href="{% url 'dashboard:customer_update' customer.customer_id %}"
                         class="btn btn-outline-info">Update</a>
                 </div>
             </div>
@@ -63,7 +63,7 @@
                     {% for email_form in email_forms %}
                     <form class="email-form" method="post" id="customer-email-update-form-{{ form.instance.email_id }}"
                         data-email-id="{{ form.instance.email_id }}"
-                        action="{% url 'dashboard:update-customer-email' email_id=email_form.instance.email_id %}">
+                        action="{% url 'dashboard:update_customer_email' email_id=email_form.instance.email_id %}">
                         {% csrf_token %}
                         <div class="form-display">
                             <div class="row">

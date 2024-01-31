@@ -14,12 +14,12 @@
     </ol>
   </nav>
 </div>
-<div class="container container-fluid my-1" id='customer-create-container'>
+<div class="container container-fluid my-1" id='customer_create-container'>
   <h3>Update Customer Page</h3>
   <a class="btn btn-outline-dark" href="{% url 'dashboard:customer-detail' pk=object.customer_id %}">Go Back</a>
   <div class="card card-hover border border-50 my-1">
 
-    <form method="post" class="card-body my-1" id='customer-update-container'>
+    <form method="post" class="card-body my-1" id='customer_update-container'>
       {% csrf_token %}
 
       {{form|crispy}}

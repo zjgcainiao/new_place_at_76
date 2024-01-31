@@ -10,7 +10,7 @@ app_name = 'dashboard'
 urlpatterns = [
 
     path('', get_main_dash, name='main_dash'),
-    path('search/', SearchView.as_view(), name='search_appointments'),
+    path('search/', SearchView.as_view(), name='search_active_appts_and_wips'),
 
     # dashboard -- repair order plus customer info and customer information. Phone numbers are not included yet.
     # dashboard v2. current version
@@ -28,22 +28,20 @@ urlpatterns = [
          name='dashboard-detail-v2'),
     path('v2/detail_v3/<int:pk>/', DashboardDetailView.as_view(),
          name='dashboard-detail-v3'),
-    path('v2/detail_v3/<int:pk>/update-ro',
+    path('v2/detail_v3/<int:pk>/update-ro/',
          RepairOrderUpdateView.as_view(), name='repair_order_update'),
     path('v2/detail_v3/<int:pk>/update-ro-v2',
          repair_order_update, name='repair_order_update-v2'),
     #  path('ros/<int:repair_order_id>/lineitems/', repair_order_and_line_items_detail, name='workitem-lineitem-detail'),
 
 
-    path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/retired_methods/',
+    path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/retired-methods/',
          LineItemUpdateView.as_view(), name='line_item_update_view'),
 
     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/three-in-one-update/',
          line_item_three_in_one_update, name='line_item_three_in_one_update'),
     path('v2/detail/<int:pk>/lineitems/three-in-one-create/',
          line_item_three_in_one_update, name='line_item_three_in_one_create'),
-
-
 
      # this is the current one 
     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/merge/',
@@ -54,13 +52,13 @@ urlpatterns = [
     # customer dash
     path('customers/', views.get_customer_dash, name='customer_dash'),
     path('customers/<int:pk>/', views.CustomerDetailView.as_view(),
-         name='customer-detail'),
+         name='customer_detail'),
     path('customers/<int:pk>/v2', views.CustomerDetail2View.as_view(),
          name='customer-detail-v2'),
     path('customers/create', views.CustomerCreateView.as_view(),
-         name='customer-create'),
+         name='customer_create'),
 
-    path('update-customer-email/<int:email_id>/',
+    path('update_customer_email/<int:email_id>/',
          views.update_customer_email, name='update_customer_email'),
     path('customers/create/',
          views.CustomerCreateView.as_view(), name='customer_create'),
