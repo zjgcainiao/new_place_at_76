@@ -1,6 +1,7 @@
 from django import template
 from django.utils.safestring import mark_safe
 import re
+from dateutil import parser
 
 register = template.Library()
 
@@ -33,3 +34,15 @@ def bold_last_six_digit_in_vin(vin):
 @register.filter(name='has_group')
 def has_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
+
+
+@register.filter(name='format_datetime')
+def format_datetime(value, format_string="Y-m-d H:i"):
+    try:
+        # Parse the datetime string to a datetime object
+        datetime_obj = parser.parse(value)
+        # Format the datetime object
+        return format(datetime_obj, format_string)
+    except (ValueError, TypeError):
+        # Return the original value if parsing fails
+        return value

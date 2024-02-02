@@ -8,4 +8,4 @@ def get_main_dash(request):
     context = {
         'current_time': CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE,
     }
-    return render(request, 'dashboard/10_main_dashboard.html', context)
+    return render(request, 'dashboard/10_main_dash.html', context)

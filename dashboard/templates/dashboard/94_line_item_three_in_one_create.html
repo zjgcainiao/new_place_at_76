@@ -1,24 +1,46 @@
 {% extends 'dashboard/00_dashboard_base.html' %}
 {% load crispy_forms_tags %}
 {% block content-main %}
+<script>
+  $(function () {
+    // Function to load the appropriate formset
+    function loadFormset(lineItemType) {
+      // Example: Load formset via AJAX or show/hide existing formset elements
+      // $('#formsetPlaceholder').load('/url-to-get-formset/' + lineItemType);
+    }
 
+    // Lock the field and load the formset on selection
+    $('#id_line_item_type').on('change', function () {
+      // Confirm the selection
+      if (confirm('Are you sure you want to select this type? This cannot be changed later.')) {
+        $(this).prop('disabled', true); // Lock the field
+        loadFormset($(this).val()); // Load the corresponding formset
+      } else {
+        $(this).val(''); // Reset selection if not confirmed
+      }
+    });
+  });
+</script>
 <div class="container-fluid p-1 my-2">
   <div class="card card-hover border-0 p-2 my-2">
-    <h2 class="card-header">Update</h2>
+    <h2 class="card-header">Create New Item</h2>
 
     <div class="card-body p-1 my-2">
-      <form method="post">
+      <form id="lineItemForm" method="post">
         {% csrf_token %}
         <!-- line item form  -->
         {% crispy form form.helper %}
 
         <!-- selected_formset form -->
-        {{ selected_formset.management_form }}
-        {% for form in selected_formset %}
-        <div class="card card-hover border-0 p-2 my-2">
-          {% crispy form form.helper %}
+        <div id="formsetPlaceholder">
+          {{ selected_formset.management_form }}
+          {% for form in selected_formset %}
+          <div class="card card-hover border-0 p-2 my-2">
+            {% crispy form form.helper %}
+          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
+
 
         <!-- Submit Button -->
         <button type="submit" class="btn btn-primary">Save</button>

@@ -7,7 +7,7 @@ from dashboard.forms import RepairOrderUpdateForm
 # modified to prefetch emails, phones, taxes to each repair_order_customer object
 
 @login_required(login_url='internal_users:internal_user_login')
-def get_wip_dash_detail_v1(request, pk):
+def get_wip_detail_v1(request, pk):
     repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
         Prefetch('repair_order_customer__addresses'),
         'repair_order_customer__phones',
@@ -54,4 +54,4 @@ def get_wip_dash_detail_v1(request, pk):
         'text_messages': text_messages,
 
     }
-    return render(request, 'dashboard/21_dashboard_detail.html', context)
+    return render(request, 'dashboard/21_wip_detail_v1.html', context)

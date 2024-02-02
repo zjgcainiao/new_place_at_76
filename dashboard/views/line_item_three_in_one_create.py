@@ -18,27 +18,26 @@ def line_item_three_in_one_create(request, pk):
         else:
             selected_formset = None
 
-        formset = selected_formset(request.POST)
+        selected_formset = selected_formset(request.POST) if selected_formset else None
 
-        formset = selected_formset(request.POST) if selected_formset else None
-        if form.is_valid() and (formset is None or formset.is_valid()):
+        if form.is_valid() and ( selected_formset  is None or  selected_formset .is_valid()):
             line_item = form.save(commit=False)
             # line_item.line_item_type = line_item_type
             line_item.save()
 
-            if formset:
-                instances = formset.save(commit=False)
+            if  selected_formset :
+                instances =  selected_formset.save(commit=False)
                 for instance in instances:
                     # associate_instance_with_line_item(instance, line_item)
                     instance.save()
                 messages.success(request, 'A work item were created successfully.')
             return redirect('dashboard:wip_dash_detail_v1', pk=repair_order_id)
 
-        else:
-            form = LineItemCreateForm()
-            selected_formset = None
+    else:
+        form = LineItemCreateForm()
+        selected_formset = None
 
-        return render(request, 'dashboard/94_line_item_three_in_one_create.html', {
-            'form': form,
-            'selected_formset': selected_formset,
-        })
+    return render(request, 'dashboard/94_line_item_three_in_one_create.html', {
+        'form': form,
+        'selected_formset': selected_formset,
+    })

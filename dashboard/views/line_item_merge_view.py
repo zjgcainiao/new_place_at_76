@@ -15,7 +15,7 @@ def line_item_merge_view(request, pk, line_item_id):
     )
     if not line_item:
         messages.error(f'Cannot find the line item by its given id {line_item_id}.')
-        return redirect('dashboard:wip_detail_v1', pk=pk)
+        return redirect('dashboard:get_wip_detail_v1', pk=pk)
     # use .all() instead of .exists() to reduce the number of queries into DB.
     if line_item.line_item_type == 'part':
         Formset = PartItemInlineFormSet
@@ -27,7 +27,7 @@ def line_item_merge_view(request, pk, line_item_id):
         Formset = None
         messages.warning(request,
                        f'error fetching labor or part item information for line item {line_item_id}. data empty or not found.')
-        return redirect('dashboard:wip_detail_v1', pk=pk)
+        return redirect('dashboard:get_wip_detail_v1', pk=pk)
 
     
     # in one single line item, some data is from lineitem table, some is either from partitem or laboritem table.
@@ -40,7 +40,7 @@ def line_item_merge_view(request, pk, line_item_id):
             form.save()
             messages.success(
                 request, 'Line items have been updated successfully!')
-            return redirect('dashboard:wip_detail_v1', pk=pk)
+            return redirect('dashboard:get_wip_detail_v1', pk=pk)
     else:
         formset = Formset(instance=line_item)
         form = LineItemUpdateForm(instance=line_item)

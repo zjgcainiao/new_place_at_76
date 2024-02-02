@@ -52,7 +52,7 @@
         <tbody>
             {% for customer in page_obj %}
             <tr>
-                <td><a href="{% url 'dashboard:customer-detail' pk=customer.customer_id %}">{{customer.customer_id}}</a>
+                <td><a href="{% url 'dashboard:customer_detail' pk=customer.customer_id %}">{{customer.customer_id}}</a>
                 </td>
                 <td>{{ customer.get_customer_full_name}}</td>
                 <td>

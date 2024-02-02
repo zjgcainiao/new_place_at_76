@@ -58,9 +58,9 @@
             </p>
             <p class="card-text col-6">
               Customer Name: {{ repair_order.repair_order_customer.get_customer_full_name}}
-              (<a href="{% url 'dashboard:customer-detail' pk=customer_id %}" class="card-link">
+              (<a href="{% url 'dashboard:customer_detail' pk=customer_id %}" class="card-link">
                 <u>
-                  {{repair_order.repair_order_customer.customer_id }}
+                  {{repair_order.repair_order_customer.pk }}
                 </u>
               </a>)
             </p>
@@ -172,8 +172,6 @@
       </div>
       <!-- end of card  -->
 
-
-
       <hr>
 
       <div class='row'>
@@ -181,7 +179,13 @@
           <a class="btn btn-outline-primary">Canned Job List--ModelChoiceField</a>
           <a class="btn btn-outline-primary"> Clean all </a>
           <a class="btn btn-outline-primary">Refresh </a>
-          <a class="btn btn-outline-primary">Add a new Line item</a>
+          <a class="btn btn-outline-primary"
+            href="{% url 'dashboard:line_item_three_in_one_create' pk=repair_order.pk %}">
+            <i class="fas fa-plus"></i> work item
+          </a>
+          <a class="btn btn-outline-primary" href="{% url 'dashboard:line_item_create_wizard' pk=repair_order.pk %}">
+            <i class="fas fa-plus"></i> work item - wizard
+          </a>
         </div>
       </div>
 

@@ -23,10 +23,15 @@
     <tbody>
       {% for repair_order in repair_orders %}
       <tr>
-        <td><a href="{% url 'dashboard:wip_detail_v1' pk=repair_order.repair_order_id %}"></a>{{
-          repair_order.repair_order_id }}</td>
-        <td>{{ repair_order.repair_order_customer.customer_first_name }} {{
-          repair_order.repair_order_customer.customer_last_name }}</td>
+        <td>
+          <a href="{% url 'dashboard:get_wip_detail_v1' pk=repair_order.repair_order_id %}">
+
+          </a>
+          {{repair_order.repair_order_id }}
+        </td>
+        <td>
+          {{ repair_order.repair_order_customer.get_customer_full_name }}
+        </td>
         <td>{{ repair_order.repair_order_customer.addresses.get.address_line_01 }}</td>
         <td>{{ repair_order.repair_order_customer.addresses.get.address_city }}</td>
         <td>{{ repair_order.repair_order_customer.addresses.get.address_state }}</td>

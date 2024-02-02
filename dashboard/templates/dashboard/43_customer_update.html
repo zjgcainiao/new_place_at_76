@@ -8,7 +8,7 @@
       <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
       <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
       <li class="breadcrumb-item"><a href="{% url 'dashboard:customer_dash' %}">Customers</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'dashboard:customer-detail' pk=object.customer_id %}">Customer
+      <li class="breadcrumb-item"><a href="{% url 'dashboard:customer_detail' pk=object.customer_id %}">Customer
           Detail</a></li>
       <li class="breadcrumb-item active">Update Customer ID: {{object.pk }}</li>
     </ol>
@@ -16,7 +16,7 @@
 </div>
 <div class="container container-fluid my-1" id='customer_create-container'>
   <h3>Update Customer Page</h3>
-  <a class="btn btn-outline-dark" href="{% url 'dashboard:customer-detail' pk=object.customer_id %}">Go Back</a>
+  <a class="btn btn-outline-dark" href="{% url 'dashboard:customer_detail' pk=object.customer_id %}">Go Back</a>
   <div class="card card-hover border border-50 my-1">
 
     <form method="post" class="card-body my-1" id='customer_update-container'>

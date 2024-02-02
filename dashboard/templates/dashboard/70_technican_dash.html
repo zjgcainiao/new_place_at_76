@@ -69,7 +69,7 @@
       <tbody>
         {% for repair_order in repair_orders %}
         <tr>
-          <td><a href="{% url 'dashboard:wip_detail_v1' pk=repair_order.repair_order_id %}">{{
+          <td><a href="{% url 'dashboard:get_wip_detail_v1' pk=repair_order.repair_order_id %}">{{
               repair_order.repair_order_id }}</a></td>
           <td>{{repair_order.repair_order_phase.repair_order_phase_description }}</td>
           <!-- <td>repair_order.repair_order_customer.customer_id </td> -->

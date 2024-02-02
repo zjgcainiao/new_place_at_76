@@ -21,7 +21,7 @@ def update_customer_email(request, email_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Email has been updated successfully.")
-            return redirect('dashboard:customer-detail', pk=customer_id)
+            return redirect('dashboard:customer_detail', pk=customer_id)
             # return JsonResponse({'status': 'success'})
         else:
             messages.error(
@@ -29,4 +29,4 @@ def update_customer_email(request, email_id):
             # error_json = JsonResponse(
             #     {'status': 'error', 'errors': form.errors})
             # context = {"pk": customer_id, 'error_json_response': error_json}
-            return redirect('dashboard:customer-detail', pk=customer_id) 
+            return redirect('dashboard:customer_detail', pk=customer_id) 

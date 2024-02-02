@@ -7,12 +7,12 @@ class LineItemCreateForm(LineItemUpdateForm):
         ('part', 'Part Item'),
         ('labor', 'Labor Item'),
         ('note', 'Note Item'),
+        ('cannedjob', 'Canned Job'),
     ]
-
     line_item_type = forms.ChoiceField(
         choices=LINE_ITEM_TYPES,
-        label='Item Type',
-        required=True
+        required=True,
+        disabled=False,
     )
     class Meta(LineItemUpdateForm.Meta):
         fields = LineItemUpdateForm.Meta.fields + ['line_item_type']

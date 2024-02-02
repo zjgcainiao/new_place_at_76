@@ -1,10 +1,12 @@
 from django.urls import include, path
-from dashboard.views import get_repair_order_dash, get_wip_dash_detail_v1,get_wip_dash_detail_v2
+from dashboard.views import get_wip_dash, get_wip_detail_v1,get_wip_detail_v2
 from dashboard.views import WIPDashboardView, get_main_dash
 from dashboard.views import DashboardDetailView, RepairOrderUpdateView, LineItemUpdateView, LaborItemUpdateView
-from dashboard.views import repair_order_update, repair_order_and_line_items_detail, line_item_merge_view
+from dashboard.views import repair_order_update, repair_order_and_line_items_detail, line_item_merge_view,LineItemCreateWizard
 from dashboard.views import chat_sidebar_view, SearchView,line_item_three_in_one_create, line_item_three_in_one_update, line_item_merge_view
 from dashboard import views
+from dashboard.forms import LineItemCreateForm, PartItemInlineFormSet, LaborItemInlineFormSet, NoteItemInlineFormSet
+
 
 app_name = 'dashboard'
 urlpatterns = [
@@ -16,22 +18,22 @@ urlpatterns = [
     # dashboard v2. current version
     path('WIPs/', WIPDashboardView.as_view(), name='wip_dash'),
     # dashboard v1-- old
-    path('WIPs/old',  get_repair_order_dash, name='dashboard-testing-v1'),
+    path('WIPs/old',  get_wip_dash, name='dashboard-testing-v1'),
 
     # the dashboard detail page.
-    path('v2/detail/<int:pk>/',get_wip_dash_detail_v1, name='wip_detail_v1'),
+    path('v2/detail/<int:pk>/',get_wip_detail_v1, name='get_wip_detail_v1'),
 
 #     path('chats/customers/<int:customer_id>/',
 #          chat_sidebar_view, name='dashboard-chats'),
 
-    path('v2/detail_v2/<int:pk>/', get_wip_dash_detail_v2,
-         name='dashboard-detail-v2'),
+    path('v2/detail_v2/<int:pk>/', get_wip_detail_v2,
+         name='get_wip_detail_v2'),
     path('v2/detail_v3/<int:pk>/', DashboardDetailView.as_view(),
          name='dashboard-detail-v3'),
     path('v2/detail_v3/<int:pk>/update-ro/',
          RepairOrderUpdateView.as_view(), name='repair_order_update'),
     path('v2/detail_v3/<int:pk>/update-ro-v2',
-         repair_order_update, name='repair_order_update-v2'),
+         repair_order_update, name='repair_order_update_v2'),
     #  path('ros/<int:repair_order_id>/lineitems/', repair_order_and_line_items_detail, name='workitem-lineitem-detail'),
 
 
@@ -41,8 +43,10 @@ urlpatterns = [
     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/three-in-one-update/',
          line_item_three_in_one_update, name='line_item_three_in_one_update'),
     path('v2/detail/<int:pk>/lineitems/three-in-one-create/',
-         line_item_three_in_one_update, name='line_item_three_in_one_create'),
+         line_item_three_in_one_create, name='line_item_three_in_one_create'),
 
+     path('v2/detail/<int:pk>/lineitems/create-wizard/',
+           LineItemCreateWizard.as_view(),name='line_item_create_wizard'),
      # this is the current one 
     path('v2/detail/<int:pk>/lineitems/<int:line_item_id>/merge/',
          line_item_merge_view, name='line_item_merge_view'),
@@ -54,7 +58,7 @@ urlpatterns = [
     path('customers/<int:pk>/', views.CustomerDetailView.as_view(),
          name='customer_detail'),
     path('customers/<int:pk>/v2', views.CustomerDetail2View.as_view(),
-         name='customer-detail-v2'),
+         name='customer_detail-v2'),
     path('customers/create', views.CustomerCreateView.as_view(),
          name='customer_create'),
 
@@ -96,7 +100,7 @@ urlpatterns = [
          views.technician_dash_view, name='technician_dash'),
 
     path('repairorders/', views.RepairOrderListView.as_view(),
-         name='repairorders-list'),
+         name='repairorders_list'),
     # path('repairorders/<int:repair_order_id>/lineitems/', views.repair_order_and_line_items_detail, name='repairorder-lineitem-detail'),
     # path('dataimport/email', views.EmailDataView.as_view(), name='import-email-data')
 

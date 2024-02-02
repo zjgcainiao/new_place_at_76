@@ -7,7 +7,7 @@ from internal_users.mixins import InternalUserRequiredMixin
 class WIPDashboardView(InternalUserRequiredMixin, ListView):
     model = RepairOrdersNewSQL02Model
     context_object_name = 'repair_orders'
-    template_name = 'dashboard/12_repair_order_dash_v2.html'
+    template_name = 'dashboard/12_wip_dash_v2.html'
     login_url = reverse_lazy('internal_users:internal_user_login')
 
     def dispatch(self, request, *args, **kwargs):

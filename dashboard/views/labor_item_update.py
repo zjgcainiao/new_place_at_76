@@ -15,8 +15,3 @@ class LaborItemUpdateView(UpdateView):
         qs = LineItemsNewSQL02Model.objects.prefetch_related(
             'parts_lineitems').prefetch_related('lineitem_laboritem')
         # repair order phase defines the WIP (work-in-progress) category. 6 means invoice.  7 counter sale. 8 delet
-
-    # class AppointmentOfNext7DaysListView(ListView):
-    #     template_name = 'dashboard/40-appointment_last_7_day_display.html'
-    #     model = Appt
-    #     context_object_name = 'appointments'

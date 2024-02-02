@@ -28,7 +28,7 @@ class CustomerCreateView(CreateView, LoginRequiredMixin):
         self.object.modified_by = self.request.user  # assuming the user is logged in
         self.object.save()
         messages.success(self.request, 'Update success.')
-        return redirect('dashboard:customer-detail', pk=self.object.pk)
+        return redirect('dashboard:customer_detail', pk=self.object.pk)
 
     def get_success_url(self):
-        return reverse('dashboard:customer-detail', kwargs={'pk': self.object.pk})
+        return reverse('dashboard:customer_detail', kwargs={'pk': self.object.pk})

@@ -19,14 +19,14 @@
 </div>
 {% endif %}
 
-<div class="container container-fluid " id='customer-detail-container'>
+<div class="container container-fluid " id='customer_detail-container'>
     <!-- Breadcrumb-->
     <nav class="pt-0" aria-label="Breadcrumb">
         <ol class="breadcrumb breadcrumb-dark">
             <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
             <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
             <li class="breadcrumb-item active"><a
-                    href="{% url 'dashboard:customer-detail' pk=customer.customer_id %}">Customer Detail</a></li>
+                    href="{% url 'dashboard:customer_detail' pk=customer.customer_id %}">Customer Detail</a></li>
         </ol>
     </nav>
     <h4>Customer Detail V2 - ID:{{customer.customer_id}}</h4>

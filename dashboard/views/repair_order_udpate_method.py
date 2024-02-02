@@ -20,7 +20,7 @@ def repair_order_update(request, pk):
         if repair_order_form.is_valid() and customer_address_formset.is_valid():
             repair_order_form.save()
             customer_address_formset.save()
-            return redirect('wip_detail_v1', pk=repair_order.pk)
+            return redirect('get_wip_detail_v1', pk=repair_order.pk)
     else:
         repair_order_form = RepairOrderUpdateForm(instance=repair_order)
         customer_address_formset = AddressFormSet(

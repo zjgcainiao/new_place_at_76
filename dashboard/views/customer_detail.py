@@ -36,7 +36,7 @@ class CustomerDetailView(DetailView, LoginRequiredMixin):
         return qs
 
     def get_success_url(self):
-        return reverse('dashboard:customer-detail', kwargs={'pk': self.object.pk})
+        return reverse('dashboard:customer_detail', kwargs={'pk': self.object.pk})
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()

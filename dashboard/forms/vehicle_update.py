@@ -3,6 +3,7 @@ from .base import forms, FormHelper, Layout, Fieldset, Submit, Field, ButtonHold
 from core_operations.constants import LIST_OF_STATES_IN_US
 from homepageapp.models import VehiclesNewSQL02Model, GVWsModel, CustomersNewSQL02Model, BodyStylesModel
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 class VehicleUpdateForm(forms.ModelForm):
     vehicle_id = forms.CharField(required=False)

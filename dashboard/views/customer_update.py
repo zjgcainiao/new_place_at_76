@@ -8,7 +8,7 @@ class CustomerUpdateView(UpdateView, LoginRequiredMixin):
     model = CustomersNewSQL02Model
     form_class = CustomerUpdateForm
     template_name = 'dashboard/43_customer_update.html'
-    success_url = reverse_lazy('dashboard:customer-detail')
+    success_url = reverse_lazy('dashboard:customer_detail')
     login_url = reverse_lazy('internal_users:internal_user_login')
 
     def get_context_data(self, **kwargs):
@@ -34,7 +34,7 @@ class CustomerUpdateView(UpdateView, LoginRequiredMixin):
         self.object.modified_by = self.request.user  # assuming the user is logged in
         self.object.save()
         messages.success(self.request, 'Update success.')
-        return redirect('dashboard:customer-detail', pk=self.object.customer_id)
+        return redirect('dashboard:customer_detail', pk=self.object.customer_id)
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))

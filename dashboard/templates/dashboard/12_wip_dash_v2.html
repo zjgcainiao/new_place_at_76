@@ -34,13 +34,14 @@
       <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search_active_appts_and_wips' %}"> <i
           class="uil-focus-add"></i> New Repair Order</a>
       <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer_dash' %}"><i
-          class='uil-users-alt'></i> Go to Customer Dash</a>
+          class='uil-users-alt'></i> Customer Dash</a>
       <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:vehicle_dash' %}"> <i
-          class=" uil-car-sideview"></i> Go to Vehicle Dash</a>
+          class=" uil-car-sideview"></i> Vehicle Dash</a>
       <a type="button" class="btn btn-outline-dark" href="{% url 'appointments:appointment_list' %}"> <i
-          class="uil-calendar-alt"></i> Go to Appointment Dash</a>
-      <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search_single_plate_via_plate2vin' %}">Go to
-        Plate Search</a>
+          class="uil-calendar-alt"></i> Appointment Dash</a>
+      <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search_single_plate_via_plate2vin' %}">
+        Plate Search
+      </a>
     </div>
   </div>
   <!-- end of button group  -->
@@ -68,7 +69,7 @@
     }
 
     .table-stackable td:before {
-      content: attr(data-label);
+      content: attr(data-bs-label);
       /* Use a data attribute to add a label before each cell */
       float: left;
       font-weight: bold;
@@ -84,46 +85,42 @@
           <th>Order ID</th>
           <th>Order Status</th>
           <th>Name</th>
+          <th class="d-none d-md-table-cell">Phone </th>
+          <th class="d-none d-md-table-cell">Email</th>
           <th>Labor</th>
           <th>Part</th>
           <th class="d-none d-md-table-cell">Taxes</th>
           <th>Total</th>
-          <th class="d-none d-md-table-cell">Phone </th>
-          <th class="d-none d-md-table-cell">Email</th>
-          <th class="d-none d-lg-table-cell">Customer Address</th>
           <th>Updated</th>
         </tr>
       </thead>
       <tbody>
         {% for repair_order in repair_orders %}
         <tr>
-          <td data-label="Order ID"><a href="{% url 'dashboard:wip_detail_v1' pk=repair_order.pk %}">{{
-              repair_order.repair_order_id }}</a></td>
+          <td data-bs-label="Order ID">
+            <a href="{% url 'dashboard:get_wip_detail_v1' pk=repair_order.pk %}">
+              {{repair_order.repair_order_id }}</a>
+          </td>
           <td>{{repair_order.repair_order_phase.repair_order_phase_description }}</td>
           <!-- <td>repair_order.repair_order_customer.customer_id </td> -->
           <td>{{ repair_order.repair_order_customer.get_customer_full_name |truncatechars:10 }}</td>
-          <td>{{ repair_order.repair_order_snapshot_labor_sale_amount }}</td>
-          <td>{{ repair_order.repair_order_snapshot_parts_sale_amount }}</td>
-          <td class="d-none d-md-table-cell">{{ repair_order.repair_order_snapshot_tax_amount }}</td>
-          <td>{{ repair_order.repair_order_snapshot_order_total_amount }}</td>
-
           <td class="d-none d-md-table-cell">
             {% for phone in repair_order.repair_order_customer.phones.all %}
-            <p>{{phone.phone_desc.phone_desc}}:{{phone.phone_number|phone2numeric |truncatechars:30 }}</p>
+            <p>{{phone.phone_desc.phone_desc|truncatechars:10}}:{{phone.phone_number|phone2numeric |truncatechars:20 }}
+            </p>
             {% endfor %}
           </td>
 
           <td class="d-none d-md-table-cell">
             {% for email in repair_order.repair_order_customer.emails.all %}
-            {{email.email_address|truncatechars:30 }}
+            {{email.email_address|truncatechars:20 }}
             {% endfor %}
           </td>
+          <td>{{ repair_order.repair_order_snapshot_labor_sale_amount }}</td>
+          <td>{{ repair_order.repair_order_snapshot_parts_sale_amount }}</td>
+          <td class="d-none d-md-table-cell">{{ repair_order.repair_order_snapshot_tax_amount }}</td>
+          <td>{{ repair_order.repair_order_snapshot_order_total_amount }}</td>
 
-          <td class="d-none d-lg-table-cell">
-            {% for address in repair_order.repair_order_customer.addresses.all %}
-            {{ address.get_full_address_with_ATTN|truncatechars:30 }}
-            {% endfor %}
-          </td>
           <td>
             {{repair_order.repair_order_last_updated_at |date:"m/d/y" }}
           </td>

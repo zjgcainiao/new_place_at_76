@@ -1,4 +1,4 @@
-from .base import forms, FormHelper, Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div, Button, Hidden
+from .base import forms, FormHelper, Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div, Button, Hidden, _
 from .automan_base_model import AutomanBaseModelForm
 from homepageapp.models import CustomersNewSQL02Model
 
