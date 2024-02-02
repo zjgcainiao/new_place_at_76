@@ -4,7 +4,6 @@ from .purchase_vendor import PurchaseVendor
 
 class PurchaseOrder(models.Model):
     id = models.BigAutoField(primary_key=True)
-    
     order_date = models.DateTimeField()
     purchase_vendor = models.ForeignKey(PurchaseVendor, on_delete=models.DO_NOTHING, null=True, blank=True)
     description = models.TextField(null=True, blank=True)

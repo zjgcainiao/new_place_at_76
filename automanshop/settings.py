@@ -318,6 +318,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'CRMs',  # CRMs app
+    'we_handle_money_stuff',  # transactions, GL, accounting app
 ]
 # in testing, add `django_sslserver2` to the installed apps.
 if  DEBUG:

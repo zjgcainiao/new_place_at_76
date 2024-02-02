@@ -10,8 +10,8 @@ class GLJournalEntry(models.Model):
     date = models.DateTimeField()
     description = models.TextField(null=False, blank=False)
     # the debit and credit accounts are the gl sub accounts
-    debit_account = models.ForeignKey(GLSubAccount, related_name='debit_entries', on_delete=models.CASCADE,related_name='debit_entries')
-    credit_account = models.ForeignKey(GLSubAccount, related_name='credit_entries', on_delete=models.CASCADE,related_name='credit_entries')
+    debit_account = models.ForeignKey(GLSubAccount,  on_delete=models.CASCADE,related_name='debit_entries')
+    credit_account = models.ForeignKey(GLSubAccount,on_delete=models.CASCADE,related_name='credit_entries')
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     accounting_transaction = models.ForeignKey(AccountingTransaction, on_delete=models.SET_NULL, null=True, blank=True)
     is_system_generated = models.BooleanField(default=False)
@@ -20,4 +20,16 @@ class GLJournalEntry(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(InternalUser, related_name='journal_entry_created_by', on_delete=models.DO_NOTHING, null=True, blank=True)
     updated_by = models.ForeignKey(InternalUser, related_name='journal_entry_updated_by', on_delete=models.DO_NOTHING, null=True, blank=True)
+
+    class Meta:
+        db_table = 'gl_journal_entries'
+        ordering = ["-id"]
+        verbose_name = 'GL Journal Entry'
+        verbose_name_plural = 'GL Journal Entries'
+        permissions = [
+            ('view_gl_journal_entry', 'Can view GL Journal Entry'),
+            ('create_gl_journal_entry', 'Can create GL Journal Entry'),
+            ('edit_gl_journal_entry', 'Can edit GL Journal Entry'),
+            ('delete_gl_journal_entry', 'Can delete GL Journal Entry'),
+        ]
     

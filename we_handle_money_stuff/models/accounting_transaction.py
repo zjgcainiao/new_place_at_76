@@ -11,8 +11,7 @@ class AccountingTransaction(models.Model):
     the_other_party = models.CharField(max_length=255,null=True, blank=True) # This is the other party involved in the transaction 
     transaction_description = models.TextField(null=True, blank=True)
     transaction_settled_date = models.DateTimeField(null=True, blank=True)
-    transaction_account = models.CharField(max_length=255,null=True, blank=True)
-    credit_account = models.CharField(max_length=255,null=True, blank=True) # the credit or debit account based on the `transaction_direction`
+    transaction_account = models.CharField(max_length=255,null=True, blank=True) # the credit or debit account based on the `transaction_direction`
     transaction_status = models.CharField(choices=[('completed', 'Completed'), ('pending', 'Pending'),('voided',"Voided"),('require_attention','Requring Attention')], max_length=50, default='pending')
     amount = models.DecimalField(max_digits=12, decimal_places=2,blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -24,9 +23,9 @@ class AccountingTransaction(models.Model):
         db_table = 'accounting_transactions'
         ordering = ["-id",'-transaction_date']
         indexes = [
-            models.Index(fields=["transaction_type", "tranasction_direction", 
-                                 "transaction_account"], name="transaction_type_direction_account.idx"),
-            models.Index(fields=["transaction_date"], name="first_name_idx"),
+            models.Index(fields=["transaction_type", "transaction_direction", 
+                                 "transaction_account"], name="type_direction_account.idx"),
+            models.Index(fields=["transaction_date"], name="transaction_date_idx"),
         ]
         permissions = [
             ('view_accounting_transaction', 'Can view Accounting Transaction'),
