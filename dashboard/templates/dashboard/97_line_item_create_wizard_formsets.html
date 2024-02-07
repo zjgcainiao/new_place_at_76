@@ -1,10 +1,10 @@
 <!-- formset form used in the LineItemCreateWizardView-->
 <div class="row">
   {% load crispy_forms_tags %}
-  {{ wizard.form.management_form }}
-  {% for form in wizard.form %}
+  {{ wizard.management_form }}
+
   <div class="card card-hover border-0 p-2 my-2">
-    {% crispy form form.helper %}
+    {% crispy wizard.form form.helper %}
   </div>
-  {% endfor %}
+
 </div>

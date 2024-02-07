@@ -27,7 +27,8 @@ PhoneFormset = inlineformset_factory(
     CustomersNewSQL02Model, CustomerPhonesNewSQL02Model, fields=('customer', 'phone'), fk_name='customer')
 
 PartItemInlineFormSet = inlineformset_factory(LineItemsNewSQL02Model, PartItemModel,
-                                              form=PartItemUpdateForm, extra=0,
+                                              form=PartItemUpdateForm, 
+                                              extra=1,
                                               can_delete=True,
                                               )
 LaborItemInlineFormSet = inlineformset_factory(LineItemsNewSQL02Model, LaborItemModel,

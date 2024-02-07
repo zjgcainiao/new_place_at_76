@@ -7,7 +7,7 @@ from .accounting_transaction import AccountingTransaction
 class GLJournalEntry(models.Model):
     id = models.AutoField(primary_key=True)
     journal = models.ForeignKey(GLJournal, on_delete=models.CASCADE)
-    date = models.DateTimeField()
+    date = models.DateField()
     description = models.TextField(null=False, blank=False)
     # the debit and credit accounts are the gl sub accounts
     debit_account = models.ForeignKey(GLSubAccount,  on_delete=models.CASCADE,related_name='debit_entries')

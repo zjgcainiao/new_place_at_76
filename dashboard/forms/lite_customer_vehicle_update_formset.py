@@ -1,5 +1,5 @@
 from django.forms import inlineformset_factory
-from dashboard.models import CustomersNewSQL02Model, VehiclesNewSQL02Model
+from homepageapp.models import CustomersNewSQL02Model, VehiclesNewSQL02Model
 
 
 LiteCustomerVehicleUpdateFormset = inlineformset_factory(

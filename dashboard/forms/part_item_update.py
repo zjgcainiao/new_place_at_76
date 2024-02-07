@@ -38,7 +38,7 @@ class PartItemUpdateForm(AutomanBaseModelForm):
     class Meta:
         model = PartItemModel
         fields = [
-            'line_item',
+            # 'line_item',
             'part_item_part_no',
             'part_discount_description_id',
             'part_item_quantity',
@@ -99,8 +99,6 @@ class PartItemUpdateForm(AutomanBaseModelForm):
         super().__init__(*args, **kwargs)
         self.fields['part_item_unit_price'].validators.append(
             self.clean_unit_price)
-
-
 
         self.helper = FormHelper()
         self.helper.form_class = 'form-inline'

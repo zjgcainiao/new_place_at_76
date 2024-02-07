@@ -35,6 +35,8 @@ urlpatterns = [
     path('aihelpers/', include('we_have_ai_helpers.urls')),
     path('crms/', include('CRMs.urls')),
     path('core_operations/', include('core_operations.urls')),
+    path('money_stuff/', include('we_handle_money_stuff.urls')),
+
     # djangorestframework-simplejwt token auth
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

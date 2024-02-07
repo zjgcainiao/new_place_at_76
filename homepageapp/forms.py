@@ -255,11 +255,3 @@ LaborItemFormSet = inlineformset_factory(LineItemsNewSQL02Model, LaborItemModel,
                                          extra=0,
                                          )
 
-
-class AddressForm(forms.Form):
-    address_line_1 = forms.CharField(max_length=100, required=True)
-    address_line_2 = forms.CharField(max_length=100, required=False)
-    city = forms.CharField(max_length=100, required=True)
-    state = forms.CharField(max_length=2, required=True)
-    zip_code = forms.CharField(max_length=5, required=True)
-    # country = forms.CharField(max_length=50, required=False, default ='US')

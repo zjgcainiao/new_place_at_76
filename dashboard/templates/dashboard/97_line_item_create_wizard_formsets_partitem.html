@@ -1,10 +1,21 @@
 <!-- formset form used in the LineItemCreateWizardView-->
-<div id="formsetPlaceholder">
+<p>Formset-{{line_item_type}}</p>
+<div id="PartItemFormset">
   {% load crispy_forms_tags %}
-  {{ wizard.form.management_form }}
-  {% for form in wizard.form %}
+  {{ wizard.management_form }}
+
+
   <div class="card card-hover border-0 p-2 my-2">
-    {% crispy form form.helper %}
+    <p>
+      wizard.form.mangement_form
+      {{ wizard.form.management_form |crispy }}
+    </p>
+    <p>
+      wizard.form.form
+      {{ wizard.form.form |crispy }}
+    </p>
+
+
   </div>
-  {% endfor %}
+
 </div>

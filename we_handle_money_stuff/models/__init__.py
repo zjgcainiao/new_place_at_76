@@ -3,8 +3,8 @@ from .gl_account_type import GLAccountType
 from .gl_account import GLAccount
 from .gl_journal import GLJournal
 from .gl_journal_entry import GLJournalEntry
-from .gl_sub_account_type import GLSubAccountType
 from .gl_sub_account import GLSubAccount
+from .gl_sub_account_type import GLSubAccountType
 from .gl_sub_account_detail_type import GLSubAccountDetailType
 from .purchase_invoice import PurchaseInvoice
 from .purchase_invoice_line_item import PurchaseInvoiceLineItem

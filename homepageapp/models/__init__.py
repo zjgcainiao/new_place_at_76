@@ -39,6 +39,7 @@ from .line_item import LineItemsNewSQL02Model
 from .note_item import NoteItemsNewSQL02Model
 from .labor_rate_description import LaborRateDescription
 from .labor_item import LaborItemModel
+from .part_desc import PartDescription
 from .part import PartsModel
 from .part_item import PartItemModel
 from .inventory import Inventories

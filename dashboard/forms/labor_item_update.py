@@ -34,10 +34,10 @@ class LaborItemUpdateForm(AutomanBaseModelForm):
             # 'line_item': forms.TextInput(attrs={'class': 'form-control',
             #                                     'readonly': 'readonly'}),
             'labor_item_hours_charged': forms.NumberInput(attrs={'class': 'form-control'}),
-            'labor_item_symptom': forms.TextInput(attrs={'class': 'form-control', 
+            'labor_item_symptom': forms.TextInput(attrs={'type': 'text', 
                                                          'placeholder': 'Include the noise, the incident that customer mentions'}),
             'labor_item_parts_estimate': forms.NumberInput(attrs={'class': 'form-control'}),
-            'labor_item_is_come_back_invoice': forms.CheckboxInput(),
+            'labor_item_is_come_back_invoice': forms.CheckboxInput(attrs={'class': 'form-check-input', 'role': 'switch'}),
             'labor_item_is_user_entered_labor_rate': forms.CheckboxInput(attrs={'class': 'form-check-input', 'role': 'switch'}),
         }
 
@@ -47,10 +47,6 @@ class LaborItemUpdateForm(AutomanBaseModelForm):
         super().__init__(*args, **kwargs)
         # add a "form-control" class to each form input
         # for enabling bootstrap
-        # for name, field in self.fields.items():
-        #     # check widget type
-        #     if isinstance(field.widget, (forms.TextInput, forms.Textarea, forms.Select)):
-        #         field.widget.attrs.update({'class': 'form-control'})
 
         # self.fields['appointment_vehicle_make'].choices = [(make.pk, make.make_name) for make in MakesNewSQL02Model.objects.all()]
 
@@ -74,7 +70,7 @@ class LaborItemUpdateForm(AutomanBaseModelForm):
                     Field('labor_item_is_user_entered_labor_rate', style='margin: 5px;',wrapper_class='form-check form-switch p-1 m-1'),
                     css_class='col-6'
                     ),
-            css_class='form-group p-1 m-1'),
+            css_class='form-group p-1 my-1'),
 
             
             Row(

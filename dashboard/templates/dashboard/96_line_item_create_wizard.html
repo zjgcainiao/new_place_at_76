@@ -5,11 +5,11 @@
 <div class="container-fluid p-1 my-2">
   <div class="card card-hover border-0 p-2 my-2">
     <h2 class="card-header">Create New Item</h2>
-
+    <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
     <div class="card-body p-1 my-2">
-      <form id="lineItemForm" method="post">
-        {% csrf_token %}
+      <form method="post">
 
+        {% csrf_token %}
         {% include current_step_template %}
 
 

@@ -7,7 +7,7 @@ class LineItemUpdateForm(AutomanBaseModelForm):
         ('part', 'Part Item'),
         ('labor', 'Labor Item'),
         ('note', 'Note Item'),
-        ('cannedjob', 'Canned Job'),
+        # ('cannedjob', 'Canned Job'),
     ]
 
     line_item_type = forms.ChoiceField(
@@ -47,11 +47,6 @@ class LineItemUpdateForm(AutomanBaseModelForm):
         # Set the queryset
         # self.fields['line_item_category'].queryset = CategoryModel.objects.all()
 
-        # Modify the widget to display `category_desc`
-        # self.fields['line_item_category'].widget = forms.Select(
-        #     choices=[(cat.pk, cat.category_description)
-        #              for cat in CategoryModel.objects.all()]
-        # )
         # Set disabled fields
         # instance = kwargs.get('instance', None)
         # if instance:
