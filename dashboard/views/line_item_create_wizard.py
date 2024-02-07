@@ -34,24 +34,23 @@ class LineItemCreateWizard(SessionWizardView,InternalUserRequiredMixin):
             if line_item_type:
                 initial['line_item_type'] = line_item_type
         return initial
-        return initial
     
-    # def get_form(self, step=None, data=None, files=None):
-    #     form = super().get_form(step, data, files)
-    #     if step is None:
-    #         step = self.steps.current
+    def get_next_step(self, step=None):
+        # Make sure to call the parent's get_next_step to avoid recursion
+        next_step = super().get_next_step(step)
+        if step != 'line_item':
+            line_item_data = self.get_cleaned_data_for_step('line_item') or {}
+            line_item_type = line_item_data.get('line_item_type')
 
-    #     if step != 'line_item':
-    #         line_item_data = self.get_cleaned_data_for_step('line_item') or {}
-    #         line_item_type = line_item_data.get('line_item_type')
+            if line_item_type == 'part':
+                next_step = 'part_item_formset'
+            elif line_item_type == 'labor':
+                next_step = 'labor_item_formset'
+            elif line_item_type == 'note':
+                next_step = 'note_item_formset'
+        # Make sure there's a condition to break the recursion
+        return next_step
 
-    #     if step == 'part_item_formset' and line_item_type == 'part':
-    #     #     # Assuming you have a way to get or define the queryset for existing PartItemModels
-    #     #     queryset = PartItemModel.objects.filter(...)  # Define your queryset
-    #         form = PartItemInlineFormSet(data, files, instance=self.instance)
-
-    #     return super().get_form(step, data, files)
-    
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)
         current_step = self.steps.current
@@ -65,13 +64,7 @@ class LineItemCreateWizard(SessionWizardView,InternalUserRequiredMixin):
             context['line_item_type'] = line_item_type
         
         return context
-    # def get_form(self, step=None, data=None, files=None):
-    #     form = super().get_form(step, data, files)
-    #     if step == 'part_item_formset':
-    #         # Initialize your formset with data if necessary
-    #         # Example: form = PartItemInlineFormSet(initial=[...])
-    #         return form
-    #     return form
+
     # def post(self, *args, **kwargs):
     #     print("Current step before POST:", self.steps.current)
     #     response = super().post(*args, **kwargs)

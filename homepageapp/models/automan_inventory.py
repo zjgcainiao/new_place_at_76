@@ -8,12 +8,11 @@ class AutomanInventory(models.Model):
         ('category2', 'Category 2'),
         ('category3', 'Category 3'),
     ]
-
     id= models.BigAutoField(primary_key=True)
     barcode_image = models.ImageField(upload_to='barcodes/', null=True, blank=True)
     sku = models.CharField(max_length=100, unique=True)
-    name = models.CharField(max_length=200)
-    description = models.TextField()
+    name = models.CharField(max_length=200,null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
 
     category = models.CharField(max_length=150,choices=category_choices)
     price = models.DecimalField(max_digits=10, decimal_places=2,default=Decimal(0.00))

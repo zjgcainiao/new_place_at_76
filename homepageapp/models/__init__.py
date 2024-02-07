@@ -1,4 +1,6 @@
 
+from .automan_inventory import AutomanInventory
+
 from .address import AddressesNewSQL02Model
 from .alert import Alerts
 from .account_class import AccountClassModel

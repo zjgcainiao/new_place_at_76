@@ -4,10 +4,10 @@ from .base import models, InternalUser,FormattedPhoneNumberField
 class Vendors(models.Model):
     vendor_id = models.AutoField(primary_key=True)
     vendor_name = models.CharField(
-        max_length=50, null=True, verbose_name='Business Name')
+        max_length=50, null=True, blank=True, verbose_name='Business Name')
     vendor_contact_persons = models.CharField(
         max_length=50, null=True, blank=True, verbose_name='Contact Person (i.e. Kenny)')
-    vendor_contact_phone_number = FormattedPhoneNumberField(null=True)
+    vendor_contact_phone_number = FormattedPhoneNumberField(null=True, blank=True)
     vendor_comment = models.CharField(max_length=200, null=True, blank=True)
     vendor_contact_email_address = models.CharField(
         max_length=50, null=True, blank=True)
@@ -23,11 +23,12 @@ class Vendors(models.Model):
     vendor_terms = models.CharField(max_length=50, null=True, blank=True)
     vendor_account_class = models.CharField(
         max_length=15, null=True, blank=True)
-    vendor_type = models.IntegerField(blank=True, null=True)
-    vendor_catalog_link = models.IntegerField(blank=True, null=True)
+    vendor_type = models.IntegerField(null=True, blank=True)
+    vendor_catalog_link = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(
-        auto_now=True, null=True)
+        auto_now=True, 
+        null=True,blank=True)
     created_by = models.ForeignKey(
         InternalUser, related_name='vendors_created_by', on_delete=models.SET_NULL, null=True, blank=True)
     updated_by = models.ForeignKey(

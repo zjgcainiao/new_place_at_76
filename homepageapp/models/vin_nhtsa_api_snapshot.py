@@ -7,10 +7,12 @@ class VinNhtsaApiSnapshots(models.Model):
     # Assuming standard VIN length of 17 characters. NHTSA website
     id = models.BigAutoField(primary_key=True)
     vin = models.CharField(
-        max_length=17, verbose_name="Vehicle Identification Number (VIN)")
+        max_length=17, 
+        verbose_name="Vehicle Identification Number (VIN)")
     variable = models.ForeignKey(
         NhtsaVariableList,
-        on_delete=models.SET_NULL, null=True,
+        on_delete=models.SET_NULL, 
+        null=True,blank=True,
         to_field='variable_id',  # specify the field of the related model is variable_id
         related_name='nhtsa_variable_ids')
     variable_name = models.CharField(max_length=255, null=True, blank=True)

@@ -8,43 +8,66 @@ class PartItemModel(models.Model):
     line_item = models.ForeignKey(
         LineItemsNewSQL02Model, on_delete=models.CASCADE, related_name='partitems_lineitems')
     part_discount_description_id = models.IntegerField(null=True, blank=True)
-    part_item_is_user_entered_unit_sale = models.BooleanField(default=False,null=True, blank=True)
-    part_item_is_user_entered_unit_cost = models.BooleanField(default=False,null=True, blank=True)
+    part_item_is_user_entered_unit_sale = models.BooleanField(default=False,
+                                                              null=True, blank=True)
+    part_item_is_user_entered_unit_cost = models.BooleanField(default=False,
+                                                              null=True, blank=True)
     part_item_quantity = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True, blank=True)
+        max_digits=12, decimal_places=2, 
+        null=True, blank=True)
     part_item_unit_price = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True, blank=True)
+        max_digits=12, decimal_places=2, 
+        null=True, blank=True)
     part_item_unit_list = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True, blank=True)
+        max_digits=12, decimal_places=2, 
+        null=True, blank=True)
     part_item_unit_sale = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True, blank=True)
+        max_digits=12, decimal_places=2, 
+        null=True, blank=True)
     part_item_unit_cost = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True, blank=True)
-    part_item_part_no = models.CharField(max_length=100, null=True, blank=True)
+        max_digits=12, decimal_places=2, 
+        null=True, blank=True)
+    part_item_part_no = models.CharField(max_length=100, 
+                                         null=True, blank=True)
     part_item_part = models.ForeignKey(
-        PartsModel, on_delete=models.SET_NULL, null=True, blank=True, related_name='partitems_parts')
-    part_item_is_confirmed = models.BooleanField(default=False,null=True, blank=True)
+        PartsModel, on_delete=models.SET_NULL, 
+        null=True, blank=True, 
+        related_name='partitems_parts')
+    part_item_is_confirmed = models.BooleanField(default=False,
+                                                 null=True, blank=True)
     part_item_vendor_code = models.CharField(
-        max_length=25, null=True, blank=True)
+        max_length=25,
+        null=True, blank=True)
     part_item_vendor_id = models.IntegerField(null=True, blank=True)
     part_item_manufacture_id = models.IntegerField(null=True, blank=True)
     part_item_invoice_number = models.CharField(
         max_length=50, null=True, blank=True)
     part_item_commission_amount = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True, blank=True)
-    part_item_is_committed = models.BooleanField(default=False,null=True, blank=True)
-    part_item_is_quantity_confirmed = models.BooleanField(default=False,null=True, blank=True)
+        max_digits=12, decimal_places=2,
+        null=True, blank=True)
+    part_item_is_committed = models.BooleanField(
+        default=False,
+        null=True, blank=True)
+    part_item_is_quantity_confirmed = models.BooleanField(default=False,
+                                                          null=True, blank=True)
     part_item_confirmed_quantity = models.DecimalField(
-        max_digits=12, decimal_places=2, null=True, blank=True)
-    part_item_is_part_ordered = models.BooleanField(default=False,null=True, blank=True)
+        max_digits=12, decimal_places=2, 
+        null=True, blank=True)
+    part_item_is_part_ordered = models.BooleanField(default=False,
+                                                    null=True, blank=True)
     part_item_is_core = models.BooleanField(default=False,null=True, blank=True)
-    part_item_is_bundled_kit = models.BooleanField(default=False, null=True, blank=True)
-    part_item_is_MPlg_item = models.BooleanField(default=False,null=True, blank=True)
-    part_item_is_changed_MPlg_item = models.BooleanField(default=False,null=True, blank=True)
+    part_item_is_bundled_kit = models.BooleanField(default=False,
+                                                   null=True, blank=True)
+    part_item_is_MPlg_item = models.BooleanField(default=False,
+                                                 null=True, blank=True)
+    part_item_is_changed_MPlg_item = models.BooleanField(default=False,
+                                                         null=True, blank=True)
     part_item_part_type = models.CharField(
         max_length=10, null=True, blank=True)
-    part_item_size = models.CharField(max_length=20, null=True, blank=True)
-    part_item_is_tire = models.BooleanField(default=False,null=True, blank=True)
+    part_item_size = models.CharField(max_length=20,
+                                      null=True, blank=True)
+    part_item_is_tire = models.BooleanField(default=False,
+                                            null=True, blank=True)
     part_item_vendor_id = models.IntegerField(null=True, blank=True)
     part_item_meta = models.JSONField(null=True, blank=True)
     part_item_added_from_supplier = models.CharField(

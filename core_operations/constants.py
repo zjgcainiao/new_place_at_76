@@ -25,7 +25,7 @@ VEHICLE_NOTE_TYPES = [
 AUDIT_HISTORY_ACTION_CHOICES = [
     ('created', 'Created'),
     ('updated', 'Updated'),
-    ('deleted', 'Deleted')
+    ('deleted', 'Deleted'),
 ]
 
 LIST_OF_STATES_IN_US = (
