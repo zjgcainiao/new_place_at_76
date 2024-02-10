@@ -1,0 +1,35 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load crispy_forms_tags %}
+{% block content-main %}
+
+<div class="container-fluid p-1 my-2">
+  <div class="card card-hover border-0">
+    <h4 class="card-header p-2 my-2">Add new item</h4>
+    <!-- <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p> -->
+    <div class="card-body p-1 my-2">
+      <form method="post">
+        {% csrf_token %}
+        {% include current_step_template %}
+
+        <!-- Navigation Buttons -->
+        <div class="form-group p-2 my-2">
+          {% if wizard.steps.prev %}
+          <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}"
+            class="btn btn-outline-secondary">First Step</button>
+          <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}"
+            class="btn btn-outline-secondary">Previous Step</button>
+          {% endif %}
+          {% if wizard.steps.next %}
+          <button type="submit" class="btn btn-outline-primary">Save and Continue</button>
+          {% else %}
+          <button type="submit" class="btn btn-outline-primary">Save</button>
+          {% endif %}
+          <button type="reset" class="btn btn-outline-secondary">Reset</button>
+        </div>
+      </form>
+    </div>
+    <!-- end of card-body  -->
+  </div>
+
+
+  {% endblock %}

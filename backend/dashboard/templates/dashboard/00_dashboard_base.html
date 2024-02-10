@@ -1,0 +1,251 @@
+{% load static %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% load core_operations.common_filters %}
+<!DOCTYPE html>
+<html lang="en" data-layout="topnav" data-bs-theme="light" data-layout-mode="fluid" data-menu-color="dark"
+    data-topbar-color="light" data-layout-position="fixed" stopthemadness-user-drag="true"
+    stopthemadness-user-select="true" data-sidenav-size="default" stopthemadness-banners="true">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Dashboard -- a place where the main work is done. </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="work station that provides dashboard view based on user groups" name="description" />
+    <meta content="amazing-automan-llc" name="author" />
+
+    <!-- App favicon -->
+    <!-- <link rel="shortcut icon" href="assets/images/favicon.ico"> -->
+
+    <!-- Plugin css -->
+    <link rel="stylesheet" href="{% static 'dashboard/vendor/daterangepicker/daterangepicker.css' %}">
+    <link href="{% static 'dashboard/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css' %} "
+        rel="stylesheet" type="text/css">
+
+    <!-- App app-creative css -->
+    <link href="{% static 'dashboard/css/app-creative.min.css' %}" rel="stylesheet" type="text/css" id="app-style" />
+
+    <!-- Icons css -->
+    <link href="{% static 'dashboard/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+
+    <!-- Datatables css -->
+    <!-- <link href="{% static 'dashboard/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'dashboard/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css' %}" rel="stylesheet" type="text/css" /> -->
+
+    <!-- font-awesome 6.4.0 css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Automan theme css.  added 2024-01-15-->
+    <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
+
+
+    <!-- jQuery JS 3.7.1 min  -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- Popper Js 2.9.2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+        integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Bootstrap Js bundle 5.3.2 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <!-- Theme `Hyper 5` Config JS -->
+    <script src="{% static 'dashboard/js/hyper-config.js' %}"></script>
+
+
+    <!-- App js -->
+    <script src="{% static 'dashboard/js/app.min.js' %}"></script>
+
+    {% comment %}
+    <!-- Datatable Init js -->
+    <script src="{% static 'dashboard/js/pages/demo.datatable-init.js' %}"></script>
+    <!-- Dashboard App js -->
+    <script src="{% static 'dashboard/js/pages/demo.dashboard.js' %}"></script>
+    <!-- Vendor js -->
+    <script src="{% static 'dashboard/js/vendor.min.js' %}"></script>
+    <!-- Daterangepicker js -->
+    <script src="{% static 'dashboard/vendor/daterangepicker/moment.min.js' %}"></script>
+    <script src="{% static 'dashboard/vendor/daterangepicker/daterangepicker.js' %}"></script>
+
+    {% endcomment %}
+    <!-- Datatables js -->
+    <!-- <script src="{% static 'dashboard/vendor/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'dashboard/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+        <script src="{% static 'dashboard/vendor/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+        <script src="{% static 'dashboard/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js' %}"></script> -->
+
+
+    <!-- Apex Charts js -->
+    <script src="{% static 'dashboard/vendor/apexcharts/apexcharts.min.js' %}"></script>
+
+    <!-- Vector Map js -->
+    <script
+        src="{% static 'dashboard/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
+    <script
+        src="{% static 'dashboard/vendor/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js' %}"></script>
+
+    <!-- 2023-12-25 add new Orbitron font from google fonts  -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    {% include 'dashboard/01_additional_css_style.html' %}
+
+</head>
+
+<body>
+
+
+    <style>
+        .portal-card {
+            /* Custom card styling */
+            border: none;
+            transition: transform 0.3s ease-in-out;
+            min-width: 200px;
+            min-height: 200px;
+        }
+
+        .portal-card:hover {
+            /* Scale effect on hover */
+            transform: scale(1.05);
+        }
+
+        .portal-icon {
+            /* Icon styling */
+            font-size: 3rem;
+            padding: 20px 20px;
+            /* Adjust size as needed */
+            color: #0080ff;
+            /* Icon color */
+        }
+
+        .portal-title {
+            /* Styling for the title */
+            font-weight: bold;
+        }
+
+        /* 2023-12-25 added user-info-bar custom styling */
+        .user-info-bar {
+            background: transparent;
+            /* border-bottom: 1px solid #a1a1a1; */
+            padding: 5px 5px;
+            color: #333;
+            font-family: 'Orbitron', 'sans-serif';
+        }
+
+        .user-greeting {
+            color: #495057;
+            /* Dark font color */
+            font-family: 'Arial', sans-serif;
+            /* Choose a readable font */
+        }
+
+        .user-name,
+        .user-email {
+            font-weight: bold;
+            color: #525252;
+            /* Dark grey color for contrast */
+            letter-spacing: 1px;
+            /* Highlight color */
+            text-transform: uppercase;
+            /* Optional: makes it stand out */
+            font-family: 'Orbitron', 'sans-serif';
+            /* Custom font for steel effect */
+        }
+    </style>
+    <!-- Begin page -->
+    <div class="wrapper">
+
+        {% include 'dashboard/03_dashboard_navbar_sector.html' %}
+
+        {% comment %}
+        <!-- ========== Topbar Start ========== -->
+        <div class="navbar-custom ">
+            <div class="topbar container automan-glossy-metallic">
+                <div class="d-flex align-items-center gap-lg-2 gap-1">
+                    <!-- Topbar Brand Logo -->
+                    <div class="logo-topbar">
+                        <!-- Logo light -->
+                        <a href="{% url 'homepageapp:homepage' %} " class="logo-dark">
+                            <!-- <span class="logo-lg"> -->
+                            <img src="{% static 'homepageapp/img/logo/logo-2022.svg' %}" width="70" alt="logo">
+                            <!-- </span> -->
+                            <!-- <span class="logo-sm">
+                                    <img src="assets/images/logo-sm.png" alt="small logo">
+                                </span> -->
+                        </a>
+                    </div>
+
+                    <!-- Sidebar Menu Toggle Button -->
+                    <button class="button-toggle-menu">
+                        <i class="mdi mdi-menu"></i>
+                    </button>
+                </div>
+                <!-- end of d-flex  -->
+                <div class="user-info-bar">
+
+                    <ul class="topbar-menu d-flex align-items-center gap-3">
+                        <li class="dropdown">
+                            {% if user.is_authenticated %}
+                            <a class="nav-link dropdown-toggle arrow-none nav-user px-2" data-bs-toggle="dropdown"
+                                href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                <span class="account-user-avatar">
+                                    <img src="{% static 'dashboard/images/users/avatar-1.jpg' %}" alt="user-image"
+                                        width="32" class="rounded-circle">
+                                </span>
+
+                                <div class="d-lg-flex flex-column gap-1 d-none user-greeting">
+                                    <p class="my-0">Hi <span class='user-name'>{{user.user_first_name}}</span>
+                                        (Email: {{user.email
+                                        |truncatechars:15}})</p>
+                                    <h6 class="my-0 fw-normal">Auth Group:
+                                        {{user.get_user_auth_group_display}}
+                                        {{user.get_user_auth_group_display}}</h6>
+                                </div>
+
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated profile-dropdown">
+
+                                <!-- item-->
+                                <a href="{% url 'internal_users:internal_user_dashboard' %}" class="dropdown-item">
+                                    <i class="mdi mdi-account-circle me-1"></i>
+                                    <span class="user-name">My Profile - Employee Info</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="{% url 'internal_users:internal_user_logout' %}" class="dropdown-item">
+                                    <i class="mdi mdi-logout me-1"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </div>
+                            {% else %}
+                            <span class="d-lg-flex flex-column gap-1 d-none">
+                                <h5 class="my-0">No internal user logged in.</h5>
+                                <h6 class="my-0 fw-bolder">Login required.</h6>
+                            </span>
+
+                            {% endif %}
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+            <!-- end of topbar container -->
+        </div>
+        <!-- ========== Topbar End ========== -->
+        {% endcomment %}
+
+    </div>
+    <!-- end of wrapper -->
+    {% block content-main %}
+    <h1>this is the main content block.</h1>
+    {% endblock %}
+
+
+</body>
+
+
+</html>

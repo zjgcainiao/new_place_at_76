@@ -1,18 +1,19 @@
 # exclude assets/ folder and /static folder and their contents from uploading to github.
-
+frontend/
 dist/
 assets/
 static/
 migrations/
 testing_sql_db/
-stripe-payment-react/
+
 __pycache__
 __pycache__/
 my_app_logs/
+stripe-payment-react/
 dashboard_react/
 str
 .Python
-sample.mp4
+sample_license_plate_video_for_Yolo8.mp4
 
 # nodejs or reactjs app.
 node_modules

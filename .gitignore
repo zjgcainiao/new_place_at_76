@@ -1,5 +1,6 @@
 # exclude assets/ folder and /static folder and their contents from uploading to github.
-frontends/
+frontend/
+gunicorn/
 yfinance.cache
 dist/
 assets/
@@ -9,10 +10,12 @@ testing_sql_db/
 __pycache__/
 my_app_logs/
 
-sample.mp4
+
+# this is the yolo training video file
+sample_license_plate_video_for_Yolo8.mp4
 
 # nodejs or reactjs app.
-node_modules
+node_modules/
 
 # exclude .vite folder inside dashboard_react
 dashboard_react/.vite/*
