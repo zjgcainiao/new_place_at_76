@@ -1,11 +1,4 @@
-from django.utils.translation import gettext_lazy as _
-from django.db import models
-import uuid
-from internal_users.models import InternalUser
-from customer_users.models import CustomerUser
-from homepageapp.models import RepairOrdersNewSQL02Model as RepairOrder
-from django.utils import timezone
-from core_operations.models import FormattedPhoneNumberField
+from .base import models, InternalUser, CustomerUser, RepairOrder, FormattedPhoneNumberField, gettext_lazy as _, uuid
 
 APPT_STATUS_NOT_SUBMITTED = 0
 APPT_STATUS_SUBMITTED = 1
@@ -107,22 +100,3 @@ class AppointmentRequest(models.Model):
     def __str__(self):
         return f"Name: {self.appointment_first_name} {self.appointment_last_name} -Time: {self.appointment_requested_datetime}"
 
-
-class AppointmentImages(models.Model):
-    image_id = models.BigAutoField(primary_key=True)
-    appointment = models.ForeignKey(AppointmentRequest, on_delete=models.SET_NULL,
-                                    null=True, related_name='appointment_appointmentimages')
-    appointment_image = models.FileField(
-        upload_to='appointment_images')  # the bucket's subfolder
-
-    image_is_active = models.BooleanField(default=True)
-    uploaded_date = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(
-        InternalUser, on_delete=models.SET_NULL, null=True, related_name='image_created_by')  # when null, it means its created by customer user
-
-    class Meta:
-
-        db_table = 'appointment_images'
-        ordering = ['-image_id']
-        verbose_name = 'appointment_image'
-        verbose_name_plural = 'appointment_images'

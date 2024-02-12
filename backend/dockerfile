@@ -24,7 +24,8 @@ WORKDIR /app
 
 # Replace 'debian_version' with the correct version number for your base image. debian_version can be 8, 9,10, 11, 12.
 # debian_version `11` works for `native M1 chip build`. web:v1 works for native M1 chip build.
-# if i need to build for platform , like (windows amd64), change to debian_version `10`.
+# if i need to build for Azure , like (windows amd64), change to debian_version `10`.
+
 # Install dependencies in a single RUN layer to reduce image layers
 RUN apt-get update && apt-get install -y \
     gnupg2 \
@@ -46,13 +47,20 @@ RUN apt-get update && apt-get install -y \
 
 # Upgrade pip and install Python dependencies
 # Copy just the requirements.txt initially. This allows us to take advantage of cached Docker layers.
-COPY requirements.txt ./
+# COPY requirements.txt ./
+COPY ./backend/requirements.txt /app/requirements.txt
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Copy the rest of the application code
-COPY . .
+# Copy the rest of the application code. now django resides in `backend` directory.
 
+COPY ./backend/ .
+
+# Copy the entrypoint script into the image
+COPY ./scripts ./scripts
+
+# Copy the environment variables file into the image
+COPY .env ./.env
 
 # Expose port 8000
 EXPOSE 8000
