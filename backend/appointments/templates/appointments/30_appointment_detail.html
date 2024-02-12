@@ -1,51 +1,67 @@
-{% extends 'homepageapp/10_homepageapp_base.html' %}
+{% extends 'appointments/00_appointment_base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content1-main %}
-<div class ='container my-1'>
-  <!-- nav Breadcrumb-->
-  <nav aria-label="breadcrumb">
-      <ol class="breadcrumb breadcrumb-dark">
-          <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
-          <li class="breadcrumb-item"><a href="{% url 'appointments:appointment_list' %}">Appointments</a></li>
-          <li class="breadcrumb-item active">Detail</a></li>
-      </ol>
-  </nav>
+<div class='container my-1'>
+    <!-- nav Breadcrumb-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-dark">
+            <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'appointments:appointment_list' %}">Appointments</a></li>
+            <li class="breadcrumb-item active">Detail</a></li>
+        </ol>
+    </nav>
 </div>
-<div class ='container my-2'>
+<div class='container my-2'>
     <h3>Appointment Detail-{{appointment.appointment_id}}</h3>
-    
+
     <div class="card card-hover border border-primary my-3">
         <h4 class="card-header">Status: {{ appointment.get_appointment_status_display }}</h4>
         <div class="card-body">
-            <div class ='row my-1'>
-                <div class="col-3"><p>Confirmed Time: {{appointment.appointment_confirmed_datetime}}</p></div>
-                <div class="col-3"><p>Requested Time: {{appointment.appointment_requested_datetime}}</p></div>
-                <div class="col-3"><p>Reason for visit: {{ appointment.get_appointment_reason_for_visit_display }}</p></div>
-                <div class="col-3"><p>Appointment Cust Name: {{appointment.appointment_full_name}}</p></div>
-                <div class="col-3"><p>Contact Phone Number: {{ appointment.appointment_phone_number }}</p></div>
-                <div class="col-3"><p>Contact Email: {{ appointment.appointment_email }}</p></div>
-                <div class="col-12"><p>Concern Description: {{ appointment.appointment_concern_description }}</p></div>
+            <div class='row my-1'>
+                <div class="col-3">
+                    <p>Confirmed Time: {{appointment.appointment_confirmed_datetime}}</p>
+                </div>
+                <div class="col-3">
+                    <p>Requested Time: {{appointment.appointment_requested_datetime}}</p>
+                </div>
+                <div class="col-3">
+                    <p>Reason for visit: {{ appointment.get_appointment_reason_for_visit_display }}</p>
+                </div>
+                <div class="col-3">
+                    <p>Appointment Cust Name: {{appointment.appointment_full_name}}</p>
+                </div>
+                <div class="col-3">
+                    <p>Contact Phone Number: {{ appointment.appointment_phone_number }}</p>
+                </div>
+                <div class="col-3">
+                    <p>Contact Email: {{ appointment.appointment_email }}</p>
+                </div>
+                <div class="col-12">
+                    <p>Concern Description: {{ appointment.appointment_concern_description }}</p>
+                </div>
             </div>
             <!-- end of row  -->
 
             <div class="row my-1">
-                <div class="col-12"><p>Vehicle Detail: {{appointment.appointment_vehicle_detail}}</p></div>
+                <div class="col-12">
+                    <p>Vehicle Detail: {{appointment.appointment_vehicle_detail}}</p>
+                </div>
             </div>
         </div>
         <!-- end of card-body -->
-        
+
         <div class="card-body">
             <h5 class="card-title">Appointment Images Uploaded(up to 5)</h5>
 
             <!-- Thumbnail Display -->
             <div class="gallery my-3">
                 {% for image in appointment.appointment_appointmentimages.all %}
-                    <a href="{{ image.appointment_image.url }}" target="_blank">
-                        <img src="{{ image.appointment_image.url }}" class="img-thumbnail" alt="appointment images">
-                    </a>
+                <a href="{{ image.appointment_image.url }}" target="_blank">
+                    <img src="{{ image.appointment_image.url }}" class="img-thumbnail" alt="appointment images">
+                </a>
                 {% empty %}
-                    <p>No images have been uploaded for this appointment.</p>
+                <p>No images have been uploaded for this appointment.</p>
                 {% endfor %}
             </div>
 
@@ -56,7 +72,8 @@
             </form>
 
             <!-- Bootstrap Modal -->
-            <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -92,27 +109,33 @@
 
 
 
-<style>
-    .gallery {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: start;
-    }
-    .img-thumbnail {
-        width: auto; /* Auto width allows the image to scale proportionally */
-        max-width: 100%; /* Ensures the image doesn't overflow its container */
-        height: auto; /* Auto height allows the image to scale proportionally */
-        max-height: 150px; /* Adjust this value based on your preference */
-        object-fit: cover; /* This will make sure images cover the area nicely */
-        cursor: pointer;
-        transition: transform 0.2s ease;
-    }
-    .img-thumbnail:hover {
-        transform: scale(1.05);
-    }
+    <style>
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: start;
+        }
 
-</style>
+        .img-thumbnail {
+            width: auto;
+            /* Auto width allows the image to scale proportionally */
+            max-width: 100%;
+            /* Ensures the image doesn't overflow its container */
+            height: auto;
+            /* Auto height allows the image to scale proportionally */
+            max-height: 150px;
+            /* Adjust this value based on your preference */
+            object-fit: cover;
+            /* This will make sure images cover the area nicely */
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .img-thumbnail:hover {
+            transform: scale(1.05);
+        }
+    </style>
 
 </div>
 <!-- end of container  -->

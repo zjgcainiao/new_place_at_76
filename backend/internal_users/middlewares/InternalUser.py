@@ -1,5 +1,5 @@
 
-from .base import reverse, resolve, redirect, messages, logger, InternalUser
+from .base import reverse, resolve, redirect, messages, logger, InternalUser, CustomerUser
 
 
 class InternalUserMiddleware:

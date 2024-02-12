@@ -46,7 +46,7 @@ def send_appointment_confirmation_email(sender, instance, created, **kwargs):
                 recipient_list = [appointment.appointment_email, ]
 
                 # Modify recipient_list if "testing" or "test" is present in any email
-                if any('testing' in email or 'test' or "TESTING" in email or '22-' in email in email for email in recipient_list):
+                if any('testing' in email or 'test' or "TESTING" in email or '22-' in email  for email in recipient_list):
                     recipient_list = ['holleratme420@gmail.com']
 
                 email = EmailMessage(subject, message, email_from,

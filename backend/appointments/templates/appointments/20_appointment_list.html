@@ -14,7 +14,6 @@
   </nav>
 
   <h2>Appointments Dash</h2>
-
   <div class='row my-1'>
     <p>User: {{user.user_first_name}}. Auth Group: {{user.user_auth_group}}-{{user.get_user_auth_group_display}}-user
       has_perm {{user.has_perm}}</p>
@@ -46,18 +45,20 @@
             <th>Reason of Visit</th>
             <th>Email</th>
             <th>Phone Number</th>
-            <th>Appointment Status</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
           {% for appointment in appointments %}
           <tr>
-            <td><a href="{% url 'appointments:appointment_detail' pk=appointment.appointment_id  %}">{{
-                appointment.appointment_id }}</a></td>
+            <td>
+              <a href="{% url 'appointments:appointment_detail' pk=appointment.appointment_id  %}">
+                {{ appointment.pk }}</a>
+            </td>
             <td>{{ appointment.appointment_requested_datetime }}</td>
             <td>{{ appointment.appointment_full_name }}</td>
-            <td>{{ appointment.get_appointment_reason_for_visit_display }}</td>
-            <td>{{ appointment.appointment_email }}</td>
+            <td>{{ appointment.get_appointment_reason_for_visit_display |truncatechars:25 }}</td>
+            <td>{{ appointment.appointment_email |truncatechars:25}}</td>
             <td>{{ appointment.appointment_phone_number }}</td>
             <td>{{ appointment.get_appointment_status_display }}</td>
           </tr>

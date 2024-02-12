@@ -1,28 +1,12 @@
-from django import forms
-import re
+
+from .base import forms, Q, \
+      ValidationError, FileExtensionValidator, validate_file_size,  \
+        ReCaptchaField, ReCaptchaV2Checkbox, ReCaptchaV2Invisible, ReCaptchaV3, \
+        get_latest_vehicle_make_list, get_latest_vehicle_model_list,validate_phone_number,validate_vehicle_year, \
+        format_phone_number_to_shop_standard, deformat_phone_numbers, APPT_STATUS_PORGRESSING, APPT_STATUS_CONFIRMED, APPT_STATUS_SUBMITTED, \
+        FormHelper, Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div, Button
 from appointments.models import AppointmentRequest, AppointmentImages
-from datetime import date, datetime
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div, Button
-from django.core.exceptions import ValidationError
-from django.forms import modelformset_factory
-from django.forms import inlineformset_factory
 from django.utils.translation import gettext_lazy as _
-from appointments.models import APPT_STATUS_PORGRESSING, APPT_STATUS_CONFIRMED, APPT_STATUS_SUBMITTED
-from core_operations.common_functions import get_latest_vehicle_make_list, get_latest_vehicle_model_list
-from homepageapp.models import MakesNewSQL02Model
-from django.db.models import Q
-from django.core.validators import FileExtensionValidator
-
-from internal_users.models import InternalUser
-from customer_users.models import CustomerUser
-from django.contrib.contenttypes.models import ContentType
-from core_operations.models import US_COUNTRY_CODE
-from core_operations.common_functions import format_phone_number_to_shop_standard, deformat_phone_numbers
-from appointments.custom_validators import validate_vehicle_year, validate_file_size, validate_phone_number
-from django_recaptcha.fields import ReCaptchaField
-from  django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox, ReCaptchaV3
-
 class AppointmentCreationForm(forms.ModelForm):
     
     appointment_requested_datetime = forms.DateTimeField(required=False, 
@@ -266,6 +250,8 @@ class AppointmentCreationForm(forms.ModelForm):
             # Row(Column(Button('upload', 'Upload', css_class='btn-outline-dark', css_id='appt-img-upload-btn'), css_class='col'),
             #     css_class='m-1 p-1'),
             HTML("<hr>"),
+            Row(Field('captcha',wrapper_class='form-group'),
+                css_class='form-row p-1 m-1'),
 
             ButtonHolder(
                 Row(
@@ -332,48 +318,3 @@ class AppointmentRequestFormV2(forms.ModelForm):
             'appointment_concern_description',
             'appointment_vehicle_detail_in_json',
         ]
-
-
-class AppointmentImagesForm(forms.ModelForm):
-    appointment_image = forms.ImageField(
-        widget=forms.ClearableFileInput(),
-        validators=[FileExtensionValidator(['png', 'jpg', 'jpeg']),
-                    validate_file_size],
-        label=_('Images'),
-        help_text=_('Upload up to 5 images ( maximum size: 8 MB each)'),
-    )
-
-    def clean_appointment_image(self):
-        image = self.cleaned_data.get('appointment_image')
-        if image:
-            if image.size > 8*1024*1024:  # image file size limit of 8MB
-                raise ValidationError(
-                    "Image file too large - must be 8 MB or less.")
-        return image
-
-    class Meta:
-        model = AppointmentImages
-        fields = ["appointment_image",]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        # self.helper.form_class = 'form-horizontal'
-        self.helper.form_tag = False
-        self.helper.form_method = "post"
-        self.form_class = "form-inline"
-        # self.helper.label_class = 'col-3'
-        # self.helper.field_class = 'col-9'
-        self.helper.layout = Layout(
-            Column(Field('appointment_image', css_class='form-control'),
-                   css_class='col col-md-12')
-
-        )
-
-
-AppointmentImageFormSet = inlineformset_factory(
-    AppointmentRequest, AppointmentImages,
-    form=AppointmentImagesForm, fk_name='appointment',
-    # can_order=True, can_delete=True,
-
-    extra=1, max_num=5)

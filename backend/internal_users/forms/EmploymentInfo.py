@@ -9,6 +9,8 @@ from talent_management.models import TalentsModel
 class EmploymentInfoForm(forms.ModelForm):
     # create a talent_full_name to store data from the property field of TalentsModel
     talent_full_name = forms.CharField(label="Full Name", required=False)
+    talent_first_name = forms.CharField(label="First Name", required=False)
+    talent_last_name = forms.CharField(label="Last Name", required=False)
 
     class Meta:
         model = TalentsModel

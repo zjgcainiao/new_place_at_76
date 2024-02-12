@@ -7,7 +7,7 @@ from homepageapp.models import RepairOrdersNewSQL02Model as RepairOrder
 from django.utils import timezone
 from core_operations.models import FormattedPhoneNumberField
 
-APPT_STATUS_NOT_SUBMITTED = "00"
+APPT_STATUS_NOT_SUBMITTED = 0
 APPT_STATUS_SUBMITTED = 1
 APPT_STATUS_CONFIRMED = 2
 APPT_STATUS_REJECTED = 3
@@ -76,8 +76,8 @@ class AppointmentRequest(models.Model):
     appointment_concern_description = models.TextField(blank=True)
 
     # check the status of the appointment
-    appointment_status = models.CharField(
-        max_length=50, choices=STATUS_CHOICES, default=APPT_STATUS_NOT_SUBMITTED, verbose_name='Appointment Status')
+    appointment_status = models.SmallIntegerField(
+        choices=STATUS_CHOICES, default=APPT_STATUS_NOT_SUBMITTED, verbose_name='Appointment Status')
     appointment_status_comments = models.CharField(
         max_length=4000, null=True, blank=True)
     appointment_is_active = models.BooleanField(default=True)

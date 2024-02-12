@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Your appointment request has been successfully submitted</title>
-</head>
-<body>
-    <div class="card">
-        <h4 class="card-header">We Received Your Service Request</h4>
-        <div class="card-body m-1">
-            <p>Dear {{ appointment.appointment_first_name}},</p>
-            <p>We have received your recent service appointment request at {{ appointment.appointment_requested_datetime }}.</p>
-            <p>Reason for visit: {{ appointment.appointment_reason_for_visit }}</p>
-            <p>Vehicle Details: {{ appointment.appointment_vehicle_detail }}</p>
-            <p>Concern Description: {{ appointment.appointment_concern_description }}</p>
-            <p>Appointment Requested Date: {{ appointment.appointment_requested_datetime }}</p>
-            <p>Thank you for choosing us.</p>
-            <p>Amazing Automan LLC</p>
-        </div>
 
+<head>
+    <title>Your appointment request has been successfully submitted.</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card border-0">
+            <h4 class="card-header p-1 m-1">We Received Your Service Request</h4>
+            <div class="card-body m-1">
+                <p>Dear {{ appointment.appointment_first_name}},</p>
+                <p>We have received your recent service appointment request at {{
+                    appointment.appointment_requested_datetime }}.
+                </p>
+                <p>Reason for visit: {{ appointment.appointment_reason_for_visit }}</p>
+                <p>Vehicle Details: {{ appointment.appointment_vehicle_detail }}</p>
+                <p>Concern Description: {{ appointment.appointment_concern_description }}</p>
+                <p>Appointment Requested Date: {{ appointment.appointment_requested_datetime }}</p>
+                <p>Thank you for choosing us.</p>
+                <p>Automan LLC</p>
+            </div>
+
+        </div>
     </div>
 
+
 </body>
+
 </html>

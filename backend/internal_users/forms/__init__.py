@@ -5,3 +5,5 @@ from .InternalUserLogin import InternalUserLoginForm
 from .InternalUserPasswordChange import InternalUserPasswordChangeForm
 from .InternalUserPasswordReset import InternalUserPasswordResetForm
 from .InternalUserChange import InternalUserChangeForm
+from .AdminAuthenication import AdminAuthenticationForm
+from .EmploymentInfo import EmploymentInfoForm

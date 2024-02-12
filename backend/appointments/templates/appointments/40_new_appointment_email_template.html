@@ -1,18 +1,18 @@
-
 {% extends 'appointments/00_appointment_base.html' %}
 
 {% block content1-main %}
-<div class ='container pt-5 mt-5'>
+<div class='container pt-5 mt-5'>
     <div class="card card-hover card-body text-center"> <!-- Aligning text to the center for emphasis -->
 
         <!-- Header greeting -->
         <h4 class="card-title">Hello {{ appointment.appointment_first_name }}!</h4>
-        
-        <p>You've successfully created a service appointment scheduled for {{ appointment.appointment_requested_datetime}}.</p>
-        
+
+        <p>You've successfully created a service appointment scheduled for {{
+            appointment.appointment_requested_datetime}}.</p>
+
         <p>Your confirmation ID is: </p>
-        
-        
+
+
         <!-- Make the confirmation ID prominent -->
         <h3>{{ appointment.appointment_confirmation_id }}</h3>
 
@@ -26,12 +26,15 @@
 
         </div>
         <!-- If possible, create a view or page where users can see their appointment details using the confirmation ID -->
-        <a class="btn btn-outline-dark btn-sm" href="{% url 'appointment_detail_by_confirmation' appointment_confirmation_id=appointment.appointment_confirmation_id %}">View More Details</a>
-        
+        <a class="btn btn-outline-dark btn-sm"
+            href="{% url 'appointments:appointment_detail_by_confirmation' appointment_confirmation_id=appointment.appointment_confirmation_id %}">View
+            More Details</a>
+
         <!-- Encourage sign up -->
         <div class="mt-4">
             <h5>Want more benefits?</h5>
-            <p>Create a free account to recieve most updated NHTSA safety rating, recall for your beloved vehicle. Access to our AI assitance and other features!</p>
+            <p>Create a free account to recieve most updated NHTSA safety rating, recall for your beloved vehicle.
+                Access to our AI assitance and other features!</p>
             <a class="btn btn-success btn-sm" href="{% url 'customer_users:customer_user_register' %}">Sign Up Now!</a>
         </div>
 
@@ -42,7 +45,7 @@
         </div>
 
         <p class="mt-4">If this wasn't you, please ignore this email. Your security is our priority.</p>
-        
+
         <!-- Footer section -->
         <div class="footer mt-5">
             <p>Best regards,</p>

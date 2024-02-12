@@ -403,7 +403,7 @@ USE_LOCAL_REDIS = config("USE_LOCAL_REDIS", default=False, cast=bool)
 REIS_DOCKERIZED = config("REDIS_DOCKERIZED", default=False, cast=bool)
 REIS_DOCKERIZED_HOST = config("REDIS_DOCKERIZED_HOST", default='localhost')
 
-if not USE_LOCAL_REDIS:
+if USE_LOCAL_REDIS:
 
     REDIS_HOST = config("LOCAL_REDIS_HOST", default=REIS_DOCKERIZED_HOST)
     # default to 6379 on local redis server (run `redis-server`)
@@ -411,6 +411,27 @@ if not USE_LOCAL_REDIS:
     REDIS_PASSWORD = config('LOCAL_REDIS_PASSWORD', default=None)
     REDIS_USE_SSL = config('LOCAL_REDIS_USE_SSL', default=False, cast=bool)
     logger.info(f'using local redis server...{REDIS_HOST}...')
+    CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                ('redis://:{password}@{host}:{port}'.format(
+                    password=REDIS_PASSWORD,
+                    host=REDIS_HOST,
+                    ssl=False,
+                    port=REDIS_PORT)
+                 ),
+
+            ],
+            "channel_capacity": {
+                "http.request": 200,
+                "http.response!*": 10,
+                re.compile(r"^websocket.send\!.+"): 20,
+            }
+        },
+    },
+}
 else:
 
     REDIS_HOST = config('REDIS_HOST', default=REIS_DOCKERIZED_HOST)

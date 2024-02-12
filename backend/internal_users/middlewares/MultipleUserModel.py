@@ -24,7 +24,7 @@ class MultipleUserModelMiddleware:
 
                 # Check each model to find the specific user
                 for user_model in [CustomerUser, InternalUser]:
-                    try
+                    try:
                         specific_user = user_model.objects.get(
                             firebase_user=firebase_user)
                         break
