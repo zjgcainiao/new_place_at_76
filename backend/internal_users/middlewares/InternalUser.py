@@ -22,10 +22,6 @@ class InternalUserMiddleware:
     def __call__(self, request):
         # Resolve the current app name
         current_app = resolve(request.path_info).app_name
-
-
-        # print(request.path, request.user.is_authenticated)
-
         # If the user is trying to access the login page itself, bypass further checks
         if request.path in [self.customer_login_url,self.customer_logout_url,
                            self.employee_login_url, self.employee_logout_url, 
@@ -35,20 +31,22 @@ class InternalUserMiddleware:
 
         # Check if the request path resolves to any of the protected apps
         if current_app in self.PROTECTED_APPS:
-            logger.info(f'detecting a url visit to protected app(s):{current_app}. Implementing custom rules in InternalUserMiddleware...')
+            logger.info(f'Implementing InternalUserMiddleware rules before visiting the protected app:{current_app}.')
 
             if not request.user.is_authenticated:
                 messages.error(request, f'Employee Login Required.')
                 logger.warning('user not logged in . Redirecting to the employee login url...')
-                return redirect(self.employee_login_url)
+                redirect_url = f"{self.employee_login_url}?next={request.path}"
+                return redirect(redirect_url)
             elif request.user.is_authenticated and isinstance(request.user, CustomerUser):   
-                return redirect(self.customer_logout_url)
+                redirect_url = f"{self.customer_logout_url}?next={request.path}"
+                return redirect(redirect_url)
             # elif request.user.is_authenticated and isinstance(request.user, InternalUser):
                 
             #     return redirect(self.employee_login_url)
     
         if current_app in self.PROTECTED_CUSTOMER_APPS:
-            logger.info(f'url visit to protected customer app(s). Implementing custom rules in InternalUserMiddleware...')
+            logger.info(f' Implementing InternalUserMiddleware rules before visiting the {current_app} app...')
             # # Additional check for CustomerUser when visiting the customer_users app
             if not request.user.is_authenticated:
                 messages.error(request, f'Error. Customer Login Required. Please Login. Create a new account if you do not have one.')

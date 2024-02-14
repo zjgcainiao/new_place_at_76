@@ -18,8 +18,9 @@ sample_license_plate_video_for_Yolo8.mp4
 node_modules/
 
 # exclude .vite folder inside dashboard_react
-dashboard_react/.vite/*
+/dashboard_react/.vite/*
 */.vite/
+*/management/commands/*
 
 */management/
 .github/
