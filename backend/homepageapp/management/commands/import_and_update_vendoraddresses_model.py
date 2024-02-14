@@ -53,7 +53,7 @@ class Command(BaseCommand):
         """
         start_time = time.time()  # Record the start time
         logger.info(f'starting management_script {self.script_name}...')
-        print(f'starting management_script {self.script_name}...')
+
 
         vendor_dict = {
             vendor_obj.vendor_id: vendor_obj for vendor_obj in Vendors.objects.all()}
@@ -90,8 +90,7 @@ class Command(BaseCommand):
         elapsed_time = time.time() - start_time
         logger.info(
             f"Script {self.script_name} completed. Total running time: {elapsed_time:.2f} seconds.")
-        print(
-            f"Script {self.script_name} completed. Total running time: {elapsed_time:.2f} seconds.")
+
 
     def update_or_create_record(self, entry, primary_key_field, vendor_dict, address_dict):
 
@@ -119,6 +118,5 @@ class Command(BaseCommand):
         except Exception as e:
             error_msg = f"An error occurred while updating/creating an vendor address record asscociated with vendor ID {vendor_id}: {e}"
             logger.error(error_msg)
-            print(error_msg)
             return error_msg
         return None

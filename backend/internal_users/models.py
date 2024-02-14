@@ -97,7 +97,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     user_last_name = models.CharField(_('last name'), max_length=50)
     # to allow user to enter the full name in one field 
     user_name_alternative = models.CharField(max_length=100, null=True, blank=True)
-    email = models.EmailField(verbose_name='email address', unique=True)
+    email = models.EmailField(verbose_name='email address (same as in your employee file)', unique=True)
     password = models.CharField(max_length=128, blank=False, null=False)
 
     # 2023-05-31 An existing conflict that talent_created_by_user is linked a user profile (InternalUser model); it is
@@ -106,7 +106,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     # hence we skip the database foreign key linkage. I believe this provides additional isolation to protect employee information
     # that resides in the TalentsModel
     user_talent = models.ForeignKey(
-        TalentsModel, on_delete=models.SET_NULL, null=True)
+        TalentsModel, on_delete=models.SET_NULL, null=True, blank=True)
     # user_talent_id = models.IntegerField(null=True)
     user_talent_profile_linkage_is_confirmed = models.BooleanField(
         default=False)

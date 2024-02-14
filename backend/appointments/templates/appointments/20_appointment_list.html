@@ -14,19 +14,25 @@
   </nav>
 
   <h2>Appointments Dash</h2>
-  <div class='row my-1'>
+  <div class='row p-1 my-1'>
     <p>User: {{user.user_first_name}}. Auth Group: {{user.user_auth_group}}-{{user.get_user_auth_group_display}}-user
       has_perm {{user.has_perm}}</p>
   </div>
   <!-- the button group  -->
   <div class='row'>
-    <div class="col-12 btn-group my-1">
-      <a type="button" class="btn btn-outline-dark" href="{% url 'appointments:create_appointment' %}"> <i
-          class="uil-focus-add"></i> New Appointment</a>
-      <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer_dash' %}"><i
-          class='uil-users-alt'></i> Go to Customer Dash</a>
+    <div class="col-md-12 btn-group my-1">
+      <a type="button" class="btn btn-outline-dark" href="{% url 'appointments:create_appointment' %}">
+        <i class="uil-focus-add"></i>
+        New Appointment
+      </a>
+      <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer_dash' %}">
+        <i class='uil-users-alt'></i>
+        Go to Customer Dash
+      </a>
 
-      <a type="button" class="btn btn-outline-dark">Go to Vehicle Dash</a>
+      <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:vehicle_dash' %}">
+        Go to Vehicle Dash
+      </a>
     </div>
   </div>
   <!-- end of button group  -->

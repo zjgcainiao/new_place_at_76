@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content-main %}
 <h1>Work Order Detail v2 -- using forms method</h1>
-<!-- get_wip_detail_v1.html -->
+<!-- get_repair_order_detail_v1.html -->
 <form method="POST">
   {% csrf_token %}
   {{ repair_order_form |crispy}}

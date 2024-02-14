@@ -79,7 +79,7 @@ class InternalUserLoginView(LoginView):
 
     # template_name = 'internal_users/loginv2.html'
     template_name = 'internal_users/20_login.html'
-    success_url = reverse_lazy('dashboard:wip_dash')
+    success_url = reverse_lazy('dashboard:repair_order_dash')
     authentication_form = InternalUserLoginForm
 
     # adding this line will allow users to skip login when the user has been logged in before.

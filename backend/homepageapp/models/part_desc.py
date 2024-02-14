@@ -5,7 +5,7 @@ from .vendor import Vendors
 
 class PartDescription(models.Model):
     id = models.AutoField(primary_key=True)
-    description = models.CharField(max_length=500, null=True, blank=True)
+    description = models.CharField(max_length=1000, null=True, blank=True)
     category = models.ForeignKey(
         CategoryModel, on_delete=models.SET_NULL, null=True,blank=True)
     vendor = models.ForeignKey(

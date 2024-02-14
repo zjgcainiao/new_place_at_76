@@ -6,7 +6,7 @@ def technician_dash_view(request, technician_id):
     line_items = LineItemsNewSQL02Model.objects.filter(LineItemTech__id=technician_id).prefetch_related(
         'lineitems__lineitem_noteitem',
         'lineitems__lineitem_laboritem',
-        'lineitems__partitems_lineitems',
+        'lineitems__lineitem_partitem',
     )
     return render(request, 'dashboard/technician_workstation.html', {'line_items': line_items})
 

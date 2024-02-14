@@ -1,37 +1,37 @@
 {% extends 'appointments/00_appointment_base.html' %}
 
 {% block content1-main %}
-<div class='container pt-5 mt-5'>
-    <div class="card card-hover card-body text-center"> <!-- Aligning text to the center for emphasis -->
-
+<section class='container pt-5 mt-5'>
+    <div class="card border-0 text-center shadow"> <!-- Aligning text to the center for emphasis -->
         <!-- Header greeting -->
-        <h4 class="card-title">Hello {{ appointment.appointment_first_name }}!</h4>
+        <h4 class="card-header p-1 m-1">Hello {{ appointment.appointment_first_name }}!</h4>
+        <p>
+            You've successfully created a service appointment requested on
+            {{appointment.appointment_requested_datetime}}.
+        </p>
 
-        <p>You've successfully created a service appointment scheduled for {{
-            appointment.appointment_requested_datetime}}.</p>
-
-        <p>Your confirmation ID is: </p>
-
+        <p>Your appointment confirmation ID is: </p>
 
         <!-- Make the confirmation ID prominent -->
-        <h3>{{ appointment.appointment_confirmation_id }}</h3>
+        <a class="btn btn-outline-dark btn-sm" href={{appointment_detail_url}}>
+            <h4>{{ appointment.appointment_confirmation_id }}</h4>
+        </a>
 
-        <div class="card border-dark shadow my-2">
-            <div class="card-body">
-                <p>Reason for visit: {{ appointment.appointment_reason_for_visit }}</p>
-                <p>Vehicle details: {{ appointment.appointment_vehicle_detail }}</p>
-                <p>Concern description: {{ appointment.appointment_concern_description }}</p>
-                <p>Appointment date: {{ appointment.appointment_requested_datetime }}</p>
-            </div>
 
+        <div class="card-body">
+            <p>Reason for visit: {{ appointment.appointment_reason_for_visit }}</p>
+            <p>Vehicle details: {{ appointment.appointment_vehicle_detail }}</p>
+            <p>Concern description: {{ appointment.appointment_concern_description }}</p>
+            <p>Appointment date: {{ appointment.appointment_requested_datetime }}</p>
         </div>
-        <!-- If possible, create a view or page where users can see their appointment details using the confirmation ID -->
-        <a class="btn btn-outline-dark btn-sm"
-            href="{% url 'appointments:appointment_detail_by_confirmation' appointment_confirmation_id=appointment.appointment_confirmation_id %}">View
-            More Details</a>
 
+
+        <!-- If possible, create a view or page where users can see their appointment details using the confirmation ID -->
+    </div>
+    <!-- end of card  -->
+    <div class="card border-0 p-1 mt-1">
         <!-- Encourage sign up -->
-        <div class="mt-4">
+        <div class="mt-1">
             <h5>Want more benefits?</h5>
             <p>Create a free account to recieve most updated NHTSA safety rating, recall for your beloved vehicle.
                 Access to our AI assitance and other features!</p>
@@ -39,19 +39,19 @@
         </div>
 
         <!-- Reminder for existing customers -->
-        <div class="mt-4">
+        <div class="mt-1">
             <p>Already have an account? Aweseome. Use the link below to sign in.</p>
             <a class="btn btn-secondary btn-sm" href="{% url 'customer_users:customer_user_login' %}">Sign In</a>
         </div>
 
-        <p class="mt-4">If this wasn't you, please ignore this email. Your security is our priority.</p>
-
-        <!-- Footer section -->
-        <div class="footer mt-5">
-            <p>Best regards,</p>
-            <p>The Amazing Automan LLC Team</p>
-            <small>Contact us: <a href="mailto:automan001@amazingautoman.com">Support Email</a></small>
-        </div>
+        <p class="mt-4 fw-bold">If this wasn't you, please ignore this email. Your security is our priority.</p>
     </div>
-</div>
+
+    <!-- Footer section -->
+    <div class="footer mt-1">
+        <p>Best regards,</p>
+        <p>The Amazing Automan LLC Team</p>
+        <small>Contact us: <a href="mailto: info@76prolubeplus.com">Support Email</a></small>
+    </div>
+</section>
 {% endblock %}

@@ -1,6 +1,7 @@
 from .base import models, InternalUser
 from .category import CategoryModel
 
+
 class CannedJobsNewSQL02Model(models.Model):
     canned_job_id = models.AutoField(primary_key=True)
     canned_job_title = models.CharField(max_length=50, null=True)
@@ -8,6 +9,7 @@ class CannedJobsNewSQL02Model(models.Model):
     canned_job_is_in_quick_menu = models.BooleanField(default=False)
     canned_job_category = models.ForeignKey(
         CategoryModel, on_delete=models.SET_NULL, null=True)
+
     canned_job_applied_year = models.IntegerField(blank=True, null=True)
     canned_job_applied_make_id = models.IntegerField(blank=True, null=True)
     canned_job_applied_submodel_id = models.IntegerField(blank=True, null=True)
@@ -30,10 +32,5 @@ class CannedJobsNewSQL02Model(models.Model):
         db_table = 'cannedjobs_new_03'
         ordering = ["-canned_job_id"]
 
-
-LINE_ITEM_TYPES = [
-    ('part', 'Part'),
-    ('labor', 'Labor'),
-    ('note', 'Note'),
-    ('unknown', 'unknown')
-]
+    def __str__(self):
+        return self.canned_job_title

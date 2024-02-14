@@ -12,6 +12,10 @@ class CategoryModel(models.Model):
     modified_by = models.ForeignKey(
         InternalUser, related_name='category_modified', on_delete=models.SET_NULL, null=True, blank=True)
     category_last_updated_at = models.DateTimeField(auto_now=True, null=True)
+    
+    def __str__(self):
+        return f"{self.category_id}-{self.category_description}"
+    
 
     class Meta:
         db_table = 'categories_new_03'

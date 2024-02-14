@@ -7,19 +7,15 @@ from dashboard.forms import RepairOrderUpdateForm
 # modified to prefetch emails, phones, taxes to each repair_order_customer object
 
 @login_required(login_url='internal_users:internal_user_login')
-def get_wip_detail_v1(request, pk):
-
-    # return the address by address_type_id ascending
-    address_qs = AddressesNewSQL02Model.objects.order_by('address_type_id')
-    # Return the address by address_type_id ascending
-    address_qs = AddressesNewSQL02Model.objects.order_by('address_type_id')
+def get_repair_order_detail_v1(request, pk):
 
     # Note: Ensure that 'lineitems__lineitem_noteitem' correctly represents the relationship path
     # from your LineItems model to your NoteItems model.
-    # Adjust the 'lineitems__partitems_lineitems', 'lineitems__lineitem_laboritem', and
+    # Adjust the 'lineitems__lineitem_partitem', 'lineitems__lineitem_laboritem', and
     # 'repair_order_vehicle__vehiclenotes_vehicle' paths as necessary to reflect actual model relationships.
 
     # Use Prefetch objects for related items to control the queryset used for prefetching
+    address_qs = AddressesNewSQL02Model.objects.order_by('address_type_id')
     note_item_qs = NoteItemsNewSQL02Model.objects.all()
     part_item_qs = PartItemModel.objects.all()
     labor_item_qs = LaborItemModel.objects.all()
@@ -32,7 +28,7 @@ def get_wip_detail_v1(request, pk):
         Prefetch('repair_order_customer__taxes'),
         Prefetch('repair_order_customer__text_customers', queryset=text_messages_qs),
         Prefetch('lineitems__lineitem_noteitem', queryset=note_item_qs),
-        Prefetch('lineitems__partitems_lineitems', queryset=part_item_qs),
+        Prefetch('lineitems__lineitem_partitem', queryset=part_item_qs),
         Prefetch('lineitems__lineitem_laboritem', queryset=labor_item_qs),
         Prefetch('repair_order_vehicle__vehiclenotes_vehicle', queryset=vehicle_note_qs),
     ).select_related('repair_order_customer', 'repair_order_vehicle').get(pk=pk)
@@ -45,7 +41,7 @@ def get_wip_detail_v1(request, pk):
     #     'repair_order_customer__emails',
     #     'repair_order_customer__taxes',
     #     'lineitems__lineitem_noteitem',
-    #     'lineitems__partitems_lineitems',
+    #     'lineitems__lineitem_partitem',
     #     'lineitems__lineitem_laboritem',
     #     'repair_order_vehicle__vehiclenotes_vehicle',
     # ).select_related('repair_order_customer',
@@ -53,7 +49,7 @@ def get_wip_detail_v1(request, pk):
     #     ).get(pk=pk)
     # repair_order = RepairOrdersNewSQL02Model.objects.get(id=repair_order_id)
     repair_order_id = repair_order.repair_order_id
-    
+
     if repair_order.repair_order_customer is not None:
         customer = repair_order.repair_order_customer
         # Manually limit the fetched text messages
@@ -68,9 +64,11 @@ def get_wip_detail_v1(request, pk):
         vehicle = repair_order.repair_order_vehicle
 
     line_items = repair_order.lineitems.all()
-    note_items = [item for item in line_items if hasattr(item, 'lineitem_noteitem')]
-    part_items = [item for item in line_items if hasattr(item, 'partitems_lineitems')]
-    labor_items = [item for item in line_items if hasattr(item, 'lineitem_laboritem')]
+    note_items = [item.lineitem_noteitem.get() for item in line_items if item.lineitem_noteitem.exists()]
+    part_items = [item.lineitem_partitem.get() for item in line_items if item.lineitem_partitem.exists()]
+    labor_items = [item.lineitem_laboritem.get() for item in line_items if item.lineitem_laboritem.exists()]
+
+
     # send out a repair_order_id stored in the request.session.
     request.session['repair_order_id'] = repair_order_id
     # request.session['customer_id'] = customer_id
@@ -81,15 +79,18 @@ def get_wip_detail_v1(request, pk):
         if form.is_valid():
             form.save()
             messages.success('redirecting...')
-            return redirect('dashboard:wip_dash')
+            return redirect('dashboard:repair_order_dash')
     else:
         # Display the form for updating the record
         form = RepairOrderUpdateForm(instance=repair_order)
-
+    # print(f'note_items: {note_items}')
     context = {
         'repair_order': repair_order,
         'form': form,
         'repair_order_id': repair_order_id,
+        'note_items': note_items,
+        'part_items': part_items,
+        'labor_items': labor_items,
         'customer': customer,
         'line_items': line_items,
         'vehicle': vehicle,
@@ -97,4 +98,4 @@ def get_wip_detail_v1(request, pk):
         'text_messages': text_messages,
 
     }
-    return render(request, 'dashboard/21_wip_detail_v1.html', context)
+    return render(request, 'dashboard/21_repair_order_detail_v1.html', context)

@@ -2,7 +2,7 @@
 from formtools.wizard.views import SessionWizardView
 from django import forms
 from django.shortcuts import render
-from dashboard.forms import LineItemCreateForm, PartItemInlineFormSet, LaborItemInlineFormSet, NoteItemInlineFormSet
+from dashboard.forms import LineItemCreateForm, PartItemInlineFormset, LaborItemInlineFormset, NoteItemInlineFormset
 from .base import redirect, reverse, InternalUserRequiredMixin,JsonResponse,get_object_or_404,messages
 
 # FORMS = [("line_item", LineItemCreateForm),
@@ -47,11 +47,11 @@ class LineItemCreateWizard(SessionWizardView,InternalUserRequiredMixin):
 
             # Select the formset based on line_item_type
             if line_item_type == 'part':
-                form_class = PartItemInlineFormSet
+                form_class = PartItemInlineFormset
             elif line_item_type == 'labor':
-                form_class = LaborItemInlineFormSet
+                form_class = LaborItemInlineFormset
             elif line_item_type == 'note':
-                form_class = NoteItemInlineFormSet
+                form_class = NoteItemInlineFormset
             else:
                 # Fallback or error handling
                 form_class = forms.Form  # Use a blank form as fallback

@@ -12,7 +12,7 @@ class LineItemDeleteView(DeleteView):
         # Get the RepairOrder's pk from the URL
         repair_order_pk = self.kwargs.get('pk')
         # Redirect to the RepairOrder detail view
-        return reverse('dashboard:get_wip_detail_v1', kwargs={'pk': repair_order_pk})
+        return reverse('dashboard:get_repair_order_detail_v1', kwargs={'pk': repair_order_pk})
     
     def get_queryset(self):
         """Ensure that only line items that the user is allowed to delete are queried."""

@@ -1,66 +1,202 @@
-<section class="container">
-    <div class="card card-hover-glare border-0">
-        <h3 class="card-header">work items (parts, labor, and tech notes)</h3>
-        <div class="card-body p-1 my-1">
-            <div class="row">
+<style>
+    /* Base styling for both tables */
+    .table-parts,
+    .table-labor {
+        border-collapse: separate;
+        border-spacing: 0 0.1rem;
+        color: #403f3f;
+        border-radius: 5px;
+        overflow: hidden;
+        /* Ensures the border-radius applies to children elements */
+    }
 
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>line ID</th>
-                        <th>canned job</th>
-                        <th>description</th>
-                        <th>Unit Cost</th>
-                        <th>Unit Sale</th>
-                        <th>quantity</th>
-                        <th>cost</th>
-                        <th>part sale</th>
-                        <th>labor hours</th>
-                        <th>labor sale</th>
-                        <th>tax</th>
-                        <th>sale</th>
-                        <th>Action</th>
+    /* Enhanced gradient background for a metallic look */
+    .table-parts {
+        background: linear-gradient(145deg, #d7e0eb 20%, #e4e5e6, #b3b4b5);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-                    </tr>
-                </thead>
-                {% for line_item in line_items %}
-                <tbody>
-                    <tr>
-                        <td>
-                            <a
-                                href="{% url 'dashboard:line_item_three_in_one_update' pk=line_item.lineitems.get.repair_order_id  line_item_id=line_item.line_item_id %}">{{line_item.line_item_id}}</a>
-                        </td>
-                        <td>{{line_item.line_item_canned_job.canned_job_title}}</td>
-                        <td>{{line_item.line_item_description}}</td>
-                        <td>{{line_item.parts_lineitems.get.part_item_unit_cost}}</td>
-                        <td>{{line_item.parts_lineitems.get.part_item_unit_sale}}</td>
-                        <td>{{line_item.parts_lineitems.get.part_item_quantity}}</td>
-                        <td>{{line_item.line_item_cost}}</td>
-                        <td>{{line_item.line_item_part_sale}}</td>
-                        <td>{{line_item.labor_lineitems.get.labor_item_hours_charged}}</td>
-                        <td>{{line_item.line_item_labor_sale}}</td>
-                        <td>{{line_item.taxes.line_item_tax_charged}}</td>
-                        <td>{{line_item.line_item_sale}}</td>
-                        <td class="table-action">
-                            <a class="action-icon"
-                                href="{% url 'dashboard:line_item_three_in_one_update' pk=line_item.lineitems.get.repair_order_id  line_item_id=line_item.line_item_id %}">
-                                <i class="uil uil-edit"></i>
-                            </a>
-                            <a class="action-icon"
-                                href="{% url 'dashboard:line_item_delete_view' pk=line_item.lineitems.get.repair_order_id  line_item_id=line_item.line_item_id %}"><i
-                                    class="uil uil-trash-alt"></i>
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-                {% with line_item=line_item %}
-                {% include 'dashboard/99_line_item_delete_view.html' %}
-                {% endwith %}
+    .table-labor {
+        background: linear-gradient(120deg, #d7cbc9 20%, #f0f0f0, #a7a4a4);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Styling for table cells */
+    .table-parts tbody tr td,
+    .table-labor tbody tr td {
+        border-bottom: 1px solid #999;
+        background-color: rgba(255, 255, 255, 0.3);
+        /* Light background for rows to enhance readability */
+    }
+
+    .table-parts thead th,
+    .table-labor thead th {
+        background-color: #e9ecef;
+        color: #333;
+        border-bottom: 3px solid #999;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+        /* Soft text shadow for depth */
+    }
+
+    /* Hover effect for rows */
+    .table-parts tbody tr:hover,
+    .table-labor tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.7);
+        /* Slightly lighter on hover for interactivity */
+    }
+</style>
+<section class="container" id="repair-order-line-item-list-section">
+    <div class="card border-0">
+        <h3 class="card-header mb-0">work items (parts, labor, and tech notes)</h3>
+        <div class="btn-group justify-content-between p-1 my-1" role="group">
+            <a class="btn btn-outline-secondary">Canned Job List--ModelChoiceField</a>
+            <a class="btn btn-outline-secondary"> Clean all </a>
+            <a class="btn btn-outline-secondary">Refresh </a>
+            <a class="btn btn-outline-dark"
+              href="{% url 'dashboard:line_item_three_in_one_create' pk=repair_order.pk %}">
+              <i class="fas fa-plus"></i> Add item
+            </a>
+            <a class="btn btn-outline-dark" href="{% url 'dashboard:line_item_create_wizard' pk=repair_order.pk %}">
+              <i class="fas fa-plus"></i> Add item - wizard
+            </a>
+          </div>
+        <div class="card-body">
+            <div class="row  ">
+                <h4 class="fw-bold">Notes</h4>
+                {% for note_item in note_items %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>line id</th>
+                            <th>note detail </th>
+                            <th>action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a
+                                    href="{% url 'dashboard:line_item_three_in_one_update' pk=repair_order_id line_item_id=note_item.line_item.pk %}">
+
+                                    {{note_item.line_item.pk}}
+                                </a>
+                            </td>
+                            <td>{{note_item.note_item_text}}</td>
+                            <td class="table-action">
+                                <a class="action-icon text-dark"
+                                    href="{% url 'dashboard:line_item_delete_view' pk=repair_order_id line_item_id=note_item.line_item.pk %}"><i
+                                        class="uil uil-trash-alt"></i>
+                                </a>
+                        </tr>
+                    </tbody>
+
+                </table>
+
                 {% endfor %}
-            </table>
+            </div>
+            <!-- start of table-parts and table-labor  -->
+            <div class="row ">
+                <div class="col-md-6">
+                    <h4 class="fw-bold">Parts</h4>
+                    <table class="table table-parts ">
+                        <thead>
+                            <tr>
+                                <th>line id</th>
+                                <th>description</th>
+                                <th>unit cost</th>
+                                <th>unit sale</th>
+                                <th>quantity</th>
+                                <th>total cost</th>
+                                <th>total sale</th>
+                                <th>action</th>
+                            </tr>
+                        </thead>
+
+                        {% if part_items %}
+                        {% for part_item in part_items %}
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a
+                                        href="{% url 'dashboard:line_item_three_in_one_update' pk=repair_order_id line_item_id=part_item.line_item.pk %}">
+
+                                        {{part_item.line_item.pk}}
+                                    </a>
+                                </td>
+
+                                <td>{{part_item.line_item.line_item_description}}</td>
+                                <td>{{part_item.part_item_unit_cost}}</td>
+                                <td>{{part_item.part_item_unit_sale}}</td>
+                                <td>{{part_item.part_item_quantity}}</td>
+                                <td>{{part_item.line_item.line_item_cost}}</td>
+                                <td>{{part_item.line_item.line_item_part_sale}}</td>
+                                <td class="table-action ">
+                                    {% comment %}
+                                    {% endcomment %}
+
+                                    <a class="action-icon text-dark"
+                                        href="{% url 'dashboard:line_item_delete_view' pk=part_item.line_item.lineitems.get.repair_order_id  line_item_id=part_item.line_item.pk %}"><i
+                                            class="uil uil-trash-alt"></i>
+                                    </a>
+
+                                </td>
+                            </tr>
+                        </tbody>
+
+                        {% endfor %}
+                        {% endif %}
+                    </table>
+                </div>
+                <!-- end of table-parts  -->
+
+                <div class="col-md-6 ">
+                    <h4 class="fw-bold">Labor</h4>
+                    <table class="table table-labor ">
+                        <thead>
+                            <tr>
+                                <th>line id</th>
+                                <th>description</th>
+                                <th>hours</th>
+
+
+                                <th>total sale</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        {% if labor_items %}
+                        {% for labor_item in labor_items %}
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a
+                                        href="{% url 'dashboard:line_item_three_in_one_update' pk=repair_order_id  line_item_id=labor_item.line_item.line_item_id %}">
+                                        {{labor_item.line_item.pk}}
+                                    </a>
+                                </td>
+                                <td>{{labor_item.line_item.line_item_description|truncatechars:35}}</td>
+                                <td>{{labor_item.labor_item_hours_charged}}</td>
+
+                                <td>{{labor_item.line_item.line_item_labor_sale}}</td>
+                                <td class="table-action">
+
+
+                                    <a class="action-icon text-dark"
+                                        href="{% url 'dashboard:line_item_delete_view' pk=repair_order_id  line_item_id=labor_item.line_item.pk %}"><i
+                                            class="uil uil-trash-alt"></i>
+                                    </a>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                        {% endif %}
+                    </table>
+                </div>
+                <!-- end of table-labor  -->
+            </div>
+            <!-- end of row  -->
+
+
         </div>
         <!-- end of card-body  -->
-    </div>
-
 </section>

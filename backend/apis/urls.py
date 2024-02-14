@@ -17,8 +17,8 @@ router.register(r'vin_nhtsa_api_snapshots', VinNhtsaApiSnapshotViewSet,
                 basename='popular_vin_nhtsa_api')
 router.register(r'plate_and_vin_data', PlateAndVinDataViewSet,
                 basename='plate_and_vin_data_api')
-router.register(r'wip_dash', WIPDashboardViewSet,
-                basename='wip_dash_api')
+router.register(r'repair_order_dash', WIPDashboardViewSet,
+                basename='repair_order_dash_api')
 
 router.register(r'repair_orders', ActiveRepairOrderViewSet,
                 basename='repair_orders_api')

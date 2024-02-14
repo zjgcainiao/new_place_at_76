@@ -2,26 +2,38 @@
 {% load crispy_forms_tags %}
 {% block content-main %}
 
-<div class="container-fluid p-1 my-2">
-  <div class="card card-hover border-0 p-2 my-2">
-    <h2 class="card-header">Update</h2>
+<div class="container-fluid p-1 my-1">
+  <!-- Breadcrumb-->
+  <nav aria-label="breadcrumb" class="mb-0">
+    <ol class="breadcrumb breadcrumb-dark">
+      <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'dashboard:repair_order_dash' %}">Repair Orders</a></li>
+      <li class="breadcrumb-item active">Repair_Order_Detail</a></li>
+    </ol>
+  </nav>
+  <div class="card card-hover border-0 p-1 my-1">
+    <h3 class="card-header p-1 my-1">Update</h3>
 
-    <div class="card-body p-1 my-2">
+    <div class="card-body">
       <form method="post">
         {% csrf_token %}
         <!-- line item form  -->
         {% crispy form form.helper %}
 
-        <!-- selected_formset form -->
+        <!-- selected_formset form: PartItemInlineFormset, LaborItemInlineFormset, NoteItemInlineFormset -->
         {{ selected_formset.management_form }}
-        {% for form in selected_formset %}
-        <div class="card card-hover border-0 p-2 my-2">
+
+        <div class="card card-hover border-0 p-1 my-1">
+          {% for form in selected_formset %}
           {% crispy form form.helper %}
+          {% endfor %}
         </div>
-        {% endfor %}
+
 
         <!-- Submit Button -->
         <button type="submit" class="btn btn-primary">Save</button>
+
       </form>
     </div>
     <!-- end of card-body  -->

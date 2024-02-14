@@ -8,7 +8,8 @@ import logging
 from django.db import transaction
 from django.core.management.base import BaseCommand
 from homepageapp.models import VehiclesNewSQL02Model as Vehicle, VehicleNotesModel as VehicleNote
-
+from datetime import datetime
+import time 
 logger = logging.getLogger('management_script')
 
 
@@ -21,6 +22,8 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # logging.basicConfig(filename='vehiclenotes_logging_v01.log',
         #                     level=logging.ERROR)
+        start_time = time.time()  # Record the start time
+        logger.info(f'starting management script {self.script_name}...')
         vehicle_dict = {
             vehicle_obj.vehicle_id: vehicle_obj for vehicle_obj in Vehicle.objects.all()}
         file_path = os.path.join(
@@ -31,7 +34,6 @@ class Command(BaseCommand):
             with transaction.atomic():  # wrap in a transaction
                 errors = []  # intial error list. empty.
                 for entry in data:
-
                     result = self.update_or_create_note(entry, vehicle_dict)
                     if result:
                         errors.append(result)
@@ -40,7 +42,11 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(self.style.SUCCESS(
                     'The VehicleNotesModel has been updated. Script run successfully.'))
-
+                
+        # Compute the elapsed time
+        elapsed_time = time.time() - start_time
+        logger.info(
+            f"Script {self.script_name} completed. Total running time: {elapsed_time:.2f} seconds.")
     def update_or_create_note(self, entry, vehicle_dict):
         # if 'VehicleId' not in entry:
         #     error_msg = f"Skipping entry due to missing 'VehicleId': {entry}"

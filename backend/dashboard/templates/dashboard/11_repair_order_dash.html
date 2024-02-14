@@ -24,7 +24,7 @@
       {% for repair_order in repair_orders %}
       <tr>
         <td>
-          <a href="{% url 'dashboard:get_wip_detail_v1' pk=repair_order.repair_order_id %}">
+          <a href="{% url 'dashboard:get_repair_order_detail_v1' pk=repair_order.repair_order_id %}">
 
           </a>
           {{repair_order.repair_order_id }}

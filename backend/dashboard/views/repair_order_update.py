@@ -9,11 +9,11 @@ class RepairOrderUpdateView(UpdateView, LoginRequiredMixin):
     # fields = '__all__'
     form_class = RepairOrderUpdateForm
     # success_url = reverse_lazy(
-    #     'dashboard:get_wip_detail_v1', pk=self.kwargs['object.repair_order_id'])
+    #     'dashboard:get_repair_order_detail_v1', pk=self.kwargs['object.repair_order_id'])
     login_url = reverse_lazy('internal_users:internal_user_login')
 
     def get_success_url(self):
-        return reverse('dashboard:get_wip_detail_v1', kwargs={'pk': self.object.pk})
+        return reverse('dashboard:get_repair_order_detail_v1', kwargs={'pk': self.object.pk})
 
     def post(self, request, *args, **kwargs):
         self.object = get_object_or_404(
@@ -23,7 +23,7 @@ class RepairOrderUpdateView(UpdateView, LoginRequiredMixin):
             # self.object.repair_order_last_updated_at = timezone.now()
             form.save()
             # return HttpResponseRedirect(self.get_success_url())
-            return redirect(reverse_lazy('dashboard:get_wip_detail_v1', pk=self.kwargs['pk']))
+            return redirect(reverse_lazy('dashboard:get_repair_order_detail_v1', pk=self.kwargs['pk']))
         else:
             # return self.form_invalid(form)
             return self.render_to_response(self.get_context_data(form=form))

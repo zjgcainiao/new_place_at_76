@@ -98,7 +98,7 @@
         {% for repair_order in repair_orders %}
         <tr>
           <td data-bs-label="Order ID">
-            <a href="{% url 'dashboard:get_wip_detail_v1' pk=repair_order.pk %}">
+            <a href="{% url 'dashboard:get_repair_order_detail_v1' pk=repair_order.pk %}">
               {{repair_order.repair_order_id }}</a>
           </td>
           <td>{{repair_order.repair_order_phase.repair_order_phase_description }}</td>

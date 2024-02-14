@@ -42,7 +42,7 @@ class Command(BaseCommand):
     module_dir = '/Users/stephenwang/Documents/myiCloudCopy-76ProLubePlus/13-Information-Technology/003-IT_New-Site-Development-2022/New_site_database-data-migration-python-scripts/old_db_jsons/'
     suffix_pattern = '_20230115.json'
     model_name = 'PartItem'
-
+    primary_key_field = 'PartItemId'
     # Get the base name of the current script
     script_name = os.path.basename(__file__)
 
@@ -67,10 +67,10 @@ class Command(BaseCommand):
             with transaction.atomic():  # wrap in a transaction
                 errors = []  # intial error list. empty.
                 for entry in data:
-                    primary_key_field = 'PartItemId'
+                    primary_key_field = self.primary_key_field or None
                     if primary_key_field not in entry:
                         logging.error(
-                            f"Skipping Part Item entry due to missing '{primary_key_field}': {entry}")
+                            f"Skipping {self.model_name} entry due to missing '{primary_key_field}': {entry}")
                         continue
                     # clean up empty strings in dictionary
                     entry = clean_string_in_dictionary_object(entry)
@@ -143,15 +143,15 @@ class Command(BaseCommand):
             part_item.full_clean()
             part_item.save()
             logger.info(
-                f'Part Item {part_item_id} record has been udapted. is_created?: {created}.')
+                f'Part Item {part_item_id} record has been updated. is_created?: {created}.')
             print(
-                f'Part Item {part_item_id} record has been udapted. is_created?: {created}.')
+                f'Part Item {part_item_id} record has been updated. is_created?: {created}.')
         except Exception as e:
-            error_msg = f"An error occurred while updating/creating a part_item record {part_item_id}: {e}"
+            error_msg = f"An error occurred while updating/creating a {self.model_name} record {part_item_id}: {e}"
             logger.error(error_msg)
             # print(error_msg)
             # debugging; pause when there is an error
-            logger.info(f"{entry.get('UnitPrice')} of part_item  {part_item_id}")
+            logger.info(f"{entry.get('UnitPrice')} of {self.model_name}  {part_item_id}")
             # pause the script 
             # pause the script
             input("Error(s) occurred while running this script. Press enter to continue.")

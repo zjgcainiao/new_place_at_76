@@ -9,12 +9,13 @@
       <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
       <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
       <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Repair Orders</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'dashboard:get_wip_detail_v1' pk=repair_order_id %}">Repair Order
+      <li class="breadcrumb-item"><a href="{% url 'dashboard:get_repair_order_detail_v1' pk=repair_order_id %}">Repair
+          Order
           {{repair_order_id }}</a></li>
       <li class="breadcrumb-item active">Line Item {{line_item_id}}</li>
     </ol>
   </nav>
-  <a class='btn btn-secondary' href="{% url 'dashboard:get_wip_detail_v1' pk=repair_order_id %}"><i
+  <a class='btn btn-secondary' href="{% url 'dashboard:get_repair_order_detail_v1' pk=repair_order_id %}"><i
       class="fa-solid fa-arrow-left"></i> Go Back</a>
   <h2> Update Line Item {{line_item_id}}</h2>
 </div>

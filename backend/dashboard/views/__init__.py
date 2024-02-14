@@ -1,13 +1,14 @@
 from .get_main_dash import get_main_dash
-
-from .get_wip_detail_v1 import get_wip_detail_v1
-from .get_wip_detail_v2 import get_wip_detail_v2
+from .get_repair_order_detail_v1 import get_repair_order_detail_v1
+from .get_repair_order_detail_v2 import get_repair_order_detail_v2
 from .dashboard_detail import DashboardDetailView
-from .wip_dashboard import WIPDashboardView
-from .get_wip_dash import get_wip_dash
+from .repair_order_dashboard import WIPDashboardView
+from .get_repair_order_dash import get_repair_order_dash
 from .repair_order_listview import RepairOrderListView
 from .repair_order_update import RepairOrderUpdateView  # obselete
 from .repair_order_udpate_method import repair_order_update  # obselete
+from .repair_order_and_line_items_detail import repair_order_and_line_items_detail
+from .repair_order_line_item_list import RepairOrderLineItemListView
 
 from .line_item_create_wizard import LineItemCreateWizard
 from .line_item_three_in_one_update import line_item_three_in_one_update
@@ -15,12 +16,12 @@ from .line_item_three_in_one_create import line_item_three_in_one_create
 from .line_item_merge_view import line_item_merge_view
 from .line_item_update import LineItemUpdateView
 from .labor_item_update import LaborItemUpdateView
-from .repair_order_and_line_items_detail import repair_order_and_line_items_detail
-from .repair_order_line_item_list import RepairOrderLineItemListView
 from .line_item_delete import LineItemDeleteView
 from .chat_sidebar_view import chat_sidebar_view
 from .search import SearchView
-
+from .get_canned_job_dash import get_canned_job_dash
+from .canned_job_detail import CannedJobDetailView
+from .canned_job_update import canned_job_update
 from .get_customer_dash import get_customer_dash
 from .customer_create import CustomerCreateView
 from .customer_detail import CustomerDetailView

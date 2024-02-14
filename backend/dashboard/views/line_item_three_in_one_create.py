@@ -1,6 +1,6 @@
 from .base import render, login_required, get_object_or_404, redirect, messages
 from homepageapp.models import LineItemsNewSQL02Model
-from dashboard.forms import PartItemInlineFormSet, LaborItemInlineFormSet, NoteItemInlineFormSet, LineItemUpdateForm, LineItemCreateForm
+from dashboard.forms import PartItemInlineFormset, LaborItemInlineFormset, NoteItemInlineFormset, LineItemUpdateForm, LineItemCreateForm
 
 
 def line_item_three_in_one_create(request, pk):
@@ -10,11 +10,11 @@ def line_item_three_in_one_create(request, pk):
 
         line_item_type = request.POST.get('line_item_type')
         if line_item_type == 'part':
-            selected_formset = PartItemInlineFormSet
+            selected_formset = PartItemInlineFormset
         elif line_item_type == 'labor':
-            selected_formset = LaborItemInlineFormSet
+            selected_formset = LaborItemInlineFormset
         elif line_item_type == 'note':
-            selected_formset = NoteItemInlineFormSet
+            selected_formset = NoteItemInlineFormset
         else:
             selected_formset = None
 
@@ -31,7 +31,7 @@ def line_item_three_in_one_create(request, pk):
                     # associate_instance_with_line_item(instance, line_item)
                     instance.save()
                 messages.success(request, 'A work item were created successfully.')
-            return redirect('dashboard:wip_dash_detail_v1', pk=repair_order_id)
+            return redirect('dashboard:repair_order_dash_detail_v1', pk=repair_order_id)
 
     else:
         form = LineItemCreateForm()

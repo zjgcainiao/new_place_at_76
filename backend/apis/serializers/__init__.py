@@ -25,3 +25,4 @@ from .drive_type import DriveTypeSerializer
 from .brake import BrakeSerializer
 from .sub_model import SubModelSerializer
 from .text_message import TextMessagesSerializer
+from .canned_job_line_item_sequence import CannedJobLineItemSequenceSerializer

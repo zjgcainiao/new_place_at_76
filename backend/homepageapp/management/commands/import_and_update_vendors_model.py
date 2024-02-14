@@ -53,7 +53,6 @@ class Command(BaseCommand):
         """
         start_time = time.time()  # Record the start time
         logger.info(f'starting management_script {self.script_name}...')
-        print(f'starting management_script {self.script_name}...')
 
         file_path = os.path.join(
             self.module_dir, self.model_name + self.suffix_pattern)
@@ -82,7 +81,12 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(self.style.SUCCESS(
                     'The `import_and_update_vendors_model` Script run successfully.'))
+        # Compute the elapsed time
+        elapsed_time = time.time() - start_time
+        logger.info(
+            f"Script {self.script_name} completed. Total running time: {elapsed_time:.2f} seconds.")
 
+        
     def update_or_create_record(self, entry, primary_key_field):
         # if 'VehicleId' not in entry:
         #     error_msg = f"Skipping entry due to missing 'VehicleId': {entry}"

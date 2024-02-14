@@ -36,6 +36,7 @@ from .vehicle import VehiclesNewSQL02Model
 from .vehicle_note import VehicleNotesModel
 from .text_message import TextMessagesModel
 from .canned_job import CannedJobsNewSQL02Model
+from .canned_job_line_item_sequence import CannedJobLineItemSequence
 from .line_item_tax import lineItemTaxesNewSQL02Model
 from .line_item import LineItemsNewSQL02Model
 from .note_item import NoteItemsNewSQL02Model

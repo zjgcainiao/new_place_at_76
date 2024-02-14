@@ -1,7 +1,7 @@
 {% extends 'dashboard/00_dashboard_base.html' %}
 {% load crispy_forms_tags %}
 {% block content-main %}
-<div class="container container-fluid">
+<div class="container ">
   <!-- Breadcrumb-->
   <nav class="pt-0" aria-label="breadcrumb">
     <ol class="breadcrumb breadcrumb-dark">
@@ -14,7 +14,9 @@
     </ol>
   </nav>
 </div>
-<div class="container container-fluid my-1" id='customer_create-container'>
+<!-- end of container  -->
+
+<div class="container  my-1" id='customer_create-container'>
   <h3>Update Customer Page</h3>
   <a class="btn btn-outline-dark" href="{% url 'dashboard:customer_detail' pk=object.customer_id %}">Go Back</a>
   <div class="card card-hover border border-50 my-1">

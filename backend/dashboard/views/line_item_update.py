@@ -1,7 +1,7 @@
 
 from .base import LoginRequiredMixin, get_object_or_404, reverse, UpdateView
 from homepageapp.models import LineItemsNewSQL02Model
-from dashboard.forms import PartItemUpdateForm, PartItemInlineFormSet, LaborItemInlineFormSet
+from dashboard.forms import PartItemUpdateForm, PartItemInlineFormset, LaborItemInlineFormset
 
 
 
@@ -17,7 +17,7 @@ class LineItemUpdateView(UpdateView, LoginRequiredMixin):
         # qs = qs.prefetch_related('repair_order_customer__phones').prefetch_related('repair_order_customer__emails'
         #        ).prefetch_related('repair_order_customer__taxes').prefetch_related('lineitems__parts_lineitems').prefetch_related('lineitems__lineitem_laboritem')
         qs = LineItemsNewSQL02Model.objects.prefetch_related(
-            'partitems_lineitems').prefetch_related('lineitem_laboritem')
+            'lineitem_partitem').prefetch_related('lineitem_laboritem')
         # repair order phase defines the WIP (work-in-progress) category. 6 means invoice.  7 counter sale. 8 deleted. 9 scheduled.
         # qs = qs.filter(Q(repair_order_phase=1) | Q(repair_order_phase=2) | Q(repair_order_phase=3) | Q(repair_order_phase=4) | Q(repair_order_phase=5))
         return qs
@@ -27,8 +27,8 @@ class LineItemUpdateView(UpdateView, LoginRequiredMixin):
         line_item = get_object_or_404(
             LineItemsNewSQL02Model, pk=self.kwargs['line_item_id'])
         if line_item is not None:
-            part_item_formset = PartItemInlineFormSet(instance=line_item)
-            labor_item_formset = LaborItemInlineFormSet(instance=line_item)
+            part_item_formset = PartItemInlineFormset(instance=line_item)
+            labor_item_formset = LaborItemInlineFormset(instance=line_item)
             if labor_item_formset.empty_form:
                 selected_formset = part_item_formset
             else:

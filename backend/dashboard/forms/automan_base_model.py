@@ -10,6 +10,6 @@ class AutomanBaseModelForm(forms.ModelForm):  # Change to forms.ModelForm if you
             elif isinstance(field.widget, forms.Textarea):
                 field.widget.attrs.update({'class': 'form-control textarea-input'})
             elif isinstance(field.widget, forms.Select):
-                field.widget.attrs.update({'class': 'custom-select'})
+                field.widget.attrs.update({'class': 'form-select'})
             elif isinstance(field.widget, forms.DateTimeInput):
                 field.widget.attrs.update({'class': 'datetime-input'})

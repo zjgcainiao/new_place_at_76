@@ -2,17 +2,17 @@
 {% load crispy_forms_tags %}
 {% block content-main %}
 
-<div class="container-fluid p-1 my-2">
+<div class="container-fluid p-1 my-1">
   <div class="card card-hover border-0">
-    <h4 class="card-header p-2 my-2">Add new item</h4>
+    <h3 class="card-header p-1 my-1">Add new item</h3>
     <!-- <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p> -->
-    <div class="card-body p-1 my-2">
+    <div class="card-body">
       <form method="post">
         {% csrf_token %}
         {% include current_step_template %}
 
         <!-- Navigation Buttons -->
-        <div class="form-group p-2 my-2">
+        <div class="form-group p-1 my-1">
           {% if wizard.steps.prev %}
           <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}"
             class="btn btn-outline-secondary">First Step</button>

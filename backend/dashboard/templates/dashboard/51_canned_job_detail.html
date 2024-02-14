@@ -1,0 +1,90 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load humanize %}
+{% load core_operations.common_filters %}
+{% load crispy_forms_tags %}
+{% block content-main %}
+
+<div class="container-fluid p-1 my-1">
+    <!-- Breadcrumb-->
+    <nav aria-label="breadcrumb p-1 my-1">
+        <ol class="breadcrumb breadcrumb-dark">
+            <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+            <li class="breadcrumb-item "><a href="{% url 'dashboard:repair_order_dash' %}">Repair Orders</a></li>
+            <li class="breadcrumb-item "><a href="{% url 'dashboard:canned_job_dash' %}">Canned Jobs</a></li>
+            <li class="breadcrumb-item active">Job Detail</a></li>
+        </ol>
+    </nav>
+</div>
+
+{% if messages %}
+<div class="container-fluid p-1 my-1">
+    {% for message in messages %}
+    <li{% if message.tags %}
+        class="alert alert-{{ message.tags }} alert-dismissible fade show justify-content-center justify-content-between"
+        {% endif %} role="alert">
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </li>
+        {% endfor %}
+</div>
+{% endif %}
+
+<div class="container-fluid p-1 my-1" id='canned-job-detail-container'>
+    <div class="card card-hover border border-secondary">
+
+        <div class='card-body text-dark'>
+            <h4 class="card-title fw-bold ">ID:{{canned_job.canned_job_id}}--Title {{canned_job.canned_job_title}}
+            </h4>
+
+
+
+            <!-- Your Basic Information Fields Here -->
+            <div class="row ">
+                <h4>Related Line Items</h4>
+                <div class="card-text col">
+                    {% if related_line_items %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Line Item ID</th>
+                                <th>Sequence</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in related_line_items %}
+                            <tr>
+                                <td>{{ item.line_item.pk }}</td>
+                                <td>{{ item.sequence }}</td>
+                                <td>{{ item.line_item.line_item_description }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p>No related line items</p>
+                    {% endif %}
+                </div>
+
+            </div>
+
+
+            <div class="row my-1 px-1">
+                <div class="col text-left"><a href="{% url 'dashboard:canned_job_update' pk=canned_job.pk %}"
+                        class="btn btn-outline-dark">Update</a></div>
+            </div>
+            <!-- end of row  -->
+        </div>
+        <!-- end of card body  -->
+    </div>
+    <!-- end of card  -->
+
+</div>
+
+
+
+{% endblock %}

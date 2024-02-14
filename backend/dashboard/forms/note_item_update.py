@@ -5,28 +5,39 @@ from .automan_base_model import AutomanBaseModelForm
 
 
 class NoteItemUpdateForm(AutomanBaseModelForm):
-
+    note_item_text = forms.CharField(
+        label='Text', 
+        required=False, 
+        widget=forms.Textarea(attrs={'rows': 3}))
+    # note_item_tech_observation = forms.CharField(
+    #     label='tech observation', 
+    #     required=False, 
+    #     widget=forms.TextInput(attrs={'placeholder': 'Enter your tech observation here.'}))
+    
     class Meta:
         model = NoteItemsNewSQL02Model
-        fields =['note_item_id','note_item_text', 
-                 'note_item_tech_observation', ]
-        readonly_fields = ['note_item_id','note_item_created_at', 'note_item_last_updated_at']
+        fields =['note_item_id',
+                 'note_item_text', 
+                  # 'note_item_tech_observation',
+                  ]
+        readonly_fields = ['note_item_id',
+                           'note_item_created_at', 
+                           'note_item_last_updated_at']
 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for name, field in self.fields.items():
-            if isinstance(field.widget, forms.TextInput):
-                field.widget.attrs.update({'class': 'form-control text-input'})
-            elif isinstance(field.widget, forms.Textarea):
-                field.widget.attrs.update({'class': 'form-control textarea-input'})
-            elif isinstance(field.widget, forms.Select):
-                field.widget.attrs.update({'class': 'custom-select'})
-            elif isinstance(field.widget, forms.DateTimeInput):
-                field.widget.attrs.update({'class': 'datetime-input'})
         self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
+        self.helper.form_class = 'form-inline'
         self.helper.form_tag = False
         self.helper.form_method = "post"
 
-            # You can continue for other field types
+        self.helper.layout = Layout(
+            Row(
+                Column(Field('note_item_text',css_class='form-control'), css_class='col-12'),
+            css_class='form-row p-1 my-1'),
+            # note_item_tech_observation is always 0
+            # Row(
+            #     Column(Field('note_item_tech_observation',css_class='form-control'), css_class='col-12 my-1'),
+            # css_class='form-row p-1 my-1'),
+        )

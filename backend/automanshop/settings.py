@@ -28,7 +28,7 @@ import logging
 from datetime import timedelta
 import re
 import ssl
-
+# from django.contrib.sites.models import Site
 
 # The find_dotenv() function will search for the .env file starting from the current working directory and then going up each parent directory until it finds one.
 # So, even if your script isn't in the root of your project, find_dotenv() can still locate your .env file.
@@ -275,6 +275,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'django.contrib.sites',
     # "automanshop.apps.MyAdminConfig",
     'daphne',  # added for django-channel. # 2023-11-08
     'channels',  # added for django-channel. # 2023-11-08
@@ -744,6 +745,8 @@ STATIC_ROOT = BASE_DIR / 'assets'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 # Test the database connection
 # test_db_connection()
+
+
+SITE_ID = 1  # Use the actual site ID from your database

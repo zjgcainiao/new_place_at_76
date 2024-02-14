@@ -6,10 +6,10 @@ from .category import CategoryModel
 
 
 LINE_ITEM_TYPES = [
-    ('part', 'Part'),
-    ('labor', 'Labor'),
-    ('note', 'Note'),
-    ('unknown', 'unknown')
+    ('part', 'Part Item'),
+    ('labor', 'Labor Item'),
+    ('note', 'Note Item'),
+    ('unknown', 'unknown item type'),
 ]
 
 class LineItemsNewSQL02Model(models.Model):
@@ -21,29 +21,33 @@ class LineItemsNewSQL02Model(models.Model):
     # 2023-10-01 newly added field
     line_item_type = models.CharField(
         max_length=10, choices=LINE_ITEM_TYPES, null=True)
-    line_item_description = models.CharField(max_length=2000)
-    line_item_cost = models.DecimalField(max_digits=9, decimal_places=2)
-    line_item_sale = models.DecimalField(max_digits=9, decimal_places=2)
+    line_item_description = models.CharField(max_length=3000, null=True,blank=True)
+    line_item_cost = models.DecimalField(max_digits=9, decimal_places=2,null=True,blank=True)
+    line_item_sale = models.DecimalField(max_digits=9, decimal_places=2,null=True,blank=True)
     line_item_is_tax_exempt = models.BooleanField(default=False)
     line_item_has_no_commission = models.BooleanField(default=True)
     line_item_has_fixed_commission = models.BooleanField(default=False)
-    line_item_order_revision_id = models.IntegerField(null=True)
+    line_item_order_revision_id = models.IntegerField(null=True,blank=True)
     # line_item_order_revision_id = models.ForeignKey(OrderRevisionNewSQL02Model, models.SET_NULL, blank=True, null=True)
     # any foreignKey field will add '_id' automatically when creating a sql data table. In the sql
     line_item_canned_job = models.ForeignKey(
         CannedJobsNewSQL02Model, models.SET_NULL, blank=True, null=True)
-    line_item_labor_sale = models.DecimalField(max_digits=12, decimal_places=2)
-    line_item_part_sale = models.DecimalField(max_digits=12, decimal_places=2)
+    line_item_labor_sale = models.DecimalField(max_digits=12, decimal_places=2,null=True,blank=True)
+    line_item_part_sale = models.DecimalField(max_digits=12, decimal_places=2,null=True,blank=True)
     line_item_part_only_sale = models.DecimalField(
-        max_digits=12, decimal_places=2)
+        max_digits=12, decimal_places=2,
+        null=True,blank=True)
     line_item_labor_only_sale = models.DecimalField(
-        max_digits=12, decimal_places=2)
+        max_digits=12, decimal_places=2,
+        null=True,blank=True)
     line_item_sublet_sale = models.DecimalField(
-        max_digits=12, decimal_places=2)
+        max_digits=12, decimal_places=2,
+        null=True,blank=True)
     line_item_package_sale = models.DecimalField(
-        max_digits=12, decimal_places=2)
+        max_digits=12, decimal_places=2,
+        null=True,blank=True)
     line_item_tire_fee = models.DecimalField(
-        max_digits=12, decimal_places=2, default=0.00)
+        max_digits=12, decimal_places=2, default=0.00,null=True,blank=True)
     line_item_parent_line_item = models.ForeignKey(
         'self', on_delete=models.SET_NULL, null=True, blank=True)
 

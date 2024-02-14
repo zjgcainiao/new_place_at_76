@@ -9,21 +9,22 @@
 
 <section class="container-fluid my-1">
   <!-- Breadcrumb-->
-  <nav aria-label="breadcrumb mb-1">
+  <nav aria-label="breadcrumb" class="mb-0">
     <ol class="breadcrumb breadcrumb-dark">
       <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
       <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'dashboard:wip_dash' %}">Repair Orders</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'dashboard:repair_order_dash' %}">Repair Orders</a></li>
       <li class="breadcrumb-item active">Detail</a></li>
     </ol>
   </nav>
+  {% include "homepageapp/14_homepageapp_messages_section.html" %}
   <div class='row justify-content-between'>
     <div class="col-md-8">
       <h4>{{repair_order.repair_order_id}} -- Customer:{{repair_order.repair_order_customer.get_customer_full_name}} --
         Status: {{repair_order.repair_order_phase.repair_order_phase_description}}</h4>
     </div>
     <div class='col-md-4'>
-      <h5 class='text-left'>Today is: {{current_time|date}} </h5>
+      <h4 class='text-left'>Today is: {{current_time|date}} </h4>
     </div>
   </div>
   <!-- end of row  -->
@@ -32,25 +33,24 @@
 <section class="container-fluid p-1 my-1">
   <ul class="nav nav-tabs " id="myTab" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active" id='repair-tab' data-bs-toggle="tab" href="#repair">Repair Order Info</a>
+      <a class="nav-link active" id='repair-tab' data-bs-toggle="tab" href="#repair-order-tab">Repair Order Info</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id='customer-tab' data-bs-toggle="tab" href="#messages">Texts with Customer</a>
+      <a class="nav-link" id='customer-tab' data-bs-toggle="tab" href="#text-messages-tab">Texts with Customer</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id='address-tab' data-bs-toggle="tab" href="#comments">Related Addresses</a>
+      <a class="nav-link" id='address-tab' data-bs-toggle="tab" href="#history-of-service-tab">Service History</a>
     </li>
   </ul>
-</section>
 
-<section class="container-fluid p-1 my-1">
   <div class="tab-content" id="wip-dashboard-tab-content">
-    <div class="tab-pane fade show active " id="repair" role="tabpanel" aria-labelledby="work order dash detail">
+    <div class="tab-pane fade show active " id="repair-order-tab" role="tabpanel"
+      aria-labelledby="repair order dash detail">
       <!-- Placeholder content for repair order information -->
       <div class='card card-hover automan-section border border-0'>
-        <h4 class="card-header p-1">Repair Order ID: <u>{{repair_order.repair_order_id}}</u> </h4>
+        <h4 class="card-header p-1" style="background: transparent;">Repair Order ID: <u>{{repair_order.repair_order_id}}</u> </h4>
         <p class="row p-1">
-          <small><em>Last Updated At: {{repair_order.repair_order_last_updated_at|date}}</em></small>
+          <small><em>Last Updated at: {{repair_order.repair_order_last_updated_at|date}}</em></small>
         </p>
         <div class="card-body text-dark m-0">
 
@@ -120,11 +120,11 @@
       </div>
       <!-- end of card  -->
 
-      <div class="card card-hover border border-secondary">
-        <h5 class="card-header">Repair Vehicle:
+      <div class="card card-hover automan-section">
+        <h4 class="card-header"  style="background: transparent;">Repair Vehicle:
           <a href="{% url 'dashboard:vehicle_detail' pk=vehicle.vehicle_id %}" class="card-link">{{vehicle.pk }}
           </a>
-        </h5>
+        </h4>
         <div class="card-body text-dark">
 
           <div class='row'>
@@ -182,32 +182,17 @@
           <!-- end of row  -->
         </div>
         <!-- end of card body  -->
-        <div class="card-body">
-
-        </div>
-        <!-- end of card body -->
       </div>
       <!-- end of card  -->
 
       <hr>
 
       <div class='row'>
-        <div class="btn-group justify-content-between" role="group">
-          <a class="btn btn-outline-primary">Canned Job List--ModelChoiceField</a>
-          <a class="btn btn-outline-primary"> Clean all </a>
-          <a class="btn btn-outline-primary">Refresh </a>
-          <a class="btn btn-outline-primary"
-            href="{% url 'dashboard:line_item_three_in_one_create' pk=repair_order.pk %}">
-            <i class="fas fa-plus"></i> work item
-          </a>
-          <a class="btn btn-outline-primary" href="{% url 'dashboard:line_item_create_wizard' pk=repair_order.pk %}">
-            <i class="fas fa-plus"></i> work item - wizard
-          </a>
-        </div>
+
       </div>
 
       <div class='row'>
-        {% with line_items=line_items %}
+        {% with line_items=line_items repair_order_id=repair_order_id note_items=note_items labor_items=labor_items part_items=part_items %}
         {% include 'dashboard/51_repair_order_line_items.html' %}
         {% endwith %}
       </div>
@@ -215,9 +200,10 @@
     </div>
     <!-- end of tab-panel  1-->
 
-    <div class="tab-pane fade" id="wip-dashboard-text-messages-tab" role="tabpanel" aria-labelledby="messages-tab">
+    <!-- the second tab-panel  -->
+    <div class="tab-pane fade" id="text-messages-tab" role="tabpanel" aria-labelledby="messages-tab">
       <div class="card border-0 ">
-        <h3 class="card-header">Text History</h3>
+        <h3 class="card-header" style="background: transparent;">Text History</h3>
         <div class="card-body">
           <!-- Placeholder content for customer information -->
           {% with text_messages=text_messages %}
@@ -226,9 +212,9 @@
         </div>
       </div>
     </div>
-    <!-- end of tab-pane -->
+    <!-- end of tab-pane 2-->
 
-    <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
+    <div class="tab-pane fade" id="history-of-service-tab" role="tabpanel" aria-labelledby="history-of-service-tab">
       <div class="row">
         <h3>History of Repair Order related to the same customer</h3>
         <!-- Placeholder content for address information -->

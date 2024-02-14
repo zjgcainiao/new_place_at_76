@@ -6,7 +6,7 @@ from .part import PartsModel
 class PartItemModel(models.Model):
     part_item_id = models.AutoField(primary_key=True)
     line_item = models.ForeignKey(
-        LineItemsNewSQL02Model, on_delete=models.CASCADE, related_name='partitems_lineitems')
+        LineItemsNewSQL02Model, on_delete=models.CASCADE, related_name='lineitem_partitem')
     part_discount_description_id = models.IntegerField(null=True, blank=True)
     part_item_is_user_entered_unit_sale = models.BooleanField(default=False,
                                                               null=True, blank=True)
@@ -32,7 +32,7 @@ class PartItemModel(models.Model):
     part_item_part = models.ForeignKey(
         PartsModel, on_delete=models.SET_NULL, 
         null=True, blank=True, 
-        related_name='partitems_parts')
+        related_name='part_partitem')
     part_item_is_confirmed = models.BooleanField(default=False,
                                                  null=True, blank=True)
     part_item_vendor_code = models.CharField(

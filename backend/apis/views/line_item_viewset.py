@@ -11,6 +11,6 @@ class LineItemsViewSet(viewsets.ModelViewSet):
         return LineItemsNewSQL02Model.objects.prefetch_related(
             'lineitem_laboritem',  # Related name for LaborItemModel
             'lineitem_noteitem',   # Related name for NoteItemModel
-            'partitems_lineitems'  # Related name for PartItemModel
+            'lineitem_partitem'  # Related name for PartItemModel
         )
 # get the most recent 10 text messages

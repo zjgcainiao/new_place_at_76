@@ -3,9 +3,10 @@
 {% load crispy_forms_tags %}
 
 {% block content-main %}
-<div class="container container-fluid my-1"> 
+<div class="container container-fluid my-1">
   <h3>Appointment Preview</h3>
-  Hello {{appointment.appointment_first_name}} {{apppontment.appointment_last_name}}, here is the appointment you requested.
+  Hello {{appointment.appointment_first_name}} {{apppontment.appointment_last_name}}, here is the appointment you
+  requested.
   <table class="table table-light">
     <thead>
     </thead>
@@ -29,30 +30,35 @@
       <tr>
         <th scope="row">Phone Number</th>
         <td>{{appointment.appointment_phone_number }}</td>
-      </tr>   
+      </tr>
       <tr>
         <th scope="row">Status</th>
         <td>{{appointment.get_appointment_status_display }}</td>
       </tr>
     </tbody>
   </table>
- 
-    
+
+
   {% if images %}
-  <h2>Uploaded Images</h2>
-  <div>
+
+  <div class="card card-hover border-0 ">
+    <h3 class="card-header">Uploaded Images</h3>
+    <div class="card-body">
       {% for image in appointment.appointment_images.all %}
       <img src="{{ image.appointment_images.url }}" alt="">
       {% endfor %}
+    </div>
+
   </div>
   {% endif %}
 
-  <p class="small m-1 p-1"><strong>Click the 'confirm' button below when you finishing review the information below</strong></p>
+  <p class="small m-1 p-1"><strong>Click the 'confirm' button below when you finishing review the information
+      below</strong></p>
   <form class='card m-1' method="post">
     {% csrf_token %}
     <input type="hidden" name="appointment_id" value="{{ appointment.appointment_id }}">
     <button type="submit" class="btn btn-outline-primary">Confirm</button>
   </form>
-  
-</div> 
+
+</div>
 {% endblock %}

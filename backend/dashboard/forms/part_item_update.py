@@ -1,5 +1,5 @@
 
-from .base import forms, Field, Column, Row, Layout, FormHelper
+from .base import forms, Field, Column, Row, Layout, FormHelper, HTML,Fieldset
 from .automan_base_model import AutomanBaseModelForm
 from homepageapp.models import PartItemModel
 
@@ -12,17 +12,17 @@ class PartItemUpdateForm(AutomanBaseModelForm):
         label='unit cost', required=False)
     part_item_unit_price = forms.DecimalField(
         min_value=0, max_value=10000, widget=forms.NumberInput(attrs={'type': 'text', }), 
-        label='unit cost', required=False)
+        label='unit price', required=False)
     part_item_unit_list = forms.DecimalField(
         min_value=0, max_value=10000, widget=forms.NumberInput(attrs={'type': 'text', }), 
-        label='unit cost', required=False)
+        label='unit list', required=False)
     part_item_unit_sale = forms.DecimalField(
         min_value=0, max_value=10000, widget=forms.NumberInput(attrs={'type': 'text', }), 
-        label='unit cost', required=False)
+        label='unit sale', required=False)
     
 
     part_item_part_no = forms.CharField(widget=forms.TextInput(
-        attrs={'type': 'text', }), label='part no', required=False)
+        attrs={'type': 'text', }), label='part number', required=False)
     
     part_item_is_quantity_confirmed = forms.BooleanField(widget=forms.CheckboxInput(
         attrs={'class': 'toggle-swtich'}), label='quantity confirmed?', required=False)
@@ -30,10 +30,10 @@ class PartItemUpdateForm(AutomanBaseModelForm):
     part_item_is_confirmed = forms.BooleanField(widget=forms.CheckboxInput(
         attrs={'class': 'toggle-swtich'}), label='part confirmed?', required=False)
 
-    part_item_is_user_entered_unit_sale = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': ''}), label='unit sale entered manually?', required=False)
-    part_item_is_user_entered_unit_cost = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'class': ' toggle-swtich'}), label='unit cost entered manually?', required=False)
+    part_item_is_quantity_confirmed = forms.BooleanField(widget=forms.CheckboxInput(
+        attrs={'class': 'toggle-switch'}), label='is quantity confirmed?', required=False)
+    part_item_is_committed = forms.BooleanField(widget=forms.CheckboxInput(
+        attrs={'class': 'toggle-swtich'}), label='is the part commeted yet?', required=False)
 
     class Meta:
         model = PartItemModel
@@ -88,54 +88,73 @@ class PartItemUpdateForm(AutomanBaseModelForm):
 
         }
 
-    def clean_unit_price(self):
-        unit_price = self.cleaned_data['part_item_unit_price']
-        if unit_price < 0:
-            raise forms.ValidationError(
-                "unit price must be greater than zero.")
+    def clean_part_item_unit_price(self):
+        unit_price = self.cleaned_data.get('part_item_unit_price')
+        if unit_price is not None and unit_price < 0:
+            raise forms.ValidationError("Unit price must be greater than zero.")
         return unit_price
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['part_item_unit_price'].validators.append(
-            self.clean_unit_price)
 
         self.helper = FormHelper()
-        self.helper.form_class = 'form-inline'
+        self.helper.form_class = 'form-horizontal'
         self.helper.form_tag = False
         self.helper.form_method = "post"
-        # self.helper.label_class = 'col-3'
-        # self.helper.field_class = 'col-9'
+        self.helper.label_class = 'col-9 text-left'
+        self.helper.field_class = 'col-3 text-right'
         self.helper.layout = Layout(
-                    Row(Column(Field('part_item_quantity', css_class='form-control'),
-                            css_class='col-8'),
-                        Column(Field('part_item_is_quantity_confirmed', style='margin-left: 0;',wrapper_class='form-check form-switch p-1 m-1'),
-                            css_class='col-4'),
-                        Column (Field('part_item_unit_cost', rows="3", css_class='form-control mb-2'),
-                                css_class='col-8'),
-                        Column (Field('part_item_is_user_entered_unit_cost', rows="3", css_class='form-control mb-2'),
-                                css_class='col-4'),
-                        css_class='form-group p-1 m-1'),
 
-                    Row(Column(Field('part_item_unit_price', css_class='form-control mb-2'),
-                        css_class='col-6'),
-                        Column(Field('part_item_unit_list', css_class='form-control mb-2'),
-                        css_class='col-6'),
-                        Column(Field('part_item_unit_sale', css_class='form-control mb-2'),
-                        css_class='col-6'),
-                        Column(
-                            Field('part_item_is_user_entered_unit_sale', style='margin: 5px;',wrapper_class='form-check form-switch p-1 m-1'),
-                            css_class='col-6'
-                            ),
-                    css_class='form-group p-1 m-1'),
+                    Row(Column(Field('part_item_quantity', css_class='form-control'),
+                               Field('part_item_is_quantity_confirmed',wrapper_class='form-switch '),
+                            css_class='col-md-12'),
+                            
+                        Column (Field('part_item_unit_cost', css_class='form-control'),
+                                
+                                css_class='col-12'),
+
+                        css_class='form-group '),
+
+                    Row(
+                        Column(Field('part_item_unit_price', css_class='form-control'),
+                        css_class='col-md-12 '),
+                        Column(Field('part_item_unit_list', css_class='form-control'),
+                        css_class='col-md-12'),
+                        Column(Field('part_item_unit_sale', css_class='form-control'),
+                        css_class='col-12'),
+
+                    css_class='form-group'),
 
                     
                     Row(
-                        Column(Field('part_item_vendor_id', css_class='form-control mb-2'),
-                        css_class='col-6'),
-                        Column(Field('part_item_is_tire', style='margin-left: 0;',wrapper_class='form-check form-switch p-1 m-1'),
-                            css_class='col-6'),
-                        css_class='form-group m-1 p-1'),
 
+                    css_class='form-group'),
+                    
+                        Row(
+                            Column(Field('part_item_vendor_id', css_class=''),
+                            css_class='col-md-12'),
+                            Column(Field('part_item_manufacture_id', css_class=''),
+                            css_class='col-md-12'),
+                            Column(Field('part_item_invoice_number', css_class=''),
+                            css_class='col-md-12'),
+                            Column(Field('part_item_commission_amount', css_class=''),
+                            css_class='col-md-12'),
+                            Column(Field('part_item_is_tire', wrapper_class='form-switch '),
+                            css_class='col-md-12'),
+                            Column(Field('part_item_is_part_ordered', wrapper_class='form-switch '),
+                            css_class='col-12'),
+                            Column(Field('part_item_size', css_class=''),
+                            css_class='col-12'),
+                            Column(Field('part_item_added_from_supplier',css_class=' '),
+                            css_class='col-12'),
+                            Column(Field('part_item_purchased_from_vendor', css_class=' '),
+                            css_class='col-12'),
+                            Column(Field('part_item_shipping_description', css_class=''),
+                            css_class='col-12'),
+                            Column(Field('part_item_shipping_cost', css_class=' '),
+                            css_class='col-12'),
+                        css_class='form-group '),
+                                 
+                                
 
                 )
