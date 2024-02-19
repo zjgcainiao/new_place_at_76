@@ -86,3 +86,8 @@ def handle_anonymous_user_license_vin_search(request):
 #     else:
 #         return False
 
+
+# a custom permission class to check if the user is a paid user
+class IsPaidUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated and request.auth.get('is_paid_user', False)

@@ -1,0 +1,79 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% block content-main %}
+
+<style>
+    /* Ensure WebKit compatibility */
+    .btn-close-custom {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        font-size: 24px;
+        /* Adjust size as needed */
+        color: #000;
+        /* Adjust color as needed */
+    }
+
+    .btn-close-custom:hover {
+        color: rgba(255, 77, 0, 0.95);
+        /* Adjust hover color as needed */
+    }
+
+    /* Ensure WebKit compatibility */
+    #calendarSection,
+    #scheduleShiftSection {
+        -webkit-transition: width 0.5s ease;
+        transition: width 0.5s ease;
+    }
+
+    #scheduleShiftSection {
+        -webkit-overflow-scrolling: touch;
+        overflow: hidden;
+        position: relative;
+    }
+</style>
+<script async src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"
+    integrity="sha256-alsi6DkexWIdeVDEct5s7cnqsWgOqsh2ihuIZbU6H3I=" crossorigin="anonymous">
+    </script>
+
+<div class="container pt-2 m-2">
+    <h2>Shift Dash </h2>
+    <div class="row">
+        <div id="calendarSection" class="col">
+            <div id="calendar"></div>
+        </div>
+        <div id="scheduleShiftSection" class="col-lg-3 col-mb-6" style="display: none;">
+            <div class="card card-hover card-dark">
+                <button id="closeScheduleForm" class="btn-close-custom">
+                    <i class="ri-close-fill"></i>
+                </button>
+                <div class="card-body">
+                    {% if shifts %}
+                    {% for shift in shifts %}
+                    <h5 class="card-title
+                        text-center">{{shift.start_time|date:"D, M d, Y"}} - {{shift.end_time|date:"D, M d, Y"}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted text-center">{{shift.start_time|time:"g:i A"}} -
+                        {{shift.end_time|time:"g:i A"}}</h6>
+                    <p class="card-text text-center">{{shift.description}}</p>
+                    <a href="{% url 'shift_management:shift_detail' pk=shifts.0.id %}" class="card-link">View</a>
+                    <div class="row">
+                        {{shift.shift_work_}}
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <h5 class="card-title
+                        text-center">No Shifts</h5>
+                    <p class="card-text text-center">No shifts have been scheduled for this day.</p>
+                    {% endif %}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

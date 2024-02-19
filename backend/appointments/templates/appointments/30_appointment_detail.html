@@ -7,32 +7,34 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb breadcrumb-dark">
             <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
             <li class="breadcrumb-item"><a href="{% url 'appointments:appointment_list' %}">Appointments</a></li>
-            <li class="breadcrumb-item active">Detail</a></li>
+            <li class="breadcrumb-item active">Appointment Detail {{appointment.appointment_id}}</a></li>
         </ol>
     </nav>
 </div>
-<div class='container my-2'>
+<div class='container my-1'>
     <h3>Appointment Detail-{{appointment.appointment_id}}</h3>
 
-    <div class="card card-hover border border-primary my-3">
-        <h4 class="card-header">Status: {{ appointment.get_appointment_status_display }}</h4>
+    <div class="card card-hover border border-primary my-1">
+        <h4 class="card-header p-1 m-1">Status: {{ appointment.get_appointment_status_display }}</h4>
         <div class="card-body">
             <div class='row my-1'>
-                <div class="col-3">
-                    <p>Confirmed Time: {{appointment.appointment_confirmed_datetime}}</p>
-                </div>
-                <div class="col-3">
+
+                <div class="col-6">
                     <p>Requested Time: {{appointment.appointment_requested_datetime}}</p>
                 </div>
-                <div class="col-3">
+                <div class="col-6">
+                    <p>Confirmed Time: {{appointment.appointment_confirmed_datetime}}</p>
+                </div>
+                <div class="col-12">
                     <p>Reason for visit: {{ appointment.get_appointment_reason_for_visit_display }}</p>
                 </div>
-                <div class="col-3">
-                    <p>Appointment Cust Name: {{appointment.appointment_full_name}}</p>
+                <div class="col-6">
+                    <p>Customer Name: {{appointment.appointment_full_name}}</p>
                 </div>
                 <div class="col-3">
-                    <p>Contact Phone Number: {{ appointment.appointment_phone_number }}</p>
+                    <p>Contact Phone: {{ appointment.appointment_phone_number }}</p>
                 </div>
                 <div class="col-3">
                     <p>Contact Email: {{ appointment.appointment_email }}</p>
@@ -50,9 +52,9 @@
             </div>
         </div>
         <!-- end of card-body -->
-
+        <hr>
         <div class="card-body">
-            <h5 class="card-title">Appointment Images Uploaded(up to 5)</h5>
+            <h5 class="card-title">Appointment Images Uploaded (up to 5)</h5>
 
             <!-- Thumbnail Display -->
             <div class="gallery my-3">
@@ -67,8 +69,8 @@
 
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Upload More</button>
+                {{ form|crispy }}
+                <button type="submit">Upload</button>
             </form>
 
             <!-- Bootstrap Modal -->

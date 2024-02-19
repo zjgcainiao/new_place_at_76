@@ -1,0 +1,75 @@
+<!-- poper 2.9.2 js, bootstrap 5.3.2 bundle js , simplebar js, smooth-scoll.polyfills js, tiny-slider js, jarallax and jarallax-element js  -->
+{% load static %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+    integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+<script src="{% static 'homepageapp/vendor/simplebar/dist/simplebar.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/smooth-scroll/16.1.3/smooth-scroll.polyfills.js"
+    integrity="sha512-7RJJepMYGySQYUtVVI+ShJWXDp4qUAWo3ovhCEHFOv5Ga16+lzRQHR6HQe/EBqNoO/aUQfhMU2PGrsQeAThIoQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'homepageapp/vendor/tiny-slider/dist/min/tiny-slider.js' %}"></script>
+<script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax.min.js' %}"></script>
+<script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script>
+<!-- jQuery 3.7.1 js -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<!-- Main theme js-->
+<script src="{% static 'homepageapp/js/theme.min.js' %}"></script>
+
+<!-- bootstrap 5.3.2 css -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+<!-- font-awesome 6.4.2 css  -->
+<link rel="stylesheet" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- MaterialDesign - Webfont 7.3.67 css  -->
+<link rel="stylesheet" media="screen"
+    href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.3.67/css/materialdesignicons.min.css"
+    integrity="sha512-nRzny9w0V2Y1/APe+iEhKAwGAc+K8QYCw4vJek3zXhdn92HtKt226zHs9id8eUq+uYJKaH2gPyuLcaG/dE5c7A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/4.0.0/font/MaterialIcons-Regular.ttf"
+    ref='stylesheet'>
+
+<!-- add Roboto, Roboto-condensed font from google fonts. this font is used to display chatbot response (beta Pulido v1.0). -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/css/fonts.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- 2023-12-25 add new Orbitron font from google fonts  -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- simlerbar, tindy-slider css styles -->
+<link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}" />
+<link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}" />
+
+<!-- Vendor Main Theme Styles css -->
+<link rel="stylesheet" media="screen" href="{% static 'homepageapp/css/theme.min.css' %}">
+
+
+<!-- Automan theme css. built for this website. will be used to replace other themes -->
+<link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
+
+<!-- chatbot_conversation.js in the core_operations 2024-01-18 -->
+<script type="text/javascript">
+    var chatbotEndpoint = "{% url 'we_have_ai_helpers:chatbot_response' %}";
+</script>
+<script src="{% static 'core_operations/js/chatbot_conversation.js' %}"></script>
+
+<!-- Tempus Dominus JS and CSS 6.9.4. added to allow customized datetimepicker -->
+<script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/js/tempus-dominus.min.js"
+    crossorigin="anonymous"></script>
+
+<link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/css/tempus-dominus.min.css"
+    crossorigin="anonymous">
+
+
+<script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.3"></script>

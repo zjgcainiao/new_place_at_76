@@ -39,6 +39,64 @@ by Stephen Wang-->
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+<style>
+    .portal-card {
+        /* Custom card styling */
+        border: none;
+        transition: transform 0.3s ease-in-out;
+        min-width: 200px;
+        min-height: 200px;
+    }
+
+    .portal-card:hover {
+        /* Scale effect on hover */
+        transform: scale(1.05);
+    }
+
+    .portal-icon {
+        /* Icon styling */
+        font-size: 3rem;
+        padding: 20px 20px;
+        /* Adjust size as needed */
+        color: #0080ff;
+        /* Icon color */
+    }
+
+    .portal-title {
+        /* Styling for the title */
+        font-weight: bold;
+    }
+
+    /* 2023-12-25 added user-info-bar custom styling */
+    .user-info-bar {
+        background: transparent;
+        /* border-bottom: 1px solid #a1a1a1; */
+        padding: 5px 5px;
+        color: #333;
+        font-family: 'Orbitron', 'sans-serif';
+    }
+
+    .user-greeting {
+        color: #3e3f40;
+        /* Dark font color */
+        font-family: 'Noto Sans', sans-serif;
+        /* Choose a readable font */
+    }
+
+    .user-auth-group,
+    .user-name,
+    .user-email {
+        font-weight: bold;
+        color: #272829;
+        /* Dark grey color for contrast */
+        letter-spacing: 1px;
+        /* Highlight color */
+        text-transform: uppercase;
+        /* Optional: makes it stand out */
+        font-family: 'Orbitron', 'sans-serif';
+        /* Custom font for steel effect */
+    }
+</style>
 
 <body>
     <!-- Begin page -->
@@ -58,16 +116,6 @@ by Stephen Wang-->
                                     <img src="assets/images/logo-sm.png" alt="small logo">
                                 </span> -->
                         </a>
-
-                        <!-- Logo Dark -->
-                        <!-- <a href="index.html" class="logo-dark">
-                                <span class="logo-lg">
-                                    <img src="assets/images/logo-dark.png" alt="dark logo">
-                                </span>
-                                <span class="logo-sm">
-                                    <img src="assets/images/logo-dark-sm.png" alt="small logo">
-                                </span>
-                            </a> -->
                     </div>
 
                     <!-- Sidebar Menu Toggle Button -->
@@ -107,9 +155,14 @@ by Stephen Wang-->
                                     alt="user-image" width="32" class="rounded-circle">
                             </span>
                             {% if user.is_authenticated %}
-                            <span class="d-lg-flex flex-column gap-1 d-none">
-                                <h5 class="my-0">{{user.user_first_name}} , {{user_last_name}}</h5>
-                                <h6 class="my-0 fw-normal">Email {{user.email}}</h6>
+                            <span class="d-lg-flex flex-column gap-1 d-none user-greeting">
+                                <p class="my-1">
+                                    Hi <span class='user-name'>{{user.user_first_name}}</span>
+                                    (Email: {{user.email|truncatechars:15}})</p>
+                                <p class="my-1 fw-normal">
+                                    Auth Group: <span
+                                        class="user-auth-group">{{user.get_user_auth_group_display}}</span>
+                                </p>
                             </span>
                             {% endif %}
 

@@ -19,6 +19,9 @@ class PhoneDescModel(models.Model):
             self.created_by = self.modified_by
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.phone_desc
+    
     class Meta:
         db_table = 'phonedescs_new_03'
         ordering = ["-phone_desc_id"]

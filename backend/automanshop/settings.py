@@ -28,6 +28,7 @@ import logging
 from datetime import timedelta
 import re
 import ssl
+from json import JSONDecodeError
 # from django.contrib.sites.models import Site
 
 # The find_dotenv() function will search for the .env file starting from the current working directory and then going up each parent directory until it finds one.
@@ -132,7 +133,7 @@ LOGGING = {
         },
 
         'management_script_file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(LOGGING_DIR, 'management_scripts.log'),
             'formatter': 'verbose',
@@ -193,7 +194,7 @@ else:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
-DJANGO_PROD_ENV = config("DJANGO_PROD_ENV", default=True, cast=bool)
+DJANGO_PROD_ENV = config("DJANGO_PROD_ENV", default=False, cast=bool)
 logger.info(
     f'Django debug has been set to {DEBUG}...Enable Production environment is {DJANGO_PROD_ENV}...')
 # CORS_ORIGIN_ALLOW_ALL = True
@@ -234,18 +235,29 @@ CSRF_TRUSTED_ORIGINS = config(
 # test keys.
 STRIPE_PUBLIC_TEST_KEY = config("STRIPE_PUBLIC_TEST_KEY", default=None)
 STRIPE_SECRET_TEST_KEY = config("STRIPE_SECRET_TEST_KEY", default=None)
+
 # live keys. stripe
 STRIPE_PUBLIC_LIVE_KEY = config("STRIPE_PUBLIC_LIVE_KEY", default=None)
 STRIPE_SECRET_LIVE_KEY = config("STRIPE_SECRET_LIVE_KEY", default=None)
 
-STRIPE_LIVE_SECRET_KEY = STRIPE_SECRET_LIVE_KEY
-STRIPE_TEST_SECRET_KEY = STRIPE_SECRET_TEST_KEY
+# setup for dj-stripe. these two keys were added to dj-stripe via the admin panel.
+# STRIPE_LIVE_SECRET_KEY = STRIPE_SECRET_LIVE_KEY
+# STRIPE_TEST_SECRET_KEY = STRIPE_SECRET_TEST_KEY
 
 STRIPE_LIVE_MODE = False  # Change to True in production
 STRIPE_WEBHOOK_TEST_SECRET = config("STRIPE_WEBHOOK_TEST_SECRET", default=None)
-# DJSTRIPE_WEBHOOK_SECRET = "whsec_xxx"  # Get it from the section in the Stripe dashboard where you added the webhook endpoint
-# DJSTRIPE_USE_NATIVE_JSONFIELD = True  # We recommend setting to True for new installations
-# DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id
+STRIPE_WEBHOOK_SECRET_LOCAL = config("STRIPE_WEBHOOK_SECRET_LOCAL", default=None)
+
+# assign the local webhook secret to DJSTRIPE_WEBHOOK_SECRET. The local webhook secret is used for testing and can be generated
+# via the following Stripe Cli command: stripe listen --forward-to localhost:8000/stripe_webhook/
+if DEBUG:
+    
+    DJSTRIPE_WEBHOOK_SECRET = STRIPE_WEBHOOK_SECRET_LOCAL
+else:
+    DJSTRIPE_WEBHOOK_SECRET = STRIPE_WEBHOOK_TEST_SECRET
+      
+DJSTRIPE_USE_NATIVE_JSONFIELD = True  # We recommend setting to True for new installations
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
 
 
 # rest framework settings
@@ -288,7 +300,7 @@ INSTALLED_APPS = [
     # 'polls.apps.PollsConfig',
     'corsheaders',
     'homepageapp',
-    'appointments.apps.AppointmentsConfig',
+    'appointments',
     'django_recaptcha',
     'apis',  # adding the apis.
     'internal_users',
@@ -319,11 +331,12 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'CRMs',  # CRMs app
+    'djstripe',
     'we_handle_money_stuff',  # transactions, GL, accounting app
 ]
-# in testing, add `django_sslserver2` to the installed apps.
+# in testing, add `sslserver` to the installed apps.
 if  DEBUG:
-    INSTALLED_APPS += ('django_sslserver2',)
+    INSTALLED_APPS += ('sslserver',)
 
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.
 # if os.environ.get('DJANGO._USE_DEBUG_TOOLBAR'):
@@ -413,24 +426,24 @@ if USE_LOCAL_REDIS:
     REDIS_USE_SSL = config('LOCAL_REDIS_USE_SSL', default=False, cast=bool)
     logger.info(f'using local redis server...{REDIS_HOST}...')
     CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [
-                ('redis://:{password}@{host}:{port}'.format(
-                    password=REDIS_PASSWORD,
-                    host=REDIS_HOST,
-                    ssl=False,
-                    port=REDIS_PORT)
-                 ),
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [
+                    ('redis://:{password}@{host}:{port}'.format(
+                        password=REDIS_PASSWORD,
+                        host=REDIS_HOST,
+                        ssl=False,
+                        port=REDIS_PORT)
+                    ),
 
-            ],
-            "channel_capacity": {
-                "http.request": 200,
-                "http.response!*": 10,
-                re.compile(r"^websocket.send\!.+"): 20,
-            }
-        },
+                ],
+                "channel_capacity": {
+                    "http.request": 200,
+                    "http.response!*": 10,
+                    re.compile(r"^websocket.send\!.+"): 20,
+                }
+            },
     },
 }
 else:
@@ -466,11 +479,10 @@ CHANNEL_LAYERS = {
 
 # updated on 2023-11-17:
 # reconfigured with Azure cache for redis instance. BACK IN USE!
-# 2023-05-30
 # Celery Configuration Options
 # https://docs.celeryq.dev/en/stable/django/first-steps-with-django.html
 
-CELERY_TIMEZONE = "America/Los_Angeles"
+CELERY_TIMEZONE = "America/Chicago"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
 
@@ -519,29 +531,56 @@ DEFAULT_FROM_EMAIL = email_sender  # replace with your email
 
 
 # the google service account's credential json file stored online
-google_credential_path = os.environ.get("GOOGLE_CREDENTIAL_PATH")
+credential_info = None
+# Try to load credentials from JSON in environment variable
+google_credential_json = os.getenv("GOOGLE_CREDENTIAL_JSON")
 
-# Download the JSON file
-response = requests.get(google_credential_path)
-
-# Check if the request was successful
-if response.status_code == 200:
-    # Parse the JSON data from the response
-    credential_info = json.loads(response.text)
-
-    # Use the JSON data to create the credentials object
-    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
-        credential_info)
-    cred = credentials.Certificate(credential_info)
-    logger.info(f'successfully downloaded the google sdk credential file (.json)')
+if google_credential_json:
+    try:
+        credential_info = json.loads(google_credential_json)
+        # GS_CREDENTIALS = credentials.Certificate(credential_info)
+        # GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
+        #     credential_info)
+    except JSONDecodeError:
+        logger.error("Invalid JSON in GOOGLE_CREDENTIAL_JSON")
+    except FileNotFoundError as e:
+        print(f"Error: The specified file was not found: {e}")
+    except requests.exceptions.RequestException as e:
+        print(
+            f"Error: A network error occurred while attempting to download the credential file: {e}")
+    except (KeyError, ValueError) as e:
+        print(
+            f"Error: The credential file is missing required information: {e}")
+        
+# If not loaded yet, try fetching from a URL
 else:
-    logger.error(f"failing to download the google sdk credential file (.json)'")
-    print("Failed to download the google sdk credential file (.json)")
-    GS_CREDENTIALS = None
-    cred = None
+    google_credential_path = os.getenv("GOOGLE_CREDENTIAL_PATH")
+    if google_credential_path:
+        try:
+            response = requests.get(google_credential_path)
+            if response.status_code == 200:
+                credential_info = response.json()
+            else:
+                logger.error("Failed to download credentials: HTTP %d" % response.status_code)
+        except Exception as e:
+            logger.error(f"Error fetching credentials: {e}")
+    else:
+        logger.error("GOOGLE_CREDENTIAL_PATH not set")
+
+# Initialize Firebase Admin SDK with credentials
+if credential_info:
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
+    credential_info)
+    try:
+        default_app = firebase_admin.initialize_app()#GS_CREDENTIALS
+        logger.info("Firebase Admin SDK initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize Firebase Admin SDK: {e}")
+else:
+    logger.error("No valid Google credentials provided")
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-# Replace with your Google Cloud Storage bucket name #2023_new_prolube76site/2023_talent_employment_docs
+# Replace with your Google Cloud Storage bucket name #2023_new_prolube76site/2023_talent_document
 # '2023_new_prolube76site'  new name is vin-docor.appspot.com
 GS_BUCKET_NAME = 'vin-doctor.appspot.com'  # 'vin-doctor.appspot.com'
 GS_PROJECT_ID = 'vin-doctor'  # Replace with your Google Cloud project ID
@@ -562,11 +601,6 @@ CACHES = {
 # ENABLE this following script when firebase_admin is used across the site; especially when the external_users app (for customers)
 # is created.
 
-# initialize the firebase auth app.
-
-default_app = firebase_admin.initialize_app(cred)
-logger.info('initializing the firebase auth app in the django project...')
-
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
@@ -580,8 +614,6 @@ RECAPTCHA_DOMAIN = 'www.recaptcha.net'
 # ADD the following line for testing and local development
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
-
-
 # GOOGLE MAP API KEY FOR GOOGLE PLACES
 GOOGLE_MAP_API_KEY = config("GOOGLE_MAP_API_KEY",default=None)
 
@@ -594,30 +626,21 @@ GOOGLE_MAP_API_KEY = config("GOOGLE_MAP_API_KEY",default=None)
 local_server = config("DB_SERVER", default=False)
 SQL_DOCKERIZED = config("SQL_DOCKERIZED", default=False, cast=bool)
 
+# when DJANGO_PROD_ENV is True, use the Azure SQL DB.
 if local_server and (not DJANGO_PROD_ENV):
     if SQL_DOCKERIZED:
         local_server = config("SQL_DOCKERIZED_HOST", default=None)
-        logger.info(f'Using dockerized sql server {local_server}...')
+        logger.info(f'SQL_DOCKERIZED set to {SQL_DOCKERIZED}. Using SQL_DOCKERIZED_HOST: {local_server}...')
     else:
         logger.info(f'Using local sql server:{local_server}...')
 
-    # load the environment variables
-    # user = config("DB_USER")
     try:
         user = config("DB_SA_USER")  # DB_APP_USER
         password = config("DB_SA_USER_PASSWORD")  # DB_APP_USER_PASSWORD
         databaseName = config("DB_DATABASE1")  # AutomanDB01
         demoDatabaseName = config("DEMO_DB_DATABASE_NAME")  # DemoDB01
-    except FileNotFoundError as e:
-        print(f"Error: The specified file was not found: {e}")
-    except requests.exceptions.RequestException as e:
-        print(
-            f"Error: A network error occurred while attempting to download the credential file: {e}")
-    except json.JSONDecodeError as e:
-        print(f"Error: The credential file could not be parsed as JSON: {e}")
-    except (KeyError, ValueError) as e:
-        print(
-            f"Error: The credential file is missing required information: {e}")
+        port = config("DB_PORT", default=1433)
+
     except Exception as e:
         print(f"Error: An unexpected error occurred: {e}")
         # handle the error here
@@ -631,31 +654,31 @@ if local_server and (not DJANGO_PROD_ENV):
             "USER": user,
             "PASSWORD": password,
             "HOST": local_server,
-            "PORT": "",
+            "PORT": port,
             "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  # "ODBC Driver 18 for SQL Server",
                         "extra_params": "TrustServerCertificate=yes;Encrypt=no;"
                         },
         },
         'default': {
             'ENGINE': 'mssql',
-            "NAME": demoDatabaseName,
+            "NAME": demoDatabaseName, # the demo databse used as default.
             "USER": user,
             "PASSWORD": password,
             "HOST": local_server,
-            "PORT": "",
+            "PORT": port,
             "OPTIONS": {"driver": 'ODBC Driver 18 for SQL Server',  # "ODBC Driver 18 for SQL Server",
                         "extra_params": "TrustServerCertificate=yes;Encrypt=no;"
                         },
         }
     }
-# when local_server is not available, use the Azure SQL DB.
+# when local_server is not available and DJANGO_PROD_ENV is TRUE, use the Azure SQL DB.
 else:
-    logger.info('Using Azure SQL DB....')
     az_server = config("AZURE_DB_SERVER", default=False)
     az_user = config("AZURE_DB_USER")
     az_password = config("AZURE_DB_PASSWORD")
     az_databaseName = config("AZURE_DB_DATABASE")
-    logger.info('the azure db server:database is: {}:{}...'.format(
+    az_port = config("AZURE_DB_PORT", default=1433)
+    logger.info('Using Azure SQL DB {}:{}...'.format(
         az_server, az_databaseName))
 
     # added on 2023-11-13
@@ -710,6 +733,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 # STATIC_URL = 'static/'
 
 # STATIC_URL = 'https://storage.googleapis.com/2023_new_prolube76site/static_files'
@@ -721,9 +745,8 @@ USE_TZ = True
 # https://learn.microsoft.com/en-us/azure/storage/common/storage-configure-connection-string
 # using azure storage bucket to host static files
 
-STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
-STATIC_URL = 'https://storage.googleapis.com/{}/static_files/'.format(
+STATIC_URL = 'https://storage.googleapis.com/{}/'.format(
     GS_BUCKET_NAME)
 
 STATIC_ROOT = BASE_DIR / 'assets'
@@ -745,7 +768,7 @@ STATIC_ROOT = BASE_DIR / 'assets'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Test the database connection
+# bebug the database connection: should return True if the connection is successful.
 # test_db_connection()
 
 

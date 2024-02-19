@@ -10,7 +10,7 @@ def get_canned_job_dash(request):
         'created_by',
         'modified_by',
 
-    ).order_by('-canned_job_id')
+    ).order_by('-canned_job_is_in_quick_menu','canned_job_title',)
     current_time = CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
     paginator = Paginator(canned_jobs, 20)
     page_number = request.GET.get('page')

@@ -5,20 +5,147 @@
 {% load crispy_forms_field %}
 {% block content-main %}
 
+<style>
+    .table {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+        background-color: transparent;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .table tbody + tbody {
+        border-top: 2px solid #dee2e6;
+    }
+
+    .table .table {
+        background-color: #fff;
+    }
+
+    .table-sm th,
+    .table-sm td {
+        padding: 0.3rem;
+    }
+
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+
+    .table-bordered th,
+    .table-bordered td {
+        border: 1px solid #dee2e6;
+    }
+
+    .table-bordered thead th,
+    .table-bordered thead td {
+        border-bottom-width: 2px;
+    }
+
+    .table-borderless th,
+    .table-borderless td,
+    .table-borderless thead th,
+    .table-borderless tbody + tbody {
+        border: 0;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.075);
+    }
+
+    .table-primary,
+    .table-primary > th,
+    .table-primary > td {
+        background-color: #b8daff;
+    }
+
+    .table-primary th,
+    .table-primary td,
+    .table-primary thead th,
+    .table-primary tbody + tbody {
+        border-color: #7abaff;
+    }
+
+    .table-hover .table-primary:hover {
+        background-color: #9fcdff;
+    }
+
+    .table-hover .table-primary:hover > td,
+    .table-hover .table-primary:hover > th {
+        background-color: #9fcdff;
+    }
+
+    .table-secondary,
+    .table-secondary > th,
+    .table-secondary > td {
+        background-color: #d6d8db;
+    }
+
+    .description-width {
+    width: 40%; /* or any width you prefer */
+}
+
+/* metallic looking button  */
+.metallic-button {
+        border: 0;
+        background: linear-gradient(140deg, silver, gray, silver);
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: 500;
+        border-radius: 5px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .metallic-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(120deg, transparent, rgba(248, 242, 242, 0.4), transparent);
+        transition: all 0.65s ease;
+    }
+
+    .metallic-button:hover::before {
+        left: 100%;
+    }
+
+    .metallic-button:active {
+        background: linear-gradient(145deg, gray, silver, gray);
+    }
+</style>
 <div class="container-fluid p-1 my-1">
     <!-- Breadcrumb-->
-    <nav aria-label="breadcrumb p-1 my-1">
+    <nav aria-label="breadcrumb " class="p-1 my-1">
         <ol class="breadcrumb breadcrumb-dark">
             <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
             <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
             <li class="breadcrumb-item "><a href="{% url 'dashboard:repair_order_dash' %}">Repair Orders</a></li>
             <li class="breadcrumb-item "><a href="{% url 'dashboard:canned_job_dash' %}">Canned Jobs</a></li>
-            <li class="breadcrumb-item active">Job Update</a></li>
+            <li class="breadcrumb-item "><a href="{% url 'dashboard:canned_job_detail' pk=pk %}">Canned Job Detail {{pk}}</a></li>
+            <li class="breadcrumb-item active">Canned Job Update</a></li>
         </ol>
     </nav>
 </div>
-
-
 
 <div class="container-fluid p-1 my-1" id='canned-job-update-container'>
     <div class="card card-hover border border-secondary">
@@ -26,28 +153,47 @@
         <div class='card-body text-dark'>
             <form method="post">
                 {% csrf_token %}
-                {{ form|crispy }}
-                {{ formset.management_form }}
-
+                {% crispy form form.helper %}
+                <div class = 'table-responsive'>
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Sequence</th>
-                            <th>Line Item ID</th>
-                            <th>Line Item Description</th>
+                            <th>ID</th>
+                            <th class="description-width">Description</th>
+                            <th>Cost</th>
+                            <th>Sale </th>
+                            <th>Has Commission?</th>
+                            <th>is Tax Exempt</th>
                             <!-- Add more headers as needed -->
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {{ formset.management_form }}
+
                         {% for form in formset.forms %}
+                        {{form.management_form}}
                         <tr>
-                            <td>{{ form.sequence|as_crispy_field }}</td>
-                            <!-- Display additional line_item details; this requires access to the related line_item instance -->
-                            <td>{{ form.instance.line_item.line_item_id }}</td>
-                            <td>{{ form.instance.line_item.line_item_description }}
+                            {{ form.id }}
+                            <td>
+                                {{ form.line_item_id |as_crispy_field }}
+
                             </td>
-                            <!-- Add more line item details as needed -->
+                            <td class="description-width">
+                                {{ form.line_item_description  }} <!-- Render the id field -->
+                            </td>
+                            <td>
+                                {{ form.line_item_cost |as_crispy_field }} <!-- Render the id field -->
+                            </td>
+                            <td>
+                                {{ form.line_item_sale |as_crispy_field }} <!-- Render the id field -->
+                            </td>
+                            <td>
+                                {{ form.line_item_has_fixed_commission  }} <!-- Render the id field -->
+                            </td>
+                            <td>
+                                {{ form.line_item_is_tax_exempt  }} <!-- Render the id field -->
+                            </td>
                             <td>
                                 {{ form.DELETE }} <!-- Render the delete checkbox -->
                             </td>
@@ -55,8 +201,9 @@
                         {% endfor %}
                     </tbody>
                 </table>
-
-                <button type="submit">Save changes</button>
+                </div>
+                <!-- end-of-table-responsive  -->
+                <button type="submit" value="submit" class="automan-metallic-button">Save changes</button>
             </form>
         </div>
         <!-- end of card body  -->

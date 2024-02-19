@@ -1,0 +1,84 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load static %}
+{% block content-main %}
+
+<div class="container-fluid">
+    <!-- Breadcrumb-->
+    <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb breadcrumb-dark mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'homepageapp:homepage' %}">Homepage</a>
+            </li>
+            <li class="breadcrumb-item "><a href="{% url 'we_handle_money_stuff:gl_account_dash' %}">GL Accounts</a>
+            </li>
+            <li class="breadcrumb-item active"> GL Sub Accounts</li>
+        </ol>
+    </nav>
+</div>
+<div class="container-fluid my-1">
+    {% include 'homepageapp/14_homepageapp_messages_section.html' %}
+    <h2> GL Sub Account Dash</h2>
+    <div class='row'>
+        <div class="col-12 my-1">
+            <div class="btn-group">
+                <a type="button" class="btn btn-outline-dark"
+                    href="{% url 'we_handle_money_stuff:gl_sub_account_create' %}">
+                    <i class='uil-file-plus-alt'></i>
+                    Create Sub Account</a>
+            </div>
+
+
+        </div>
+
+    </div>
+    {% if gl_sub_accounts %}
+    <table class="table table-light table-hover mb-0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Sub Account Number</th>
+                <th>Sub Account Name</th>
+
+                <th>Type</th>
+                <th>Detail Type</th>
+                <th>Description</th>
+
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gl_sub_account in gl_sub_accounts %}
+            <tr>
+                <td><a
+                        href="{% url 'we_handle_money_stuff:gl_sub_account_detail' pk=gl_sub_account.id %}">{{gl_sub_account.id}}</a>
+                </td>
+
+                <td>{{ gl_sub_account.sub_account_number }}</td>
+                <td>{{ gl_sub_account.name }}</td>
+                <td>{{ gl_sub_account.account_type }}</td>
+                <td>{{ gl_sub_account.account_detail_type }}</td>
+                <td>{{ gl_sub_account.description }}</td>
+
+
+                {% comment %}
+                {% endcomment %}
+                <td class="table-action ">
+                    <a class="action-icon fw-bold"
+                        href="{% url 'we_handle_money_stuff:gl_account_update' pk=gl_sub_account.id %}">
+                        <i class="uil uil-edit"></i>
+                    </a>
+                    <a class="action-icon fw-bold"
+                        href="{% url 'we_handle_money_stuff:gl_account_soft_delete' pk=gl_sub_account.id %}">
+                        <i class="uil uil-trash-alt"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No GL Sub Accounts are available.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

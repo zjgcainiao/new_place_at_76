@@ -1,0 +1,40 @@
+{% extends 'homepageapp/10_homepageapp_base.html' %}
+{% load static %}
+{% block content1-main %}
+
+
+<div class="container my-4">
+    <h2>Your Cart</h2>
+    <!-- Display cart items -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price|floatformat:2 }}</td>
+                <td>${{ item.quantity|multiply:item.price|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Total amount -->
+    <p>Total: ${{ total_amount|floatformat:2 }}</p>
+
+    <!-- Checkout form -->
+    <form action="{% url 'create_payment_intent_for_cart' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Checkout</button>
+    </form>
+</div>
+
+{% endblock %}

@@ -37,9 +37,6 @@
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Automan theme css.  added 2024-01-15-->
-    <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
-
 
     <!-- jQuery JS 3.7.1 min  -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -94,6 +91,9 @@
 
     {% include 'dashboard/01_additional_css_style.html' %}
 
+    <!-- Automan theme css.  added 2024-01-15-->
+    <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.mini.css' %}">
+
 </head>
 
 <body>
@@ -139,14 +139,14 @@
         .user-greeting {
             color: #495057;
             /* Dark font color */
-            font-family: 'Arial', sans-serif;
+            font-family: 'Noto Sans', sans-serif;
             /* Choose a readable font */
         }
 
         .user-name,
         .user-email {
             font-weight: bold;
-            color: #525252;
+            color: #454141;
             /* Dark grey color for contrast */
             letter-spacing: 1px;
             /* Highlight color */
@@ -198,12 +198,12 @@
                                 </span>
 
                                 <div class="d-lg-flex flex-column gap-1 d-none user-greeting">
-                                    <p class="my-0">Hi <span class='user-name'>{{user.user_first_name}}</span>
+                                    <p class="my-1">Hi <span class='user-name'>{{user.user_first_name}}</span>
                                         (Email: {{user.email
                                         |truncatechars:15}})</p>
-                                    <h6 class="my-0 fw-normal">Auth Group:
-                                        {{user.get_user_auth_group_display}}
-                                        {{user.get_user_auth_group_display}}</h6>
+                                    <p class="my-1 fw-normal">
+                                        Auth Group: {{user.user_auth_group}}-{{user.get_user_auth_group_display}}
+                                    </p>
                                 </div>
 
                             </a>
@@ -212,7 +212,8 @@
                                 <!-- item-->
                                 <a href="{% url 'internal_users:internal_user_dashboard' %}" class="dropdown-item">
                                     <i class="mdi mdi-account-circle me-1"></i>
-                                    <span class="user-name">My Profile - Employee Info</span>
+                                    <span class="user-name">My Profile - Employee
+                                        Info </span>
                                 </a>
 
                                 <!-- item-->

@@ -45,34 +45,86 @@
         /* Slightly lighter on hover for interactivity */
     }
 </style>
-<section class="container" id="repair-order-line-item-list-section">
+<section class="container p-1 my-1" id="repair-order-line-item-list-section">
+
+    <!-- Modal -->
+    <div class="modal fade" id="cannedJobModal" tabindex="-1" aria-labelledby="cannedJobModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cannedJobModalLabel">Select Canned Job</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-header">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="confirmCannedJob">Confirm</button>
+                    </div>
+                    <!-- Canned Job Selection Form Will Go Here -->
+                    <div class="table-responsive">
+
+
+                        <table class="table">
+                            {% for canned_job in canned_jobs %}
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="canned_job" value="{{canned_job.pk}}"
+                                            id="canned_job_{{canned_job.pk}}">
+                                    </td>
+                                    <td>
+                                        <label
+                                            for="canned_job_{{canned_job.pk}}">{{canned_job.canned_job_title}}</label>
+                                    </td>
+                                    <td>
+                                        <label
+                                            for="canned_job_{{canned_job.pk}}">{{canned_job.canned_job_description}}</label>
+                                    </td>
+                            </tbody>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="confirmCannedJob">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card border-0">
         <h3 class="card-header mb-0">work items (parts, labor, and tech notes)</h3>
         <div class="btn-group justify-content-between p-1 my-1" role="group">
-            <a class="btn btn-outline-secondary">Canned Job List--ModelChoiceField</a>
+            <a class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#cannedJobModal">Canned Job
+                List</a>
             <a class="btn btn-outline-secondary"> Clean all </a>
             <a class="btn btn-outline-secondary">Refresh </a>
             <a class="btn btn-outline-dark"
-              href="{% url 'dashboard:line_item_three_in_one_create' pk=repair_order.pk %}">
-              <i class="fas fa-plus"></i> Add item
+                href="{% url 'dashboard:line_item_three_in_one_create' pk=repair_order.pk %}">
+                <i class="fas fa-plus"></i> Add item
             </a>
             <a class="btn btn-outline-dark" href="{% url 'dashboard:line_item_create_wizard' pk=repair_order.pk %}">
-              <i class="fas fa-plus"></i> Add item - wizard
+                <i class="fas fa-plus"></i> Add item - wizard
             </a>
-          </div>
+        </div>
+
+
         <div class="card-body">
             <div class="row  ">
                 <h4 class="fw-bold">Notes</h4>
-                {% for note_item in note_items %}
+                <!-- the table of notes  -->
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>line id</th>
-                            <th>note detail </th>
-                            <th>action</th>
+                            <!-- <th></th>
+                            <th> </th>
+                            <th></th> -->
                         </tr>
                     </thead>
                     <tbody>
+                        {% if note_items %}
+                        {% for note_item in note_items %}
                         <tr>
                             <td>
                                 <a
@@ -88,11 +140,17 @@
                                         class="uil uil-trash-alt"></i>
                                 </a>
                         </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td>None</td>
+                            {% endif %}
+
                     </tbody>
 
                 </table>
 
-                {% endfor %}
+
             </div>
             <!-- start of table-parts and table-labor  -->
             <div class="row ">

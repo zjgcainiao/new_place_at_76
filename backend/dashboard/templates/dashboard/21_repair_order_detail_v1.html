@@ -48,11 +48,13 @@
       aria-labelledby="repair order dash detail">
       <!-- Placeholder content for repair order information -->
       <div class='card card-hover automan-section border border-0'>
-        <h4 class="card-header p-1" style="background: transparent;">Repair Order ID: <u>{{repair_order.repair_order_id}}</u> </h4>
+        <h4 class="card-header p-1" style="background: transparent;">Repair Order ID:
+          <u>{{repair_order.repair_order_id}}</u>
+        </h4>
         <p class="row p-1">
           <small><em>Last Updated at: {{repair_order.repair_order_last_updated_at|date}}</em></small>
         </p>
-        <div class="card-body text-dark m-0">
+        <div class="card-body text-dark">
 
           <div class="row mb-0">
             <p class='fw-bold col-3'>Order Status:
@@ -121,7 +123,7 @@
       <!-- end of card  -->
 
       <div class="card card-hover automan-section">
-        <h4 class="card-header"  style="background: transparent;">Repair Vehicle:
+        <h4 class="card-header" style="background: transparent;">Repair Vehicle:
           <a href="{% url 'dashboard:vehicle_detail' pk=vehicle.vehicle_id %}" class="card-link">{{vehicle.pk }}
           </a>
         </h4>
@@ -186,18 +188,16 @@
       <!-- end of card  -->
 
       <hr>
-
-      <div class='row'>
-
-      </div>
-
-      <div class='row'>
+      <div class="row p-1 m-1">
         {% with line_items=line_items repair_order_id=repair_order_id note_items=note_items labor_items=labor_items part_items=part_items %}
         {% include 'dashboard/51_repair_order_line_items.html' %}
         {% endwith %}
       </div>
-      <!-- end of container -->
+   
     </div>
+    <!-- end of container -->
+
+    
     <!-- end of tab-panel  1-->
 
     <!-- the second tab-panel  -->

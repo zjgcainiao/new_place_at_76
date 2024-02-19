@@ -2,18 +2,18 @@
 {% load crispy_forms_tags %}
 {% block content1-main %}
 
-<div class=" d-flex align-items-center justify-content-center m-5 p-5">
+<section class=" d-flex align-items-center justify-content-center mt-5 p-5">
 
     <form class='card card-hover border border-dark' method="post" enctype="multipart/form-data">
-        <h4 class="card-header fw-bold">New Service Appointment</h4>
+        <h3 class="card-header fw-bold m-1">New Service Appointment</h3>
         <div class="notice m-1">
-            <p class="fw-semibold m-2">Already have an account? <a
+            <p class="fw-semibold m-1">Already have an account? <a
                     href="{% url 'customer_users:customer_user_login' %}">Sign in</a> for a faster service. Not a member
                 yet? <a href="{% url 'customer_users:customer_user_register' %}">Sign up</a> for a free account today!
                 Having an account with us will make your future appointment bookings faster and easier.</p>
         </div>
 
-        <div class="card-body">
+        <div class="card-body p-1 my-1">
             {% csrf_token %}
             {% crispy form form.helper %}
     </form>
@@ -31,9 +31,102 @@
                   &times;
               </button>
           </div>
-      </script>
-</div>
-<!-- end of container  -->
+    </script>
+</section>
+<!-- end of section d-flex -->
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.3"></script> -->
+<script type="module">
+
+
+    import { computePosition } from 'https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.3/+esm';
+</script>
+<script type="module">
+
+    $(document).ready(function () {
+        // Initialize Tempus Dominus for each '.datetimeinput'
+        $('.datetimeinput').each(function () {
+            new tempusDominus.TempusDominus(this, {
+                // Tempus Dominus options
+                display: {
+                    icons: {
+                        type: 'icons',
+                        time: 'fa-solid fa-clock',
+                        date: 'fa-solid fa-calendar',
+                        up: 'fa-solid fa-arrow-up',
+                        down: 'fa-solid fa-arrow-down',
+                        previous: 'fa-solid fa-chevron-left',
+                        next: 'fa-solid fa-chevron-right',
+                        today: 'fa-solid fa-calendar-check',
+                        clear: 'fa-solid fa-trash',
+                        close: 'fa-solid fa-xmark'
+                    },
+                    sideBySide: false,
+                    calendarWeeks: false,
+                    viewMode: 'calendar',
+                    toolbarPlacement: 'bottom',
+                    keepOpen: false,
+                    buttons: {
+                        today: false,
+                        clear: false,
+                        close: false
+                    },
+                    components: {
+                        calendar: true,
+                        date: true,
+                        month: true,
+                        year: true,
+                        decades: true,
+                        clock: true,
+                        hours: true,
+                        minutes: true,
+                        seconds: false,
+                        //deprecated use localization.hourCycle = 'h24' instead
+                        useTwentyfourHour: undefined
+                    },
+                    inline: false,
+                    theme: 'auto'
+                }
+            });
+        });
+
+        // Example of subscribing to the 'show' event to reposition the widget
+        $('.datetimeinput').on('show.tempusdominus', function (e) {
+            // Tempus Dominus appends its widget either near the input field or at the end of the body.
+            // Common widget classes include 'bootstrap-datetimepicker-widget' and 'td-widget'.
+            // Adjust the selector based on your Tempus Dominus version and customization.
+            var possibleSelectors = ['.tempus-dominus-widget', '.td-widget'];
+            var widget;
+
+            // Try to find the widget near the input field first
+            possibleSelectors.forEach(function (selector) {
+                if (!widget || widget.length === 0) {
+                    widget = $(inputField).siblings(selector);
+                }
+            });
+
+            // If not found near the input, try to find it as a child of the body
+            if (!widget || widget.length === 0) {
+                possibleSelectors.forEach(function (selector) {
+                    if (!widget || widget.length === 0) {
+                        widget = $('body').children(selector).last(); // Assuming the last one is the active one
+                    }
+                });
+            }
+
+            // Reposition the widget if found
+            if (widget && widget.length > 0) {
+                // Apply your repositioning logic here
+                console.log("Widget found", widget);
+                // Example: widget.css('top', '100px'); // Adjust as needed
+            }
+        });
+    });
+
+
+
+</script>
 
 <!-- 2023-11-01 css style added to allow display images as thumbnails -->
 

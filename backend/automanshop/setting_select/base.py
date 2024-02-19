@@ -197,7 +197,7 @@ from google.oauth2 import service_account
 google_credential_path = os.environ.get("GOOGLE_CREDENTIAL_PATH")
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(google_credential_path)
-GS_BUCKET_NAME = '2023_new_prolube76site'  # Replace with your Google Cloud Storage bucket name #2023_new_prolube76site/2023_talent_employment_docs
+GS_BUCKET_NAME = '2023_new_prolube76site'  # Replace with your Google Cloud Storage bucket name #2023_new_prolube76site/2023_talent_document
 GS_PROJECT_ID = 'fresh-start-9fdb6'  # Replace with your Google Cloud project ID
 GS_DEFAULT_ACL = 'publicRead'
 GS_BUCKET_ACL = 'publicRead'

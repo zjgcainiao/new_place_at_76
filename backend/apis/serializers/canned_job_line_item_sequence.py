@@ -5,3 +5,4 @@ class CannedJobLineItemSequenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = CannedJobLineItemSequence
         fields = ['id', 'canned_job', 'line_item', 'sequence']
+        depth = 2

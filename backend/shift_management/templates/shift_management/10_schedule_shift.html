@@ -35,7 +35,7 @@
         position: relative;
     }
 </style>
-<!-- this is the script needed to acgivate standard bundle version of FullCalendar at FullCalendar.io.  -->
+<!-- this is the script needed to agrregreate standard bundle version of FullCalendar at FullCalendar.io.  -->
 <script async src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"
     integrity="sha256-alsi6DkexWIdeVDEct5s7cnqsWgOqsh2ihuIZbU6H3I=" crossorigin="anonymous"></script>
 <!-- <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.9/main.min.js'></script>
@@ -148,6 +148,10 @@
             url: $(this).attr('action'),
             type: $(this).attr('method'),
             data: $(this).serialize(),
+            headers: {
+                'X-CSRFToken': '{{ csrf.token }}'
+            },
+
             success: function (response) {
                 // Handle success, such as adding the new shift to the calendar or displaying a success message
             },

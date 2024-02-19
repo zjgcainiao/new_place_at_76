@@ -88,8 +88,6 @@ class Command(BaseCommand):
         elapsed_time = time.time() - start_time
         logger.info(
             f"Script {self.script_name} completed. Total running time: {elapsed_time:.2f} seconds.")
-        print(
-            f"Script {self.script_name} completed. Total running time: {elapsed_time:.2f} seconds.")
 
     def update_or_create_record(self, entry, primary_key_field):
 
@@ -143,8 +141,6 @@ class Command(BaseCommand):
             part_item.full_clean()
             part_item.save()
             logger.info(
-                f'Part Item {part_item_id} record has been updated. is_created?: {created}.')
-            print(
                 f'Part Item {part_item_id} record has been updated. is_created?: {created}.')
         except Exception as e:
             error_msg = f"An error occurred while updating/creating a {self.model_name} record {part_item_id}: {e}"

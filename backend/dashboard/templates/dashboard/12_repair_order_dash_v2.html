@@ -17,7 +17,8 @@
   <!-- Display the date and logged in user -->
   <div class="row">
     <div class="col">
-      Welcome, {{ user.user_first_name }}. You are logged in as {{user.email}}
+      Welcome, {{ user.user_first_name }}. You are logged in as {{user.email}}.
+      Auth Group: {{user.user_auth_group}}-{{user.get_user_auth_group_display}}
     </div>
     <div class="col">
       <p><strong>Date:</strong> {{ current_time |date}}</p>

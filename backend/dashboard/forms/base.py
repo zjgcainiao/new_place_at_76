@@ -6,6 +6,6 @@ from crispy_forms.bootstrap import PrependedText
 from django.utils.translation import gettext_lazy as _
 from django.utils.formats import date_format
 import logging 
-from django.forms import formset_factory,inlineformset_factory
+from django.forms import formset_factory,inlineformset_factory, modelformset_factory
 
 logger=logging.getLogger('django')

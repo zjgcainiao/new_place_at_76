@@ -12,7 +12,7 @@ from django.contrib import messages
 from apis.utilities import fetch_and_save_single_vin_from_nhtsa_api, fetch_single_plate_data_via_plate2vin_api
 
 from asgiref.sync import sync_to_async
-from dashboard.async_functions import fetch_latest_vin_data_from_snapshots, database_sync_to_async
+from apis.utilities import  database_sync_to_async
 from django.urls import reverse, reverse_lazy
 from django.db.models import Q, Prefetch
 from django.views.generic import ListView, DetailView

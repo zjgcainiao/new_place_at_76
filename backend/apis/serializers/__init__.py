@@ -7,11 +7,8 @@ from .phone import PhoneSerializer
 from .text_message import TextMessagesSerializer
 from .customer import CustomerSerializer
 from .payment import PaymentSerializer
-from .latest_vin_data import LastestVinDataSerializer
-from .vin_nhtsa_snapshot import VinNhtsaApiSnapshotsSerializer
-from .plate_and_vin_data import PlateAndVinDataSerializer
 from .repair_order import RepairOrderSerializer
-from .canned_jobs import CannedJobSerializer
+from .canned_job import CannedJobSerializer
 from .line_item import LineItemSerializer   
 from .part_item import PartItemSerializer 
 from .labor_item import LaborItemSerializer
@@ -24,5 +21,17 @@ from .transmission import TransmissionSerializer
 from .drive_type import DriveTypeSerializer
 from .brake import BrakeSerializer
 from .sub_model import SubModelSerializer
-from .text_message import TextMessagesSerializer
 from .canned_job_line_item_sequence import CannedJobLineItemSequenceSerializer
+from .canned_job import CannedJobSerializer
+from .vin_data_aggregated import VinDataAggregatedSerializer
+from .vin_nhtsa_snapshot import VinNhtsaApiSnapshotsSerializer
+from .plate_and_vin_data import PlateAndVinDataSerializer
+from .nhtsa_service_bulletin import NhtsaServiceBulletinSerializer
+from .nhtsa_api_call_history import NhtsaApiCallHistorySerializer
+# from .nhtsa_decode_vin import NhtsaDecodeVinSerializer
+from .nhtsa_recall import Recallerializer
+from .nhtsa_safety_rating import NhtsaSafetyRatingSerializer
+from .nhtsa_make import NhtsaMakeSerializer
+from .nhtsa_vehicle_id import NhtsaVehicleIdSerializer
+from .nhtsa_decoded_vin import NhtsaDecodedVinSerializer
+from .nhtsa_model import NhtsaModelSerializer

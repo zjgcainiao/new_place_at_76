@@ -11,9 +11,10 @@ from .gl_account_type import GLAccountType
 class GLAccount(models.Model):
     id = models.AutoField(primary_key=True)
     # account_number = models.CharField(max_length=100, unique=True)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255,null=False, blank=False)
+    # account_number = models.BigIntegerField(null=False, blank=False, unique=True)
     description = models.TextField(null=True, blank=True)
-    account_type = models.ForeignKey(GLAccountType, on_delete=models.SET_NULL, null=True, blank=True)
+    account_type = models.ForeignKey(GLAccountType, on_delete=models.DO_NOTHING, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

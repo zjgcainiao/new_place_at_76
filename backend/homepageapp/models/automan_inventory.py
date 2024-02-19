@@ -27,3 +27,12 @@ class AutomanInventory(models.Model):
 
     def __str__(self):
         return self.sku
+    
+    class Meta:
+        db_table = 'automan_inventory'
+        ordering = ["-id", 'sku']
+        indexes = [
+            models.Index(fields=['sku',]),
+        ]
+        verbose_name = "Automan Inventory"
+        verbose_name_plural = "Automan Inventory"

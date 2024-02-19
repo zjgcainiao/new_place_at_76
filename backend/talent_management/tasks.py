@@ -29,7 +29,7 @@ from core_operations.common_functions import generate_today_date_format, format_
 #     task='proj.tasks.import_contacts',
 # )
 
-# @shared_task
+@shared_task
 def send_report_for_active_talents_with_pay_type_0():
     # Query talents that meet the conditions
     # a pay type mus be assigned before the talent's work day.
@@ -68,7 +68,7 @@ def send_report_for_active_talents_with_pay_type_0():
     # message = report
     body = 'Please find the attached report of talents with pay type 0.'
     from_email = "info@76prolubeplus.com"
-    recipient_list = ["automan001@76prolubeplus.com"]
+    recipient_list = ["holleratme420@gmail.com"]
 
     email = EmailMessage(
         subject=subject,
@@ -92,28 +92,4 @@ def send_report_for_active_talents_with_pay_type_0():
     # Send the email
     email.send()
 
-    # Set the email content type for web browsers
-    # However, if you are confident that your recipients can handle an alternative content type, 
-    # you can use the content_subtype attribute on the EmailMessage class to change the main content type. 
-    # The major type will always be "text", but you can change the subtype.
-
-
-    # by specifying the connection in EmailMessage() class, the connection remains open while sending one or multiple emails.
-    # otherwise, the EmailMessage() uses the default email backend.
-    # with get_connection(
-    #     host=settings.EMAIL_HOST,
-    #     port=settings.EMAIL_PORT,
-    #     username=settings.EMAIL_HOST_USER,
-    #     password=settings.EMAIL_HOST_PASSWORD,
-    #     use_tls=settings.EMAIL_USE_TLS
-    #     ) as connection:
-
-    #     subject = request.POST.get("subject")
-    #     email_from = settings.EMAIL_HOST_USER
-    #     recipient_list = [request.POST.get("email"), ]
-    #     message = request.POST.get("message")
-    #     messages.add_message(request, messages.SUCCESS, f"email has been sent to {recipient_list}")
-    #     EmailMessage(subject, message, email_from, recipient_list, connection=connection).send()
-
-    # Create the email message
-    # email = send_mail(subject, message, from_email, recipient_list)
+    

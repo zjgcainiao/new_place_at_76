@@ -12,7 +12,7 @@
             <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
             <li class="breadcrumb-item "><a href="{% url 'dashboard:repair_order_dash' %}">Repair Orders</a></li>
             <li class="breadcrumb-item "><a href="{% url 'dashboard:canned_job_dash' %}">Canned Jobs</a></li>
-            <li class="breadcrumb-item active">Job Detail</a></li>
+            <li class="breadcrumb-item active">Canned Job Detail {{canned_job.canned_job_id}}</a></li>
         </ol>
     </nav>
 </div>
@@ -37,13 +37,14 @@
     <div class="card card-hover border border-secondary">
 
         <div class='card-body text-dark'>
-            <h4 class="card-title fw-bold ">ID:{{canned_job.canned_job_id}}--Title {{canned_job.canned_job_title}}
+            <h4 class="card-title fw-bold">Canned Job ID: {{canned_job.canned_job_id}}. Title:
+                {{canned_job.canned_job_title}}
             </h4>
 
 
-
+            <p>Updated at: {{canned_job.canned_job_last_updated_at |date}}</p>
             <!-- Your Basic Information Fields Here -->
-            <div class="row ">
+            <div class="row p-1 m-1">
                 <h4>Related Line Items</h4>
                 <div class="card-text col">
                     {% if related_line_items %}
@@ -53,6 +54,8 @@
                                 <th>Line Item ID</th>
                                 <th>Sequence</th>
                                 <th>Description</th>
+                                <th>Cost</th>
+                                <th>Sale</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,6 +64,8 @@
                                 <td>{{ item.line_item.pk }}</td>
                                 <td>{{ item.sequence }}</td>
                                 <td>{{ item.line_item.line_item_description }}</td>
+                                <td>{{ item.line_item.line_item_cost }}</td>
+                                <td>{{ item.line_item.line_item_sale }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

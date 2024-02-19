@@ -11,17 +11,20 @@ class CustomerSerializer(serializers.ModelSerializer):
     # payment_customers = PaymentSerializer(many=True, read_only=True)
     
     def get_full_name(self, instance):
-        return f"{instance.cust_first_name} {instance.cust_last_name}"
+        return f"{instance.cust_first_name} {instance.cust_middle_name}{instance.cust_last_name}"
 
     class Meta:
         model = CustomersNewSQL02Model
-        fields = ['customer_first_name', 'customer_last_name',
+        fields = ['customer_first_name', 
+                  'customer_last_name','customer_middle_name'
                   'addresses', 'phones', 'emails',
                   # 'payment_customers',
                   ]
         depth = 3
     # The to_representation method is used to transform the data into a format that will be used in the serialized output. 
-    # In this case, it is taking the customer_created_at date and transforming it into an ISO fo
+    # In this case, it is taking the customer_created_at date and transforming it into an ISO formatted string.
+    # the benefit of using an ISO formatted string is that it is a standard format that can be easily parsed by other systems.
+    
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         customer_created_at = instance.customer_created_at

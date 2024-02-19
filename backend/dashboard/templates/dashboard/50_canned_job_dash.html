@@ -6,12 +6,13 @@
 {% block content-main %}
 
 
-<div class="container container-fluid">
+<div class="container">
     <!-- Breadcrumb-->
     <nav aria-label="Breadcrumb">
         <ol class="breadcrumb breadcrumb-dark">
             <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
             <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+            <li class="breadcrumb-item "><a href="{% url 'dashboard:repair_order_dash' %}">Repair Orders</a></li>
             <li class="breadcrumb-item active">Canned Job List</li>
         </ol>
     </nav>
@@ -19,65 +20,58 @@
 
 {% include 'homepageapp/14_homepageapp_messages_section.html' %}
 
-<div class="container my-1">
+<div class="container">
     <div class="row">
         <h2>Canned Jobs </h2>
         <p class="title small">Today is {{current_time|date}} </p>
     </div>
 
-
-    <!-- <div class='row'>
-        <div class=" btn-group my-1">
-            <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:vehicle_dash' %}"> <i
-                    class="uil-home-alt"></i>Main Vehicle Dash</a>
-            <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:vehicle_create' %}"><i
-                    class='uil-file-plus-alt'></i>Create Vehicle Record</a>
-            <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search_single_vin_via_nhtsa' %}"><i
-                    class='mdi mdi-barcode'></i>Vin Search</a>
-            <a type="button" class="btn btn-outline-dark"
-                href="{% url 'dashboard:search_single_plate_via_plate2vin' %}"><i class='mdi mdi-car-info'></i>License
-                Plate Search</a>
-        </div>
-    </div> -->
-    <!-- end of an row of function buttons -->
     {% if page_obj %}
-    <table class="table  mb-0">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>is in Quick Menu</th>
-                <th>Title</th>
-                <th>Description</th>
+    <div class="table-responsive">
 
+        <table class="table ">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>in Quick Menu? </th>
+                    <th>Updated at</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for canned_job in page_obj %}
+                <tr>
+                    <td><a href="{% url 'dashboard:canned_job_detail' pk=canned_job.pk %} ">{{canned_job.pk}}</a>
+                    </td>
 
-                <th>Updated at</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for canned_job in page_obj %}
-            <tr>
-                <td><a href="{% url 'dashboard:canned_job_detail' pk=canned_job.pk %} ">{{canned_job.pk}}</a>
-                </td>
-                <td>{{canned_job.canned_job_is_in_quick_menu }}</td>
-                <td>{{canned_job.canned_job_title}}</td>
-                <td>{{canned_job.canned_job_description}}</td>
-                <td>{{ canned_job.canned_job_last_updated_at }}</td>
-                <td class="table-action"><a class="action-icon"><i class="uil uil-edit"></i></a><a><i
-                            class="uil uil-trash-alt"></i></a></td>
+                    <td>{{canned_job.canned_job_title}}</td>
+                    <td>{{canned_job.canned_job_description}}</td>
+                    <td>{{canned_job.canned_job_is_in_quick_menu }}</td>
+                    <td>{{ canned_job.canned_job_last_updated_at }}</td>
+                    <td class="table-action">
+                        <a class="action-icon" href="{% url 'dashboard:canned_job_update' pk=canned_job.pk %}">
+                            <i class="uil uil-edit"></i>
+                        </a>
+                        <a class="action-icon" href="{% url 'dashboard:canned_job_delete' pk=canned_job.pk %}">
+                            <i class="uil uil-trash-alt"></i>
+                        </a>
+                    </td>
 
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">No vehicle record found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No canned jobs found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- end of table-responsive -->
 
-</div>
-<div class='row'>
-    <div class='col-12'>
+    <div class='row '>
+
         <ul class="pagination justify-content-center">
             <li class="page-item">
                 {% if page_obj.has_previous %}
@@ -113,11 +107,11 @@
             </li>
         </ul>
 
+
     </div>
 </div>
-
 {% else %}
-<p>There are no matched customers found here.</p>
+<p>There are no matched canned jobs found here.</p>
 {% endif %}
 
 {% endblock %}

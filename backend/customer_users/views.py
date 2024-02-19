@@ -16,7 +16,7 @@ from firebase_admin import auth
 from customer_users.tasks import create_customer_user_from_firebase_auth, create_firebase_auth_user
 from firebase_auth_app.models import FirebaseUser
 from asgiref.sync import sync_to_async
-from dashboard.async_functions import database_sync_to_async
+from apis.utilities import database_sync_to_async
 
 from customer_users.token_generators import decode_activation_token_for_customer_user, create_activation_token_for_customer_user
 

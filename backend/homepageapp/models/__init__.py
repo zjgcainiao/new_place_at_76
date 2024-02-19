@@ -1,6 +1,5 @@
 
 from .automan_inventory import AutomanInventory
-
 from .address import AddressesNewSQL02Model
 from .alert import Alerts
 from .account_class import AccountClassModel
@@ -53,7 +52,14 @@ from .repair_order_line_sequence import RepairOrderLineItemSquencesNewSQL02Model
 from .line_item_tracking import LineItemCompletionTracking
 from .payment import PaymentsModel
 from .payment_transaction import PaymentTransactionsModel
-from .nhtsa_variable_list import NhtsaVariableList
 from .vin_nhtsa_api_snapshot import VinNhtsaApiSnapshots
 from .license_plate_snapshot_plate2vin import LicensePlateSnapShotsPlate2Vin
-from .nhtsa_reacall import NhtsaRecalls
+
+from .nhtsa_recall import NhtsaRecall
+from .nhtsa_variable_list import NhtsaVariableList
+from .nhtsa_safety_rating import NhtsaSafetyRating
+from .nhtsa_service_bulletin import NhtsaServiceBulletin
+from .nhtsa_make import NhtsaMake
+from .nhtsa_model import NhtsaModel
+from .nhtsa_decoded_vin import NhtsaDecodedVin
+from .nhtsa_vehicle_id import NhtsaVehicleId

@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y \
     # install ping command, debian-version
     iputils-ping \ 
     && curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc \
-    && curl https://packages.microsoft.com/config/debian/10/prod.list | tee /etc/apt/sources.list.d/mssql-release.list \
+    && curl https://packages.microsoft.com/config/debian/11/prod.list | tee /etc/apt/sources.list.d/mssql-release.list \
     && apt-get update \
     && apt-get upgrade -y \
     && ACCEPT_EULA=Y apt-get install -y msodbcsql18 mssql-tools18 \
@@ -47,20 +47,19 @@ RUN apt-get update && apt-get install -y \
 
 # Upgrade pip and install Python dependencies
 # Copy just the requirements.txt initially. This allows us to take advantage of cached Docker layers.
-# COPY requirements.txt ./
-COPY ./backend/requirements.txt /app/requirements.txt
+COPY requirements.txt ./
+# COPY ./requirements.txt ./requirements.txt
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-
+RUN pip install -r ./requirements.txt
+# RUN pip install google-generativeai
 # Copy the rest of the application code. now django resides in `backend` directory.
-
-COPY ./backend/ .
+COPY . .
 
 # Copy the entrypoint script into the image
-COPY ./scripts ./scripts
+COPY scripts ./scripts
 
 # Copy the environment variables file into the image
-COPY .env ./.env
+COPY ./.env ./.env
 
 # Expose port 8000
 EXPOSE 8000

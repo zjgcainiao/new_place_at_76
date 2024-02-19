@@ -1,0 +1,11 @@
+from .send_talent_report_task import send_talent_report_task
+from .talent_detail_class import TalentDetailView
+from .talent_create_wizard_class import TalentCreateWizardView
+from .talent_create_preview_class import TalentCreatePreview
+from .talent_update_class import TalentUpdateView
+from .talent_delete_class import TalentDeleteView
+from .talent_list_class import TalentListView
+from .talent_document_list  import talent_document_list
+from .talent_document_soft_delete import talent_document_soft_delete
+
+from .send_sample_report import SendSampleReportView

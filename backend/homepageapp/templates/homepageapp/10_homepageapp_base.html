@@ -29,68 +29,8 @@
   <meta name="msapplication-TileColor" content="#ffedd5">
   <meta name="theme-color" content="#ffffff">
   <meta name="csrf-token" content="{{ csrf_token }}">
-
-  <!-- poper 2.9.2 js, bootstrap 5.3.2 bundle js , simplebar js, smooth-scoll.polyfills js, tiny-slider js, jarallax and jarallax-element js  -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
-    integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-    crossorigin="anonymous"></script>
-  <script src="{% static 'homepageapp/vendor/simplebar/dist/simplebar.min.js' %}"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/smooth-scroll/16.1.3/smooth-scroll.polyfills.js"
-    integrity="sha512-7RJJepMYGySQYUtVVI+ShJWXDp4qUAWo3ovhCEHFOv5Ga16+lzRQHR6HQe/EBqNoO/aUQfhMU2PGrsQeAThIoQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="{% static 'homepageapp/vendor/tiny-slider/dist/min/tiny-slider.js' %}"></script>
-  <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax.min.js' %}"></script>
-  <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script>
-  <!-- jQuery 3.7.1 js -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"
-  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <!-- Main theme js-->
-  <script src="{% static 'homepageapp/js/theme.min.js' %}"></script>
-
-  <!-- bootstrap 5.3.2 css -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-
-  <!-- font-awesome 6.4.2 css  -->
-  <link rel="stylesheet" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-  <!-- MaterialDesign - Webfont 7.3.67 css  -->
-  <link rel="stylesheet" media="screen"
-    href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.3.67/css/materialdesignicons.min.css"
-    integrity="sha512-nRzny9w0V2Y1/APe+iEhKAwGAc+K8QYCw4vJek3zXhdn92HtKt226zHs9id8eUq+uYJKaH2gPyuLcaG/dE5c7A=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/4.0.0/font/MaterialIcons-Regular.ttf"
-    ref='stylesheet'>
-
-  <!-- add Roboto, Roboto-condensed font from google fonts. this font is used to display chatbot response (beta Pulido v1.0). -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/css/fonts.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
-
-<!-- 2023-12-25 add new Orbitron font from google fonts  -->
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- simlerbar, tindy-slider css styles -->
-  <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/simplebar/dist/simplebar.min.css' %}" />
-  <link rel="stylesheet" media="screen" href="{% static '/homepageapp/vendor/tiny-slider/dist/tiny-slider.css' %}" />
-
-  <!-- Vendor Main Theme Styles css -->
-  <link rel="stylesheet" media="screen" href="{% static 'homepageapp/css/theme.min.css' %}">
-
-
-  <!-- Automan theme css. built for this website. will be used to replace other themes -->
-  <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
-
-    <!-- chatbot_conversation.js in the core_operations 2024-01-18 -->
-    <script type="text/javascript">
-      var chatbotEndpoint = "{% url 'we_have_ai_helpers:chatbot_response' %}";
-    </script>
-  <script src="{% static 'core_operations/js/chatbot_conversation.js' %}" ></script>
+   <!-- this base template include all the necessary css and js files for the this website.  -->
+  {% include 'homepageapp/00_the_base.html' %}
 </head>
 
 
@@ -262,14 +202,14 @@
 
                 <li class="dropdown-divider"></li>
                 <li><a class="dropdown-item"
-                    href="{% url 'shops:custom_checkout' product_id='prod_PKOol19RtrtGTG' %}"><i
+                    href="{% url 'shops:prebuilt_checkout' product_id='prod_PKOol19RtrtGTG' %}"><i
                       class="fi-cash fs-base me-2"></i>Payment</a></li>
                 <li class="dropdown-divider"></li>
 
               </ul>
             </li>
             {% comment %}
-            <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'shops:online_product_list' %}">Store</a>
+            <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'shops:get_online_product_list' %}">Store</a>
             </li>
             <li><a class="dropdown-item" href="{% url 'homepageapp:verify_stripe_applepay' %}"><i
                   class="fi-cash fs-base me-2"></i>Verify Apple Pay</a></li>

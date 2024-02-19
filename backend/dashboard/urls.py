@@ -8,7 +8,8 @@ from dashboard.views import LineItemCreateWizard, repair_order_update, repair_or
                               get_repair_order_dash, get_repair_order_detail_v1,get_repair_order_detail_v2, WIPDashboardView, get_main_dash, \
                               DashboardDetailView, RepairOrderUpdateView, LineItemUpdateView, LaborItemUpdateView, \
                               CustomerUpdateView, CustomerDeleteView,  RepairOrderListView, \
-                              technician_dash_view, search_customer_by_phone, update_customer_assignment, get_canned_job_dash, CannedJobDetailView, canned_job_update
+                              technician_dash_view, search_customer_by_phone, update_customer_assignment, \
+                              get_canned_job_dash, CannedJobDetailView, canned_job_update,canned_job_delete
 
 app_name = 'dashboard'
 urlpatterns = [
@@ -59,6 +60,7 @@ urlpatterns = [
      path('canned-jobs/', get_canned_job_dash, name='canned_job_dash'),  
      path('canned-jobs/<int:pk>/', CannedJobDetailView.as_view(), name='canned_job_detail'),  
      path('canned-jobs/<int:pk>/update/', canned_job_update, name='canned_job_update'),  
+     path('canned-jobs/<int:pk>/delete/', canned_job_delete, name='canned_job_delete'),  
 
     # customer dash
     path('customers/', get_customer_dash, name='customer_dash'),

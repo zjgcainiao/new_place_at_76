@@ -13,3 +13,5 @@ class AutomanBaseModelForm(forms.ModelForm):  # Change to forms.ModelForm if you
                 field.widget.attrs.update({'class': 'form-select'})
             elif isinstance(field.widget, forms.DateTimeInput):
                 field.widget.attrs.update({'class': 'datetime-input'})
+            elif isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs.update({'class': 'form-check form-switch'})

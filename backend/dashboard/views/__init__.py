@@ -22,6 +22,7 @@ from .search import SearchView
 from .get_canned_job_dash import get_canned_job_dash
 from .canned_job_detail import CannedJobDetailView
 from .canned_job_update import canned_job_update
+from .canned_job_delete import canned_job_delete
 from .get_customer_dash import get_customer_dash
 from .customer_create import CustomerCreateView
 from .customer_detail import CustomerDetailView
@@ -40,6 +41,6 @@ from .search_customer_by_phone import search_customer_by_phone
 from .update_customer_assignment import update_customer_assignment
 from .technican_dash import technician_dash_view
 
-from .search_single_vin_via_nthsa_async import  search_single_vin_via_nhtsa
+from .search_single_vin_via_nthsa import  search_single_vin_via_nhtsa
 from .search_single_plate_via_palte2vin_async import search_single_plate_via_plate2vin
-from .fetch_or_update_latest_vin_snapshot_async import fetch_or_save_latest_vin_snapshot_async
+from .fetch_or_update_latest_vin_snapshot import fetch_or_save_latest_vin_snapshot_async

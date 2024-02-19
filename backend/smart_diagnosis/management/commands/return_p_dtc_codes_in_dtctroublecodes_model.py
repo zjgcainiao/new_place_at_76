@@ -34,15 +34,15 @@ class Command(BaseCommand):
 
     def update_or_create_dtc_trouble_codes(self, detail):
         if not detail:
-            print("Warning: Received empty or None detail. Skipping update/create.")
+            logger.info("Warning: Received empty or None detail. Skipping update/create.")
             return
 
-        print(
+        logger.info(
             f'Adding the following record in the DtcTroubleCodes model, DTC code: {detail.get("code")}, description: {detail.get("description")}')
         with transaction.atomic():
             meaning = detail.get('meaning_html', '')
             if len(meaning) > 4000:
-                print(
+                logger.info(
                     f"code_meaning too long ({len(meaning)} characters): {meaning}.")
             defaults = {
                 'dtc_trouble_code_group_name': detail.get('group_name'),
@@ -62,15 +62,15 @@ class Command(BaseCommand):
 
     async def fetch_second_level(self, session, link):
         group_content = await self.fetch(session, self.BASE_URL + link)
-        # print(f'second-level-fetching used group_content is: {group_content}')
+        # logger.info(f'second-level-fetching used group_content is: {group_content}')
         group_soup = BeautifulSoup(group_content, 'html.parser')
-        # print(f'fetched group_soup at second level {group_soup}')
+        # logger.info(f'fetched group_soup at second level {group_soup}')
         h2_tag = group_soup.find('h2')
         if h2_tag:
             group_name = h2_tag.text
         else:
             group_name = "Unknown Group"
-        print(f'fetching group_name {group_name} at url {link}...')
+        logger.info(f'fetching group_name {group_name} at url {link}...')
         details_list = []
         for li in group_soup.find_all('li'):
             a_tag = li.find('a')
@@ -105,7 +105,7 @@ class Command(BaseCommand):
                 if re.match(r'^/p[\da-zA-Z]{4}$', revised_link, re.I):
                     details = await self.get_detail(session, revised_link, group_name)
                 else:
-                    print(f"Skipped unexpected 'href' format: {revised_link}.")
+                    logger.info(f"Skipped unexpected 'href' format: {revised_link}.")
                     continue
             else:
                 code, *description_parts = li.text.split(' ')
@@ -181,7 +181,7 @@ class Command(BaseCommand):
         """ Fetch details from a given trouble code URL """
         # Check and skip if url_suffix doesn't match the expected pattern
         if not re.match(r'^/p[\da-zA-Z]{4}$', url_suffix, re.I):
-            print(f"Skipping unexpected URL suffix: {url_suffix}.")
+            logger.info(f"Skipping unexpected URL suffix: {url_suffix}.")
             return None
 
         html_content = await self.fetch(session, self.BASE_URL + url_suffix)
@@ -199,7 +199,7 @@ class Command(BaseCommand):
 
             if not re.match(r'^p[\da-zA-Z]{4}$', code_incorrect, re.I):
                 # re.I makes the match case insensitive, so it matches P or p
-                print(
+                logger.info(
                     f"Unexpected trouble code: {code_incorrect} from h1 text for url: {url_suffix}. correct code: {code}.")
             details = {
                 'code': code,
@@ -246,10 +246,9 @@ class Command(BaseCommand):
 
         start_time = time.time()  # Record the start time
         logger.info(f'starting management_script {self.script_name}...')
-        print(f'starting management_script {self.script_name}...')
 
         async with aiohttp.ClientSession() as session:
-            print(
+            logger.info(
                 f'the beginning url to use looks like: {self.BEGINNING_URL}.')
             html_content = await self.fetch(session, self.BEGINNING_URL)
             soup = BeautifulSoup(html_content, 'html.parser')
@@ -258,10 +257,10 @@ class Command(BaseCommand):
             divs = soup.find_all('div', class_=["span_1_of_2"])
             first_level_links = [a['href']
                                  for div in divs for a in div.find_all('a', href=True)]
-            print(
+            logger.info(
                 f'total number of first-level-url links: {len(first_level_links)}')
             for link in first_level_links:
-                print(f'first-level-url-link {link}.')
+                logger.info(f'first-level-url-link {link}.')
             # Now we initiate the second-level fetch tasks
             second_level_tasks = [self.fetch_second_level(
                 session, link) for link in first_level_links]
@@ -281,8 +280,7 @@ class Command(BaseCommand):
         elapsed_time = time.time() - start_time
         logger.info(
             f"Script {self.script_name} completed. Total running time: {elapsed_time:.2f} seconds.")
-        print(
-            f"Script {self.script_name} completed. Total running time: {elapsed_time:.2f} seconds.")
+
 
     def handle(self, *args, **kwargs):
         asyncio.run(self.handle_async(*args, **kwargs))

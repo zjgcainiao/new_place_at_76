@@ -12,14 +12,14 @@ APPT_STATUS_CANCELLED = -20
 
 class AppointmentRequest(models.Model):
     STATUS_CHOICES = (
-        (APPT_STATUS_NOT_SUBMITTED, _('00_Not_Submitted')),
-        (APPT_STATUS_SUBMITTED, _('01_Submitted')),
-        (APPT_STATUS_CONFIRMED, _('02_Confirmed')),
-        (APPT_STATUS_REJECTED, _('03_Rejected')),
-        (APPT_STATUS_RESCHEDULED, _('04_Rescheduled')),
-        (APPT_STATUS_PORGRESSING, _('05_Progressing (tracking status via repair order)')),
-        (APPT_STATUS_COMPLETED, _('10_Completed')),
-        (APPT_STATUS_CANCELLED, _('-20_Cancelled')),
+        (APPT_STATUS_NOT_SUBMITTED, _('00: Not Submitted')),
+        (APPT_STATUS_SUBMITTED, _('Submitted')),
+        (APPT_STATUS_CONFIRMED, _('Confirmed')),
+        (APPT_STATUS_REJECTED, _('Rejected')),
+        (APPT_STATUS_RESCHEDULED, _('Rescheduled')),
+        (APPT_STATUS_PORGRESSING, _('Progressing (tracking status via repair order)')),
+        (APPT_STATUS_COMPLETED, _('Completed')),
+        (APPT_STATUS_CANCELLED, _('Cancelled')),
     )
     REASON_CHOICES = (
         (0, '00-not selected.'),
@@ -32,9 +32,9 @@ class AppointmentRequest(models.Model):
     appointment_id = models.BigAutoField(primary_key=True)
     # appointment_date = models.DateField()
     appointment_requested_datetime = models.DateTimeField(
-        null=True, blank=True, verbose_name='Requested Apptement Time')
+        null=True, blank=True, verbose_name='Requested Appointment Time')
     appointment_confirmed_datetime = models.DateTimeField(
-        null=True, blank=True, verbose_name='Confirmed Apptement Time')
+        null=True, blank=True, verbose_name='Confirmed Appointment Time')
     appointment_reason_for_visit = models.PositiveSmallIntegerField(
         choices=REASON_CHOICES, default=0, verbose_name='Reason for visit?')
     appointment_customer_user = models.ForeignKey(

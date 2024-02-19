@@ -23,7 +23,7 @@ import asyncio
 import logging
 import os
 from apis.api_vendor_urls import NHTSA_API_URL, PLATE2VIN_API_RATE_LIMIT
-from dashboard.async_functions import decrement_version_for_vin_async
+from apis.utilities import decrement_version_for_vin_async
 from apis.views import fetch_and_save_single_vin_from_nhtsa_api
 from django.db.models import Q
 import time

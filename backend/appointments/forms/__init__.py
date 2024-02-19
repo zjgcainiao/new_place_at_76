@@ -1,2 +1,2 @@
-from .AppointmentCreation import AppointmentCreationForm
-from .AppointmentImages import AppointmentImageFormSet, AppointmentImagesForm
+from .appointment_creation import AppointmentCreationForm
+from .appointment_images import AppointmentImageFormset, AppointmentImagesForm

@@ -2,10 +2,13 @@
 
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
+from decimal import Decimal, InvalidOperation
+from django.utils.translation import gettext_lazy as _
 from datetime import date, datetime
 from core_operations.common_functions import format_phone_number_to_shop_standard, deformat_phone_numbers
 import re
 
+# custom validator 01
 
 def validate_vehicle_year(value):
     # Check if value is a 4-digit number
@@ -35,3 +38,17 @@ def validate_phone_number(value):
     if not re.match(r'^\d{10}$', value):
         raise ValidationError(
             'The phone number should have 10digits. Ex: 2223334444, or (222)333-4444.')
+
+
+def validate_numeric(value):
+    # First, ensure the value is a string; if not, convert it to string for processing
+    if not isinstance(value, str):
+        value = str(value)
+    
+    try:
+        # Now attempt to convert the stripped value to a decimal
+        value = value.strip()
+        value = Decimal(value)
+    except (ValueError, InvalidOperation):
+        # Raise a validation error if conversion fails
+        raise ValidationError(_('Enter a valid number.'), code='invalid')

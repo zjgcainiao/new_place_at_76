@@ -280,9 +280,6 @@
 </div> -->
 <!-- end of pdf buttons  -->
 
-
-
-
 <!-- custom section displayed only in the PDF -->
 <div id="customSectionForPdf" style="display: none;">
     <img src="{% static 'favicon_package_v0/favicon-32x32.png' %}" alt="Logo" id="websiteLogo">
@@ -615,7 +612,7 @@
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="text-muted">Premium content available, including safety recalls, manufacturing
                         information and battery information for electric vehicles</div>
-                                    <a href="{% url 'shops:custom_checkout' product_id='prod_PKOol19RtrtGTG' %}" class="btn btn-primary">Purchase to view</a>
+                                    <a href="{% url 'shops:prebuilt_checkout' product_id='prod_PKOol19RtrtGTG' %}" class="btn btn-primary">Purchase to view</a>
                                 </div>
                             </div>
                         </div>`;

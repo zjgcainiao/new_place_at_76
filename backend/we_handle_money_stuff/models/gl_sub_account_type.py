@@ -11,6 +11,8 @@ class GLSubAccountType(models.Model):
     created_by = models.ForeignKey(InternalUser, related_name='sub_account_type_created_by', on_delete=models.DO_NOTHING, null=True, blank=True)
     updated_by = models.ForeignKey(InternalUser, related_name='sub_account_type_updated_by', on_delete=models.DO_NOTHING, null=True, blank=True)
 
+    def __str__(self):
+        return self.name
     class Meta:
         db_table = 'gl_sub_account_type'
         verbose_name = 'GL Sub Account Type'

@@ -1,6 +1,10 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from apis.views import ActiveRepairOrderViewSet, LineItemsViewSet, TextMessagesViewSet, api_internal_user_login, VinNhtsaApiSnapshotViewSet, openai_proxy, PlateAndVinDataViewSet, WIPDashboardViewSet, LastestVinDataViewSet, get_active_repairorders_api,get_active_customers_api
+from apis.views import api_internal_user_login, openai_proxy, get_active_repairorders_api,get_active_customers_api, \
+               ActiveRepairOrderViewSet, LineItemsViewSet, TextMessagesViewSet,  \
+               VinNhtsaSnapshotViewSet, VinDataAggregatedViewSet, \
+               PlateAndVinDataViewSet, WIPDashboardViewSet,  CannedJobViewSet
+
 from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -8,24 +12,28 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
+
 app_name = 'apis'
 
 router = DefaultRouter()
-router.register(r'vin_data', LastestVinDataViewSet,
-                basename='latest_vin_data_api')
-router.register(r'vin_nhtsa_api_snapshots', VinNhtsaApiSnapshotViewSet,
+
+router.register(r'vin_data_aggregated', VinDataAggregatedViewSet,
+                basename='vin_data_aggregated_api')
+router.register(r'vin_nhtsa_snapshots', VinNhtsaSnapshotViewSet,
                 basename='popular_vin_nhtsa_api')
 router.register(r'plate_and_vin_data', PlateAndVinDataViewSet,
                 basename='plate_and_vin_data_api')
+
 router.register(r'repair_order_dash', WIPDashboardViewSet,
                 basename='repair_order_dash_api')
-
 router.register(r'repair_orders', ActiveRepairOrderViewSet,
                 basename='repair_orders_api')
 router.register(r'line_items', LineItemsViewSet,
                 basename='line_items_api')
 router.register(r'text_messages', TextMessagesViewSet,
                 basename='text_messages_api')
+router.register(r'canned_jobs', CannedJobViewSet,
+                basename='canned_job_api')
 
 urlpatterns = [
     path('', include(router.urls)),

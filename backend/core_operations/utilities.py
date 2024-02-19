@@ -1,30 +1,45 @@
 import logging
 from django.db import connections
+from django.conf import settings
 from django.db.utils import OperationalError
 # from customer_users.models import CustomerUser
 # from internal_users.models import InternalUser
 
 
-logger = logging.getLogger("django_db")
+logger = logging.getLogger("django.db")
 
 # this function is used to test the connection to the database. enable `python manage.py shell` terminal first. and then run this function.
 # if the database connection is successful, it will return True. otherwise, it will return False.
 def test_db_connection():
     """
-    Test the connection to the application-used database.
+    Test the connection to the application-used database and log connection details.
 
     Returns:
         bool: True if the connection is successful, False otherwise.
     """
+    db_settings = settings.DATABASES['default']
+    host = db_settings.get('HOST', 'Not specified')
+    port = db_settings.get('PORT', 'Not specified')
+    user = db_settings.get('USER', 'Not specified')
+    database_name = db_settings.get('NAME', 'Not specified')
+    
     try:
         db_conn = connections['default']
-        db_conn.cursor()
-    except OperationalError:
-        logger.exception("Unable to connect to the application-used database.")
+        db_conn.cursor()  # Attempt to create a cursor, implicitly opening a connection
+    except OperationalError as e:
+        logger.exception(f"Unable to connect to the application-used database. Error: {e}")
+        logger.error(f"Failed connection details - Host: {host}, Port: {port}, User: {user}")
         return False
     else:
         logger.info("Django Database connection is successful.")
+        print("Django Database connection is successful.")
+        logger.info(f"Connection details - Host: {host}, Port: {port}, User: {user}")
+        print(f"Connection details - Host: {host}, Port: {port}, Dataname {database_name}. User: {user}.SQL_DOCKERIZED {settings.SQL_DOCKERIZED}")
         return True
+    finally:
+        # Close the connection explicitly if it was opened
+        if db_conn.connection:
+            db_conn.close()
 
 # 2023-12-27. this function takes in a request object and returns the client's ip address. 
 # ulitity function to get client ip address

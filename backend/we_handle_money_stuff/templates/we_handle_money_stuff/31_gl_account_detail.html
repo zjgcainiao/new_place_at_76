@@ -1,0 +1,76 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load static %}
+{% block content-main %}
+
+<div class="container-fluid">
+    <!-- Breadcrumb-->
+    <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb breadcrumb-dark mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+            <li class="breadcrumb-item "><a href="{% url 'we_handle_money_stuff:gl_account_dash' %}">GL Accounts</a>
+            </li>
+            <li class="breadcrumb-item active">GL Account Detail</li>
+        </ol>
+    </nav>
+    <div class="card border-0 shadow ">
+        <div class="card-header">
+            <h5 class="card-title
+            ">GL Account Detail</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group
+                    ">
+                        <label for="id">ID</label>
+                        <input type="text" class="form-control" id="id" value="{{ gl_account.id }}" readonly>
+                    </div>
+                    <div class="form-group
+                    ">
+                        <label for="name">Account Name</label>
+                        <input type="text" class="form-control" id="name" value="{{ gl_account.name }}" readonly>
+                    </div>
+                    <div class="form-group
+                    ">
+                        <label for="account_type">Account Type</label>
+                        <input type="text" class="form-control" id="account_type" value="{{ gl_account.account_type }}"
+                            readonly>
+                    </div>
+                    <div class="form-group
+                    ">
+                        <label for="description">Account Description</label>
+                        <input type="text" class="form-control" id="description" value="{{ gl_account.description }}"
+                            readonly>
+                    </div>
+                    <div class="form-group
+                    ">
+                        <label for="created_at">Created At</label>
+                        <input type="text" class="form-control" id="created_at" value="{{ gl_account.created_at }}"
+                            readonly>
+                    </div>
+                    <div class="form-group
+                    ">
+                        <label for="updated_at">Updated At</label>
+                        <input type="text" class="form-control" id="updated_at" value="{{ gl_account.updated_at }}"
+                            readonly>
+                    </div>
+                </div>
+            </div>
+            <!-- end of row  -->
+            <div class="row">
+                <div class="col-md-12 btn-group p-1 m-1">
+
+                    <a type="button" class="btn btn-outline-primary"
+                        href="{% url 'we_handle_money_stuff:gl_account_update' pk=gl_account.id %}">
+                        <i class='uil-edit'></i>
+                        Update</a>
+                    <a type="button" class="btn btn-outline-dark"
+                        href="{% url 'we_handle_money_stuff:gl_account_soft_delete' pk=gl_account.id %}">
+                        <i class='uil-trash-alt'></i>
+                        Delete</a>
+
+                </div>
+            </div>
+        </div>
+        <!-- end of card-body -->
+        {% endblock %}

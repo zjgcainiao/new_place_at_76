@@ -1,5 +1,6 @@
 from .base import render, login_required, CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE, messages,redirect, Prefetch
-from homepageapp.models import RepairOrdersNewSQL02Model, TextMessagesModel, AddressesNewSQL02Model,NoteItemsNewSQL02Model, PartItemModel,LaborItemModel, VehicleNotesModel
+from homepageapp.models import RepairOrdersNewSQL02Model, TextMessagesModel, AddressesNewSQL02Model,NoteItemsNewSQL02Model, \
+                                PartItemModel,LaborItemModel, VehicleNotesModel, CannedJobsNewSQL02Model
 from dashboard.forms import RepairOrderUpdateForm
 
 
@@ -32,7 +33,7 @@ def get_repair_order_detail_v1(request, pk):
         Prefetch('lineitems__lineitem_laboritem', queryset=labor_item_qs),
         Prefetch('repair_order_vehicle__vehiclenotes_vehicle', queryset=vehicle_note_qs),
     ).select_related('repair_order_customer', 'repair_order_vehicle').get(pk=pk)
-
+    canned_jobs=CannedJobsNewSQL02Model.objects.prefetch_related('line_items').order_by('canned_job_title') or None
     # repair_order = RepairOrdersNewSQL02Model.objects.prefetch_related(
     #    Prefetch(
     #        'repair_order_customer__addresses', 
@@ -96,6 +97,6 @@ def get_repair_order_detail_v1(request, pk):
         'vehicle': vehicle,
         'current_time': CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE,
         'text_messages': text_messages,
-
+        'canned_jobs': canned_jobs,
     }
     return render(request, 'dashboard/21_repair_order_detail_v1.html', context)

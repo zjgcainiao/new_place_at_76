@@ -24,7 +24,8 @@ from .license_plate_search import LicensePlateSearchForm
 # from .lite_customer_vehicle_update_formset import LiteCustomerVehicleUpdateFormset <--- could be redundant 
 from .line_item_create import LineItemCreateForm
 from .canned_job_update import CannedJobUpdateForm
-from .canned_job_line_item_sequence_formset import CannedJobLineItemSequenceInlineFormset
+from .canned_job_line_item_sequence import CannedJobLineItemSequenceForm
+from .canned_job_line_item_sequence_inline_formset import CannedJobLineItemSequenceInlineFormset
 from .phone_inline_formset import PhoneInlineFormset
 from .customer_formset import CustomerFormset
 from .address_formset import AddressFormset
@@ -34,8 +35,8 @@ from .repair_order_formset import RepairOrderFormset
 from .part_item_inline_formset import PartItemInlineFormset
 from .labor_item_inline_formset import LaborItemInlineFormset
 from .note_item_inline_formset import NoteItemInlineFormset
-
-
+# from .line_item_inline_formset import LineItemInlineFormset
+from .line_item_model_formset import LineItemModelFormset
 
 
                         
