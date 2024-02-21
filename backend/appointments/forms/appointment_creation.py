@@ -3,7 +3,7 @@ from .base import forms, Q, \
       ValidationError, FileExtensionValidator, validate_file_size,  \
         ReCaptchaField, ReCaptchaV2Checkbox, ReCaptchaV2Invisible, ReCaptchaV3, \
         get_latest_vehicle_make_list, get_latest_vehicle_model_list,validate_phone_number,validate_vehicle_year, \
-        format_phone_number_to_shop_standard, deformat_phone_numbers, APPT_STATUS_PORGRESSING, APPT_STATUS_CONFIRMED, APPT_STATUS_SUBMITTED, \
+        format_phone_number_to_shop_standard, deformat_phone_number, APPT_STATUS_PORGRESSING, APPT_STATUS_CONFIRMED, APPT_STATUS_SUBMITTED, \
         FormHelper, Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div, Button
 from appointments.models import AppointmentRequest, AppointmentImages
 from django.utils.translation import gettext_lazy as _

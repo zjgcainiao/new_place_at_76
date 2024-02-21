@@ -1,51 +1,591 @@
 {% extends 'homepageapp/10_homepageapp_base.html' %}
 {% load static %}
-{% block content %}
+{% block content1-main %}
+<style>
+  .metal-header {
+    font-family: 'Orbitron', sans-serif;
+    width: 100%;
+    text-align: center;
+    /* Dark red gradient background for a metallic look */
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.2); */
+    /* Adjusted box shadow for subtle depth, added inner shadow for metallic sheen */
+  }
 
-<section class="container pt-5 m-5">
-  <h3>Customer Login with Firebase Authentication </h3>
-    <div class="container">
-      <ul class="nav nav-tabs" role="tablist">
-          <li class="nav-item">
-              <a class="nav-link active" id="email-tab" data-bs-toggle="tab" data-bs-target="#emailtab" role="tab">Email</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" id="phone-tab" data-bs-toggle="tab" data-bs-target="#phonetab" role="tab">Phone</a>
-          </li>
-      </ul>
+  .metal-section {
+    background: linear-gradient(145deg, #f0f0f0, #dce0e2, #abacad);
+    /* Silver gradient background */
+    border: 1px transparent #6c6c6c;
+    /* Adjusted border color for a more metallic look */
+    border-radius: 5px;
+    /* Rounded corners */
+    padding: 10px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+    /* Adjusted box shadow for subtle depth, added inner shadow for metallic sheen */
+  }
 
-        <div class="tab-content">
-            <div id="emailtab" class="tab-pane fade show active" role="tabpanel">
-            <h3>Login Form (Email)</h3>
-            <form id="email-login-form">
-                {% csrf_token %}
-                <label for="email">Email:</label><br>
-                <input type="text" id="email" name="email"><br>
-                <label for="password">Password:</label><br>
-                <input type="password" id="password" name="password"><br><br>
-                <button id="email-login-button">Sign in with Email</button>
-                <p id="email-error"></p>
-            </form>
-          </div>
-          <div id="phonetab" class="tab-pane fade" role="tabpanel">
-            <h3>Login Form (Phone)</h3>
-            <form id="phone-login-form">
-                {% csrf_token %}
-                <label for="phone">Phone Number:</label><br>
-                <input type="text" id="phone" name="phone"><br><br>
-                <button id="phone-sign-in-button">Sign in with phone number</button>
-                <div id="recaptcha-container"></div>
-                <p id="phone-error"></p>
-            </form>
-          </div>
-        </div>
+  .metal-nav {
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Semi-transparent background for a sleek look */
+    border-bottom: 1px trasnparent #a0a0a0;
+    /* Adjusted bottom border for cohesion with the metallic theme */
+  }
 
+  .metal-nav .nav-link {
+    color: #333;
+    /* Dark text color remains for contrast */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+    /* Text shadow for a slight glow effect, enhancing legibility */
+  }
+
+  .metal-content {
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    /* Subtle gradient from white to light gray for content background */
+    border: none;
+    /* Consistent border color with the rest of the metallic theme */
+    border-radius: 10px;
+    /* Rounded corners */
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    /* Softer outer shadow and subtle inner glow for depth */
+  }
+
+  /* Responsive styles */
+  @media (max-width: 767px) {
+    .metal-section {
+      padding: 10px;
+    }
+
+    .metal-content {
+      margin-top: 20px;
+      padding: 10px;
+    }
+  }
+
+  /* Custom CSS for the metal engraved form */
+  .metal-form {
+    background: transparent;
+    /* Light gray background */
+    border: none;
+
+    /* Border color */
+    border-radius: 10px;
+    /* Rounded corners */
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Box shadow */
+    transition: transform 0.3s ease-in-out;
+    /* Transition for hover effect */
+  }
+
+  .metal-form:hover {
+    transform: translateY(-5px);
+    /* Hover effect: Move the form slightly up */
+  }
+
+  .metal-form label {
+    font-weight: bold;
+    color: #333;
+    align-items: center;
+    /* Dark text color */
+    /* display: block; */
+    /* Ensure labels appear on separate lines */
+  }
+
+  .metal-form input[type="text"],
+  .metal-form input[type="password"] {
+    background-color: #ddd;
+    /* Light gray background for input fields */
+    border: 1px solid #888787;
+    /* Border color */
+    border-radius: 5px;
+    /* Rounded corners */
+    padding: 8px;
+    margin-bottom: 10px;
+    /* width: 100%; */
+    /* Full width */
+  }
+
+  .metal-form button {
+    background: linear-gradient(to bottom, #373636 0%, #300909 50%, #484545 100%);
+    /* Dark grey gradient background for a metallic look */
+    color: #fff;
+    /* White text color */
+    border: none;
+    border-radius: 5px;
+    /* Rounded corners */
+    padding: 10px 10px;
+    text-align: center;
+    /* display: inline; */
+    /* cursor: pointer; */
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    transition: background-color 0.3s ease-in-out;
+    /* Transition for hover effect */
+    box-shadow: 0 5px 8px rgba(128, 128, 128, 0.6);
+    /* Grey shadow */
+
+    /* Text shadow for 3D effect */
+    margin: 0 auto;
+    /* Center the button horizontally */
+  }
+
+
+  .metal-form button:hover {
+    background-color: #2f3030;
+    /* Darker blue on hover */
+  }
+
+  .metal-form p {
+    color: #f10c0c;
+    /* Red color for error message */
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .nav-item {
+    font-weight: bold;
+    background: transparent;
+    /* Make the font bold */
+  }
+
+  .nav-item a:hover {
+    background: linear-gradient(120degree, #f1eeee 0%, #e7c8c8 50%, #363232 100%);
+    /* Add a metallic glare on hover */
+    color: #fff;
+    /* Change the text color on hover to white for contrast */
+  }
+
+  .nav-item a.active {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+    /* Add a shadow when active */
+  }
+</style>
+<section class=" p-5 mt-5 ">
+
+  <div class=" container metal-section ">
+    <h3 class="metal-header ">Login</h3>
+    <ul class="nav nav-tabs metal-nav" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="email-tab" data-bs-toggle="tab" data-bs-target="#emailtab" role="tab">Email</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="phone-tab" data-bs-toggle="tab" data-bs-target="#phonetab" role="tab">Phone</a>
+      </li>
+    </ul>
+
+    <div class="tab-content ">
+      <div id="emailtab" class="tab-pane fade show active" role="tabpanel">
+
+        <form id="email-login-form" class=" metal-form" method="POST">
+          {% csrf_token %}
+
+          <label for="email">Email:</label><br>
+          <input type="text" id="email" name="email" class="form-control"><br>
+          <label for="password">Password:</label><br>
+          <input type="password" id="password" name="password" class="form-control">
+
+          <button id="email-login-button" class='btn'>Sign in</button>
+
+
+          <p id="email-error" class="card-text"></p>
+        </form>
+      </div>
+      <div id="phonetab" class="tab-pane fade" role="tabpanel">
+        <h3>Login Form (Phone)</h3>
+        <form id="phone-login-form">
+          {% csrf_token %}
+          <label for="phone">Phone Number:</label><br>
+          <input type="text" id="phone" name="phone" class="form-control"><br><br>
+          <button id="phone-sign-in-button">Sign in with phone number</button>
+          <div id="recaptcha-container"></div>
+          <p id="phone-error"></p>
+        </form>
+      </div>
     </div>
-    <!-- end of container  -->
+
+  </div>
+  <!-- end of container  -->
 </section>
 <!-- firebase authentication functions in javascript -->
+{% comment %}
+
 <script type="module" src="{% static 'customer_users/js/firebase_auth_register_and_sign_in_with_django.js' %}">
 
+</script>
+{% endcomment %}
 
+<script>
+  var csrfToken = "{{ csrf_token }}";
+  window.csrfToken = csrfToken;
+  const verify_firebase_token_url = "{% url 'firebase_auth_app:verify_firebase_token' %}";
+  const firebase_user_dash_url = "{% url 'firebase_auth_app:firebase_user_dash' %}";
+  // console.log(verify_firebase_token_url);
+</script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+  // Add Firebase products that you want to use firebase_auth_register_and_sign_in_with_django.js
+  import {
+    getAuth, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    signInWithRedirect, browserSessionPersistence, setPersistence,
+    TwitterAuthProvider, FacebookAuthProvider, GoogleAuthProvider
+  }
+    from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+  import { RecaptchaVerifier, signInWithPhoneNumber } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+  // import { isSignInWithEmailLink, signInWithEmailLink, sendSignInLinkToEmail } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js';
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyD2nAbeM9CggQXJk1fLfg-f5feGd6_PfJc",
+    authDomain: "vin-doctor.firebaseapp.com",
+    projectId: "vin-doctor",
+    storageBucket: "vin-doctor.appspot.com",
+    messagingSenderId: "558945667327",
+    appId: "1:558945667327:web:d299c0c60e2605b71ca4ca",
+    measurementId: "G-M6BZ6B7DPJ"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  // Initialize Firebase Authentication and get a reference to the service
+  const firebase_auth = getAuth(app);
+  const csrfToken = window.csrfToken;
+  console.log('Firebase Auth is ready to use...', firebase_auth.name);
+  console.log('CSRF Token is ready to use...', csrfToken);
+  $(function () {
+
+
+    // Email & Password Authentication
+    $('#email-login-button').click(function (e) {
+      e.preventDefault();
+      var email = $('#email').val();
+      var password = $('#password').val();
+      email = email.toLowerCase();
+      setPersistence(firebase_auth, browserSessionPersistence)
+        .then(() => {
+          signInWithEmailAndPassword(firebase_auth, email, password)
+            .then((userCredential) => {
+              console.log('Signed in as ', email);
+              $("#email-error").html("");
+              // signed in 
+              const user = userCredential.user;
+              // firebaseAuthSigninPrecheck(user);
+              var uid = user.uid;
+              var newUserFlag = false;
+              // get the token (JWT) for the signed-in user via Firebase Auth and sends it back to 
+              user.getIdToken(true).then(function (idToken) {
+                // Send token to your backend via an HTTPS POST request:
+                // by default the missing newUserFlag=True; set False to verify a login request
+                console.log(`sending token to backend...setting newUserFlag to ${newUserFlag}.`)
+                sendTokenToBackend(idToken, uid, newUserFlag);
+              }).catch(function (error) {
+                console.error("Error getting token:", error);
+              });
+            });
+        }).catch((error) => {
+          // Handle Errors here.
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(error);
+          $("#email-error").html(errorMessage);
+        });
+    });
+
+    // Phone Number Authentication
+    window.recaptchaVerifier = new RecaptchaVerifier(firebase_auth, '#phone-sign-in-button', {
+      'size': 'invisible',
+      'callback': (response) => {
+        onPhoneSignInSubmit();
+      }
+    });
+
+    $('#email-signup-button').click(function (e) {
+      e.preventDefault();
+
+      var email = $('#email').val();
+      var password = $('#password').val();
+      var phone_number = $('#phone-number').val();
+      var display_name = $('#display-name').val();
+      email = email.toLowerCase();
+      display_name = display_name.split(' ')
+        .filter(word => word.length > 0) // This will remove any empty strings from the array
+        .map(word => word.replace(word[0], word[0].toUpperCase()))
+        .join(' ');
+    });
+
+    createUserWithEmailAndPassword(firebase_auth, email, password)
+      .then((userCredential) => {
+        // var user = firebase.auth().currentUser;
+        var user = userCredential.user;
+        var uid = user.uid
+        user.display_name = display_name
+        console.log('creating the new user succesfully with email and password. user uid is', uid)
+
+        var newUserFlag = true;
+        // get the token (JWT) for the signed-in user via Firebase Auth and sends it back to 
+        user.getIdToken(true).then(function (idToken) {
+          // Send token to your backend via an HTTPS POST request:
+          // by default the missing newUserFlag=True; set False to verify a login request
+          sendTokenToBackend(idToken, uid);
+        }).catch(function (error) {
+          console.error("Error getting token:", error);
+        });
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // end of email sign up button
+
+    $('#google-signup-button').click(function (e) {
+      e.preventDefault();
+      const google_provider = new GoogleAuthProvider();
+      signInWithRedirect(firebase_auth, google_provider);
+      // signInWithRedirect(firebase_auth, google_provider)
+      //   .then((result) => {
+      //     console.log("Successfully authenticated with the popup");
+      //     const credential = GoogleAuthProvider.credentialFromResult(result);
+      //     const token = credential.accessToken;
+      //     // The signed-in user info.
+      //     const user = result.user;
+
+      // Create a user object that we will send to Django
+      // var userObj = {
+      // uid: user.uid,
+      // email: user.email,
+      // display_name: user.displayName,
+      // token: token,
+      // credential:credential,
+      // };
+
+      // Serialize the data in JSON
+      // var jsonUserObj = JSON.stringify(userObj);
+
+      // Now send the data to Django
+      // $.ajax({
+      // url: 'sign_up_via_gmail_to_backend/',
+      // type: 'post',
+      // headers: {
+      //     'Content-Type': 'application/json',
+      //     'X-CSRFToken': $('input[name=csrfmiddlewaretoken]').val(),
+      // },
+      // data: jsonUserObj,
+      // datatype: 'json',
+      // success: function(response) {
+      //     if(response.status === 'OK') {
+      //         window.location.href = response.redirect;
+      //     }
+      // },
+      // error: function(response) {
+      //     console.error("Error sending user data to the backend", response);
+      // }
+      // });
+
+      //     console.log('User signed up with Google!');
+      // }).catch((error) => {
+      //   console.error(error);
+      //   // Handle Errors here.
+      //   const errorCode = error.code;
+      //   const errorMessage = error.message;
+      //   // The email of the user's account used.
+      //   const email = error.customData.email;
+      //   // The AuthCredential type that was used.
+      //   const credential = GoogleAuthProvider.credentialFromError(error);
+      // });
+
+    });
+
+    $('#twitter-signup-button').click(function (e) {
+      e.preventDefault();
+      var provider = new TwitterAuthProvider();
+      signInWithPopup(firebase_auth, provider)
+        .then((result) => {
+          console.log('User signed up with Twitter!');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    });
+  });
+  // FUNCTION sends back to token from a firebase autheneticated user to backend.
+  // token userObj and newUserFlag. token is generated after firebuase auth completes.
+
+  function sendTokenToBackend(token, uid, newUserFlag) {
+    if (typeof newUserFlag === 'undefined') {
+      newUserFlag = true;
+    }
+    var data = {
+      token: token,
+      uid: uid,
+      newUserFlag: newUserFlag,
+    };
+    console.log("data before JSON.stringify..." + data)
+    data = JSON.stringify(data);
+    console.log("data after JSON.stringify..." + data)
+    console.log(`sending token ${token} to backend...${verify_firebase_token_url}......`);
+    $.ajax({
+      url: verify_firebase_token_url,
+      type: "POST",
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        'X-CSRFToken': csrfToken,
+      },
+      data: data,
+      dataType: "json",
+      success: function (response) {
+        if (response.success) {
+          window.location.href = firebase_user_dash_url;
+        } else {
+          console.error("Backend failed:", response.error);
+        }
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        switch (jqXHR.status) {
+          case 400:
+            console.error("Bad request:", jqXHR.responseText);
+            break;
+          case 401:
+            console.error("Unauthorized:", jqXHR.responseText);
+            break;
+          case 403:
+            console.error("Forbidden:", jqXHR.responseText);
+            break;
+          case 404:
+            console.error("Resource not found:", jqXHR.responseText);
+            break;
+          default:
+            console.error("AJAX error:", textStatus, ", Details:", errorThrown);
+        }
+      },
+      complete: function (jqXHR, textStatus) {
+        // Cleanup tasks, if any
+      }
+    });
+  }
+
+  // function createFirebaseUserInDjango(jsonUserObj) {
+  //   // Get CSRF token via window.csrfToken. 
+
+  //   // Implement the logic to send user data to the backend server
+  //   // You may send the user data via AJAX POST request
+  //   $.ajax({
+  //       url: 'firebase_auth_user_creation/',
+  //       type: 'post',
+  //       headers: 
+  //         {
+  //               'Content-Type': 'application/json',
+  //               // Add the CSRF token to the request header
+  //               'X-CSRFToken': csrfToken,
+  //           },
+  //       data: jsonUserObj,
+  //       // {
+  //       //     'uid': user.uid,
+  //       //     'email': user.email,
+  //       //     'display_name': user.display_name,
+  //       //     'password':user.password,
+  //       //     // other user attributes
+  //       //     // Add CSRF Token
+  //       //     'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+  //       // },
+  //       dataType: 'json',
+  //       //   beforeSend: function(xhr) {
+  //       //     xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+  //       // },
+  //       success: function(data) {
+  //         // alert(data.message);
+  //         // Redirect to the URL provided by backend
+  //         window.location.href = '/accounts/register-success/';
+  //       },
+
+  //       error: function(response) {
+  //           console.log("Error sending user data to the backend (Django).", response);
+  //       }
+  //   });
+  //   // end of ajax
+  // }
+  // end of function 
+
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = jQuery.trim(cookies[i]);
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  // function to sign in with phone number
+  function onPhoneSignInSubmit() {
+    const phoneNumber = $('#phone').val();
+    // const phoneNumber = getPhoneNumberFromUserInput();
+    const appVerifier = window.recaptchaVerifier;
+
+
+    signInWithPhoneNumber(firebase_auth, phoneNumber, appVerifier)
+      .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        const code = window.prompt("Enter the OTP sent to your phone");
+        // const code = getCodeFromUserInput();
+        confirmationResult.confirm(code).then((result) => {
+          console.log("User signed in");
+          $("#phone-error").html("");
+          const user = result.user;
+        }).catch((error) => {
+          console.error("Error while checking the verification code", error);
+          $("#phone-error").html(error.message);
+        });
+      }).catch((error) => {
+        console.error("Error while sending the SMS", error);
+        $("#phone-error").html(error.message);
+      });
+  }
+
+  function firebaseAuthSigninPrecheck(user) {
+    // Implement the logic to send user data to the backend server
+    // You may send the user data via AJAX POST request
+    // Serialize the data in JSON
+    var userObj = {
+      'uid': user.uid,
+      'email': user.email,
+      // other user attributes
+      // // Add CSRF Token
+      // 'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+    };
+    var jsonUserObj = JSON.stringify(userObj);
+    $.ajax({
+      url: 'firebase_auth_signin_precheck/',
+      type: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add the CSRF token to the request header
+        'X-CSRFToken': $('input[name=csrfmiddlewaretoken]').val(),
+      },
+      data: jsonUserObj,
+      datatype: 'json',
+      success: function (response) {
+        if (response.redirect_url) {
+          window.location.href = response.redirect_url;
+        }
+      },
+      error: function (response) {
+        console.error("Error sending user data to the backend", response);
+      }
+    });
+  }
+  // end of function
+</script>
 
 {% endblock %}

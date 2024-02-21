@@ -9,7 +9,7 @@ import logging
 from django.db import transaction
 from django.core.management.base import BaseCommand
 from homepageapp.models import Vendors, AddressesNewSQL02Model, VendorAdddresses
-from core_operations.common_functions import clean_string_in_dictionary_object
+from core_operations.utilities import clean_string_in_dictionary_object
 from homepageapp.models import NhtsaMake
 from apis.utilities import fetch_from_api_url
 from apis.api_vendor_urls import NHTSA_GET_ALL_MAKES_URL

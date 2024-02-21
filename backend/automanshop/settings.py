@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-from core_operations.utilities import test_db_connection  # Adjust the import based on your file structure
+
 from google.oauth2 import service_account
 import os
 from dotenv import load_dotenv,  find_dotenv
@@ -29,6 +29,9 @@ from datetime import timedelta
 import re
 import ssl
 from json import JSONDecodeError
+from django.utils import timezone
+
+# from core_operations.utilities import test_db_connection
 # from django.contrib.sites.models import Site
 
 # The find_dotenv() function will search for the .env file starting from the current working directory and then going up each parent directory until it finds one.
@@ -197,18 +200,18 @@ DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 DJANGO_PROD_ENV = config("DJANGO_PROD_ENV", default=False, cast=bool)
 logger.info(
     f'Django debug has been set to {DEBUG}...Enable Production environment is {DJANGO_PROD_ENV}...')
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ALL_ORIGINS = True
 
 # CORS_ORIGIN_WHITELIST
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:5173',  # Add the origin of your React app here
-#     "http://localhost",
-#     "http://127.0.0.1:8000",
-#     "https://new76prolubeplus.com",
-#     "https://storage.googleapis.com",
-#     "https://automan-container-app.azurewebsites.net",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',  # Add the origin of your React app here
+    "http://localhost",
+    "http://127.0.0.1:8000",
+    "https://new76prolubeplus.com",
+    "https://storage.googleapis.com",
+    "https://automan-container-app.azurewebsites.net",
+]
 
 # Turn off CSRF secure in development env (HTTP); in production, HTTPS requires to have CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_DOMAIN = config("CSRF_COOKIE_DOMAIN", default="localhost")
@@ -230,7 +233,8 @@ CSRF_TRUSTED_ORIGINS = config(
 
 # ADMINS=[]
 
-
+# 2024-02-19 
+STRIPE_LIVE_MODE_ON=config("STRIPE_LIVE_MODE_ON", default=False, cast=bool)
 # 2023-10-17 added STRIPE two sets of keys.
 # test keys.
 STRIPE_PUBLIC_TEST_KEY = config("STRIPE_PUBLIC_TEST_KEY", default=None)
@@ -310,7 +314,7 @@ INSTALLED_APPS = [
     'we_create_3d_models',
     'automatic_emails',
     'core_operations',
-    'firebase_auth_app',
+    'firebase_auth_app', # firebase admin sdk
     'celery',
     'django_celery_results',
     'django_celery_beat',
@@ -325,6 +329,7 @@ INSTALLED_APPS = [
     'we_have_ai_helpers',
     'shift_management',
     'shops',
+    'oauth2_provider', #OpenID Connect (ODIC)
     # added on 2023-10-18. provding dtc trouble codes reading..
     'smart_diagnosis',
     # token authentication provied by Django Rest framework.
@@ -529,6 +534,8 @@ DEFAULT_FROM_EMAIL = email_sender  # replace with your email
 # DEFAULT_FILE_STORAGE = 'myapp.custom_storage.NASStorage'
 # NAS_STORAGE_LOCATION = '192.168.1.30'  # NAS server IP or hostname
 
+# google firebase admin sdk configuration
+FIREBASE_CONFIG=os.getenv('GOOGLE_FIREBASE_CONFIG')
 
 # the google service account's credential json file stored online
 credential_info = None
@@ -551,7 +558,7 @@ if google_credential_json:
     except (KeyError, ValueError) as e:
         print(
             f"Error: The credential file is missing required information: {e}")
-        
+
 # If not loaded yet, try fetching from a URL
 else:
     google_credential_path = os.getenv("GOOGLE_CREDENTIAL_PATH")
@@ -745,8 +752,9 @@ STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 # https://learn.microsoft.com/en-us/azure/storage/common/storage-configure-connection-string
 # using azure storage bucket to host static files
 
-
-STATIC_URL = 'https://storage.googleapis.com/{}/'.format(
+# https://storage.cloud.google.com/vin-doctor.appspot.com
+# https://storage.googleapis.com/
+STATIC_URL = 'https://storage.cloud.google.com/{}/'.format(
     GS_BUCKET_NAME)
 
 STATIC_ROOT = BASE_DIR / 'assets'
@@ -768,8 +776,13 @@ STATIC_ROOT = BASE_DIR / 'assets'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# bebug the database connection: should return True if the connection is successful.
-# test_db_connection()
+
+
+# use this flag field to control template rendering, for navigation bar, homepage, etc.
+VIN_DOCTOR_MODE_ON = config("VIN_DOCTOR_MODE_ON", default=False, cast=bool)
 
 
 SITE_ID = 1  # Use the actual site ID from your database
+
+# bebug the database connection: should return True if the connection is successful.
+# test_db_connection()

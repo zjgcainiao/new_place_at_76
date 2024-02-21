@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.apps import apps
 # Import the function you've defined earlier
-from core_operations.common_functions import update_with_dummy_data
+from core_operations.utilities import update_with_dummy_data
 import logging
 from django.utils import timezone
 

@@ -1,0 +1,14 @@
+[
+  {
+    "origin": ["http://127.0.0.1:8000"],
+    "responseHeader": ["Content-Type"],
+    "method": ["GET", "HEAD", "DELETE"],
+    "maxAgeSeconds": 3600
+  },
+  {
+    "origin": ["https://new76prolubeplus.com"],
+    "responseHeader": ["Content-Type"],
+    "method": ["GET", "HEAD", "DELETE"],
+    "maxAgeSeconds": 3600
+  }
+]

@@ -2,6 +2,9 @@ from .base import render, redirect, JsonResponse, stripe, settings, reverse, \
     logger, timezone
 from urllib.parse import urljoin
 from django.contrib.sites.shortcuts import get_current_site
+from stripe.error import InvalidRequestError
+
+
 
 def prebuilt_checkout(request, product_id):
     """
@@ -18,15 +21,14 @@ def prebuilt_checkout(request, product_id):
         try:
             checkout_session = stripe.checkout.Session.retrieve(existing_checkout_session_id)
             # Redirect to existing checkout session if it's still active
-            if checkout_session.payment_status in ['unpaid', 'requires_payment_method']:
+            if checkout_session.payment_status in ['unpaid', 'requires_payment_method'] and checkout_session.status in ['open',]:
                 logger.info(f'Redirecting to existing checkout session {existing_checkout_session_id}...')
                 return redirect(checkout_session.url, code=303)
-        except stripe.error.InvalidRequestError as e:
+        except InvalidRequestError as e:
             logger.error(f'InvalidRequestError: {str(e)}')
             # Clear the invalid session ID
             del request.session['checkout_session_id']
 
-    logger.info('Creating new checkout session for product {}...'.format(product_id))
     # Fetch the product's price
     try:
         prices = stripe.Price.list(product=product_id, active=True, limit=1)
@@ -38,6 +40,7 @@ def prebuilt_checkout(request, product_id):
         return JsonResponse({'error': str(e)}, status=500)
 
     try:
+        logger.info('Creating new checkout session for product {}...'.format(product_id))
         checkout_session = stripe.checkout.Session.create(
             line_items=[
                 {
@@ -62,6 +65,7 @@ def prebuilt_checkout(request, product_id):
         )
         if checkout_session.payment_status in ['unpaid', 'incomplete']:
             request.session['checkout_session_id'] = checkout_session.id
+            request.session['vin'] = vin
     except Exception as e:
         logger.error(f'Error creating checkout session for product {product_id}: {str(e)}')
         return JsonResponse({'error': str(e)}, status=500)

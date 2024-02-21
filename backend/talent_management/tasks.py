@@ -11,7 +11,7 @@ from django.contrib import messages
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 from time import sleep
 
-from core_operations.common_functions import generate_today_date_format, format_string_with_underscore
+from core_operations.utilities import generate_today_date_format, format_string_with_underscore
 
 # created a crontab schedule. The schedule is to allow the task to run every 30 minutes
 

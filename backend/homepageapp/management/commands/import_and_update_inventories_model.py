@@ -21,7 +21,7 @@ import logging
 from django.db import transaction
 from django.core.management.base import BaseCommand
 from homepageapp.models import Inventories, PartsModel as Parts
-from core_operations.common_functions import clean_string_in_dictionary_object, convert_to_decimal, convert_to_boolean, convert_to_int, make_timezone_aware
+from core_operations.utilities import clean_string_in_dictionary_object, convert_to_decimal, convert_to_boolean, convert_to_int, make_timezone_aware
 
 from decimal import Decimal, InvalidOperation
 

@@ -10,15 +10,6 @@ from .exceptions import NoAuthToken, InvalidAuthToken, FirebaseError
 from django.contrib.auth.models import User
 from dotenv import load_dotenv
 
-
-load_dotenv()
-
-prviate_key_json = os.environ.get("GOOGLE_CREDENTIAL_PATH")
-
-cred = credentials.Certificate(prviate_key_json)
-
-default_firebase_app = firebase_admin.initialize_app(cred)
-
 # def firebase_new_user_by_email():
 
 class FirebaseAuthentication(authentication.BaseAuthentication):

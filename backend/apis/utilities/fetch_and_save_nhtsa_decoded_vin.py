@@ -49,6 +49,7 @@ async def fetch_and_save_nhtsa_decoded_vin(vin,year=None):
                     'count': count,
                     'message': message,
                     'search_criteria': search_criteria,
+                    'url': url,
                     }
             )
         return nhtsa_decoded_vin, created, count, message

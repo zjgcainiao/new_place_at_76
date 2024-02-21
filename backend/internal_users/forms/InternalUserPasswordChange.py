@@ -1,7 +1,6 @@
 
 # added on 2023-08-23 to customize internal user password change forms.
 
-
 from .base import forms, PasswordChangeForm, ValidationError, authenticate, reverse
 
 class InternalUserPasswordChangeForm(PasswordChangeForm):
@@ -12,8 +11,7 @@ class InternalUserPasswordChangeForm(PasswordChangeForm):
 
     # Overriding the default fields
     def __init__(self, user, *args, **kwargs):
-        super(InternalUserPasswordChangeForm,
-              self).__init__(user, *args, **kwargs)
+        super().__init__(user, *args, **kwargs)
         # rename the original 'old_password' field to not confuse
         self.fields['old_password'].label = "Old password"
         # remove the username field from the original form

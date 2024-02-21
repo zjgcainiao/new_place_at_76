@@ -10,6 +10,8 @@ class InternalUserBackend(BaseBackend):
             internal_user = InternalUser.objects.get(email=email)
         except InternalUser.DoesNotExist:
             return None
+        if not password:
+            raise ValueError('Password is required')
 
         if internal_user.check_password(password):
             # check if it's the superuser

@@ -21,7 +21,7 @@ import logging
 from django.db import transaction
 from django.core.management.base import BaseCommand
 from homepageapp.models import NoteItemsNewSQL02Model
-from core_operations.common_functions import clean_string_in_dictionary_object
+from core_operations.utilities import clean_string_in_dictionary_object
 from core_operations.utilities import parse_to_two_digit_decimal
 
 logger = logging.getLogger('management_script')

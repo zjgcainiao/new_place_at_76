@@ -97,7 +97,7 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
                     "value_id": value_id,
                     "vin": vin,
                     "source": NHTSA_API_URL,
-                    "version": 5  # Reset version to 5 for new data
+                    # "version": 5  # this field is not needed here
                 }
 
                 # updated 2023-11-02 after variable_id becomes a foreign key field

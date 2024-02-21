@@ -37,6 +37,8 @@ urlpatterns = [
     path('core/', include('core_operations.urls')),
     path('money-stuff/', include('we_handle_money_stuff.urls')),
 
+    path('firebase_auth_app/', include('firebase_auth_app.urls')), # firebase_autH_app, verifying firebase_auth token
+
     # djangorestframework-simplejwt token auth
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

@@ -19,10 +19,9 @@
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="theme-color" content="#ffffff">
 
-
-  <!-- jQuery js 3.6.4 -->
-  <!-- jQuery 3.7.0 js -->
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <!-- jQuery 3.7.1 js -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
   <!-- poper 2.9.2 js, bootstrap 5.3.0 js , simplebar js, smooth-scoll.polyfills js, tiny-slider js, jarallax and jarallax-element js  -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
@@ -38,14 +37,14 @@
   <script src="{% static 'homepageapp/vendor/tiny-slider/dist/min/tiny-slider.js' %}"></script>
   <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax.min.js' %}"></script>
   <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script>
-  crossorigin="anonymous"></script>
+
 
   <!-- Font Awesome css 6.4.2 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  <!-- Tempus Dominus JavaScript -->
+  <!-- Tempus Dominus JS + CSS -->
   <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.4.4/dist/js/tempus-dominus.min.js"
     crossorigin="anonymous"></script>
   <link rel="stylesheet"
@@ -65,10 +64,12 @@
   <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax.min.js' %}"></script>
   <script src="{% static 'homepageapp/vendor/jarallax/dist/jarallax-element.min.js' %}"></script>
 
-  <!-- Main Theme CSS Styles + Javascript -->
+  <!-- Main Theme CSS Styles + JS -->
   <link rel="stylesheet" href="{% static 'homepageapp/css/theme.min.css' %}">
 
   <script src="{% static 'homepageapp/js/theme.min.js' %}"></script>
+
+  <link ref="stylesheet" href="{% static 'core_operations/css/automan-theme.min.css' %}">
 
   <!-- Page loading styles-->
   <style>
@@ -149,26 +150,33 @@
   </style>
 
 
-  <!-- Page loading scripts using jQuery -->
-  <script>
-    $(function () {
-      var preloader = $('.page-loading');
-      preloader.removeClass('active');
-      setTimeout(function () {
-        preloader.remove();
-      }, 2000);
-
-    });
-  </script>
-
 </head>
 <!-- Body-->
+
+<!-- Page loading scripts using jQuery -->
+<script>
+  window.onload = function () {
+    var preloader = $('.page-loading');
+    preloader.removeClass('active');
+    setTimeout(function () {
+      preloader.remove();
+    }, 2000);
+
+  };
+
+  const csrfToken = "{{ csrf_token }}";
+  const verify_firebase_token_url = "{% url 'firebase_auth_app:verify_firebase_token' %}";
+  // console.log(verify_firebase_token_url);
+  const firebase_user_dash_url = "{% url 'firebase_auth_app:firebase_user_dash' %}";
+</script>
 
 <body class="bg-light">
 
   <!-- Page loading spinner with Bootstrap styles -->
-  <div class="page-loading active d-flex justify-content-center align-items-center"
-    style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(255, 255, 255, 0.9); transition: opacity 0.5s;">
+  <div class="page-loading active d-flex justify-content-center align-items-center" style="position: fixed; 
+      top: 0; right: 0; bottom: 0; left: 0; 
+      background-color: rgba(255, 255, 255, 0.9); 
+      transition: opacity 0.5s;">
     <div class="page-loading-inner text-center">
       <div class="spinner-border fw-bold" role="status"></div>
       <div>Loading...Please wait...</div>
@@ -177,7 +185,7 @@
 
   <main class="page-wrapper">
     <!-- Navbar header-->
-    <header class="navbar navbar-expand-lg navbar-light fixed-top" data-scroll-header>
+    <header class="navbar navbar-expand-lg navbar-light fixed-top automan-glossy-metallic" data-scroll-header>
       <div class="container">
         <a class="navbar-brand me-2 me-xl-4" href="{% url 'homepageapp:homepage' %}">
           <img class="d-block" src="{% static '/homepageapp/img/logo/2022-logo-transparent-small.png' %}" width="68"
@@ -189,8 +197,9 @@
         </button>
 
         {% if user.is_authenticated and user|is_instance_of:"CustomerUser" %}
-        <a href="{% url 'customer_users:customer_user_profile' %}" class="btn btn-dark  order-lg-3">Hi, {{
-          user.customer_user_first_name }}</a>
+        <a href="{% url 'customer_users:customer_user_profile' %}" class="btn btn-dark  order-lg-3">
+          Hi,
+          {{user.customer_user_first_name }}</a>
         {% else %}
         <!-- <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}">Register/Login</a> -->
         <!-- <a class="btn btn-primary btn-sm ms-2 order-lg-3" href="{% url 'customer_users:customer_user_register' %}">Register</a>
@@ -216,7 +225,7 @@
 
               </ul>
             </li>
-            <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'appointments:appointment_list' %}"><i
+            <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'appointments:appointment_list' %}"><i
                   class="fi-calendar fs-base me-2"></i>Service Appointment</a></li>
 
             <!-- More -->
@@ -240,7 +249,7 @@
     </header>
     <!-- end of navheader  -->
 
-    {% include 'customer_users/01_customer_user_messages_section.html' %}
+    {% include 'homepageapp/14_homepageapp_messages_section.html' %}
 
     <!-- Page content-->
     <section style="padding-top: 1rem;">

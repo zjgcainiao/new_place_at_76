@@ -35,8 +35,6 @@ urlpatterns = [
          views.firebase_auth_signin_precheck, name='firebase_auth_signin_precheck'),
     path('register/firebase/', views.customer_user_register_firebaseauth,
          name='customer_user_register_firebaseauth'),
-    path('register/firebase/verify_token/',
-         views.verify_token, name='verify_token'),
     path('register/firebase/firebase_auth_user_creation/',
          views.firebase_auth_user_creation, name='firebase_auth_user_creation'),
     # path('preview/', views.customer_user_register, name='register'),

@@ -10,6 +10,8 @@ from homepageapp.models import NhtsaRecall
 from .fetch_and_save_nhtsa_decoded_vin import fetch_and_save_nhtsa_decoded_vin
 from .fetch_and_save_nhtsa_vehicle_id import fetch_and_save_nhtsa_vehicle_id
 from datetime import datetime
+from dateutil import parser
+from core_operations.utilities import pase_date_to_yymmdd
 # from django.shortcuts import get_object_or_404
 # use the utility function `apis.utilities.validate_field_mappings` to validate the field mappings
 # {'apis_field':'model_field'}
@@ -96,8 +98,8 @@ async def fetch_and_save_nhtsa_recalls(vin):
                             try:
                                 # Attempt to parse the date
                                 # Adjust the strptime format if the input format varies
-                                parsed_date = datetime.strptime(value, "%m/%d/%Y").date()
-                                defaults[model_field] = parsed_date.strftime("%Y-%m-%d")
+                                parsed_date = pase_date_to_yymmdd(value)
+                                defaults[model_field] = parsed_date
                             except ValueError as e:
                                 logger.error(f"Failed to parse date for field '{api_field}' with value '{value}'. Error: {e}")
                                 # Optionally, set a default value or continue with an error

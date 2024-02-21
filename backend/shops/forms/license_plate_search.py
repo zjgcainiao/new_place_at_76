@@ -1,4 +1,6 @@
 
+import attr
+import attrs
 from .base import forms, LIST_OF_STATES_IN_US, \
 Hidden, Row, Field, FormActions, Button, ReCaptchaField, ReCaptchaV2Checkbox, \
 Layout, Column, FormHelper, ValidationError, reverse
@@ -13,7 +15,7 @@ class LicensePlateSearchForm(forms.Form):
     state = forms.ChoiceField(choices=[('', '--- None ---')] + list(LIST_OF_STATES_IN_US), widget=forms.Select(
         attrs={'class': 'form-select'}))
     
-    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(), 
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(attrs={}), 
                              label='please check the box below to verify you are not a robot.')
     
     def clean_license_plate(self):

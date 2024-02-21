@@ -9,7 +9,7 @@ import logging
 from django.db import transaction
 from django.core.management.base import BaseCommand
 from we_handle_money_stuff.models import  GLAccount
-from core_operations.common_functions import clean_string_in_dictionary_object
+from core_operations.utilities import clean_string_in_dictionary_object
 
 logger = logging.getLogger('management_script')
 

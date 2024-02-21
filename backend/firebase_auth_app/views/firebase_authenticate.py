@@ -1,14 +1,21 @@
+
 from django.shortcuts import render
 from firebase_admin import credentials, auth
 from firebase_auth_app.exceptions import NoAuthToken,InvalidAuthToken, FirebaseError
 from firebase_auth_app.models import FirebaseUser
+
+
 # Create your views here.
 def firebase_authenticate(request):
         """Get the authorization Token, It raise exception when no authorization Token is given"""
+        
+        """Decoding the Token It rasie exception when decode failed."""
+
+        
         auth_header = request.META.get("HTTP_AUTHORIZATION")
         if not auth_header:
                 raise NoAuthToken("No auth token provided")
-            """Decoding the Token It rasie exception when decode failed."""
+        
         id_token = auth_header.split(" ").pop()
         decoded_token = None
         try:

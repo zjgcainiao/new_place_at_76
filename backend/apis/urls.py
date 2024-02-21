@@ -18,7 +18,7 @@ app_name = 'apis'
 router = DefaultRouter()
 
 router.register(r'vin_data_aggregated', VinDataAggregatedViewSet,
-                basename='vin_data_aggregated_api')
+                basename='vin_data_aggregated_api')    
 router.register(r'vin_nhtsa_snapshots', VinNhtsaSnapshotViewSet,
                 basename='popular_vin_nhtsa_api')
 router.register(r'plate_and_vin_data', PlateAndVinDataViewSet,

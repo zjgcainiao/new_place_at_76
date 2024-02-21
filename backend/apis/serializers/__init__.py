@@ -28,8 +28,8 @@ from .vin_nhtsa_snapshot import VinNhtsaApiSnapshotsSerializer
 from .plate_and_vin_data import PlateAndVinDataSerializer
 from .nhtsa_service_bulletin import NhtsaServiceBulletinSerializer
 from .nhtsa_api_call_history import NhtsaApiCallHistorySerializer
-# from .nhtsa_decode_vin import NhtsaDecodeVinSerializer
-from .nhtsa_recall import Recallerializer
+
+from .nhtsa_recall import NhtsaRecallSerializer
 from .nhtsa_safety_rating import NhtsaSafetyRatingSerializer
 from .nhtsa_make import NhtsaMakeSerializer
 from .nhtsa_vehicle_id import NhtsaVehicleIdSerializer

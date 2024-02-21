@@ -10,4 +10,4 @@ class UserSearchCount(models.Model):
     updated_by = models.ForeignKey(InternalUser, on_delete=models.DO_NOTHING, related_name='user_search_count_updated_by')
 
     def __str__(self):
-        return f"{self.user.username} - {self.search_count}"
+        return f"{self.customer_user} - {self.search_count}"

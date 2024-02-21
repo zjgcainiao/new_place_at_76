@@ -135,30 +135,26 @@
 
   /* Additional styles for buttons and text can go here */
 </style>
-<section class="bg-top-center d-flex p-2 my-2 ">
+<section class="bg-top-center d-block p-1 my-1  ">
   <!-- django messages section  -->
-  <!-- <div class="container align-items-center justify-content-center pt-5 mt-5" style="">
+  <div class="container align-items-center justify-content-center p-5 mt-5">
     {% include 'homepageapp/14_homepageapp_messages_section.html' %}
-  </div> -->
+  </div>
 
-  <div class="container pt-5 mt-5">
-    <div class="d-flex align-items-center justify-content-center ">
-      <div class="shadow-lg p-5 rounded">
-        <h3 class="mb-4 text-center">Hello there. Please sign in below.</h3>
-        <p class="mb-4 text-dark text-center" style="font-family: 'Orbitron', sans-serif; font-weight: 700;">Register a
-          new
-          account <a href="{% url 'customer_users:customer_user_register' %}">here</a>.</p>
-        <form method="post">
-          <!--  id="customer_user_login_form" -->
-          {% csrf_token %}
-          {{form|crispy}}
-          <div class="d-grid">
-            <button type="submit" class="btn automan-btn-primary">Login</button>
-          </div>
-        </form>
-      </div>
+  <div class="container d-flex justify-content-center align-items-center pt-5 m-5 ">
+    <div class="shadow-lg p-5 rounded  ">
+      <h3 class="mb-4 text-center">Sign In</h3>
+      <p class="mb-4 text-dark text-center" style="font-family: 'Orbitron', sans-serif; font-weight: 700;">
+        Register a new account <a href="{% url 'customer_users:customer_user_register' %}">here</a>.
+      </p>
+      <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+      </form>
     </div>
-    <!-- end of d-flex  -->
   </div>
   <!-- end of container  -->
 

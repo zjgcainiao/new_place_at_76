@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from decimal import Decimal, InvalidOperation
 from django.utils.translation import gettext_lazy as _
 from datetime import date, datetime
-from core_operations.common_functions import format_phone_number_to_shop_standard, deformat_phone_numbers
+from core_operations.utilities import deformat_phone_number,format_phone_number_to_shop_standard
 import re
 
 # custom validator 01
@@ -33,7 +33,7 @@ def validate_file_size(value):
 
 def validate_phone_number(value):
     # javacript based script will format the user's input as (800)234-0690.
-    value = deformat_phone_numbers(value)
+    value = deformat_phone_number(value)
     # Check if value has exactly 10 digits. US phone number. no country codde 1, or +1 is needed.
     if not re.match(r'^\d{10}$', value):
         raise ValidationError(
