@@ -36,7 +36,7 @@ router.register(r'canned_jobs', CannedJobViewSet,
                 basename='canned_job_api')
 
 urlpatterns = [
-    path('', include(router.urls)),
+
     path('internal_user_login/', api_internal_user_login,
          name='api_internal_user_login'),
     path('customers/', get_active_customers_api,

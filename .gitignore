@@ -69,6 +69,7 @@ venv/
 *.log
 *.pid
 
+*/sample.mp4/
 
 # to exclude secrets.yaml file
 web-secrets.yaml

@@ -1,24 +1,27 @@
 from tabnanny import check
-from .base import viewsets, IsAuthenticated, IsInternalUser,api_view, action, Response, status
+from .base import viewsets, IsAuthenticated, IsInternalUser, api_view, action, Response, status
 from apis.serializers import PlateAndVinDataSerializer
 from homepageapp.models import LicensePlateSnapShotsPlate2Vin
 from django.core.cache import cache
 import logging
 logger = logging.getLogger('django')
 
-# added on 2023-12-24. this one returns DRF-viewset data from license plate and state. 
+# added on 2023-12-24. this one returns DRF-viewset data from license plate and state.
 # this viewset uses `PlateAndVinDataSerializer` serializer, which has a nested serializer `VinNhtsaApiSnapshotsSerializer`
+
+
 class PlateAndVinDataViewSet(viewsets.ModelViewSet):
     queryset = LicensePlateSnapShotsPlate2Vin.objects.all()
     serializer_class = PlateAndVinDataSerializer
     # permission_classes = [IsAuthenticated, IsInternalUser]
 
     def check_rate_limit(self, request):
-        user_identifier = request.user.id if request.user.is_authenticated else self.get_client_ip(request)
+        user_identifier = request.user.pk if request.user.is_authenticated else self.get_client_ip(
+            request)
         cache_key = f"search_count_{user_identifier}"
         search_count = cache.get(cache_key, 0)
         logger.info(f"Search count for {user_identifier}: {search_count}")
-        if request.user.is_authenticated and search_count >= 2:
+        if not request.user.is_authenticated and search_count >= 2:
             return False
 
         # Update the count in the cache
@@ -29,7 +32,7 @@ class PlateAndVinDataViewSet(viewsets.ModelViewSet):
             else:
                 cache.incr(cache_key)
         return True
-    
+
     def get_client_ip(self, request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded_for:
@@ -37,7 +40,6 @@ class PlateAndVinDataViewSet(viewsets.ModelViewSet):
         else:
             ip = request.META.get('REMOTE_ADDR')
         return ip
-    
 
     def get_queryset(self):
         """
@@ -45,26 +47,26 @@ class PlateAndVinDataViewSet(viewsets.ModelViewSet):
         by filtering against a `username` query parameter in the URL.
         """
         if not self.check_rate_limit(self.request):
-            logger.warning(f"Daily search limit reached for {self.get_client_ip(self.request)}")
+            logger.warning(
+                f"Daily search limit reached for {self.get_client_ip(self.request)}")
             return Response({"detail": "Daily search limit reached."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
-        
+
         queryset = super().get_queryset()
         vin = self.request.query_params.get('vin', None)
         if vin:
             queryset = queryset.filter(vin=vin)
             cache.get_or_set(f"vin_{vin}", queryset, 86400)
         return queryset
-    
+
     def list(self, request, *args, **kwargs):
         if not self.check_rate_limit(request):
             return Response({"detail": "Daily search limit reached."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
         return super().list(request, *args, **kwargs)
-    
+
     def retrieve(self, request, *args, **kwargs):
         if not self.check_rate_limit(request):
             return Response({"detail": "Daily search limit reached."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
         return super().retrieve(request, *args, **kwargs)
-    
 
     def create(self, request, *args, **kwargs):
         # Custom logic for creating a new instance
@@ -78,7 +80,8 @@ class PlateAndVinDataViewSet(viewsets.ModelViewSet):
         # Custom logic for updating an existing instance
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
