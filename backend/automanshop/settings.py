@@ -233,8 +233,8 @@ CSRF_TRUSTED_ORIGINS = config(
 
 # ADMINS=[]
 
-# 2024-02-19 
-STRIPE_LIVE_MODE_ON=config("STRIPE_LIVE_MODE_ON", default=False, cast=bool)
+# 2024-02-19
+STRIPE_LIVE_MODE_ON = config("STRIPE_LIVE_MODE_ON", default=False, cast=bool)
 # 2023-10-17 added STRIPE two sets of keys.
 # test keys.
 STRIPE_PUBLIC_TEST_KEY = config("STRIPE_PUBLIC_TEST_KEY", default=None)
@@ -250,17 +250,19 @@ STRIPE_SECRET_LIVE_KEY = config("STRIPE_SECRET_LIVE_KEY", default=None)
 
 STRIPE_LIVE_MODE = False  # Change to True in production
 STRIPE_WEBHOOK_TEST_SECRET = config("STRIPE_WEBHOOK_TEST_SECRET", default=None)
-STRIPE_WEBHOOK_SECRET_LOCAL = config("STRIPE_WEBHOOK_SECRET_LOCAL", default=None)
+STRIPE_WEBHOOK_SECRET_LOCAL = config(
+    "STRIPE_WEBHOOK_SECRET_LOCAL", default=None)
 
 # assign the local webhook secret to DJSTRIPE_WEBHOOK_SECRET. The local webhook secret is used for testing and can be generated
 # via the following Stripe Cli command: stripe listen --forward-to localhost:8000/stripe_webhook/
 if DEBUG:
-    
+
     DJSTRIPE_WEBHOOK_SECRET = STRIPE_WEBHOOK_SECRET_LOCAL
 else:
     DJSTRIPE_WEBHOOK_SECRET = STRIPE_WEBHOOK_TEST_SECRET
-      
-DJSTRIPE_USE_NATIVE_JSONFIELD = True  # We recommend setting to True for new installations
+
+# We recommend setting to True for new installations
+DJSTRIPE_USE_NATIVE_JSONFIELD = True
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
 
 
@@ -273,6 +275,7 @@ REST_FRAMEWORK = {
 
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'firebase_auth_app.authentication.FirebaseAuthentication',
         'rest_framework.authentication.BasicAuthentication',  # default authentications
         'rest_framework.authentication.SessionAuthentication',  # default authentications
         # added to allow simpleJWTToken used between a React Native frontend and this application.
@@ -314,7 +317,7 @@ INSTALLED_APPS = [
     'we_create_3d_models',
     'automatic_emails',
     'core_operations',
-    'firebase_auth_app', # firebase admin sdk
+    'firebase_auth_app',  # firebase admin sdk
     'celery',
     'django_celery_results',
     'django_celery_beat',
@@ -329,7 +332,7 @@ INSTALLED_APPS = [
     'we_have_ai_helpers',
     'shift_management',
     'shops',
-    'oauth2_provider', #OpenID Connect (ODIC)
+    'oauth2_provider',  # OpenID Connect (ODIC)
     # added on 2023-10-18. provding dtc trouble codes reading..
     'smart_diagnosis',
     # token authentication provied by Django Rest framework.
@@ -340,7 +343,7 @@ INSTALLED_APPS = [
     'we_handle_money_stuff',  # transactions, GL, accounting app
 ]
 # in testing, add `sslserver` to the installed apps.
-if  DEBUG:
+if DEBUG:
     INSTALLED_APPS += ('sslserver',)
 
 # added on 2022-07-06 as an example customer settings for dev, staging or prod.
@@ -363,7 +366,7 @@ MIDDLEWARE = [
     "internal_users.middlewares.InternalUserMiddleware",
     "internal_users.middlewares.UserTypeMiddleware",
     'core_operations.middlewares.ResponseTimeMiddleware',
-    
+
     # custom middleware that limits the number of search requests
     # "core_operations.middlewares.SearchLimitMiddleware",
 ]
@@ -384,6 +387,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'homepageapp.context_processors.global_settings_for_homepageapp',
             ],
         },
     },
@@ -440,7 +444,7 @@ if USE_LOCAL_REDIS:
                         host=REDIS_HOST,
                         ssl=False,
                         port=REDIS_PORT)
-                    ),
+                     ),
 
                 ],
                 "channel_capacity": {
@@ -449,8 +453,8 @@ if USE_LOCAL_REDIS:
                     re.compile(r"^websocket.send\!.+"): 20,
                 }
             },
-    },
-}
+        },
+    }
 else:
 
     REDIS_HOST = config('REDIS_HOST', default=REIS_DOCKERIZED_HOST)
@@ -535,51 +539,52 @@ DEFAULT_FROM_EMAIL = email_sender  # replace with your email
 # NAS_STORAGE_LOCATION = '192.168.1.30'  # NAS server IP or hostname
 
 # google firebase admin sdk configuration
-FIREBASE_CONFIG=os.getenv('GOOGLE_FIREBASE_CONFIG')
+FIREEBASE_CONFIG = os.getenv('GOOGLE_FIREBASE_CONFIG')
 
 # the google service account's credential json file stored online
 credential_info = None
 # Try to load credentials from JSON in environment variable
-google_credential_json = os.getenv("GOOGLE_CREDENTIAL_JSON")
+# google_credential_json = os.getenv("GOOGLE_CREDENTIAL_JSON")
 
-if google_credential_json:
-    try:
-        credential_info = json.loads(google_credential_json)
-        # GS_CREDENTIALS = credentials.Certificate(credential_info)
-        # GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
-        #     credential_info)
-    except JSONDecodeError:
-        logger.error("Invalid JSON in GOOGLE_CREDENTIAL_JSON")
-    except FileNotFoundError as e:
-        print(f"Error: The specified file was not found: {e}")
-    except requests.exceptions.RequestException as e:
-        print(
-            f"Error: A network error occurred while attempting to download the credential file: {e}")
-    except (KeyError, ValueError) as e:
-        print(
-            f"Error: The credential file is missing required information: {e}")
+# if google_credential_json:
+#     try:
+#         credential_info = json.loads(google_credential_json)
+#         # GS_CREDENTIALS = credentials.Certificate(credential_info)
+#         # GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
+#         #     credential_info)
+#     except JSONDecodeError:
+#         logger.error("Invalid JSON in GOOGLE_CREDENTIAL_JSON")
+#     except FileNotFoundError as e:
+#         print(f"Error: The specified file was not found: {e}")
+#     except requests.exceptions.RequestException as e:
+#         print(
+#             f"Error: A network error occurred while attempting to download the credential file: {e}")
+#     except (KeyError, ValueError) as e:
+#         print(
+#             f"Error: The credential file is missing required information: {e}")
 
 # If not loaded yet, try fetching from a URL
+google_credential_path = os.getenv("GOOGLE_CREDENTIAL_PATH")
+if google_credential_path:
+    try:
+        response = requests.get(google_credential_path)
+        if response.status_code == 200:
+            credential_info = response.json()
+            logger.info("Successfully downloaded Firebase credentials")
+        else:
+            logger.error("Failed to download credentials: HTTP %d" %
+                         response.status_code)
+    except Exception as e:
+        logger.error(f"Error fetching credentials: {e}")
 else:
-    google_credential_path = os.getenv("GOOGLE_CREDENTIAL_PATH")
-    if google_credential_path:
-        try:
-            response = requests.get(google_credential_path)
-            if response.status_code == 200:
-                credential_info = response.json()
-            else:
-                logger.error("Failed to download credentials: HTTP %d" % response.status_code)
-        except Exception as e:
-            logger.error(f"Error fetching credentials: {e}")
-    else:
-        logger.error("GOOGLE_CREDENTIAL_PATH not set")
+    logger.error("GOOGLE_CREDENTIAL_PATH not set")
 
 # Initialize Firebase Admin SDK with credentials
 if credential_info:
     GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
-    credential_info)
+        credential_info)
     try:
-        default_app = firebase_admin.initialize_app()#GS_CREDENTIALS
+        default_app = firebase_admin.initialize_app()
         logger.info("Firebase Admin SDK initialized successfully")
     except Exception as e:
         logger.error(f"Failed to initialize Firebase Admin SDK: {e}")
@@ -622,7 +627,7 @@ RECAPTCHA_DOMAIN = 'www.recaptcha.net'
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 # GOOGLE MAP API KEY FOR GOOGLE PLACES
-GOOGLE_MAP_API_KEY = config("GOOGLE_MAP_API_KEY",default=None)
+GOOGLE_MAP_API_KEY = config("GOOGLE_MAP_API_KEY", default=None)
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -637,7 +642,8 @@ SQL_DOCKERIZED = config("SQL_DOCKERIZED", default=False, cast=bool)
 if local_server and (not DJANGO_PROD_ENV):
     if SQL_DOCKERIZED:
         local_server = config("SQL_DOCKERIZED_HOST", default=None)
-        logger.info(f'SQL_DOCKERIZED set to {SQL_DOCKERIZED}. Using SQL_DOCKERIZED_HOST: {local_server}...')
+        logger.info(
+            f'SQL_DOCKERIZED set to {SQL_DOCKERIZED}. Using SQL_DOCKERIZED_HOST: {local_server}...')
     else:
         logger.info(f'Using local sql server:{local_server}...')
 
@@ -668,7 +674,7 @@ if local_server and (not DJANGO_PROD_ENV):
         },
         'default': {
             'ENGINE': 'mssql',
-            "NAME": demoDatabaseName, # the demo databse used as default.
+            "NAME": demoDatabaseName,  # the demo databse used as default.
             "USER": user,
             "PASSWORD": password,
             "HOST": local_server,
@@ -777,10 +783,9 @@ STATIC_ROOT = BASE_DIR / 'assets'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
 # use this flag field to control template rendering, for navigation bar, homepage, etc.
 VIN_DOCTOR_MODE_ON = config("VIN_DOCTOR_MODE_ON", default=False, cast=bool)
-
+# this flag is used with the context_processor.py of 'homepageapp' app to control the rendering of the VIN Doctor mode.
 
 SITE_ID = 1  # Use the actual site ID from your database
 

@@ -1,4 +1,5 @@
-from .base import JsonResponse, stripe,logger
+from .base import JsonResponse, stripe, logger
+
 
 # when a product
 def create_payment_intent(request, product_id):
@@ -29,7 +30,7 @@ def create_payment_intent(request, product_id):
         prices = stripe.Price.list(product=product_id, active=True, limit=1)
 
         if not prices.data:
-            return JsonResponse({'error': 'Price not found for the specified product'}, status=404)
+            return JsonResponse({'error': 'Price not found for the specified product.'}, status=404)
         
         price = prices.data[0].unit_amount  # Price in cents
         intent = stripe.PaymentIntent.create(

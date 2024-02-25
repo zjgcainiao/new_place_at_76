@@ -286,9 +286,16 @@
     }
   });
 </script>
+<script>
+  var csrfToken = "{{ csrf_token }}";
+  window.csrfToken = csrfToken;
+  const verify_firebase_token_url = "{% url 'firebase_auth_app:verify_firebase_token' %}";
+  const firebase_user_dash_url = "{% url 'firebase_auth_app:firebase_user_dash' %}";
+  // console.log(verify_firebase_token_url);
+</script>
 <script type="module" src="{% static 'customer_users/js/firebase_auth_register_and_sign_in_with_django.js' %}"></script>
 
-<script type="module">
+<!-- <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
   // Add Firebase products that you want to use firebase_auth_register_and_sign_in_with_django.js
@@ -441,6 +448,6 @@
   });
 
 
-</script>
+</script> -->
 
 {% endblock %}

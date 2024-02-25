@@ -4,7 +4,7 @@ The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/
 
 """
-
+from shops.views import vehicle_search_product
 from django.contrib import admin
 from django.urls import include, path
 # from internal_users.admin import my_admin_site
@@ -16,6 +16,7 @@ from rest_framework_simplejwt.views import (
 
 app_name = 'automanshop'
 urlpatterns = [
+
     path('', include('homepageapp.urls')),
     path('talents/', include('talent_management.urls')),
     # add pilot ViewSet via django restframework
@@ -37,7 +38,8 @@ urlpatterns = [
     path('core/', include('core_operations.urls')),
     path('money-stuff/', include('we_handle_money_stuff.urls')),
 
-    path('firebase_auth_app/', include('firebase_auth_app.urls')), # firebase_autH_app, verifying firebase_auth token
+    # firebase_autH_app, verifying firebase_auth token
+    path('firebase_auth_app/', include('firebase_auth_app.urls')),
 
     # djangorestframework-simplejwt token auth
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

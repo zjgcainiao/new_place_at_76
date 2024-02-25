@@ -10,7 +10,7 @@
     /* The first block of CSS styles applies to all .nav-link elements that are children of .nav-tabs: */
 
     .automan-error {
-        font-family: 'Noto Sans', sans-serif;
+        font-family: 'Exo2', sans-serif;
         /* Change to your preferred font */
         color: maroon;
         font-size: 1.1em;
@@ -67,11 +67,11 @@
         border: 1px solid #dee2e6;
         border-top: none;
         /* Hide top border */
-        background: linear-gradient(145deg, #ffffff, #e6e6e6);
+        background: transparent;
         margin: 5px;
         padding: 10px;
-        box-shadow: inset 20px 20px 60px #7f8080,
-            inset -20px -20px 60px #ffffff;
+        box-shadow: inset 5px 5px 10px #7f8080,
+            inset -5px -15px 10px #ffffff;
         /* Inward shadows for a matte look */
     }
 
@@ -103,7 +103,7 @@
     .form-label,
     label {
         font-weight: bold;
-        font-family: 'Orbitron', sans-serif;
+        font-family: 'Noto Sans', sans-serif;
         /* Adjust font-weight as needed */
     }
 
@@ -112,7 +112,7 @@
     /* Metallic effect enhancement on form control focus */
     .form-select,
     .form-control:focus {
-        border-color: #2b3033;
+        border-color: #4f5152;
         /* Metallic color */
         outline: 1px;
         /* Light grey border to start with */
@@ -122,7 +122,7 @@
         /* Glow effect for metallic feel */
         transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
         /* Remove default focus outline */
-        box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+        box-shadow: 0 0 0 0.2rem rgba(121, 128, 135, 0.25);
         /* Metallic glow on focus */
     }
 
@@ -179,7 +179,7 @@
         bottom: 5px;
         left: 5px;
         z-index: -1;
-        background: linear-gradient(145deg, #e2ebf0, #cfd9df, #8e9aaf);
+        background: linear-gradient(145deg, #edeff1, #cfd4d7, #c6cdd9);
         border-radius: 5px;
     }
 
@@ -229,35 +229,66 @@
     }
 </style>
 
-<section class="container pt-5 my-5">
+<section class="container pt-5 my-5 ">
     <!-- django messages section  -->
     {% include 'homepageapp/14_homepageapp_messages_section.html' %}
+    <div class="card card-hover shadow-sm ">
+        <h3 class='card-header bg-dark text-white'>Vehicle Search</h3>
+        <p class="px-4 py-2" style="font-family: 'Noto Sans', sans-serif;">Use the form below to fetch the vehicle
+            report (Vin Report).
+            Three searches without sign in. </p>
+        <ul class="nav nav-tabs nav-fill" id="searchType" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="byVIN-tab" data-bs-toggle="tab" type="button"
+                    data-bs-target="#byVIN" role="tab" aria-controls="byVIN" aria-selected="false">By VIN</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link " id="byPlate-tab" data-bs-toggle="tab" type="button" data-bs-target="#byPlate"
+                    role="tab" aria-controls="byPlate" aria-selected="true">By Plate</button>
+            </li>
 
-    <ul class="nav nav-tabs" id="searchType" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="byPlate-tab" data-bs-toggle="tab" type="button"
-                data-bs-target="#byPlate" role="tab" aria-controls="byPlate" aria-selected="true">By Plate</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="byVIN-tab" data-bs-toggle="tab" type="button" data-bs-target="#byVIN"
-                role="tab" aria-controls="byVIN" aria-selected="false">By VIN</button>
-        </li>
-    </ul>
-    <div class="tab-content" id="searchTypeContent">
-        <div class="tab-pane fade show active" id="byPlate" role="tabpanel" aria-labelledby="byPlate-tab">
-            <!-- By Plate Form -->
-            {% crispy plate_form plate_form.helper %}
+        </ul>
+        <div class="card-body border-0">
+            <div class="tab-content" id="searchTypeContent">
 
+                <div class="tab-pane fade show active" id="byVIN" role="tabpanel" aria-labelledby="byVIN-tab">
+
+                    <!-- By VIN Form -->
+                    {% crispy vin_form vin_form.helper %}
+
+                </div>
+                <!-- end of the Vin Search Form  -->
+
+                <div class="tab-pane fade show " id="byPlate" role="tabpanel" aria-labelledby="byPlate-tab">
+                    <!-- By Plate Form -->
+                    {% crispy plate_form plate_form.helper %}
+
+                </div>
+            </div>
+            <!-- end of form tab-cotent -->
         </div>
-        <div class="tab-pane fade show" id="byVIN" role="tabpanel" aria-labelledby="byVIN-tab">
 
-            <!-- By VIN Form -->
-            {% crispy vin_form vin_form.helper %}
+        <!-- export-to-pdf buttons-->
 
+        <div class="card-footer bg-white justify-content-start">
+            <div class="col">
+                <button id="exportPdfButtonClientSide" class="btn btn-export-pdf">
+                    Export to <i class="fas fa-file-pdf me-3"></i>
+                </button>
+            </div>
+            <!-- Uncomment below for server-side export functionality
+                <div class="col-auto">
+                    <a id="exportPdfBackend" class="btn btn-export-pdf" href="{% url 'shops:export_vin_data_to_pdf' %}">
+                        <i class="fas fa-print"></i> Export to PDF via server-side
+                    </a>
+                </div>
+                -->
         </div>
-        <!-- end of the Vin Search Form  -->
+
+        <!-- end of pdf buttons -->
     </div>
-    <!-- end of form tab-cotent -->
+    <!-- end of card  -->
+
 </section>
 <!-- end of container  -->
 
@@ -283,24 +314,7 @@
     <p><strong>Disclaimer:</strong> The information provided is for general informational purposes only and should not
         be relied upon as a sole basis for making financial transactions.</p>
 </div>
-<!-- export-to-pdf buttons-->
-<div class="container">
-    <div class="row justify-content-start">
-        <div class="col">
-            <button id="exportPdfButtonClientSide" class="btn btn-export-pdf">
-                Export to <i class="fas fa-file-pdf me-3"></i>
-            </button>
-        </div>
-        <!-- Uncomment below for server-side export functionality
-        <div class="col-auto">
-            <a id="exportPdfBackend" class="btn btn-export-pdf" href="{% url 'shops:export_vin_data_to_pdf' %}">
-                <i class="fas fa-print"></i> Export to PDF via server-side
-            </a>
-        </div>
-        -->
-    </div>
-</div>
-<!-- end of pdf buttons -->
+
 
 <!-- resultData Display  -->
 <div class="container mt-2" id="resultDataDisplay">

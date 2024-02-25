@@ -59,7 +59,7 @@ COPY . .
 COPY scripts ./scripts
 
 # Copy the environment variables file into the image
-COPY ./.env ./.env
+# COPY ./.env ./.env
 
 # Expose port 8000
 EXPOSE 8000

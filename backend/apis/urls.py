@@ -1,9 +1,9 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from apis.views import api_internal_user_login, openai_proxy, get_active_repairorders_api,get_active_customers_api, \
-               ActiveRepairOrderViewSet, LineItemsViewSet, TextMessagesViewSet,  \
-               VinNhtsaSnapshotViewSet, VinDataAggregatedViewSet, \
-               PlateAndVinDataViewSet, WIPDashboardViewSet,  CannedJobViewSet
+from apis.views import api_internal_user_login, openai_proxy, get_active_repairorders_api, get_active_customers_api, \
+    ActiveRepairOrderViewSet, LineItemsViewSet, TextMessagesViewSet,  \
+    VinNhtsaSnapshotViewSet, VinDataAggregatedViewSet, \
+    PlateAndVinDataViewSet, WIPDashboardViewSet,  CannedJobViewSet
 
 from django.urls import path
 from rest_framework_simplejwt.views import (
@@ -18,7 +18,7 @@ app_name = 'apis'
 router = DefaultRouter()
 
 router.register(r'vin_data_aggregated', VinDataAggregatedViewSet,
-                basename='vin_data_aggregated_api')    
+                basename='vin_data_aggregated_api')
 router.register(r'vin_nhtsa_snapshots', VinNhtsaSnapshotViewSet,
                 basename='popular_vin_nhtsa_api')
 router.register(r'plate_and_vin_data', PlateAndVinDataViewSet,
@@ -49,8 +49,10 @@ urlpatterns = [
     path('api/openai_proxy/', openai_proxy, name='openai_proxy'),
 
     # verify simpleJWTToken
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('simpleJWTs/token/', TokenObtainPairView.as_view(),
+         name='token_obtain_pair'),
+    path('simpleJWTs/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('simpleJWTs/token/verify/',
+         TokenVerifyView.as_view(), name='token_verify'),
 
 ]

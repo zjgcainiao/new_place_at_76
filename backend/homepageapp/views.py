@@ -23,7 +23,6 @@ from dashboard.forms import CustomerUpdateForm
 import requests
 from django.http import HttpResponse
 # from .serializers import *
-
 from django.db.models import Count
 from django.core.paginator import Paginator
 # from uuid import UUID
@@ -34,9 +33,15 @@ from django.db.models import Prefetch
 from django.forms import inlineformset_factory
 from django.contrib import messages
 from decouple import config, Csv
+from django.conf import settings
+from shops.views import vehicle_search_product
+import logging
+
+logger = logging.getLogger('django')
 
 
 def GetHomepageView(request):
+
     # the list of icons corresponding to the services provided by the shop. Reduce code redundancy
     service_icons = [
         {
@@ -90,6 +95,7 @@ def GetHomepageView(request):
             'title': 'Suspension Service',
         },
     ]
+
     return render(request, 'homepageapp/20_homepageapp_home.html', {'service_icons': service_icons})
 
 
@@ -185,14 +191,13 @@ class EmailDataView(APIView):
         return Response({'status': 'success'})
 
 
-
-
 def verify_stripe_applepay(request):
     cloud_url = 'https://storage.googleapis.com/vin-doctor.appspot.com/stripe/apple-developer-merchantid-domain-association'
 
     try:
         response = requests.get(cloud_url)
-        response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+        # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+        response.raise_for_status()
     except requests.RequestException as e:
         # Handle any exceptions that occur during the HTTP request
         return HttpResponse(str(e), status=500)

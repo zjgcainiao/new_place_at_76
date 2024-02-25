@@ -31,6 +31,11 @@
   <meta name="csrf-token" content="{{ csrf_token }}">
    <!-- this base template include all the necessary css and js files for the this website.  -->
   {% include 'homepageapp/00_the_base.html' %}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
 </head>
 
 
@@ -179,7 +184,34 @@
           <ul class="navbar-nav navbar-nav-scroll" style="max-height: 35rem;">
             <!-- register and login  -->
             <!-- <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'customer_users:customer_user_register' %}">Register/Login</a></li> -->
+            {% if VIN_DOCTOR_MODE_ON %}
+            <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'shops:search_by_vin_or_plate' %}">Vin Report</a></li>
+            <li class="nav-item dropdown py-2 me-lg-2">
+              <a class="nav-link dropdown-toggle align-items-center  border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown"
+                role="button" aria-expanded="false"><i class="fi-layers fs-base me-2"></i>More</a>
+              <ul class="dropdown-menu dropdown-menu-light" >
+                <!-- Appointments  -->
 
+                    <li class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'homepageapp:services' %}"><i
+                      class="fi-car fs-base me-2"></i>Services</a></li>
+                <li class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'homepageapp:about-us' %}"><i class="fi-friends fs-base me-2"></i>About
+                    Us</a></li>
+                <li class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'shops:prebuilt_checkout' product_id='prod_PKOol19RtrtGTG' %}"><i
+                      class="fi-cash fs-base me-2"></i>Payment</a></li>
+                <li class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'homepageapp:future-homepage' %}"><i class="fa-solid fa-store"></i> Automan Repair Shop (soon)</a></li>
+                <li class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'appointments:create_appointment' %}"><i class="fa-regular fa-calendar-check"></i> Service
+                    Appointment</a></li>
+                <li><a class="dropdown-item" href="{% url 'internal_users:internal_user_login' %}"> <i class="fa-solid fa-right-to-bracket"></i> Employee
+                    Portal</a></li>
+                <li class="dropdown-divider"></li>
+              </ul>
+            </li>
+            {% else %}
             <!-- Appointments  -->
             <li class="nav-item "><a class="nav-link nav-hover"
                 href="{% url 'appointments:create_appointment' %}">Service Appointment</a></li>
@@ -208,6 +240,7 @@
 
               </ul>
             </li>
+            {% endif %}
             {% comment %}
             <li class="nav-item"><a class="nav-link nav-hover" href="{% url 'shops:get_online_product_list' %}">Store</a>
             </li>

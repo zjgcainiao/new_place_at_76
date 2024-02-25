@@ -20,4 +20,5 @@ from .validate_decimal import validate_decimal
 from .convert_to_boolean import convert_to_boolean
 from .convert_to_decimal import convert_to_decimal
 from .convert_to_int import convert_to_int
-from .clean_json_and_write_it_to_env import clean_json_and_write_to_env
+
+from .clean_json_and_write_it_to_env import clean_json_and_write_it_to_env

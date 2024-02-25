@@ -2,7 +2,8 @@ import json
 from django.conf import settings
 import os
 
-def clean_json_and_write_to_env(json_string, env_var_key,filename=".env"):
+def clean_json_and_write_it_to_env(json_string, env_var_key,filename=".env"):
+    
     # Parse the JSON string to remove unnecessary whitespaces
     json_data = json.loads(json_string)
     cleaned_json_string = json.dumps(json_data, separators=(',', ':'))
@@ -18,5 +19,3 @@ def clean_json_and_write_to_env(json_string, env_var_key,filename=".env"):
     with open(env_file_path, 'a') as env_file:
         env_file.write(env_content)
     return cleaned_json_string
-
-

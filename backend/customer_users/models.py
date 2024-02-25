@@ -42,7 +42,8 @@ class CustomerUser(AbstractBaseUser):
 
     cust_user_id = models.AutoField(primary_key=True)
     cust_user_first_name = models.CharField(_('first name'), max_length=50)
-    cust_user_last_name = models.CharField(_('last name'), max_length=50, null=True,blank=True)
+    cust_user_last_name = models.CharField(
+        _('last name'), max_length=50, null=True, blank=True)
     cust_user_middle_name = models.CharField(
         _('middle name'), max_length=50, null=True)
     cust_user_preferred_name = models.CharField(
@@ -50,6 +51,10 @@ class CustomerUser(AbstractBaseUser):
     cust_user_phone_number = models.CharField(max_length=20,  # unique=True, still using email as the default
                                               help_text='enter a valid US phone number.', null=True)
     cust_user_country_code = models.CharField(max_length=10, default='+1')
+    cust_user_name_alternate = models.CharField(
+        max_length=200, blank=True, null=True)
+    firebase_uid = models.CharField(
+        max_length=50, blank=True, null=True, unique=True, help_text='The firebase user id.')
     cust_user_email = models.EmailField(
         verbose_name='Email', unique=True)
     cust_user_email_verified = models.BooleanField(
@@ -91,15 +96,17 @@ class CustomerUser(AbstractBaseUser):
 
     objects = CustomerUserManager()
     # added the following methods to support the user authentication middleware. see InternalUser model.
+
     def __str__(self):
         return f'{self.cust_user_full_name}'
 
     def is_internaluser(self):
         return False
-    
+
     def is_customeruser(self):
         return True
     # Full name property field
+
     @property
     def cust_user_full_name(self):
         first_name = self.cust_user_first_name
