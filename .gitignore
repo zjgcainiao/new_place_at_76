@@ -9,7 +9,7 @@ migrations/
 testing_sql_db/
 __pycache__/
 my_app_logs/
-
+.gitignore
 
 # this is the yolo training video file
 sample_license_plate_video_for_Yolo8.mp4
