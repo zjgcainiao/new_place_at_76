@@ -77,4 +77,4 @@ web-secrets.yaml
 auto_gen_secrets.yaml
 *secrets.yaml
 managed-sql-instance.yaml
-backend/we_have_ai_helpers/sample.mp4
+# backend/we_have_ai_helpers/sample.mp4
