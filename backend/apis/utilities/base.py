@@ -1,5 +1,4 @@
 import logging
-from venv import logger
 import aiohttp
 import asyncio
 from datetime import timedelta
@@ -22,6 +21,6 @@ import json
 import logging
 from asgiref.sync import async_to_sync
 from dateutil import parser
-
+from shops.models import Vin
 
 logger = logging.getLogger('django.db')

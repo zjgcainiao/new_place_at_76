@@ -1,4 +1,5 @@
-from .base import render, CustomerUser, messages,redirect
+from .base import render, CustomerUser, messages, redirect
+
 
 def customer_user_profile_new(request):
     customer_user = None
@@ -7,7 +8,7 @@ def customer_user_profile_new(request):
         print(f'the user type is {isinstance(request.user, CustomerUser)}')
         # customer_user = request.user
         customer_user = CustomerUser.objects.get(
-            pk=request.user.cust_user_id)
+            pk=request.user.pk)
         if customer_user.cust_user_email_verified:
             return render(request, 'customer_users/20_customer_user_profile_new.html', {'customer_user': customer_user})
         else:

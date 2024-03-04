@@ -3,18 +3,19 @@ from .base import render, JsonResponse, logging,  model_to_dict, QuerySet, \
 
 from shops.forms import LicensePlateSearchForm, VINSearchForm
 from .manage_vehicle_search_limit import manage_vehicle_search_limit
-from  apis.utilities import database_sync_to_async
+from apis.utilities import database_sync_to_async
+
 
 async def vehicle_search_product(request):
     """
     Performs a vehicle search based on VIN or license plate.
     """
     logger = logging.getLogger('django')
-    plate_data={}
-    plate_data_id =''
+    plate_data = {}
+    plate_data_id = ''
     flattened_data = {}
-    max_searches_for_this_view = 1  # Customize this per view or user type
-    
+    max_searches_for_this_view = 2  # Customize this per view or user type
+
     if request.method == 'GET':
         vin_form = VINSearchForm()
         plate_form = LicensePlateSearchForm()
@@ -28,7 +29,8 @@ async def vehicle_search_product(request):
         limit_reached, error_context = await database_sync_to_async(manage_vehicle_search_limit)(request, max_searches_for_this_view)
         if limit_reached:
             return JsonResponse(error_context, status=403)
-        action_value = request.POST['action'] # action value is used to determine which form is being submitted: vin_form or plate_form
+        # action value is used to determine which form is being submitted: vin_form or plate_form
+        action_value = request.POST['action']
         if action_value == 'action_vin_search':
             vin_form = VINSearchForm(request.POST)
             print(f'user is submitting vin_form....')
@@ -78,7 +80,7 @@ async def vehicle_search_product(request):
                 plate_data, success = await fetch_single_plate_data_via_plate2vin_api(license_plate, state)
                 if not success:
                     plate_form.add_error(
-                        None, 'Failed to fetch VIN for the given License Plate.')
+                        None, 'Failed to fetch vehicle info for the given License Plate.')
                 elif plate_data and plate_data.id:
                     flattened_data = await database_sync_to_async(model_to_dict)(plate_data)
             except Exception as e:
@@ -86,11 +88,11 @@ async def vehicle_search_product(request):
                     None, f'Error fetching plate data for plate: {license_plate} state:{state} {str(e)}')
 
             if plate_data:
-                 plate_data_id = plate_data.id
+                plate_data_id = plate_data.id
 
-            return JsonResponse({'plate_data_id': plate_data_id})
+            return JsonResponse({'plate_data_id': plate_data_id}, safe=False)
 
     if not flattened_data or not plate_data_id or not plate_data_id.strip:
         return JsonResponse({'error': 'No data found'}, status=404)
 
-    return JsonResponse({'plate_data_id': plate_data_id})
+    return JsonResponse({'plate_data_id': plate_data_id}, safe=False)

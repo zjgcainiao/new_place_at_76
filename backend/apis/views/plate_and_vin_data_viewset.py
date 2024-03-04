@@ -4,8 +4,13 @@ from apis.serializers import PlateAndVinDataSerializer
 from homepageapp.models import LicensePlateSnapShotsPlate2Vin
 from django.core.cache import cache
 import logging
+from django.http import HttpRequest, QueryDict
+from firebase_auth_app.authentication import FirebaseAuthentication
+
+
 logger = logging.getLogger('django')
 
+LICENSE_PLATE_SEARCH_LIMIT = 2
 # added on 2023-12-24. this one returns DRF-viewset data from license plate and state.
 # this viewset uses `PlateAndVinDataSerializer` serializer, which has a nested serializer `VinNhtsaApiSnapshotsSerializer`
 
@@ -14,14 +19,17 @@ class PlateAndVinDataViewSet(viewsets.ModelViewSet):
     queryset = LicensePlateSnapShotsPlate2Vin.objects.all()
     serializer_class = PlateAndVinDataSerializer
     # permission_classes = [IsAuthenticated, IsInternalUser]
+    # permission_classes = [IsAuthenticated]
+    authentication_classes = [FirebaseAuthentication]
 
     def check_rate_limit(self, request):
         user_identifier = request.user.pk if request.user.is_authenticated else self.get_client_ip(
             request)
-        cache_key = f"search_count_{user_identifier}"
+        cache_key = f"search_count_for_user_{user_identifier}"
         search_count = cache.get(cache_key, 0)
         logger.info(f"Search count for {user_identifier}: {search_count}")
-        if not request.user.is_authenticated and search_count >= 2:
+        if not request.user.is_authenticated and \
+                search_count >= LICENSE_PLATE_SEARCH_LIMIT:
             return False
 
         # Update the count in the cache
@@ -43,8 +51,7 @@ class PlateAndVinDataViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `username` query parameter in the URL.
+        Filter results based on query parameters: 'licensePlate', 'state', and 'vin'.
         """
         if not self.check_rate_limit(self.request):
             logger.warning(
@@ -52,10 +59,21 @@ class PlateAndVinDataViewSet(viewsets.ModelViewSet):
             return Response({"detail": "Daily search limit reached."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
 
         queryset = super().get_queryset()
+
+        license_plate = self.request.query_params.get('licensePlate', None)
+        state = self.request.query_params.get('state', None)
         vin = self.request.query_params.get('vin', None)
+
+        if license_plate:
+            # Case-insensitive match
+            queryset = queryset.filter(license_plate__iexact=license_plate)
+            if state:
+                queryset = queryset.filter(state=state)
+
         if vin:
             queryset = queryset.filter(vin=vin)
             cache.get_or_set(f"vin_{vin}", queryset, 86400)
+
         return queryset
 
     def list(self, request, *args, **kwargs):

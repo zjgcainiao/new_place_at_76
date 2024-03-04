@@ -1,3 +1,4 @@
+from venv import logger
 from rest_framework import viewsets, status
 from apis.user_permissions import IsInternalUser
 from rest_framework.permissions import IsAuthenticated
@@ -14,3 +15,7 @@ from django.views.decorators.http import require_POST, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Case, When, Value, IntegerField
+
+import logging
+
+logger = logging.getLogger('django')

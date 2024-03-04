@@ -272,12 +272,10 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
-
-
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'firebase_auth_app.authentication.FirebaseAuthentication',
+        'firebase_auth_app.authentication.FirebaseAndSimpleJwtAuthentication',
         'rest_framework.authentication.BasicAuthentication',  # default authentications
-        'rest_framework.authentication.SessionAuthentication',  # default authentications
+        'rest_framework.authentication.SessionAuthentication',
         # added to allow simpleJWTToken used between a React Native frontend and this application.
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication',
@@ -408,6 +406,7 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "internal_users.internal_user_auth_backend.InternalUserBackend",
     "customer_users.customer_auth_backend.CustomerUserBackend",
+    "firebase_auth_app.firebase_auth_backend.FirebaseAuthBackend",
 ]
 
 

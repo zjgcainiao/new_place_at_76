@@ -1,15 +1,16 @@
 from .base import forms, CustomerUser, UserCreationForm, AuthenticationForm, \
     ValidationError, validate_us_state, validate_zip_code, LIST_OF_STATES_IN_US, is_valid_us_phone_number, \
-        re, RegexValidator, ReCaptchaField, ReCaptchaV2Checkbox, FormHelper, Layout, Row, Column, Field, ButtonHolder, Submit, HTML
+    re, RegexValidator, ReCaptchaField, ReCaptchaV2Checkbox, FormHelper, Layout, Row, Column, Field, ButtonHolder, Submit, HTML
 
 
 class CustomerUserRegistrationForm(UserCreationForm):
     cust_user_email = forms.EmailField(help_text='Required. We will send important account updates and notifications to this email.',
-                                       widget=forms.EmailInput(attrs={'type': 'email', 'class': 'form-control', }), 
+                                       widget=forms.EmailInput(
+                                           attrs={'type': 'email', 'class': 'form-control', }),
                                        label='Email',
                                        required=True)
     cust_user_phone_number = forms.CharField(
-        max_length=15, 
+        max_length=15,
         required=False,
         widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control',
                                'placeholder:': 'ex. 213-445-9990 or 2134459990. US phone number only.'}),
@@ -20,23 +21,24 @@ class CustomerUserRegistrationForm(UserCreationForm):
     cust_user_middle_name = forms.CharField(
         max_length=30, required=False, help_text='Your Middle Name. Optional.', label='Middle Name')
     cust_user_first_name = forms.CharField(
-        max_length=30, required=False, 
+        max_length=30, required=False,
         help_text='Your First Name. Optional.', label='First Name',
         widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control',
                                'placeholder:': 'ex. John, Kelly, or if it is a business ABC Company or ABC Inc.'}))
-    password1 = forms.CharField(label='Password', 
+    password1 = forms.CharField(label='Password',
                                 widget=forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', 'placeholder': 'Enter Password'}))
-    password2 = forms.CharField(label='Repeat password', 
+    password2 = forms.CharField(label='Repeat password',
                                 widget=forms.PasswordInput(attrs={'type': 'password', 'class': 'form-control', 'placeholder': 'Confirm Password'}))
-    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(), 
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(),
                              label='please check the box below to verify you are not a robot.')
     # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(
     #     api_params={'hl': 'en','onload': 'onloadCallback'}
     # ), label = 'please check the box below to verify you are not a robot.')
+
     class Meta:
         model = CustomerUser
-        fields = ['cust_user_email', 'cust_user_phone_number', 
-                  'cust_user_first_name', 'cust_user_middle_name','cust_user_last_name', 
+        fields = ['cust_user_email', 'cust_user_phone_number',
+                  'cust_user_first_name', 'cust_user_middle_name', 'cust_user_last_name',
                   'password1', 'password2']  # 'username',
         # required = ['cust_user_phone_number', 'cust_user_first_name', 'password1', 'password2']
         labels = {
@@ -47,35 +49,43 @@ class CustomerUserRegistrationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_tag = False # True
+        self.helper.form_tag = False  # True
         self.helper.form_method = 'POST'
         self.helper.layout = Layout(
             Row(
-                Column(Field('cust_user_email', css_class='form-control'), css_class=' col-md-6 mb-0'),
-                Column(Field('cust_user_phone_number', css_class='form-control'), css_class=' col-md-6 mb-0'),
+                Column(Field('cust_user_email', css_class='form-control'),
+                       css_class=' col-md-6 mb-0'),
+                Column(Field('cust_user_phone_number',
+                       css_class='form-control'), css_class=' col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column(Field('password1',css_class='form-control'), css_class='col-md-6 mb-0'),
-                Column(Field('password2',css_class='form-control'), css_class='col-md-6 mb-0'),
-                css_class='form-row' # form-group, form-row
+                Column(Field('password1', css_class='form-control'),
+                       css_class='col-md-6 mb-0'),
+                Column(Field('password2', css_class='form-control'),
+                       css_class='col-md-6 mb-0'),
+                css_class='form-row'  # form-group, form-row
             ),
-             Row(
-                Column(Field('cust_user_first_name',css_class='form-control'), css_class='col-md-4 mb-0'),
-                Column(Field('cust_user_middle_name',css_class='form-control'), css_class='col-md-4 mb-0'),
-                Column(Field('cust_user_last_name',css_class='form-control'), css_class='col-md-4 mb-0'),
-                
-                css_class='form-row' # form-group, form-row
+            Row(
+                Column(Field('cust_user_first_name',
+                       css_class='form-control'), css_class='col-md-4 mb-0'),
+                Column(Field('cust_user_middle_name',
+                       css_class='form-control'), css_class='col-md-4 mb-0'),
+                Column(Field('cust_user_last_name',
+                       css_class='form-control'), css_class='col-md-4 mb-0'),
+
+                css_class='form-row'  # form-group, form-row
             ),
-            Field('captcha',css_class=''),
+            Field('captcha', css_class=''),
             HTML("<hr>"),
             ButtonHolder(
-                Submit('submit', 'Register', css_class='automan-btn-primary justify-content-center'),
-                         
-                    # Column(Reset('Reset This Form', 'Reset Form', css_class='btn-outline-dark'),
-                    #         css_class='col col-6'),
-                    
-            css_class='row justify-content-center'),
+                Submit('submit', 'Register',
+                       css_class='automan-btn-primary justify-content-center'),
+
+                # Column(Reset('Reset This Form', 'Reset Form', css_class='btn-outline-dark'),
+                #         css_class='col col-6'),
+
+                css_class='row justify-content-center'),
         )
 
     # cust_user_phone_number = forms.CharField(required=True, max_length=20,
@@ -112,7 +122,7 @@ class CustomerUserRegistrationForm(UserCreationForm):
         # if phone number is empty. skip validation
         if not phone_number:
             return None
-        
+
         if not is_valid_us_phone_number(phone_number):
             raise forms.ValidationError(
                 'Please enter a valid US phone number.')
@@ -146,7 +156,6 @@ class CustomerUserRegistrationForm(UserCreationForm):
             return email
         else:
             raise ValidationError('email cannot be empty.')
-
 
     def clean(self):
         cleaned_data = super().clean()

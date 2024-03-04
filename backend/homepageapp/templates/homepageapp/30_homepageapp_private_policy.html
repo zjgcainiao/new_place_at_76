@@ -1,0 +1,107 @@
+{% extends 'homepageapp/10_homepageapp_base.html' %}
+{% load static %}
+
+{% block content1-main %}
+<section class="bg-top-center bg-repeat-0 pt-md-1"
+    style="background-image: url({% static 'homepageapp/img/car-finder/home/hero-bg.png' %}); background-size: 1920px 630px;">
+    <div class="container mt-5 pt-5">
+        <!-- Breadcrumb-->
+        <nav class="mb-1 pt-md-1" aria-label="Breadcrumb">
+            <ol class="breadcrumb breadcrumb-dark">
+                <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Private Policy</li>
+            </ol>
+        </nav>
+
+        <!-- private policy -->
+        <div class="card">
+            <div class="card-body mb-3">
+                <!-- use python-docx to convert the docx file to html -->
+                <h3 class="card-title mb-3">Privacy Policy for new76prolubeplus.com and Vin-Doctor mobile app</h3>
+                <p class="card-subtitle mb-3">Effective Date: January 01, 2024</p>
+                <p class="card-text">Welcome to new76prolubeplus.com. We are committed to protecting your personal
+                    information and your
+                    right to privacy.
+                    If you have any questions or concerns about this privacy policy, or our practices with regards to
+                    your personal
+                    information, please contact us using the following communication information.</p>
+                <p>When you visit our website new76prolubeplus.com, and use our services, you trust us with your
+                    personal information.
+                    We take your privacy very seriously. In this privacy policy, we seek to explain to you in the
+                    clearest way possible
+                    what information we collect, how we use it, and what rights you have in relation to it. We hope you
+                    take some time
+                    to read through it carefully, as it is important. If there are any terms in this privacy policy that
+                    you do not
+                    agree with, please discontinue use of our Services immediately.</p>
+                <p>This privacy policy applies to all information collected through our website (such as [Your Website
+                    URL]), and/or any
+                    related services, sales, marketing or events (we refer to them collectively in this privacy policy
+                    as the
+                    "Services").</p>
+                <h4 class="card-title mb-3">1. What Information Do We Collect?</h4>
+                <p>We collect personal information that you voluntarily provide to us when expressing an interest in
+                    obtaining
+                    information about us or our products and services, when participating in activities on the website
+                    or otherwise
+                    contacting us.</p>
+                <p>The personal information that we collect depends on the context of your interactions with us and the
+                    website, the
+                    choices you make, and the products and features you use. The personal information we collect can
+                    include the
+                    following:</p>
+                <ol>
+                    <li>Names</li>
+                    <li>Email Addresses</li>
+                    <li>Phone Numbers</li>
+                </ol>
+
+                <p> <strong>We only collect personal information that you voluntarily provide to us.</strong></p>
+                <h4 class="card-title mb-3">2. How Do We Use Your Information?</h4>
+                <p>We use personal information collected via our website for a variety of business purposes described
+                    below. We process
+                    your personal information for these purposes in reliance on our legitimate business interests, in
+                    order to enter
+                    into or perform a contract with you, with your consent, and/or for compliance with our legal
+                    obligations. We
+                    indicate the specific processing grounds we rely on next to each purpose listed below.</p>
+                <p>We use the information we collect or receive:</p>
+                <ul>
+                    <li>To facilitate account creation and login process.</li>
+                    <li>To send you administrative information.</li>
+                    <li>For other business purposes, such as data analysis, identifying usage trends, determining the
+                        effectiveness of our
+                        promotional campaigns, and to evaluate and improve our website, products, marketing, and your
+                        experience.</li>
+                </ul>
+
+                <h4 class="card-title mb-3">3. Will Your Information Be Shared with Anyone?</h4>
+                <p>We do NOT share inforamtion with any of third-party vendors or companies. Your data stays only with
+                    us. </p>
+                <h4 class="card-title mb-3">4. How Do We Keep Your Information Safe?</h4>
+                <p>We aim to protect your personal information through a system of organizational and technical security
+                    measures. We
+                    have implemented appropriate technical and organizational security measures designed to protect the
+                    security of any
+                    personal information we process. However, please also remember that we cannot guarantee that the
+                    internet itself is
+                    100% secure. Although we will do our best to protect your personal information, transmission of
+                    personal information
+                    to and from our website is at your own risk. You should only access the services within a secure
+                    environment.</p>
+                <h4 class="card-title mb-3">5. Do We Use Cookies and Other Tracking Technologies?</h4>
+                <p>[Explain whether you use cookies, tracking pixels, and other tracking technologies on your website
+                    and why. If you
+                    don’t use them, just state that your website does not use these tracking technologies.]</p>
+
+                <h4 class="card-title mb-3">6. How Can You Contact Us About This Policy</h4>
+                <p>If you have questions or comments about this policy, you may email us at info@76prolubeplus.com or by
+                    post to:</p>
+                <p>76 Pro Lube Plus: 4516 Burleson Rd, #18537, Austin, TX 78744.</p>
+                <p></p>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

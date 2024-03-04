@@ -40,7 +40,7 @@ class CustomerUser(AbstractBaseUser):
     # For example: personal details, vehicles, service history
     # Make sure to set USERNAME_FIELD to a unique field
 
-    cust_user_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     cust_user_first_name = models.CharField(_('first name'), max_length=50)
     cust_user_last_name = models.CharField(
         _('last name'), max_length=50, null=True, blank=True)
@@ -131,6 +131,6 @@ class CustomerUser(AbstractBaseUser):
 
     class Meta:
         db_table = 'customerusers_new_03'
-        ordering = ['-cust_user_id']
+        ordering = ['-id']
         verbose_name = 'customeruser'
         verbose_name_plural = 'customerusers'

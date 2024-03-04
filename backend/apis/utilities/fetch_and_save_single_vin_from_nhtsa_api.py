@@ -1,19 +1,23 @@
 # API utility function. modified in Dec 2023.
-from .base import models, now, timedelta, logging, NHTSA_API_URL, config, \
-        UndefinedValueError, VinNhtsaApiSnapshots, \
-        clean_string_in_dictionary_object, aiohttp, NhtsaVariableList, \
-        logger
-
+from .base import models, now,  logging, NHTSA_API_URL, \
+    UndefinedValueError, VinNhtsaApiSnapshots, \
+    clean_string_in_dictionary_object, aiohttp, NhtsaVariableList
+from shops.models import Vin
+from apis.api_vendor_urls import nhtsa_get_decoded_vin_extended_url
 from .database_sync_to_async import database_sync_to_async
-from .decrement_version_for_vin_async import decrement_version_for_vin_async
-from .update_or_create_vin_snapshots_async import update_or_create_vin_snapshots_async
+# from .decrement_version_for_vin_async import decrement_version_for_vin_async
+# from .update_or_create_vin_snapshots_async import update_or_create_vin_snapshots_async
+
+logger = logging.getLogger('external_api')
+
 
 async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
-    if year and year.strip():
-        url = f"https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}?format=json&modelyear={year}"
-    else:
-        url = f"https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}?format=json"
-    # url_extended = https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}format=json&modelyear={year}
+
+    url = nhtsa_get_decoded_vin_extended_url(vin, year)
+    # if year and year.strip():
+    #     url = f"https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}?format=json&modelyear={year}"
+    # else:
+    #     url = f"https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}?format=json"
     logger.info(
         f'Initiating an api request to { NHTSA_API_URL}.')
     vin_data_list = []
@@ -103,13 +107,13 @@ async def fetch_and_save_single_vin_from_nhtsa_api(vin, year=None):
                 # updated 2023-11-02 after variable_id becomes a foreign key field
                 # variable=variable, override
                 # vin_data, created = await update_or_create_vin_snapshots_async(vin=vin, variable=variable, data=organized_data)
-                
+
                 # updated on 2023-12-24: async function, to create or update in VinNhtsaApiSnapshots model.
-                vin_data,created = await database_sync_to_async(VinNhtsaApiSnapshots.objects.update_or_create)(
-                        vin=vin,
-                        variable=variable,
-                        defaults=organized_data,
-                    )
+                vin_data, created = await database_sync_to_async(VinNhtsaApiSnapshots.objects.update_or_create)(
+                    vin=vin,
+                    variable=variable,
+                    defaults=organized_data,
+                )
                 logger.info(f'vin_data is {vin_data}')
                 vin_data_list.append(vin_data)
 

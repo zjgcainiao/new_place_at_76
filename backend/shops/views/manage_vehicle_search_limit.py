@@ -1,5 +1,5 @@
-from .base import JsonResponse, stripe, render, InternalUser, CustomerUser, \
-        uuid
+from .base import JsonResponse, stripe, render, InternalUser, CustomerUser
+import uuid
 
 
 # this is a utility function to check the number of searches a user has made by reading the "user_uuid" key from the session
@@ -13,7 +13,7 @@ def manage_vehicle_search_limit(request, max_searches=1):
     :return: tuple (bool, dict), first element indicates if the limit is reached, 
              second element is the context for response
     """
-    
+
     # Default search count
     search_count = 0
 
@@ -28,12 +28,15 @@ def manage_vehicle_search_limit(request, max_searches=1):
             max_searches = 3
 
         # Use a different key for authenticated users to separate their count from anonymous users
-        search_count_key = f'user_{request.user.pk}_{search_count_key}'
+        search_count_key = f'user_{request.user.pk}_search_count_{search_count_key}'
 
     else:
         # For anonymous users, check if the user_uuid exists, if not, create one
         if not request.session.get('user_uuid'):
-            request.session['user_uuid'] = str(uuid.uuid4())
+            user_uuid = uuid.uuid4()
+            # Use a different key for authenticated users to separate their count from anonymous users
+            search_count_key = f'user_{user_uuid}_search_count_{search_count_key}'
+            request.session['user_uuid'] = str(user_uuid)
             request.session[search_count_key] = search_count
 
     # Retrieve current search count

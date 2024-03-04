@@ -9,7 +9,7 @@ from .is_valid_us_phone_number import is_valid_us_phone_number
 from .make_time_zone_aware import make_timezone_aware
 from .capitalize_first_letters import capitalize_first_letters
 from .parse_to_two_digit_decimal import parse_to_two_digit_decimal
-from .get_latest_vehicle_make_list  import get_latest_vehicle_make_list
+from .get_latest_vehicle_make_list import get_latest_vehicle_make_list
 from .get_latest_vehicle_model_list import get_latest_vehicle_model_list
 from .parse_raw_json import parse_raw_json
 from .format_phone_number_to_shop_standard import format_phone_number_to_shop_standard
@@ -22,3 +22,4 @@ from .convert_to_decimal import convert_to_decimal
 from .convert_to_int import convert_to_int
 
 from .clean_json_and_write_it_to_env import clean_json_and_write_it_to_env
+from .convert_docx_to_html import convert_docx_to_html

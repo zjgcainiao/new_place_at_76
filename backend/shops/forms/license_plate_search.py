@@ -2,8 +2,9 @@
 import attr
 import attrs
 from .base import forms, LIST_OF_STATES_IN_US, \
-Hidden, Row, Field, FormActions, Button, ReCaptchaField, ReCaptchaV2Checkbox, \
-Layout, Column, FormHelper, ValidationError, reverse
+    Hidden, Row, Field, FormActions, Button, ReCaptchaField, ReCaptchaV2Checkbox, \
+    Layout, Column, FormHelper, ValidationError, reverse
+
 
 class LicensePlateSearchForm(forms.Form):
 
@@ -14,10 +15,10 @@ class LicensePlateSearchForm(forms.Form):
         attrs={'class': 'form-control', 'placeholder': 'Enter license plate number.'}))
     state = forms.ChoiceField(choices=[('', '--- None ---')] + list(LIST_OF_STATES_IN_US), widget=forms.Select(
         attrs={'class': 'form-select'}))
-    
-    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(attrs={}), 
+
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(attrs={}),
                              label='please check the box below to verify you are not a robot.')
-    
+
     def clean_license_plate(self):
         license_plate = self.cleaned_data['license_plate']
         if len(license_plate) > 10:
@@ -43,13 +44,11 @@ class LicensePlateSearchForm(forms.Form):
             # Use Div to create a Bootstrap grid structure for responsiveness
             Hidden('action', 'action_plate_search'),
             Row(
-                Field('license_plate', css_class='col-md-6 p-1 mb-3'),
-                Field('state', css_class='col-md-6 p-1 mb-3'),
-                css_class='form-row m-1'
+                Field('license_plate', wrapper_class='col-md-6 m-1'),
+                Field('state', wrapper_class='col-md-6  m-1'),
+                css_class=' m-1'
             ),
-            Row(Column(Field('captcha', css_class=''),
-                   css_class='col-md-12 m-1'),
-                   css_class='form-row  '),
+            Field('captcha', wrapper_class='col-md-12 p-1 m-1'),
             # You can add FormActions for better control over the submit button's placement and styling
             FormActions(
                 Button('plate_search', 'Search',
@@ -57,4 +56,3 @@ class LicensePlateSearchForm(forms.Form):
                        css_id='plate-search-button'),
                 css_class='d-grid gap-2')
         )
-

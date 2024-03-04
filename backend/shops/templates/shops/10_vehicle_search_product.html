@@ -110,7 +110,7 @@
     /* Metallic border style for form inputs */
 
     /* Metallic effect enhancement on form control focus */
-    .form-select,
+    .form-select:focus,
     .form-control:focus {
         border-color: #4f5152;
         /* Metallic color */
@@ -154,7 +154,7 @@
     }
 
     .steel-plate-card {
-        background: linear-gradient(90deg, #d6dadd, #c3ccd1, #dbe4ea 40%, #8e9aaf);
+        background: linear-gradient(90deg, #d6dadd, #c3ccd1, #dbe4ea 40%, #8e9caf);
         color: #333;
         font-family: 'Roboto', sans-serif;
         border: 1px solid #707070;
@@ -237,7 +237,7 @@
         <p class="px-4 py-2" style="font-family: 'Noto Sans', sans-serif;">Use the form below to fetch the vehicle
             report (Vin Report).
             Three searches without sign in. </p>
-        <ul class="nav nav-tabs nav-fill" id="searchType" role="tablist">
+        <ul class="nav nav-tabs nav-fill p-1 m-1" id="searchType" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="byVIN-tab" data-bs-toggle="tab" type="button"
                     data-bs-target="#byVIN" role="tab" aria-controls="byVIN" aria-selected="false">By VIN</button>
@@ -357,9 +357,7 @@
 
 <!-- Include the libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script> -->
-<!-- new vendor html to image js -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js" integrity="sha512-7tWCgq9tTYS/QkGVyKrtLpqAoMV9XIUxoou+sPUypsaZx56cYR/qio84fPK9EvJJtKvJEwt7vkn6je5UVzGevw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+
 <script>
     $(function () {
         // Once the document is loaded, you can use jsPDF and html2canvas
@@ -386,7 +384,6 @@
                             console.error('jsPDF not found');
                             return;
                         }
-
                         //         // Add custom section
                         //         let imgHeight = customCanvas.height * imgWidth / customCanvas.width;
                         //         pdf.addImage(customCanvas.toDataURL('image/jpeg', 0.7), 'JPEG', 0, 0, imgWidth, imgHeight);
@@ -420,18 +417,16 @@
     });
 </script>
 
-
-
 <!-- customized script to display vin data  -->
 <script>
 
     $(function () {
-        customer_user_login_url = `{% url 'customer_users:customer_user_login' %}`;
+        let customer_user_login_url = `{% url 'customer_users:customer_user_login' %}`;
         console.log('customer_user_login_url: ' + customer_user_login_url);
 
         // btn-primary was added to the button for no reason.
-        // $('#vin-search-button').removeClass('btn-primary');
-        // $('#plate-search-button').removeClass('btn-primary');
+        $('#vin-search-button').removeClass('btn-primary');
+        $('#plate-search-button').removeClass('btn-primary');
 
         // FILEPATH: /Users/stephenwang/new_76prolubeplus.com/shops/templates/shops/10_vehicle_search_product.html -->
         /*
@@ -451,7 +446,7 @@
 
             // get `csrfToken` two ways
             const csrfToken = form.find('[name=csrfmiddlewaretoken]').val(); // Fetch CSRF token from the form
-            console.log(csrfToken); // Add this line to verify the serialized data
+            // console.log(csrfToken); // Add this line to verify the serialized data
             // var csrfToken_alternative = $('#vin-search-button').data('bs-csrf');
 
 
@@ -468,7 +463,6 @@
                 },
                 success: function (response) {
                     // for debugging
-
                     console.log(response);
                     // Clear any previous results and the loading spinner
                     $('#resultDataDisplay').empty();
@@ -537,7 +531,7 @@
             // Clear existing data and show a loading spinner 2023-12-27
             // var spinner =
             $('#resultDataDisplay').empty().html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
-            jQuery.ajax({
+            $.ajax({
                 type: 'POST',
                 url: form.attr('action'), // `"{% url 'shops:search_by_vin_or_plate' %}"`
                 data: formData,
@@ -546,7 +540,7 @@
                     'X-CSRFToken': csrfToken // Include the CSRF token in the header
                 },
                 success: function (response) {
-                    console.log(response);
+                    console.log('here is the returned response', response);
                     // Clear any previous results
                     $('#resultDataDisplay').empty();
 
@@ -615,7 +609,7 @@
                     basicCardHtml += '</div></div></div>'; // Close row and card-body, card
                     // Append new HTML section for premium content
                     basicCardHtml += `
-                        <div class="card bg-light mt-4">
+                        <div class="card  bg-light mt-4">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="text-muted">Premium content available, including safety recalls, manufacturing

@@ -2,18 +2,19 @@
 from concurrent.futures import thread
 from homepageapp.models import NhtsaModel
 from .base import models, now, timedelta, logging, NHTSA_API_URL, config, \
-        UndefinedValueError, VinNhtsaApiSnapshots, \
-        clean_string_in_dictionary_object, aiohttp, NhtsaVariableList, \
-        logger
+    UndefinedValueError, VinNhtsaApiSnapshots, \
+    clean_string_in_dictionary_object, aiohttp, NhtsaVariableList, \
+    logger
 from django.shortcuts import get_object_or_404
 from homepageapp.models import NhtsaMake
 from .database_sync_to_async import database_sync_to_async
 import json
-from apis.api_vendor_urls import  nhtsa_get_models_for_make_id_url
+from apis.api_vendor_urls import nhtsa_get_models_for_make_id_url
+
 
 async def fetch_and_save_nhtsa_model_for_make_id(make_id):
-    if make_id :
-        url =  nhtsa_get_models_for_make_id_url(make_id)
+    if make_id:
+        url = nhtsa_get_models_for_make_id_url(make_id)
     else:
         raise ValueError('a make_id is required to fetch its models.')
     logger.info(
@@ -26,8 +27,8 @@ async def fetch_and_save_nhtsa_model_for_make_id(make_id):
             f"No make found for make_id {make_id}.")
         raise ValueError(
             f"No make found for make_id {make_id}.")
-    
-    defaults={}
+
+    defaults = {}
 
     try:
         async with aiohttp.ClientSession() as session:
@@ -49,14 +50,15 @@ async def fetch_and_save_nhtsa_model_for_make_id(make_id):
         if isinstance(results, list) and results:
             logger.info(
                 f"result fetched successful for make {make_id}.")
-            
+
             results = results[0]
             # Check if the first object is a dictionary
             if isinstance(results, dict):
-                results=results
+                results = results
             else:
-                logger.warning(f'the results is not a dictionary for  make {make_id}.')
-                results=json.dumps(results)
+                logger.warning(
+                    f'the results is not a dictionary for  make {make_id}.')
+                results = json.dumps(results)
             if results:
                 logger.info(
                     f"result fetched successful for Make {make_id}.")
@@ -72,12 +74,12 @@ async def fetch_and_save_nhtsa_model_for_make_id(make_id):
                     'model_name': model_name,
                     'model_id': model_id,
                 }
-                
+
                 # updated on 2023-12-24: async function, to create or update in VinNhtsaApiSnapshots model.
                 nhtsa_model, created = await database_sync_to_async(NhtsaModel.objects.update_or_create)(
                     make=make,
-                        defaults=defaults,
-                    )
+                    defaults=defaults,
+                )
                 logger.info(f'nthsa_model is {nhtsa_model}')
                 nhtsa_model_list.append(nhtsa_model)
                 created_list.append(created)

@@ -1,18 +1,26 @@
 
-from .base import forms, reverse, ValidationError, datetime, FormHelper, Layout, Hidden, Row, Field, FormActions, Submit, ReCaptchaField, ReCaptchaV2Checkbox
+from .base import forms, reverse, ValidationError, datetime, FormHelper, \
+    Layout, Hidden, Row, Column, Field, FormActions, Submit, ReCaptchaField, \
+    ReCaptchaV2Checkbox
+
 
 class VINSearchForm(forms.Form):
     # added this hiddent input for both VINSearchForm and LicensePlateSearchForm
 
     vin = forms.CharField(required=True,
-                          label='VIN', widget=forms.TextInput(
-                              attrs={'class': 'form-control', 'placeholder': 'enter the full vin number. Example. 1HGCM82633A004352'}))
+                          label='Vehicle Identification Number(VIN)', widget=forms.TextInput(
+                              attrs={'class': 'form-control',
+                                     'placeholder': 'Example: 1HGCM82633A004352.'}),
+                          help_text="VIN must have at least 14-digit non-empty digits. 17 digits is the standard.")
     year = forms.CharField(required=False,
-                           label='Year of Vehicle (Optional)', widget=forms.TextInput(
-                               attrs={'class': 'form-control', 'placeholder': 'enter model year'}), help_text="Optional. Enter only if you cannot get the result with vin only.")
+                           label='Year of Vehicle (Optional)',
+                           widget=forms.TextInput(
+                               attrs={'class': 'form-control',
+                                      'placeholder': 'enter model year'}),
+                           help_text="Optional. Enter only if you cannot get the result with vin only.")
     action = forms.CharField(widget=forms.HiddenInput(),
                              initial='action_vin_search')
-    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(), 
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(),
                              label='please check the box below to verify you are not a robot.')
 
     def clean_vin(self):
@@ -21,10 +29,10 @@ class VINSearchForm(forms.Form):
         # Strip spaces
         vin = vin.replace(" ", "")
 
-        # Check if it has 17 digits
-        if len(vin) != 17:
+        # Check if it has 14 digits
+        if len(vin) < 14:
             raise ValidationError(
-                'VIN must have 17 non-empty digits')
+                'VIN must have at least 14 digits')
 
         # Capitalize the VIN
         return vin.upper()
@@ -62,15 +70,15 @@ class VINSearchForm(forms.Form):
         self.helper.form_action = reverse(
             'shops:search_by_vin_or_plate')  # Use your URL name here
         self.helper.layout = Layout(
-                            # Adjust the column sizes as needed
-                Hidden('action', 'action_vin_search'),
+            # Adjust the column sizes as needed
+            Hidden('action', 'action_vin_search'),
             Row(
+                Field('vin', wrapper_class='col-md-6 m-1'),
+                Field('year', wrapper_class='col-md-6 m-1'),
 
-                Field('vin',wrapper_class='col-md-6  m-1'),
-                Field('year',wrapper_class='col-md-6  m-1'),
-                css_class='form-row m-1'
+                css_class=' m-1'
             ),
-            Field('captcha', wrapper_class='col-md-12 p-1 m-1'),
+            Field('captcha', wrapper_class='col-md-12 p-1 '),
             FormActions(
                 Submit('vin search', 'Search', css_class='btn btn-outline-dark',
                        css_id='vin-search-button'),

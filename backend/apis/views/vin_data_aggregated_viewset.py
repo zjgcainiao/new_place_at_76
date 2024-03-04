@@ -6,32 +6,34 @@ from apis.serializers import VinDataAggregatedSerializer, NhtsaDecodedVinSeriali
     NhtsaRecallSerializer, VinNhtsaApiSnapshotsSerializer, RepairOrderSerializer
 from homepageapp.models import VinNhtsaApiSnapshots, NhtsaDecodedVin, NhtsaSafetyRating, RepairOrdersNewSQL02Model
 from django.core.exceptions import ObjectDoesNotExist
-from apis.utilities import database_sync_to_async, fetch_and_save_nhtsa_decoded_vin, fetch_and_save_nhtsa_recalls, fetch_and_save_nhtsa_safety_rating, fetch_and_save_nhtsa_vehicle_id
+from apis.utilities import database_sync_to_async, fetch_and_save_nhtsa_decoded_vin, \
+    fetch_and_save_nhtsa_recalls, fetch_and_save_nhtsa_safety_rating, \
+    fetch_and_save_nhtsa_vehicle_id, create_or_update_vin_record
 from asgiref.sync import async_to_sync
 from django.db import close_old_connections
-from firebase_auth_app.authentication import FirebaseAuthentication
+from firebase_auth_app.authentication import FirebaseAndSimpleJwtAuthentication
 
 
 class VinDataAggregatedViewSet(viewsets.ViewSet):
     serializer_class = VinDataAggregatedSerializer
-    # permission_classes = [IsAuthenticated, IsInternalUser]
-    authentication_classes = [FirebaseAuthentication]
+    # permission_classes = [IsAuthenticated, IsInternalUser]  # ,
+    # permission_classes = [IsAuthenticated]
+    authentication_classes = [FirebaseAndSimpleJwtAuthentication]
 
     def list(self, request):
         # return an error response
-
         return Response({"Error": "Provide a vin number first. Add ?vin=[valid-vin] at the end of the url."}, status=status.HTTP_404_NOT_FOUND)
 
     # def retrieve(self, request):
     @action(detail=False, methods=['get'], url_path='search_by_vin')
     def search_by_vin(self, request):
-
         # Logic to fetch data for a specific VIN and prepare the aggregated response
         vin = request.query_params.get('vin', None)
         # vin = request.query_params.get('vin', None)
         # Ensure database connections are properly managed
         close_old_connections()
 
+        async_to_sync(create_or_update_vin_record)(vin)
         async_to_sync(fetch_and_save_nhtsa_decoded_vin)(vin)
         async_to_sync(fetch_and_save_nhtsa_vehicle_id)(vin)
         async_to_sync(fetch_and_save_nhtsa_recalls)(vin)
@@ -42,7 +44,7 @@ class VinDataAggregatedViewSet(viewsets.ViewSet):
         repair_orders = RepairOrdersNewSQL02Model.objects.filter(
             repair_order_vehicle__VIN_number=vin).all
         nhtsa_decoded_vin = NhtsaDecodedVin.objects.filter(vin=vin).all
-        vin_nhtsa_snapshot = VinNhtsaApiSnapshots.objects.filter(vin=vin), all
+        vin_nhtsa_snapshot = VinNhtsaApiSnapshots.objects.filter(vin=vin).all
         # Fetch recall info, repair history, registration info, etc.
         # Implement similar logic to fetch data for other sections
 
