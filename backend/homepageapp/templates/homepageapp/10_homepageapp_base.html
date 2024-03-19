@@ -122,6 +122,27 @@
     vertical-align: middle;
     /* Center the icon vertically */
   }
+
+.dropdown-menu.metallic-dropdown {
+  background-color: #222529; /* Dark gray */
+  background-image: linear-gradient(to bottom, #333, #222); /* Subtle gradient */
+}
+.metallic-dropdown .dropdown-item {
+  color: #ddd; 
+}
+.metallic-dropdown .dropdown-item:hover {
+  background-color: #303538; /* Slightly darker on hover */
+  color: #f0f0f0; /* Brighter text on hover */
+}
+.metallic-dropdown .dropdown-divider {
+  border-top-color: #383d40;
+}
+.metallic-dropdown {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+.metallic-dropdown .dropdown-item {
+   font-weight: 500; 
+}
 </style>
 
 <!-- Page loading scripts-->
@@ -187,28 +208,31 @@
             {% if VIN_DOCTOR_MODE_ON %}
             <li class="nav-item "><a class="nav-link nav-hover" href="{% url 'shops:search_by_vin_or_plate' %}">Vin Report</a></li>
             <li class="nav-item dropdown py-2 me-lg-2">
-              <a class="nav-link dropdown-toggle align-items-center  border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown"
+              <a class="nav-link dropdown-toggle align-items-center border-light py-1 pe-lg-4" href="#" data-bs-toggle="dropdown"
                 role="button" aria-expanded="false"><i class="fi-layers fs-base me-2"></i>More</a>
-              <ul class="dropdown-menu dropdown-menu-light" >
-                <!-- Appointments  -->
-
-                    <li class="dropdown-divider"></li>
+              <ul class="dropdown-menu metallic-dropdown" >
+                
+                <li><a class="dropdown-item" href="{% url 'homepageapp:future-homepage' %}"><i class="fa-solid fa-store"></i>Automan
+                    Repair Shop (soon)</a></li>
+                <li class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'appointments:create_appointment' %}"><i
+                      class="fa-regular fa-calendar-check"></i> Service
+                    Appointment (soon)</a></li>
+                <li class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'internal_users:internal_user_login' %}"> <i
+                      class="fa-solid fa-right-to-bracket"></i> Employee
+                    Portal (soon)</a></li>
+                <li class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{% url 'homepageapp:services' %}"><i
-                      class="fi-car fs-base me-2"></i>Services</a></li>
+                      class="fi-car fs-base me-2"></i>Services (soon)</a></li>
                 <li class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="{% url 'homepageapp:about-us' %}"><i class="fi-friends fs-base me-2"></i>About
                     Us</a></li>
                 <li class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'shops:prebuilt_checkout' product_id='prod_PKOol19RtrtGTG' %}"><i
-                      class="fi-cash fs-base me-2"></i>Payment</a></li>
-                <li class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'homepageapp:future-homepage' %}"><i class="fa-solid fa-store"></i> Automan Repair Shop (soon)</a></li>
-                <li class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'appointments:create_appointment' %}"><i class="fa-regular fa-calendar-check"></i> Service
-                    Appointment</a></li>
-                <li><a class="dropdown-item" href="{% url 'internal_users:internal_user_login' %}"> <i class="fa-solid fa-right-to-bracket"></i> Employee
-                    Portal</a></li>
-                <li class="dropdown-divider"></li>
+                <li data-base-prebuilt-checkout-url="{% url 'shops:prebuilt_checkout' %}" id="prebuiltCheckUrlNavlink">
+                  <a class="dropdown-item" href="javascript:showCustomPrompt()"><i
+                      class="fi-cash fs-base me-2"></i>Payment System(soon)</a></li>
+
               </ul>
             </li>
             {% else %}
@@ -234,7 +258,7 @@
 
                 <li class="dropdown-divider"></li>
                 <li><a class="dropdown-item"
-                    href="{% url 'shops:prebuilt_checkout' product_id='prod_PKOol19RtrtGTG' %}"><i
+                    href="{% url 'shops:prebuilt_checkout'%}"><i
                       class="fi-cash fs-base me-2"></i>Payment</a></li>
                 <li class="dropdown-divider"></li>
 
@@ -484,7 +508,7 @@
   </style>
 
   <!-- added confirmationDiag to integrate the chatbot and customer support window -->
-<div id="confirmationDialog" class="confirmation-dialog" style="display: none;">
+<div id="confirmationDialog" class="confirmation-dialog container" style="display: none;">
   <div class="dialog-content p-2 m-2">
     <h4>Welcome!</h4>
     <p class="fw-normal">Please choose your preferred support option:</p>
@@ -497,7 +521,7 @@
 </div>
 
 
-  <!-- customer support window ui  -->
+  <!-- customer support window UI -->
   <!-- 2023-11-08 added a customer support converation button  -->
 
   {% comment %}
@@ -506,6 +530,57 @@
   <script src="{% static 'CRMs/js/support_conversation.js' %}"></script>
   {% endcomment %}
 
+  <script>
+    // Directly assign the Django URL to a JavaScript variable
+    let baseCheckoutUrl = "{% url 'shops:prebuilt_checkout' %}";
+
+    let logo_favicon_url =  "{% static 'favicon_package_v0/favicon-32x32.png' %}"
+    </script>
+
+ <script>
+
+  // custom checkout prompt for vin 2024-03-17
+
+    function showCustomPrompt() {
+      // Create the modal elements
+      const modal = $('<div>').attr('id', 'customModal').css({
+        position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+        background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center'
+      });
+
+      const modalBox = $('<div>').css({ background: 'white', padding: '20px', borderRadius: '5px', width: '300px' });
+      const promptText = $('<p>').text('Please enter your VIN:');
+      const vinInput = $('<input>').attr('type', 'text').attr('id', 'vinInput').css({ width: '100%' });
+      const submitBtn = $('<button>').attr('id', 'submitVin').text('Submit').css({ marginTop: '10px' });
+      const cancelBtn = $('<button>').attr('id', 'cancelVin').text('Cancel').css({ marginTop: '10px' });
+
+      // Append elements
+      modalBox.append(promptText, vinInput, submitBtn, cancelBtn);
+      modal.append(modalBox);
+      $('body').append(modal);
+
+      // Submit button click event
+      submitBtn.click(function () {
+        const vin = vinInput.val().trim();
+        if (vin) {
+          $(location).attr('href', `${baseCheckoutUrl}?vin=${vin}`);
+        } else {
+          alert("You must enter a VIN to proceed.");
+        }
+      });
+
+      // Cancel button click event
+      cancelBtn.click(function () {
+        modal.remove();
+      });
+    }
+
+    // Bind the function to an element's click event
+    $('#vinPromptLink').on('click', function () {
+      showCustomPrompt();
+    });
+
+</script>
 
 
 

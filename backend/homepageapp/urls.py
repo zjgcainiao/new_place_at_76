@@ -10,7 +10,7 @@ urlpatterns = [
     path('automan-shop/', views.GetHomepageView, name='future-homepage'),
     path('services/', views.GetServiceListView, name='services'),
     path('about-us/', views.GetAboutUsView, name='about-us'),
-    path('private-policy/', views.GetPrivatePolicyView, name='private_policy'),
+    path('privacy-policy/', views.GetPrivacyPolicyView, name='privacy_policy'),
     # react app created in dashboard_react folder
     path('react/', views.GetReactAppView.as_view(),
          name='react-app'),

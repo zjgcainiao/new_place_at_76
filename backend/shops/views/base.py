@@ -28,13 +28,14 @@ from django.views.decorators.http import require_http_methods
 from internal_users.models import InternalUser
 from customer_users.models import CustomerUser
 from urllib.parse import urljoin
-
+from django.contrib import messages
+from apis.utilities import database_sync_to_async
 
 # from shops.management.commands.load_stripe_products import Command
 logger = logging.getLogger('django')
 
 if (not settings.DEBUG) and settings.DJANGO_PROD_ENV == True:
-    
+
     stripe.api_key = settings.STRIPE_SECRET_LIVE_KEY
 else:
     # testing mode

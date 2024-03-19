@@ -19,8 +19,8 @@ def get_firebase_user_dash(request):
     Performs a vehicle search based on VIN or license plate.
     """
     logger = logging.getLogger('django')
-    plate_data={}
-    plate_data_id =''
+    plate_data = {}
+    plate_data_id = ''
     flattened_data = {}
     max_searches_for_this_view = 1  # Customize this per view or user type
     
@@ -58,7 +58,7 @@ def get_firebase_user_dash(request):
 
                 async_to_sync(fetch_and_save_single_vin_from_nhtsa_api)(vin)
 
-                latest_vin_data =  async_to_sync(fetch_latest_vin_data_func)(vin)
+                latest_vin_data = async_to_sync(fetch_latest_vin_data_func)(vin)
 
                 if isinstance(latest_vin_data, QuerySet):
                     latest_vin_data = list(latest_vin_data.values())

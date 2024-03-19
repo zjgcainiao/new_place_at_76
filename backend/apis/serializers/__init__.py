@@ -9,8 +9,8 @@ from .customer import CustomerSerializer
 from .payment import PaymentSerializer
 from .repair_order import RepairOrderSerializer
 from .canned_job import CannedJobSerializer
-from .line_item import LineItemSerializer   
-from .part_item import PartItemSerializer 
+from .line_item import LineItemSerializer
+from .part_item import PartItemSerializer
 from .labor_item import LaborItemSerializer
 from .note_item import NoteItemSerializer
 from .vehicle import VehicleSerializer
@@ -25,6 +25,7 @@ from .canned_job_line_item_sequence import CannedJobLineItemSequenceSerializer
 from .canned_job import CannedJobSerializer
 from .vin_data_aggregated import VinDataAggregatedSerializer
 from .vin_nhtsa_snapshot import VinNhtsaApiSnapshotsSerializer
+from .async_vin_nhtsa_snapshot import AsyncVinNhtsaApiSnapshotsSerializer
 from .plate_and_vin_data import PlateAndVinDataSerializer
 from .nhtsa_service_bulletin import NhtsaServiceBulletinSerializer
 from .nhtsa_api_call_history import NhtsaApiCallHistorySerializer

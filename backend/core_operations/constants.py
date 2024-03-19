@@ -21,7 +21,7 @@ VEHICLE_NOTE_TYPES = [
     (5, "GVW Notes"),
 ]
 
-#checkout the AuditHistory model in shift_managment/models.py. 2024-01-16
+# checkout the AuditHistory model in shift_managment/models.py. 2024-01-16
 AUDIT_HISTORY_ACTION_CHOICES = [
     ('created', 'Created'),
     ('updated', 'Updated'),
@@ -81,7 +81,7 @@ LIST_OF_STATES_IN_US = (
     ('WY', 'Wyoming'),
 )
 
-NHTSA_API_VARIBLE_ID_MAPPING = {
+NHTSA_API_VARIABLE_ID_MAPPING = {
     'Suggested VIN': 142,
     'Error Code': 143,
     'Possible Values': 144,
@@ -220,42 +220,105 @@ NHTSA_API_VARIBLE_ID_MAPPING = {
     'Lane Centering Assistance': 194,
 }
 
-NHTSA_API_VARIABLE_IDS = list(NHTSA_API_VARIBLE_ID_MAPPING.values())
-NHTSA_API_VARIABLE_NAMES = list(NHTSA_API_VARIBLE_ID_MAPPING.keys())
-
-POPULAR_NHTSA_VARIBLE_NAMES = [
+NHTSA_API_VARIABLE_IDS = list(NHTSA_API_VARIABLE_ID_MAPPING.values())
+NHTSA_API_VARIABLE_NAMES = list(NHTSA_API_VARIABLE_ID_MAPPING.keys())
+POPULAR_NHTSA_VARIABLE_NAMES = [
     'Error Code', 'Error Text',
-    'Manufacturer Name', 'Plant Company Name', 'Plant City', 'Plant State', 'Plant Country',
-    'Make', 'Model Year', 'Model', 'Top Speed (MPH)', 'Series', 'Series2', 'Trim', 'Trim2', 'Vehicle Type', 'Gross Vehicle Weight Rating From', 'Curb Weight (pounds)',
-    'Drive Type', 'Body Class', 'Doors', 'Windows', 'Number of Seats', 'Seat Belt Type',
-    'Number of Wheels', 'Wheel Base Type', 'Wheel Base (inches) From', 'Wheel Base (inches) To',
+    'Manufacturer Name', 'Plant Company Name',
+    'Plant City', 'Plant State', 'Plant Country',
+    'Make', 'Model Year', 'Model', 'Top Speed (MPH)', 'Series', 'Series2', 'Trim', 'Trim2',
+    'Vehicle Type', 'Gross Vehicle Weight Rating From', 'Curb Weight (pounds)',
+    'Drive Type', 'Body Class', 'Doors', 'Windows',
+    'Number of Seats', 'Seat Belt Type',
+    'Number of Wheels', 'Wheel Base Type',
+    'Wheel Base (inches) From', 'Wheel Base (inches) To',
     'Axles', 'Axle Configuration',
     'Front Air Bag Locations', 'Knee Air Bag Locations',
-    'Headlamp Light Source', 'Semiautomatic Headlamp Beam Switching', 'Daytime Running Light (DRL)',
+    'Headlamp Light Source', 'Semiautomatic Headlamp Beam Switching',
+    'Daytime Running Light (DRL)',
     'Transmission Style', 'Transmission Speeds',
-    'Engine Model', 'Engine Power (kW)', 'Engine Manufacturer', 'Engine Configuration', 'Engine Brake (hp) From', 'Engine Brake (hp) To', 'Valve Train Design',
-    'Engine Number of Cylinders', 'Displacement (CC)', 'Displacement (CI)', 'Displacement (L)', 'Engine Stroke Cycles', 'Turbo',
+    'Engine Model', 'Engine Power (kW)', 'Engine Manufacturer', 'Engine Configuration',
+    'Engine Brake (hp) From', 'Engine Brake (hp) To', 'Valve Train Design',
+    'Engine Number of Cylinders',
+    'Displacement (CC)', 'Displacement (CI)', 'Displacement (L)', 'Engine Stroke Cycles', 'Turbo',
     'Fuel Type - Primary', 'Fuel Type - Secondary',  'Cooling Type',
-    'Anti-lock Braking System (ABS)', 'Brake System Type', 'Brake System Description', 'Dynamic Brake Support (DBS)',
+    'Anti-lock Braking System (ABS)', 'Brake System Type',
+    'Brake System Description', 'Dynamic Brake Support (DBS)',
     'Traction Control', 'Entertainment System', 'Event Data Recorder (EDR)',
-    'Keyless Ignition', 'Backup Camera', 'Parking Assist', 'Tire Pressure Monitoring System (TPMS) Type',
-    'Lane Centering Assistance', 'Blind Spot Warning (BSW)', 'Rear Automatic Emergency Braking', 'Forward Collision Warning (FCW)',
-    'Automatic Crash Notification (ACN) / Advanced Automatic Crash Notification (AACN)', 'Adaptive Cruise Control (ACC)',
-    'Crash Imminent Braking (CIB)', 'Pedestrian Automatic Emergency Braking (PAEB)', 'Rear Cross Traffic Alert'
+    'Keyless Ignition', 'Backup Camera', 'Parking Assist',
+    'Tire Pressure Monitoring System (TPMS) Type',
+    'Lane Centering Assistance',
+    'Blind Spot Warning (BSW)', 'Rear Automatic Emergency Braking', 'Forward Collision Warning (FCW)',
+    'Automatic Crash Notification (ACN) / Advanced Automatic Crash Notification (AACN)',
+    'Adaptive Cruise Control (ACC)',
+    'Crash Imminent Braking (CIB)', 'Pedestrian Automatic Emergency Braking (PAEB)',
+    'Rear Cross Traffic Alert',
 
     # the following are EVs related
     'Electrification Level', 'Other Engine Info', 'EV Drive Unit',
     'Automatic Pedestrian Alerting Sound (for Hybrid and EV only)',
-    'Battery Type', 'Other Battery Info', 'Number of Battery Cells per Module', 'Number of Battery Modules per Pack', 'Number of Battery Packs per Vehicle'
-    'Battery Current (Amps) From', 'Battery Voltage (Volts) From', 'Battery Energy (kWh) From',
-    'Battery Current (Amps) To', 'Battery Voltage (Volts) To', 'Battery Energy (kWh) To',
+    'Battery Type', 'Other Battery Info', 'Number of Battery Cells per Module',
+    'Number of Battery Modules per Pack', 'Number of Battery Packs per Vehicle',
+    'Battery Current (Amps) From', 'Battery Voltage (Volts) From',
+    'Battery Energy (kWh) From',
+    'Battery Current (Amps) To', 'Battery Voltage (Volts) To',
+    'Battery Energy (kWh) To',
     'Charger Level', 'Charger Power (kW)',
 ]
 
-POPULAR_NHTSA_VARIABLE_IDS = [NHTSA_API_VARIBLE_ID_MAPPING[name]
-                              for name in POPULAR_NHTSA_VARIBLE_NAMES
-                              if name in NHTSA_API_VARIBLE_ID_MAPPING]
+POPULAR_NHTSA_VARIABLE_NAMES_BY_SORTED_GROUPS = [
+    # ['Error Code', 'Error Text',],
+    ['Manufacturer Name', 'Plant Company Name',
+        'Plant City', 'Plant State', 'Plant Country',],
+    ['Make', 'Model Year', 'Model', 'Top Speed (MPH)', 'Series', 'Series2', 'Trim', 'Trim2',
+     'Vehicle Type', 'Gross Vehicle Weight Rating From', 'Curb Weight (pounds)',],
+    ['Drive Type', 'Body Class', 'Doors', 'Windows',
+        'Number of Seats', 'Seat Belt Type',],
+    ['Number of Wheels', 'Wheel Base Type',
+        'Wheel Base (inches) From', 'Wheel Base (inches) To',],
+    ['Axles', 'Axle Configuration',],
+    ['Front Air Bag Locations', 'Knee Air Bag Locations',],
+    ['Headlamp Light Source', 'Semiautomatic Headlamp Beam Switching',
+        'Daytime Running Light (DRL)',],
+    ['Transmission Style', 'Transmission Speeds',],
+    ['Engine Model', 'Engine Power (kW)', 'Engine Manufacturer', 'Engine Configuration',
+     'Engine Brake (hp) From', 'Engine Brake (hp) To', 'Valve Train Design',],
+    ['Engine Number of Cylinders',
+        'Displacement (CC)', 'Displacement (CI)', 'Displacement (L)', 'Engine Stroke Cycles', 'Turbo',],
+    ['Fuel Type - Primary', 'Fuel Type - Secondary',  'Cooling Type',],
+    ['Anti-lock Braking System (ABS)', 'Brake System Type',
+     'Brake System Description', 'Dynamic Brake Support (DBS)',],
+    ['Traction Control', 'Entertainment System', 'Event Data Recorder (EDR)',],
+    ['Keyless Ignition', 'Backup Camera', 'Parking Assist',
+        'Tire Pressure Monitoring System (TPMS) Type',],
+    ['Lane Centering Assistance',
+        'Blind Spot Warning (BSW)', 'Rear Automatic Emergency Braking', 'Forward Collision Warning (FCW)',],
+    ['Automatic Crash Notification (ACN) / Advanced Automatic Crash Notification (AACN)',
+     'Adaptive Cruise Control (ACC)',],
+    ['Crash Imminent Braking (CIB)', 'Pedestrian Automatic Emergency Braking (PAEB)',
+     'Rear Cross Traffic Alert',],
 
+    # the following are EVs related
+    ['Electrification Level', 'Other Engine Info', 'EV Drive Unit',],
+    ['Automatic Pedestrian Alerting Sound (for Hybrid and EV only)',],
+    ['Battery Type', 'Other Battery Info', 'Number of Battery Cells per Module',
+        'Number of Battery Modules per Pack', 'Number of Battery Packs per Vehicle'],
+    ['Battery Current (Amps) From', 'Battery Voltage (Volts) From',
+     'Battery Energy (kWh) From',],
+    ['Battery Current (Amps) To', 'Battery Voltage (Volts) To',
+     'Battery Energy (kWh) To',],
+    ['Charger Level', 'Charger Power (kW)',],
+]
+
+POPULAR_NHTSA_VARIABLE_IDS = [NHTSA_API_VARIABLE_ID_MAPPING[name]
+                              for name in POPULAR_NHTSA_VARIABLE_NAMES
+                              if name in NHTSA_API_VARIABLE_ID_MAPPING]
+
+POPULAR_NHTSA_VARIABLE_IDS_BY_SORTED_GROUPS = [
+    [NHTSA_API_VARIABLE_ID_MAPPING[name]
+        for name in section if name in NHTSA_API_VARIABLE_ID_MAPPING]
+    for section in POPULAR_NHTSA_VARIABLE_NAMES_BY_SORTED_GROUPS
+]
 
 # run `python manage.py fetch_nhtsa_group_names_distinct` to update this distinct list
 POPULAR_NHTSA_GROUP_NAMES = [

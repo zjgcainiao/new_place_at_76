@@ -1,4 +1,5 @@
 
+from calendar import c
 from .base import forms, reverse, ValidationError, datetime, FormHelper, \
     Layout, Hidden, Row, Column, Field, FormActions, Submit, ReCaptchaField, \
     ReCaptchaV2Checkbox
@@ -20,8 +21,8 @@ class VINSearchForm(forms.Form):
                            help_text="Optional. Enter only if you cannot get the result with vin only.")
     action = forms.CharField(widget=forms.HiddenInput(),
                              initial='action_vin_search')
-    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(),
-                             label='please check the box below to verify you are not a robot.')
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(attrs={"style": "background: transparent"}),
+                             label='Please check the box below to verify you are not a robot.')
 
     def clean_vin(self):
         vin = self.cleaned_data['vin']
@@ -78,10 +79,12 @@ class VINSearchForm(forms.Form):
 
                 css_class=' m-1'
             ),
-            Field('captcha', wrapper_class='col-md-12 p-1 '),
-            FormActions(
-                Submit('vin search', 'Search', css_class='btn btn-outline-dark',
-                       css_id='vin-search-button'),
-                css_class='d-grid gap-2')
+            Field('captcha', wrapper_class='col-md-12 p-1 m-1'),
+            Row(
+                FormActions(
+                    Submit('vin search', 'Search', css_class='btn btn-outline-dark',
+                           css_id='vin-search-button'),
+                    css_class='d-grid gap-2'),
+                css_class='m-1')
 
         )

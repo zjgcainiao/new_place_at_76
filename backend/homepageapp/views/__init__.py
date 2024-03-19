@@ -3,4 +3,4 @@ from .get_service_list_view import GetServiceListView
 from .get_react_app_view import GetReactAppView
 from .get_about_us_view import GetAboutUsView
 from .verify_stripe_apple_pay import verify_stripe_applepay
-from .get_private_policy_view import GetPrivatePolicyView
+from .get_privacy_policy_view import GetPrivacyPolicyView

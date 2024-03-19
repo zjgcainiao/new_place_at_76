@@ -6,9 +6,7 @@ from shops.models import Vin
 class VinNhtsaApiSnapshots(models.Model):
     # Assuming standard VIN length of 17 characters. NHTSA website
     id = models.BigAutoField(primary_key=True)
-    vin = models.CharField(
-        max_length=17, 
-        verbose_name="Vehicle Identification Number (VIN)")
+
     vin = models.ForeignKey(
         Vin,
         on_delete=models.DO_NOTHING, 
@@ -17,8 +15,9 @@ class VinNhtsaApiSnapshots(models.Model):
                 )
     variable = models.ForeignKey(
         NhtsaVariableList,
-        on_delete=models.DO_NOTHING, 
-        null=True,blank=True,
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True,
         to_field='variable_id',  # specify the field of the related model is variable_id
         related_name='nhtsa_variable_ids')
     variable_name = models.CharField(max_length=255, null=True, blank=True)
@@ -51,7 +50,7 @@ class VinNhtsaApiSnapshots(models.Model):
         ordering = ['vin','variable','-created_at',]
         indexes = [
             # Index to speed up searches based on created at, VIN and VariableID
-            models.Index(fields=[ 'vin','variable','-created_at', ]),
+            models.Index(fields=['vin','variable','-created_at', ]),
         ]
 
     def __str__(self):

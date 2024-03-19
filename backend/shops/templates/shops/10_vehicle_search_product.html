@@ -8,6 +8,108 @@
     border-bottom: 2px solid #dee2e6;
     } */
     /* The first block of CSS styles applies to all .nav-link elements that are children of .nav-tabs: */
+    .p {
+        font-family: 'Exo2', sans-serif;
+    }
+
+    .automan-introduction-container {
+        /* Inherits from Bootstrap container */
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background-color: transparent;
+        /* Light grey background */
+        border: 1px solid #dee2e6;
+        /* Slight border */
+        border-radius: .25rem;
+        /* Rounded corners */
+    }
+
+    .automan-introduction-container img#websiteLogo {
+        width: 50px;
+        /* Adjust based on your preference */
+        height: auto;
+        margin-bottom: 1rem;
+        /* Space below the logo */
+    }
+
+    .automan-introduction-container p {
+        margin-bottom: .5rem;
+        /* Reduce margin-bottom for <p> elements */
+    }
+
+    .automan-introduction-container .disclaimer {
+        font-size: .875rem;
+        /* Smaller font size for disclaimer */
+        color: #6c757d;
+        /* Muted text color */
+    }
+
+    /* Enhance the first <p> element which is the introTextContent */
+    .automan-introduction-container p:first-of-type {
+        font-weight: bold;
+        /* Make it bold */
+        font-size: 1.25rem;
+        /* Larger font size */
+        color: #212529;
+        /* Dark text color */
+    }
+
+    .automan-introduction {
+        font-family: 'Expo2', sans-serif;
+        font-size: 1.1rem;
+        background: -webkit-linear-gradient(#eee, #9c9898, #333);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.5);
+        margin-bottom: 10px;
+        /* padding: 10px; */
+    }
+
+    .card-container {
+        display: flex;
+        /* Allow cards to wrap  */
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .card-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .card-key {
+        font-weight: bold;
+        flex: 0 0 30%;
+        /* Adjust as needed  */
+    }
+
+    .card-value {
+        flex: 1;
+        /* Allow value to expand */
+    }
+
+    .disclaimer {
+        font-size: 0.85rem;
+        /* Slightly smaller font */
+        color: #666;
+        /* Muted gray */
+        margin-top: 5px;
+        /* Spacing above */
+        text-align: left;
+        /* Centered */
+    }
+
+    .lead-text {
+        font-weight: 600;
+        /* Slightly bolder */
+        text-align: left;
+        /* Center the text */
+        margin-bottom: 15px;
+        /* Add spacing below */
+    }
 
     .automan-error {
         font-family: 'Exo2', sans-serif;
@@ -42,44 +144,93 @@
         }
     }
 
-    .nav-tabs .nav-link {
+    /* .nav-tabs .nav-link {
         border: 2px solid transparent;
         border-top-left-radius: 0.25rem;
         border-top-right-radius: 0.25rem;
         background: #f8f9fa;
-        /* #f8f9fa;  Light grey background. orange400 */
+
         margin: 5px;
     }
 
     .nav-tabs .nav-link.active {
         color: #495057;
         background-color: #fed7aa;
-        /* orange200 */
         border-color: #dee2e6;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
             0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        /* Soft shadow for active tab */
+    
+    } */
+    .nav-tabs .nav-link {
+        justify-content: center;
+        border: 2px solid #555a5e;
+        /* Slightly darker metallic border */
+        border-top-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
+        background-color: #303538;
+        /* Darker metallic for unselected tab */
+        margin: 5px;
+        color: #ddd;
+        /* Light text on the tabs */
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #f5f1f0;
+        /* Almost black text on selected tab */
+        background-color: #656a6e;
+        /* Slightly brighter for selected tab */
+        border-color: #bc715c;
+        font-weight: 600;
+        /* Border matches selected tab background */
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+        /* Subtle shadow underneath */
+    }
+
+    /* Specific hover styles for readability on dark background */
+    .nav-tabs .nav-link:hover {
+        color: #f0f0f0;
+        /* Very light, near white color */
+        background-color: #454a4e;
+        font-weight: 600;
+        /* Slightly darker on hover for contrast */
+    }
+
+    .nav-tabs.nav-fill {
+        justify-content: center;
+        /* Center the tab items horizontally */
+    }
+
+    .nav-tabs .nav-item {
+        margin: 0 10px;
+        /* Add spacing between tab items */
     }
 
     /* added for btn-export-pdf and rest of form customization 2023-11-06 */
 
     .tab-content>.tab-pane {
-        border: 1px solid #dee2e6;
-        border-top: none;
-        /* Hide top border */
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        /* Semi-transparent metallic border */
         background: transparent;
+        /* background: linear-gradient(160deg, #97989a, #d1d3d5, #555d61 100%); */
+        /* Slightly brighter metallic background */
+        filter: saturate(0.8);
         margin: 5px;
         padding: 10px;
-        box-shadow: inset 5px 5px 10px #7f8080,
-            inset -5px -15px 10px #ffffff;
-        /* Inward shadows for a matte look */
+        transition: box-shadow 0.2s ease;
+        /* Add transition for hover effect */
+    }
+
+    .tab-content>.tab-pane:hover {
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        /* Subtle 'lifted' shadow on hover */
+
+        /* Desaturate the background , 0.8 is the default value */
     }
 
     /* Mobile friendly adjustments */
     @media (max-width: 768px) {
         .nav-tabs .nav-link {
             padding: 0.5rem 1rem;
-            /* Larger tap targets for mobile */
         }
 
         .tab-content>.tab-pane {
@@ -88,42 +239,45 @@
     }
 
     /* added for btn-export-pdf and rest of form customization 2023-11-06 */
-
-    /* Add these styles for the form fields' gradient background */
+    /* Updated form control,label, te styles */
     .form-group .form-control,
     .form-control,
     .form-select {
-        background: transparent;
-        /* Make the input field background white */
-        border: 1px solid #ced4da;
-        /* Add a border if needed */
+        background-color: #4d5357;
+        /* A lighter metallic background */
+        border: 1px solid #555a5e;
+        /* Slightly darker border */
+        color: #e0e0e0;
+        /* Light, off-white text */
     }
 
-    /* Make labels bolder */
+    .form-text {
+        color: #9ba1a3;
+        /* Slightly muted gray for helper text */
+        font-size: 0.95rem;
+        /* Reduce the size slightly */
+    }
+
+    /* Labels remain bold */
     .form-label,
     label {
-        font-weight: bold;
-        font-family: 'Noto Sans', sans-serif;
-        /* Adjust font-weight as needed */
+        font-weight: 600;
+        /* Slightly bolder text */
+        font-family: 'Exo2', sans-serif;
+        /* Or your chosen font */
+        color: #e0e0e0;
+        /* Light, off-white text */
     }
 
-    /* Metallic border style for form inputs */
-
-    /* Metallic effect enhancement on form control focus */
+    /* Lighter metallic effect enhancement on focus */
     .form-select:focus,
     .form-control:focus {
-        border-color: #4f5152;
-        /* Metallic color */
-        outline: 1px;
-        /* Light grey border to start with */
-        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1) inset,
-            /* Inner shadow for depth */
-            0px 0px 8px rgba(127, 127, 127, 0.6);
-        /* Glow effect for metallic feel */
-        transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
-        /* Remove default focus outline */
-        box-shadow: 0 0 0 0.2rem rgba(121, 128, 135, 0.25);
-        /* Metallic glow on focus */
+        border-color: #656a6e;
+        /* Slightly brighter metallic color */
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.15) inset,
+            /* More subtle inset shadow */
+            0px 2px 8px rgba(192, 192, 192, 0.6);
+        /* Brighter glow */
     }
 
     /* Styles for the export buttons */
@@ -229,29 +383,43 @@
     }
 </style>
 
-<section class="container pt-5 my-5 ">
+{{ POPULAR_NHTSA_VARIABLE_NAMES_BY_SORTED_GROUPS|json_script:"popularNhtsaVariableNames" }}
+<script>
+
+    let customer_user_login_url = `{% url 'customer_users:customer_user_login' %}`;
+</script>
+
+<section class="container pt-5 mt-5">
     <!-- django messages section  -->
     {% include 'homepageapp/14_homepageapp_messages_section.html' %}
-    <div class="card card-hover shadow-sm ">
-        <h3 class='card-header bg-dark text-white'>Vehicle Search</h3>
-        <p class="px-4 py-2" style="font-family: 'Noto Sans', sans-serif;">Use the form below to fetch the vehicle
-            report (Vin Report).
-            Three searches without sign in. </p>
-        <ul class="nav nav-tabs nav-fill p-1 m-1" id="searchType" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="byVIN-tab" data-bs-toggle="tab" type="button"
-                    data-bs-target="#byVIN" role="tab" aria-controls="byVIN" aria-selected="false">By VIN</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link " id="byPlate-tab" data-bs-toggle="tab" type="button" data-bs-target="#byPlate"
-                    role="tab" aria-controls="byPlate" aria-selected="true">By Plate</button>
-            </li>
+    <div class="card border-0 ">
+        <h3 class='card-header automan-glossy-metallic'>Vin Report</h3>
 
-        </ul>
         <div class="card-body border-0">
+            <div class="row">
+                <p class="lead-text p-1 "> Use the forms below to get your report. Search limits may apply.</p>
+
+                <hr>
+                <ul class="nav nav-tabs nav-fill" id="searchType" role="tablist">
+                    <li class="nav-item p-1 my-1" role="presentation">
+                        <button class="nav-link active" id="byVIN-tab" data-bs-toggle="tab" type="button"
+                            data-bs-target="#byVIN" role="tab" aria-controls="byVIN" aria-selected="false">By
+                            VIN</button>
+                    </li>
+                    <li class="nav-item p-1 my-1" role="presentation">
+                        <button class="nav-link " id="byPlate-tab" data-bs-toggle="tab" type="button"
+                            data-bs-target="#byPlate" role="tab" aria-controls="byPlate" aria-selected="true">By
+                            PlateNumber</button>
+                    </li>
+
+                </ul>
+            </div>
+
+
             <div class="tab-content" id="searchTypeContent">
 
                 <div class="tab-pane fade show active" id="byVIN" role="tabpanel" aria-labelledby="byVIN-tab">
+
 
                     <!-- By VIN Form -->
                     {% crispy vin_form vin_form.helper %}
@@ -259,30 +427,29 @@
                 </div>
                 <!-- end of the Vin Search Form  -->
 
-                <div class="tab-pane fade show " id="byPlate" role="tabpanel" aria-labelledby="byPlate-tab">
+                <div class="tab-pane fade show automan-glossy-metallic" id="byPlate" role="tabpanel"
+                    aria-labelledby="byPlate-tab">
                     <!-- By Plate Form -->
                     {% crispy plate_form plate_form.helper %}
 
                 </div>
             </div>
             <!-- end of form tab-cotent -->
+            <p class="disclaimer">
+                Disclaimer: The data provided may contain inaccuracies. This website is not responsible for any
+                damages resulting from
+                the use of this information. Please use at your own risk.
+            </p>
         </div>
 
         <!-- export-to-pdf buttons-->
 
         <div class="card-footer bg-white justify-content-start">
-            <div class="col">
+            <div class="col-md-4">
                 <button id="exportPdfButtonClientSide" class="btn btn-export-pdf">
                     Export to <i class="fas fa-file-pdf me-3"></i>
                 </button>
             </div>
-            <!-- Uncomment below for server-side export functionality
-                <div class="col-auto">
-                    <a id="exportPdfBackend" class="btn btn-export-pdf" href="{% url 'shops:export_vin_data_to_pdf' %}">
-                        <i class="fas fa-print"></i> Export to PDF via server-side
-                    </a>
-                </div>
-                -->
         </div>
 
         <!-- end of pdf buttons -->
@@ -292,32 +459,15 @@
 </section>
 <!-- end of container  -->
 
-<!-- export to pdf  buttons-->
-<!-- <div class="container">
-    <div class="row">
-        <div class="col">
-            <button id="exportPdfButtonClientSide" class="btn btn-export-pdf">Export to PDF via client-side</button>
-        </div>
-        <div class="col">
-            <button id="exportPdfBackend" class="btn btn-export-pdf"
-                href="{% url 'shops:export_vin_data_to_pdf' %}">Export to PDF via server-side</button>
-        </div>
-    </div>
-</div> -->
-<!-- end of pdf buttons  -->
 
 <!-- custom section displayed only in the PDF -->
 <div id="customSectionForPdf" style="display: none;">
-    <img src="{% static 'favicon_package_v0/favicon-32x32.png' %}" alt="Logo" id="websiteLogo">
-    <p>Search result provided by: Amazing Automan LLC. This following information is provided as a courtesy. The
-        information may contain inaccurate data.</p>
-    <p><strong>Disclaimer:</strong> The information provided is for general informational purposes only and should not
-        be relied upon as a sole basis for making financial transactions.</p>
+
 </div>
 
 
 <!-- resultData Display  -->
-<div class="container mt-2" id="resultDataDisplay">
+<div class="container mt-1" id="resultDataDisplay">
 
 </div>
 
@@ -357,281 +507,7 @@
 
 <!-- Include the libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="{% static 'shops/js/vehicle_search_product.js' %}"></script>
 
-<script>
-    $(function () {
-        // Once the document is loaded, you can use jsPDF and html2canvas
-        const exportPdfButton = $('#exportPdfButtonClientSide');
-
-        exportPdfButton.on('click', () => {
-            // Ensure 'content' points to the existing table you want to capture
-            var content = $('#resultDataDisplay');
-            var customSection = $('#customSectionForPdf');
-            if (!content) {
-                console.error('Element `#resultDataDisplay` to capture not found');
-                return;
-            }
-
-            // Check if the content exists and is part of the document
-            if (typeof html2canvas == 'function') {
-                html2canvas(customSection, { scale: 2 }).then(canvas => {
-                    html2canvas(content, { scale: 2 }).then(canvas => {
-                        var imgData = canvas.toDataURL('image/jpeg', 0.7);
-                        var pdf;
-                        if (window.jspdf && window.jspdf.jsPDF) {
-                            pdf = new window.jspdf.jsPDF();
-                        } else {
-                            console.error('jsPDF not found');
-                            return;
-                        }
-                        //         // Add custom section
-                        //         let imgHeight = customCanvas.height * imgWidth / customCanvas.width;
-                        //         pdf.addImage(customCanvas.toDataURL('image/jpeg', 0.7), 'JPEG', 0, 0, imgWidth, imgHeight);
-
-                        var imgWidth = 210; // A4 width in mm
-                        var pageHeight = 295; // A4 height in mm
-                        var imgHeight = canvas.height * imgWidth / canvas.width;
-                        var heightLeft = imgHeight;
-
-                        var position = 0;
-
-                        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                        heightLeft -= pageHeight;
-
-                        while (heightLeft >= 0) {
-                            position = heightLeft - imgHeight;
-                            pdf.addPage();
-                            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                            heightLeft -= pageHeight;
-                        }
-
-                        pdf.save('amazing-automan-search-result.pdf');
-                    });
-                }).catch(error => {
-                    console.error('Error capturing the canvas:', error);
-                });
-            } else {
-                console.error('The table element is not found or not attached to the document.');
-            }
-        });
-    });
-</script>
-
-<!-- customized script to display vin data  -->
-<script>
-
-    $(function () {
-        let customer_user_login_url = `{% url 'customer_users:customer_user_login' %}`;
-        console.log('customer_user_login_url: ' + customer_user_login_url);
-
-        // btn-primary was added to the button for no reason.
-        $('#vin-search-button').removeClass('btn-primary');
-        $('#plate-search-button').removeClass('btn-primary');
-
-        // FILEPATH: /Users/stephenwang/new_76prolubeplus.com/shops/templates/shops/10_vehicle_search_product.html -->
-        /*
-            This function fetches and displays plate data based on the given plateDataId.
-            It makes an AJAX request to the server and updates the HTML content accordingly.
-            If the plate data is available, it creates a card with the data and appends it to the display container.
-            If the plate data is not available or there is an error fetching the data, appropriate error messages are displayed.
-        */
-        $('#vin-search-button').on("click", function (event) {
-            // $("#vinSearchForm").submit(function(event){
-
-            event.preventDefault(); // Prevent the form from submitting traditionally
-            var form = $('#VinSearchForm');
-            // var formData = form.serialize(); // Serialize form data for submission
-            const formData = form.serialize(); // Serialize form data for submission
-            console.log(formData); // Add this line to verify the serialized data
-
-            // get `csrfToken` two ways
-            const csrfToken = form.find('[name=csrfmiddlewaretoken]').val(); // Fetch CSRF token from the form
-            // console.log(csrfToken); // Add this line to verify the serialized data
-            // var csrfToken_alternative = $('#vin-search-button').data('bs-csrf');
-
-
-            // Clear existing data and show a loading spinner 2023-12-27
-            $('#resultDataDisplay').empty().html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
-
-            $.ajax({
-                type: 'POST',
-                url: form.attr('action'), //"{% url 'shops:search_by_vin_or_plate' %}"
-                data: formData,
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                    xhr.setRequestHeader('X-CSRFToken', csrfToken); // Include the CSRF token in the header
-                },
-                success: function (response) {
-                    // for debugging
-                    console.log(response);
-                    // Clear any previous results and the loading spinner
-                    $('#resultDataDisplay').empty();
-
-                    // Start building the table
-                    const table = $('<table>').addClass('table table-responsive table-striped');
-                    const tbody = $('<tbody>');
-
-                    // Iterate over the object, skipping null values
-                    Object.entries(response).forEach(function ([key, value]) {
-                        if (value !== null) { // Check if value is not null
-                            // Create a table row with two columns: one for the key and one for the value
-                            const tr = $('<tr>');
-                            tr.append($('<td>').text(key));
-                            tr.append($('<td>').text(value));
-                            tbody.append(tr);
-                        }
-                    });
-
-                    // Append tbody to table
-                    table.append(tbody);
-
-                    // Append the table to resultDataDisplay div
-                    $('#resultDataDisplay').append(table);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error on AJAX request when fetching the vin data ID');
-                    // Check if the error is due to the search limit being reached
-                    if (xhr.status === 403) {
-                        // Parse the JSON response
-                        var response = JSON.parse(xhr.responseText);
-
-                        // Start constructing the error message
-                        var errorMessage = `<p class="automan-error">${response.error}</p>`;
-
-                        // If the response contains 'show_login_link', add a hyperlink
-                        if (response.show_login_link) {
-                            errorMessage += `<p>Please <a href="{% url 'customer_users:customer_user_login' %}" class="automan-login-link">create an account</a> to continue searching.</p>`;
-                        }
-                        // Display the error message
-
-                        $('#resultDataDisplay').html(errorMessage);
-                    } else {
-                        // Handle other types of errors and display message to the user
-                        $('#resultDataDisplay').empty().html(`<div class="alert alert-danger automan-error">An error occurred (Status:${status}):  ${error} </div>`);
-                    }
-                },
-            }).always(function () {
-                // 2024-01-23. This will be called after success or error, so the spinner will be removed in both cases
-                $('#resultDataDisplay .spinner-border').remove();  // Make sure to remove/hide the spinner
-            });
-        });
-
-        // license plate search
-        $('#plate-search-button').click(function (event) {
-            // $("#PlateSearchForm").submit(function(event){
-
-            event.preventDefault(); // Prevent the form from submitting traditionally
-            var form = $('#PlateSearchForm');
-            const formData = form.serialize(); // Serialize form data for submission
-            console.log(formData); // Add this line to verify the serialized data
-
-            // csrfToken two ways
-            const csrfToken = form.find('[name=csrfmiddlewaretoken]').val(); // Fetch CSRF token from the form
-            var csrfToken_alternative = $('#plate-search-button').data('bs-csrf');
-            // Clear existing data and show a loading spinner 2023-12-27
-            // var spinner =
-            $('#resultDataDisplay').empty().html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
-            $.ajax({
-                type: 'POST',
-                url: form.attr('action'), // `"{% url 'shops:search_by_vin_or_plate' %}"`
-                data: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': csrfToken // Include the CSRF token in the header
-                },
-                success: function (response) {
-                    console.log('here is the returned response', response);
-                    // Clear any previous results
-                    $('#resultDataDisplay').empty();
-
-                    // read the plate_data_id from the response and fetch the data
-                    if (response.plate_data_id) {
-                        fetchAndDisplayPlateData(response.plate_data_id);
-                    } else {
-                        // Handle error or no data case
-                        console.error('No plate data ID returned');
-                    }
-
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error on AJAX request when fetching the plate data ID');
-                    // Check if the error is due to the search limit being reached
-                    if (xhr.status === 403) {
-                        // Parse the JSON response
-                        var response = JSON.parse(xhr.responseText);
-
-                        // Start constructing the error message
-                        var errorMessage = `<p class="automan-error">${response.error}</p>`;
-
-                        // If the response contains 'show_login_link', add a hyperlink
-                        if (response.show_login_link) {
-                            errorMessage += `<p>Please <a href="{% url 'customer_users:customer_user_login' %}" class="automan-login-link">create an account</a> to continue searching.</p>`;
-                        }
-                        // Display the error message
-
-                        $('#resultDataDisplay').html(errorMessage);
-                    } else {
-                        // Handle other types of errors and display message to the user
-                        $('#resultDataDisplay').empty().html(`<div class="alert alert-danger automan-error">An error occurred (Status:${status}):  ${error} </div>`);
-                    }
-
-                },
-            });
-        });
-
-        // 2024-1-1 added for fetching and displaying plate data, including the `vin_data`
-        function fetchAndDisplayPlateData(plateDataId) {
-            const apiUrl = `/apis/plate_and_vin_data/${plateDataId}/?format=json`;
-            console.log('plate_vin_data api request url: ' + apiUrl);
-            $.getJSON(apiUrl, function (plateData) {
-                // Clear any existing content
-                $('#resultDataDisplay').empty();
-
-                // Check if data is available
-                if (plateData) {
-                    const headerContent = `${plateData.license_plate}, ${plateData.state} -VIN:${plateData.vin} - ${plateData.year} ${plateData.make}`;
-                    let basicCardHtml = `<div class="card steel-plate-card"><div class="card-header">${headerContent}</div><div class="card-body">`;
-                    product_id = 'prod_PKOol19RtrtGTG'
-                    const fieldsToDisplay = ['year', 'make', 'style', 'drive_type', 'engine', 'fuel', 'trim', 'color_name', 'color_abbreviation'];
-                    const fieldsPerRow = 3; // Number of fields per row
-                    basicCardHtml += '<div class="row">';
-
-                    fieldsToDisplay.forEach((field, index) => {
-                        let fieldValue = plateData[field] ? plateData[field] : 'Not Available';
-                        basicCardHtml += `<div class="col-md-4"><strong>${field}:</strong> ${fieldValue}</div>`;
-
-                        // Add a new row after every few fields
-                        if ((index + 1) % fieldsPerRow === 0 && index + 1 < fieldsToDisplay.length) {
-                            basicCardHtml += '</div><div class="row mt-2">';
-                        }
-                    });
-
-                    basicCardHtml += '</div></div></div>'; // Close row and card-body, card
-                    // Append new HTML section for premium content
-                    basicCardHtml += `
-                        <div class="card  bg-light mt-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="text-muted">Premium content available, including safety recalls, manufacturing
-                        information and battery information for electric vehicles</div>
-                                    <a href="{% url 'shops:prebuilt_checkout' product_id='prod_PKOol19RtrtGTG' %}" class="btn btn-primary">Purchase to view</a>
-                                </div>
-                            </div>
-                        </div>`;
-                    // basicCardHtml += '<div class="card mt-4"><div class="card-body"><h5 class="card-title">VIN Data</h5><p class="card-text">';
-                    $('#resultDataDisplay').html(basicCardHtml);
-                } else {
-                    $('#resultDataDisplay').html('<p>No detailed data found.</p>');
-                }
-
-
-            }).fail(function () {
-                $('#resultDataDisplay').html('<p>Error fetching detailed data.</p>');
-            });
-        }
-
-
-    });
-</script>
 
 {% endblock %}

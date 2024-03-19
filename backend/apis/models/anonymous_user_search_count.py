@@ -13,9 +13,9 @@ class AnonymousUserSearchCount(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
-        InternalUser, on_delete=models.DO_NOTHING, related_name='user_search_count_created_by')
+        InternalUser, on_delete=models.DO_NOTHING, related_name='user_search_count_created_by', null=True, blank=True)
     updated_by = models.ForeignKey(
-        InternalUser, on_delete=models.DO_NOTHING, related_name='user_search_count_updated_by')
+        InternalUser, on_delete=models.DO_NOTHING, related_name='user_search_count_updated_by', null=True, blank=True)
 
     def __str__(self):
         return f"{self.customer_user} - {self.search_count}"

@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from homepageapp.models import LicensePlateSnapShotsPlate2Vin, NhtsaDecodedVin, VinNhtsaApiSnapshots
 from apis.serializers import PlateAndVinDataSerializer, VinDataAggregatedSerializer
 from django.core.exceptions import ObjectDoesNotExist
-from firebase_auth_app.authentication import FirebaseAuthentication
+from firebase_auth_app.authentication import FirebaseAuthentication, FirebaseAndSimpleJwtAuthentication
 from rest_framework import status
 import json
 from apis.utilities import trigger_vin_or_license_plate_fetch_tasks
@@ -12,14 +12,12 @@ from rest_framework.response import Response
 from django.views.decorators.http import require_POST
 from rest_framework.decorators import api_view, action
 
-# @require_POST
-
-
 @api_view(['POST'])
 def handle_react_native_vehicle_search_api_view(request):
     # 1. Authenticate with Firebase (extract token from headers, etc.)
     firebase_auth = FirebaseAuthentication()
-    user, _ = firebase_auth.authenticate(request)
+    firebase_and_simple_jwt_auth = FirebaseAndSimpleJwtAuthentication()
+    user, _ = firebase_and_simple_jwt_auth.authenticate(request)
     if not user:
         return JsonResponse({'error': 'Authentication failed'},
                             status=status.HTTP_401_UNAUTHORIZED)

@@ -44,4 +44,4 @@ def gemini_chatbot_view(request):
             return JsonResponse({'response': response})
         else:
             context['error'] = form.errors  # Pass form errors back if needed
-    return render(request, 'chat.html', context)
+    return render(request, 'we_have_ai_helpers/20_chatbot.html', context)

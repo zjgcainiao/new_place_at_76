@@ -20,19 +20,21 @@ class PlateAndVinDataViewSet(viewsets.ModelViewSet):
     serializer_class = PlateAndVinDataSerializer
     # permission_classes = [IsAuthenticated, IsInternalUser]
     # permission_classes = [IsAuthenticated]
-    authentication_classes = [FirebaseAuthentication]
+    # authentication_classes = [FirebaseAuthentication]
 
     def check_rate_limit(self, request):
         user_identifier = request.user.pk if request.user.is_authenticated else self.get_client_ip(
             request)
         cache_key = f"search_count_for_user_{user_identifier}"
         search_count = cache.get(cache_key, 0)
-        logger.info(f"Search count for {user_identifier}: {search_count}")
+        logger.info(
+            f"Implementing rate_limit in PlateAndVinDataViewset API. Search count for {user_identifier}: {search_count}")
         if not request.user.is_authenticated and \
                 search_count >= LICENSE_PLATE_SEARCH_LIMIT:
             return False
 
         # Update the count in the cache
+        # there is no limit for authenticated users
         if request.user.is_authenticated:
             if search_count == 0:
                 # Set the cache to expire after 24 hours

@@ -1,5 +1,5 @@
 #!/bin/sh
-
+echo 'Starting web:amd64 entrypoint script...'
 # Check if the automanshop directory exists
 if [ -d "/app/automanshop" ]; then
     echo "automanshop directory found."
@@ -17,4 +17,6 @@ else
 fi
 
 # Start Daphne
+echo "PATH:$PATH"
+echo "running daphne sartup command"
 exec daphne -b 0.0.0.0 -p 8000 automanshop.asgi:application

@@ -4,6 +4,7 @@ from .payment_cancelled import payment_cancelled
 from .payment_success import payment_success
 from .get_online_product_list import get_online_product_list
 from .prebuilt_checkout import prebuilt_checkout
+from .prebuilt_checkout_backup import prebuilt_checkout_backup
 from .set_session_data import set_session_data
 from .stripe_charge import stripe_charge
 from .stripe_webhook import stripe_webhook
@@ -11,4 +12,4 @@ from .vehicle_search_product import vehicle_search_product
 from .manage_vehicle_search_limit import manage_vehicle_search_limit
 from .custom_checkout import custom_checkout
 from .prebuilt_checkout import prebuilt_checkout
-from .export_vin_data_to_pdf import export_vin_data_to_pdf
+from .export_vin_aggregated_to_pdf import export_vin_aggregated_to_pdf

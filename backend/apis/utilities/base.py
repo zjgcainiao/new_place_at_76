@@ -12,6 +12,7 @@ from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from core_operations.constants import POPULAR_NHTSA_VARIABLE_IDS, POPULAR_NHTSA_GROUP_NAMES
+from core_operations.constants import POPULAR_NHTSA_VARIABLE_IDS_BY_SORTED_GROUPS, POPULAR_NHTSA_VARIABLE_NAMES_BY_SORTED_GROUPS
 from asgiref.sync import sync_to_async
 # from channels.db import database_sync_to_async
 from aiohttp import ClientSession

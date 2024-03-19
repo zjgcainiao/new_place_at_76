@@ -14,16 +14,24 @@
 <section class="bg-top-center bg-repeat-0 main-content"
     style="background-image: url({% static 'homepageapp/img/home/hero-bg.png' %}); background-size: cover;">
 
-    <div clas="container pt-5 m-5">
-        <div class="card card-hover">
-            <h3 class="card-header border-0">Payment Success</h3>
+    <div class="container pt-5 m-5">
+        <div class="card card-hover shadow-sm"> <!-- Added shadow for better hover effect -->
+            <h4 class="card-header border-0 automan-glossy-metallic text-white">Payment Success</h4>
+            <!-- Use automan-glossy-metallic for header -->
             <div class="card-body">
+                <h5 class="card-title">Vin Report for VIN: {{ vin }}</h5> <!-- Enhance the title -->
                 <p class="card-text">
-                    Your order was successful! If you have any questions, please email
+                    Your order was successful! We have sent an email that contains your detailed VIN report in
+                    PDF format. If you have any questions, please email
                     <a href="mailto:info@76prolubeplus.com">info@76prolubeplus.com</a>.
                 </p>
+                <!-- Link to download the PDF report -->
+                <a href="{% url 'shops:export_vin_aggregated_to_pdf' %}?vin={{ vin }}" class="btn btn-primary">
+                    Download VIN Report
+                </a>
             </div>
         </div>
     </div>
+    <!-- end of container  -->
 </section>
 {% endblock %}

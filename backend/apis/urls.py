@@ -37,9 +37,9 @@ router.register(r'canned_jobs', CannedJobViewSet,
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('handle_react_native_vehicle_search/',
+    path('handle_react_native_vehicle_search_api_view/',
          handle_react_native_vehicle_search_api_view,
-         name='handle_react_native_vehicle_search'),
+         name='handle_react_native_vehicle_search_api_view'),
     path('internal_user_login/', api_internal_user_login,
          name='api_internal_user_login'),
     path('customers/', get_active_customers_api,
