@@ -357,3 +357,12 @@ POPULAR_NHTSA_GROUP_NAMES = [
     'internal',  # NSTHA internally used fields
 
 ]
+
+# the GS1 prefix for the US is 00-19
+# sample
+GS1_COMPANY_PREFIX = '90019'
+
+
+# added 2024-05-01
+DEFAULT_PAGE_SIZE = 12
+DEFAULT_PAGE_SIZE_LARGE = 24

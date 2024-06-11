@@ -1,0 +1,32 @@
+<!-- templates/moving_item_formset.html -->
+{% load crispy_forms_tags %}
+{{ formset.management_form }}
+{% for form in formset %}
+<div class="moving-item-form">
+    {{ form|crispy }}
+</div>
+{% endfor %}
+
+<!-- Optionally, add a button to dynamically add more forms via JavaScript -->
+<button type="button" id="add-item">Add More Items</button>
+
+<script>
+    document.getElementById('add-item').addEventListener('click', function () {
+        // Get the current total number of forms
+        const totalForms = document.querySelector('input[name="{{ formset.prefix }}-TOTAL_FORMS"]');
+        const currentCount = parseInt(totalForms.value);
+
+        // Clone the last form, updating its name attributes
+        const newForm = document.querySelector('.moving-item-form').cloneNode(true);
+        newForm.querySelectorAll('input, select, textarea').forEach((input) => {
+            const nameAttr = input.name.replace(/-\d+-/, `-${currentCount}-`);
+            input.name = nameAttr;
+            input.id = `id_${nameAttr}`;
+            input.value = '';
+        });
+
+        // Append the new form and update the form counter
+        document.querySelector('#add-item').insertAdjacentElement('beforebegin', newForm);
+        totalForms.value = currentCount + 1;
+    });
+</script>

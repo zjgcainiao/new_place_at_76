@@ -23,3 +23,9 @@ from .convert_to_int import convert_to_int
 
 from .clean_json_and_write_it_to_env import clean_json_and_write_it_to_env
 from .convert_docx_to_html import convert_docx_to_html
+
+from .generate_qrcode import generate_qrcode
+from .generate_upc_barcode import generate_upc_barcode
+from .generate_code128_barcode import generate_code128_barcode
+from .generate_code128_barcode_lite import generate_code128_barcode_lite
+from .create_group_with_permissions import create_group_with_permissions

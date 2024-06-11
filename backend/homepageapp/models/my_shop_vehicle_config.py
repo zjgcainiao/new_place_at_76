@@ -5,9 +5,10 @@ from .sub_model import SubmodelsModel
 from .body_style import BodyStylesModel
 from .engine import EnginesModel
 from .brake import BrakesModel
-from .transmission import TransmissionsModel    
+from .transmission import TransmissionsModel
 from .gvw import GVWsModel
 from .drive import DrivesModel
+
 
 class MyShopVehicleConfigsModel(models.Model):
     myshop_vehicle_config_id = models.AutoField(primary_key=True)
@@ -44,5 +45,5 @@ class MyShopVehicleConfigsModel(models.Model):
     class Meta:
         db_table = 'myshopvehicleconfigs_new_03'
         ordering = ["-myshop_vehicle_config_id"]
-        verbose_name = 'myshop vehicle configuration'
-        verbose_name_plural = 'myshop vehicle configurations'
+        verbose_name = 'Myshop Vehicle Configuration'
+        verbose_name_plural = 'Myshop Vehicle Configurations'

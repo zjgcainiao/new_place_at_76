@@ -32,5 +32,5 @@ class TextMessagesModel(models.Model):
     class Meta:
         db_table = 'textmessages_new_03'
         ordering = ['-text_message_id']
-        verbose_name = 'textmessage'
-        verbose_name_plural = 'textmessages'
+        verbose_name = 'Text Message'
+        verbose_name_plural = 'Text Messages'

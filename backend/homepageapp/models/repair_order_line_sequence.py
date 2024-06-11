@@ -3,15 +3,17 @@ from .repair_order import RepairOrdersNewSQL02Model
 from .line_item import LineItemsNewSQL02Model
 
 
-
-
 class RepairOrderLineItemSquencesNewSQL02Model(models.Model):
     ro_line_item_sequence_id = models.AutoField(primary_key=True)
     repair_order = models.ForeignKey(
         RepairOrdersNewSQL02Model, models.CASCADE, blank=True, null=True)
     line_item = models.ForeignKey(
-        LineItemsNewSQL02Model, models.CASCADE, blank=True, null=True,related_name='lineitem_ro_line_item_sequence')
-    sequence = models.IntegerField(null=True)
+        LineItemsNewSQL02Model, on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='lineitem_ro_line_item_sequence')
+    sequence = models.IntegerField(null=True,
+                                   blank=True)
 
     ro_line_item_sequence_created_at = models.DateTimeField(auto_now_add=True)
     ro_line_item_sequence_last_updated_at = models.DateTimeField(
@@ -29,4 +31,3 @@ class RepairOrderLineItemSquencesNewSQL02Model(models.Model):
     class Meta:
         db_table = 'repairorderlineitemsequences_new_03'
         ordering = ["-ro_line_item_sequence_id", 'repair_order', 'line_item']
-

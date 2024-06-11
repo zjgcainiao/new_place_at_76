@@ -1,33 +1,41 @@
 from django.urls import include, path
 
 from dashboard.views import LineItemCreateWizard, repair_order_update, repair_order_and_line_items_detail, line_item_merge_view, \
-                              LineItemCreateWizard, LineItemDeleteView, chat_sidebar_view, SearchView,line_item_three_in_one_create, line_item_three_in_one_update, line_item_merge_view, \
-                              search_single_plate_via_plate2vin,search_single_vin_via_nhtsa, fetch_or_save_latest_vin_snapshot_async, \
-                              get_vehicle_dash, VehicleCreateView, VehicleDetailView, VehicleUpdateView, VehicleDeleteView, \
-                              get_customer_dash, CustomerCreateView, CustomerDetailView, CustomerDetail2View, update_customer_email, \
-                              get_repair_order_dash, get_repair_order_detail_v1,get_repair_order_detail_v2, WIPDashboardView, get_main_dash, \
-                              DashboardDetailView, RepairOrderUpdateView, LineItemUpdateView, LaborItemUpdateView, \
-                              CustomerUpdateView, CustomerDeleteView,  RepairOrderListView, \
-                              technician_dash_view, search_customer_by_phone, update_customer_assignment, \
-                              get_canned_job_dash, CannedJobDetailView, canned_job_update,canned_job_delete
+    LineItemCreateWizard, LineItemDeleteView, chat_sidebar_view, SearchView, line_item_three_in_one_create, line_item_three_in_one_update, line_item_merge_view, \
+    search_single_plate_via_plate2vin, search_single_vin_via_nhtsa, fetch_or_save_latest_vin_snapshot_async, \
+    get_vehicle_dash, VehicleCreateView, VehicleDetailView, VehicleUpdateView, VehicleDeleteView, \
+    get_customer_dash, CustomerCreateView, CustomerDetailView, CustomerDetail2View, update_customer_email, \
+    get_repair_order_dash, get_repair_order_detail_v1, get_repair_order_detail_v2, WIPDashboardView, get_main_dash, \
+    DashboardDetailView, RepairOrderUpdateView, LineItemUpdateView, LaborItemUpdateView, \
+    CustomerUpdateView, CustomerDeleteView,  RepairOrderListView, \
+    technician_dash_view, search_customer_by_phone, update_customer_assignment, \
+    get_canned_job_dash, CannedJobDetailView, canned_job_update, canned_job_delete, \
+    get_personal_item_dash, PersonalItemCreateView, PersonalItemUpdateView, \
+    PersonalItemDetailView, moving_request_create, get_moving_request_dash
+#     get_moving_item_dash, moving_item_create, \
+#     MovingItemDetailView, \
+#     moving_request_detail
 
 app_name = 'dashboard'
 urlpatterns = [
 
     path('', get_main_dash, name='main_dash'),
-    path('search/', SearchView.as_view(), name='search_active_appts_and_wips'),
+    path('search/', SearchView.as_view(),
+         name='search_active_appts_and_repair_orders'),
 
     # dashboard -- repair order plus customer info and customer information. Phone numbers are not included yet.
     # dashboard v2. current version
     path('repair-orders/', WIPDashboardView.as_view(), name='repair_order_dash'),
     # dashboard v1-- old
-    path('repair-orders/old',  get_repair_order_dash, name='dashboard-testing-v1'),
+    path('repair-orders/old',  get_repair_order_dash,
+         name='dashboard-testing-v1'),
 
     # the repair order detail page.
-    path('repair-orders/v2/detail/<int:pk>/',get_repair_order_detail_v1, name='get_repair_order_detail_v1'),
+    path('repair-orders/v2/detail/<int:pk>/',
+         get_repair_order_detail_v1, name='get_repair_order_detail_v1'),
 
-#     path('chats/customers/<int:customer_id>/',
-#          chat_sidebar_view, name='dashboard-chats'),
+    #     path('chats/customers/<int:customer_id>/',
+    #          chat_sidebar_view, name='dashboard-chats'),
 
     path('repair-orders/v2/detail_v2/<int:pk>/', get_repair_order_detail_v2,
          name='get_repair_order_detail_v2'),
@@ -37,9 +45,6 @@ urlpatterns = [
          RepairOrderUpdateView.as_view(), name='repair_order_update'),
     path('repair-orders/v2/detail_v3/<int:pk>/update-ro-v2',
          repair_order_update, name='repair_order_update_v2'),
-    #  path('ros/<int:repair_order_id>/lineitems/', repair_order_and_line_items_detail, name='workitem-lineitem-detail'),
-
-
     path('repair-orders/v2/detail/<int:pk>/lineitems/<int:line_item_id>/retired-methods/',
          LineItemUpdateView.as_view(), name='line_item_update_view'),
 
@@ -48,19 +53,22 @@ urlpatterns = [
     path('repair-orders/v2/detail/<int:pk>/lineitems/three-in-one-create/',
          line_item_three_in_one_create, name='line_item_three_in_one_create'),
 
-     path('repair-orders/v2/detail/<int:pk>/lineitems/create-wizard/',
-           LineItemCreateWizard.as_view(),name='line_item_create_wizard'),
-     # this is the current one 
+    path('repair-orders/v2/detail/<int:pk>/lineitems/create-wizard/',
+         LineItemCreateWizard.as_view(), name='line_item_create_wizard'),
+    # this is the current one
     path('repair-orders/v2/detail/<int:pk>/lineitems/<int:line_item_id>/merge/',
          line_item_merge_view, name='line_item_merge_view'),
     path('repair-orders/v2/detail/<int:pk>/lineitems/<int:line_item_id>/delete/',
          LineItemDeleteView.as_view(), name='line_item_delete_view'),
 
-     # canned_job_dash
-     path('canned-jobs/', get_canned_job_dash, name='canned_job_dash'),  
-     path('canned-jobs/<int:pk>/', CannedJobDetailView.as_view(), name='canned_job_detail'),  
-     path('canned-jobs/<int:pk>/update/', canned_job_update, name='canned_job_update'),  
-     path('canned-jobs/<int:pk>/delete/', canned_job_delete, name='canned_job_delete'),  
+    # canned_job_dash
+    path('canned-jobs/', get_canned_job_dash, name='canned_job_dash'),
+    path('canned-jobs/<int:pk>/', CannedJobDetailView.as_view(),
+         name='canned_job_detail'),
+    path('canned-jobs/<int:pk>/update/',
+         canned_job_update, name='canned_job_update'),
+    path('canned-jobs/<int:pk>/delete/',
+         canned_job_delete, name='canned_job_delete'),
 
     # customer dash
     path('customers/', get_customer_dash, name='customer_dash'),
@@ -71,8 +79,7 @@ urlpatterns = [
     path('customers/create', CustomerCreateView.as_view(),
          name='customer_create'),
 
-    path('update_customer_email/<int:email_id>/',
-         update_customer_email, name='update_customer_email'),
+    #     path('update_customer_email/<int:email_id>/', update_customer_email, name='update_customer_email'),
     path('customers/create/',
          CustomerCreateView.as_view(), name='customer_create'),
     path('customers/<int:pk>/update/',
@@ -90,11 +97,11 @@ urlpatterns = [
     path('vehicles/latest-vin-snapshot/',
          fetch_or_save_latest_vin_snapshot_async, name='fetch_or_save_latest_vin_snapshot'),
     path('vehicles/fetch-single-vin-search-nhtsa-api',
-        search_single_vin_via_nhtsa, name='search_single_vin_via_nhtsa'),
+         search_single_vin_via_nhtsa, name='search_single_vin_via_nhtsa'),
     path('vehicles/single-plate-search',
          search_single_plate_via_plate2vin, name='search_single_plate_via_plate2vin'),
 
-     # vehicle dash
+    # vehicle dash
     path('vehicles/', get_vehicle_dash, name='vehicle_dash'),
     path('vehicles/create/', VehicleCreateView.as_view(),
          name='vehicle_create'),
@@ -105,15 +112,37 @@ urlpatterns = [
     path('vehicles/<int:pk>/delete/', VehicleDeleteView.as_view(),
          name='vehicle_delete'),
 
-    path('tech_dash/<int:technician_id>/',
+    # technician dash
+    path('tech-dash/',
          technician_dash_view, name='technician_dash'),
 
     path('repairorders/', RepairOrderListView.as_view(),
          name='repairorders_list'),
-    # path('repairorders/<int:repair_order_id>/lineitems/', views.repair_order_and_line_items_detail, name='repairorder-lineitem-detail'),
-    # path('dataimport/email', views.EmailDataView.as_view(), name='import-email-data')
 
-#      path('stock_dash/', views.get_stock_dash, name='stock_dash'),
-#     path('track_stocks/', views.track_stocks_performance, name='track_stocks'),
+    # person item dash - personal inventory
+    path('personal-items/', get_personal_item_dash, name='personal_item_dash'),
+    path('personal-items/<int:pk>/', PersonalItemDetailView.as_view(),
+         name='personal_item_detail'),
+    path('personal-items/create/', PersonalItemCreateView.as_view(),
+         name='personal_item_create'),
+    path('personal-items/<int:pk>/update/', PersonalItemUpdateView.as_view(),
+         name='personal_item_update'),
+
+
+    #     path('moving-items/', get_moving_item_dash,
+    #          name='moving_item_dash'),
+    #     path('moving-items/create/', moving_item_create,
+    #          name='moving_item_create'),
+    #     path('moving-items/<int:pk>/', MovingItemDetailView.as_view(),
+    #          name='moving_item_detail'),
+
+    path('moving-requests/', get_moving_request_dash,
+         name='moving_request_dash'),
+    path('moving-requests/create/', moving_request_create,
+         name='moving_request_create'),
+    #     path('moving-requests/<int:pk>/', moving_request_detail,
+    #          name='moving_request_detail'),
+
+
 
 ]

@@ -15,4 +15,6 @@ class PaymentTransactionsModel(models.Model):
     class Meta:
         db_table = 'paymenttransactions_new_03'
         ordering = ["-payment_transaction_id",]
+        verbose_name = 'Payment Transaction'
+        verbose_name_plural = 'Payment Transactions'
 

@@ -1,6 +1,8 @@
-from .base import MakesNewSQL02Model
 
+from homepageapp.models import MakesNewSQL02Model
 # common function 06
+
+
 def get_latest_vehicle_make_list():
     # Get a distinct list of makes
     # makes = MakesNewSQL02Model.objects.values_list('make_name', flat=True)

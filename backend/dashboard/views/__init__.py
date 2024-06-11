@@ -41,6 +41,20 @@ from .search_customer_by_phone import search_customer_by_phone
 from .update_customer_assignment import update_customer_assignment
 from .technican_dash import technician_dash_view
 
-from .search_single_vin_via_nthsa import  search_single_vin_via_nhtsa
+from .search_single_vin_via_nthsa import search_single_vin_via_nhtsa
 from .search_single_plate_via_palte2vin_async import search_single_plate_via_plate2vin
 from .fetch_or_update_latest_vin_snapshot import fetch_or_save_latest_vin_snapshot_async
+
+from .get_personal_item_dash import get_personal_item_dash
+from .personal_item_create import PersonalItemCreateView
+from .personal_item_update import PersonalItemUpdateView
+from .personal_item_detail import PersonalItemDetailView
+
+
+# from .get_moving_item_dash import get_moving_item_dash
+# from .moving_item_detail import MovingItemDetailView
+# from .moving_item_create import moving_item_create
+
+from .get_moving_request_dash import get_moving_request_dash
+from .moving_request_create import moving_request_create
+# from .moving_request_detail import moving_request_detail

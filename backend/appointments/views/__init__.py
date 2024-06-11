@@ -1,5 +1,5 @@
 from .appointment_preview_view import appointment_preview_view
-from .appointment_create_for_customer import appointment_create_view_for_customer
+from .appointment_create_view_for_customer import appointment_create_view_for_customer
 from .appointment_success import appointment_success
 from .appointment_sucess_class_view import AppointmentSuccessView
 from .appointment_create_class_view import AppointmentCreateView

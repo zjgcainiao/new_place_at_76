@@ -24,8 +24,8 @@ urlpatterns = [
          name='internal_user_logout'),
 
     # added on 2023-09-28 to allow a newly created internal_user (from talent model) and activate the user.
-    path('activate/<token>/',
-         activate_internal_user_account, name='activate_internal_user_account'),
+#     path('activate/<token>/',
+#          activate_internal_user_account, name='activate_internal_user_account'),
 
     path('password_change/', InternalUserPasswordChangeView.as_view(),
          name='password_change'),

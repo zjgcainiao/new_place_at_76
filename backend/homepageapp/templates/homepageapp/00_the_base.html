@@ -56,11 +56,16 @@
 <!-- Automan theme css. built for this website. will be used to replace other themes -->
 <link rel="stylesheet" media="screen" href="{% static 'core_operations/css/automan-theme.css' %}">
 
-<!-- chatbot_conversation.js in the core_operations 2024-01-18 -->
+<!-- chatbot_conversation.js in the `we_have_ai_helpers` 2024-01-18 -->
 <script type="text/javascript">
     var chatbotEndpoint = "{% url 'we_have_ai_helpers:chatbot_response' %}";
+    // Directly assign the Django URL to a JavaScript variable
+    let baseCheckoutUrl = "{% url 'shops:prebuilt_checkout' %}";
+    let customer_user_login_url = "{% url 'customer_users:customer_user_login' %}";
+    let customer_user_register_url = "{% url 'customer_users:customer_user_register' %}";
+    let logo_favicon_url = "{% static 'favicon_package_v0/favicon-32x32.png' %}"
 </script>
-<script src="{% static 'core_operations/js/chatbot_conversation.js' %}"></script>
+<script src="{% static 'we_have_ai_helpers/js/chatbot_conversation.js' %}"></script>
 
 <!-- Tempus Dominus JS and CSS 6.9.4. added to allow customized datetimepicker -->
 <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.9.4/dist/js/tempus-dominus.min.js"

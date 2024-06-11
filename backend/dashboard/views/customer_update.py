@@ -3,6 +3,7 @@ from .base import LoginRequiredMixin, UpdateView, redirect, messages, reverse_la
 from dashboard.forms import CustomerUpdateForm, AddressFormset, EmailInlineFormset, PhoneInlineFormset
 from homepageapp.models import CustomersNewSQL02Model
 
+
 class CustomerUpdateView(UpdateView, LoginRequiredMixin):
     model = CustomersNewSQL02Model
     form_class = CustomerUpdateForm
@@ -23,8 +24,10 @@ class CustomerUpdateView(UpdateView, LoginRequiredMixin):
         else:
             context['addresses_formset'] = AddressFormset(
                 instance=self.object)
-            context['emails_formset'] = EmailInlineFormset(instance=self.object)
-            context['phones_formset'] = PhoneInlineFormset(instance=self.object)
+            context['emails_formset'] = EmailInlineFormset(
+                instance=self.object)
+            context['phones_formset'] = PhoneInlineFormset(
+                instance=self.object)
         return context
 
     def form_valid(self, form):

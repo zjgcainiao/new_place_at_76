@@ -1,0 +1,190 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load humanize %}
+{% load core_operations.common_filters %}
+{% load crispy_forms_tags %}
+{% block content-main %}
+
+<div class="container-fluid px-1 my-1">
+    <div class="row">
+        <div class="col-md-8 col-sm-12">
+            <!-- Breadcrumb-->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-dark">
+                    <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+                    <li class="breadcrumb-item "><a href="{% url 'dashboard:personal_item_dash' %}">Stephen Wang's
+                            Personal
+                            Items</a>
+                    </li>
+                    <li class="breadcrumb-item active">Personal Item Detail</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+<div class="container-fluid p-1 my-1">
+    {% for message in messages %}
+    <li{% if message.tags %}
+        class="alert alert-{{ message.tags }} alert-dismissible fade show justify-content-center justify-content-between"
+        {% endif %} role="alert">
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </li>
+        {% endfor %}
+</div>
+{% endif %}
+
+<div class="container-fluid p-1 my-1" id='personal-item-detail-container'>
+    <div class="card card-hover border border-secondary">
+        <h3 class="card-header fw-bold">
+            ID:{{item.id}} --
+            Name: {{item.name}} --
+            Barcode:{{item.barcode_full_code}} --
+            Orginal Barcode:{{item.item_original_barcode}}</h3>
+        <div class='card-body text-dark'>
+
+            <div class="accordion" id="personalitemAccordion">
+
+                <!-- Basic Info Section -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingBasic">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseBasic" aria-expanded="false" aria-controls="collapseBasic">
+                            <h4 class="card-text">I.Basic Info</h4>
+                            <p class='card-text small text-left'> &nbsp;&nbsp;<em><u>Updated on:
+                                        {{item.updated_at|date}}</u></em></p>
+                        </button>
+                    </h2>
+                    <div id="collapseBasic" class="accordion-collapse shown" aria-labelledby="headingBasic">
+                        <div class="accordion-body my-1 px-1">
+                            <!-- Your Basic Information Fields Here -->
+                            <div class="container-fulid">
+                                <div class="row ">
+                                    <div class="col-md-12"><strong>Item ID: </strong>{{item.id}} </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class='col-md-6'>
+                                        <strong>Name: </strong>
+                                        {{item.name}}
+
+                                    </div>
+                                    <div class="col-md-6"> Category: {{item.get_item_category_display}}</div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-md-12">
+                                        Description: {{item.description}}
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-md-12">Location: {{item.location}}</div>
+                                </div>
+                                <h5 class="card-title my-3">Internal Tracking Information</h5>
+                                <div class="row my-1">
+                                    <div class="col-md-12">
+                                        Barcode (12-digit): <u>{{item.barcode_full_code}}</u>
+                                    </div>
+                                    {% if item.barcode_image %}
+                                </div>
+
+                                <div class="row my-3">
+                                    <div class="col-md-6">
+                                        <figure style="float:left">
+                                            <img src="{{ item.barcode_image.url }}"
+                                                alt="Barcode Image for {{ item.barcode_full_code }}" />
+                                            <!-- <figcaption>Barcode for {{ item.barcode_full_code }}</figcaption> -->
+                                        </figure>
+                                    </div>
+                                    {% else %}
+                                    <div class="col-md-6">
+                                        <p>No barcode available for this item.</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <!-- end of barcode_image  -->
+                            </div>
+                            <!-- end of container inside accordion-body -->
+                        </div>
+                        <!-- end of accordion body  -->
+                    </div>
+                </div>
+                <!-- end of accordion-item  1-->
+
+                <!-- Technical Info Section -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTechnical">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTechnical" aria-expanded="true" aria-controls="collapseTechnical">
+                            <h4>II.PERSONAL ITEM DETAILED SPECIFICATIONS</h4>
+                        </button>
+                    </h2>
+                    <div id="collapseTechnical" class="accordion-collapse collapse show"
+                        aria-labelledby="headingTechnical">
+                        <div class="accordion-body my-1 px-1">
+                            <!-- Additional Information about this personal item -->
+                            <div class="row">
+                                <div class="col-md-6 my-1">Original Barcode by Manufacturers:
+                                    {{item.item_original_barcode}}
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- end of accordion body  -->
+                    </div>
+                </div>
+                <!-- end of accordion-item  2-->
+
+                <!-- Uploaded Picture Section -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingItemImages">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseItemImages" aria-expanded="true"
+                            aria-controls="collapseItemImages">
+                            <h4>III Item Pictures</h4>
+                        </button>
+                    </h2>
+                    <div id="collapseItemImages" class="accordion-collapse collapse show"
+                        aria-labelledby="headingItemImages">
+                        <div class="accordion-body my-1 px-1">
+                            <!-- Additional Information about this personal item -->
+                            <div class="row">
+                                <!-- Loop through each image associated with the PersonalItem -->
+                                {% for image in item_images %}
+                                <div class="col-md-6 my-1">
+                                    <!-- Adjust image URL to point to your media root -->
+                                    <img src="{{ image.image.url }}" alt="Item Image" class="img-fluid" />
+                                </div>
+                                {% empty %}
+                                <p>No images available for this item.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <!-- end of accordion body -->
+                    </div>
+                </div>
+                <!-- end of accordion-item  3-->
+
+            </div>
+            <!-- end of accordin  -->
+
+            <div class="row my-2">
+                <div class="col">
+                    <a href="{% url 'dashboard:personal_item_update' pk=item.id %}"
+                        class="btn btn-outline-dark ">Edit</a>
+                </div>
+            </div>
+            <!-- end of Row for Edit button  -->
+        </div>
+        <!-- end of card body  -->
+    </div>
+    <!-- end of card  -->
+
+</div>
+
+<br>
+
+{% endblock %}

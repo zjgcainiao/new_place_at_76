@@ -6,8 +6,6 @@ from .customer import CustomersNewSQL02Model
 from .vehicle import VehiclesNewSQL02Model
 
 
-
-
 class RepairOrdersNewSQL02Model(models.Model):
     # repair_order_new_uid_v01 = models.UUIDField(primary_key=True)  # models.UUIDField(primary_key=True)  # models.CharField(editable=False, auto_created=True, primary_key=True, max_length=36)
     repair_order_id = models.AutoField(primary_key=True)
@@ -88,16 +86,24 @@ class RepairOrdersNewSQL02Model(models.Model):
     repair_order_appointment_request_uid = models.CharField(
         max_length=50, null=True, blank=True)
 
+    assigned_to = models.ForeignKey(
+        InternalUser, on_delete=models.DO_NOTHING,
+        null=True, blank=True,
+        related_name='repair_order_assigned_to')
+
     repair_order_last_updated_at = models.DateTimeField(
         null=True, auto_now=True)
     repair_order_created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
-        InternalUser, related_name='repair_order_created', on_delete=models.SET_NULL, null=True, blank=True)
+        InternalUser, related_name='repair_order_created',
+        on_delete=models.DO_NOTHING, null=True, blank=True)
     modified_by = models.ForeignKey(
-        InternalUser, related_name='repair_order_modified', on_delete=models.SET_NULL, null=True, blank=True)
+        InternalUser, related_name='repair_order_modified',
+        on_delete=models.DO_NOTHING, null=True, blank=True)
 
     # added many-to-many relationship fields managers.
-    lineitems = models.ManyToManyField(LineItemsNewSQL02Model, through='RepairOrderLineItemSquencesNewSQL02Model',
+    lineitems = models.ManyToManyField(LineItemsNewSQL02Model,
+                                       through='RepairOrderLineItemSquencesNewSQL02Model',
                                        related_name='lineitems')
 
     def save(self, *args, **kwargs):
@@ -108,8 +114,8 @@ class RepairOrdersNewSQL02Model(models.Model):
     class Meta:
         db_table = 'repairorders_new_03'
         ordering = ["-repair_order_id"]
-        verbose_name = 'repairorder'
-        verbose_name_plural = 'repairorders'
+        verbose_name = 'Repair Order'
+        verbose_name_plural = 'Repair Orders'
 
     def get_absolute_url(self):
         return reverse('get_repair_order_detail_v1', kwargs={'pk': self.pk})

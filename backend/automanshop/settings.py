@@ -168,7 +168,7 @@ LOGGING = {
         },
         'talent_management': {  # the name of your custom app `talent_management`
             'handlers': ['console', 'app_file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': False,
         },
         'external_api': {  # Logger for external API interactions
@@ -214,7 +214,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # Turn off CSRF secure in development env (HTTP); in production, HTTPS requires to have CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_DOMAIN = config("CSRF_COOKIE_DOMAIN", default="localhost")
+# CSRF_COOKIE_DOMAIN = config("CSRF_COOKIE_DOMAIN", default="localhost")
 
 if DEBUG:
     CSRF_COOKIE_SECURE = False
@@ -339,6 +339,7 @@ INSTALLED_APPS = [
     'CRMs',  # CRMs app
     'djstripe',
     'we_handle_money_stuff',  # transactions, GL, accounting app
+    'we_log_everything',  # a dedicated logging system
 ]
 # in testing, add `sslserver` to the installed apps.
 if DEBUG:
@@ -433,6 +434,7 @@ if USE_LOCAL_REDIS:
     REDIS_PASSWORD = config('LOCAL_REDIS_PASSWORD', default=None)
     REDIS_USE_SSL = config('LOCAL_REDIS_USE_SSL', default=False, cast=bool)
     logger.info(f'using local redis server...{REDIS_HOST}...')
+
     CHANNEL_LAYERS = {
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -492,7 +494,7 @@ CHANNEL_LAYERS = {
 
 CELERY_TIMEZONE = "America/Chicago"
 CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
+CELERY_TASK_TIME_LIMIT = 5 * 60  # 5 minutes
 
 # Celery broker settings for redis
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#conf-redis-result-backend
@@ -736,7 +738,7 @@ AUTH_PASSWORD_VALIDATORS = [
 USE_I18N = True
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Los_Angeles'  # 'UTC'
+TIME_ZONE = 'America/Chicago'  # 'UTC'
 
 # turned the USE_TZ to False to avoid fetching data error when fetching data from the testing db.
 USE_TZ = True

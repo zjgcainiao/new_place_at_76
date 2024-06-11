@@ -1,5 +1,6 @@
 from .base import models, InternalUser
 
+
 class BodyStylesModel(models.Model):
     body_style_id = models.AutoField(primary_key=True)
     body_style_name = models.CharField(max_length=150, null=True)
@@ -24,5 +25,5 @@ class BodyStylesModel(models.Model):
     class Meta:
         db_table = 'bodystyles_new_03'
         ordering = ["-body_style_id"]
-        verbose_name = 'bodystyle'
-        verbose_name_plural = 'bodystyles'
+        verbose_name = 'Body Style'
+        verbose_name_plural = 'Body Styles'

@@ -18,8 +18,8 @@ from django.core.validators import FileExtensionValidator
 from internal_users.models import InternalUser
 from customer_users.models import CustomerUser
 from django.contrib.contenttypes.models import ContentType
-from core_operations.models import US_COUNTRY_CODE
+from core_operations.constants import US_COUNTRY_CODE
 from core_operations.utilities import format_phone_number_to_shop_standard
 from appointments.custom_validators import validate_vehicle_year, validate_file_size, validate_phone_number
 from django_recaptcha.fields import ReCaptchaField
-from  django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox, ReCaptchaV3
+from django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV2Checkbox, ReCaptchaV3

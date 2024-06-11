@@ -6,12 +6,15 @@ from .part import PartsModel
 class PartItemModel(models.Model):
     part_item_id = models.AutoField(primary_key=True)
     line_item = models.ForeignKey(
-        LineItemsNewSQL02Model, on_delete=models.CASCADE, related_name='lineitem_partitem')
+        LineItemsNewSQL02Model, on_delete=models.CASCADE,
+        related_name='lineitem_partitem')
     part_discount_description_id = models.IntegerField(null=True, blank=True)
     part_item_is_user_entered_unit_sale = models.BooleanField(default=False,
-                                                              null=True, blank=True)
+                                                              null=True, 
+                                                              blank=True)
     part_item_is_user_entered_unit_cost = models.BooleanField(default=False,
-                                                              null=True, blank=True)
+                                                              null=True, 
+                                                              blank=True)
     part_item_quantity = models.DecimalField(
         max_digits=12, decimal_places=2, 
         null=True, blank=True)
@@ -22,7 +25,7 @@ class PartItemModel(models.Model):
         max_digits=12, decimal_places=2, 
         null=True, blank=True)
     part_item_unit_sale = models.DecimalField(
-        max_digits=12, decimal_places=2, 
+        max_digits=12, decimal_places=2,
         null=True, blank=True)
     part_item_unit_cost = models.DecimalField(
         max_digits=12, decimal_places=2, 
@@ -49,13 +52,15 @@ class PartItemModel(models.Model):
         default=False,
         null=True, blank=True)
     part_item_is_quantity_confirmed = models.BooleanField(default=False,
-                                                          null=True, blank=True)
+                                                          null=True, 
+                                                          blank=True)
     part_item_confirmed_quantity = models.DecimalField(
         max_digits=12, decimal_places=2, 
         null=True, blank=True)
     part_item_is_part_ordered = models.BooleanField(default=False,
                                                     null=True, blank=True)
-    part_item_is_core = models.BooleanField(default=False,null=True, blank=True)
+    part_item_is_core = models.BooleanField(default=False, null=True,
+                                            blank=True)
     part_item_is_bundled_kit = models.BooleanField(default=False,
                                                    null=True, blank=True)
     part_item_is_MPlg_item = models.BooleanField(default=False,
@@ -81,11 +86,18 @@ class PartItemModel(models.Model):
     part_item_shipping_cost = models.CharField(
         max_length=50, null=True, blank=True)
 
+    # added 2024-04-27
+    assigned_to = models.ForeignKey(
+        InternalUser, on_delete=models.DO_NOTHING, null=True, blank=True,
+        related_name='part_item_assigned_to')
+   
     part_item_created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(
-        InternalUser, related_name='part_item_created', on_delete=models.SET_NULL, null=True, blank=True)
+        InternalUser, related_name='part_item_created', 
+        on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
-        InternalUser, related_name='part_item_modified', on_delete=models.SET_NULL, null=True, blank=True)
+        InternalUser, related_name='part_item_modified', 
+        on_delete=models.SET_NULL, null=True, blank=True)
     part_item_last_updated_at = models.DateTimeField(
         auto_now=True, null=True)
 
@@ -99,4 +111,3 @@ class PartItemModel(models.Model):
         ordering = ["-part_item_id"]
         verbose_name = 'partitem'
         verbose_name_plural = 'partitems'
-

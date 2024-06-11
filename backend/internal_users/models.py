@@ -55,7 +55,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
         (USER_LEVEL_3, 'access level 3'),
         (USER_LEVEL_4, 'Level 4 - not used'),
         (USER_LEVEL_5, 'Level 5 - not used.'),
-        (USER_LEVEL_15, 'Level 5.5 - not used.'),
+        (USER_LEVEL_15, 'Level 15 - not used.'),
     )
     # AUTH_GROUP LIST
     AUTH_GROUP_LEVEL_0 = 0
@@ -72,6 +72,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     AUTH_GROUP_LEVEL_12 = 12
     AUTH_GROUP_LEVEL_13 = 13
     AUTH_GROUP_LEVEL_21 = 21
+    AUTH_GROUP_LEVEL_22 = 22
     AUTH_GROUP_LEVEL_88 = 88
 
     USER_AUTH_GROUP = (
@@ -87,17 +88,21 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
         (AUTH_GROUP_LEVEL_12, 'developer-group'),
         (AUTH_GROUP_LEVEL_13, 'user-management-group'),
 
-        (AUTH_GROUP_LEVEL_21, 'service-technican-group'),
+        (AUTH_GROUP_LEVEL_21, 'internal-audit-group'),
+        (AUTH_GROUP_LEVEL_22, 'external-audit-group'),
         (AUTH_GROUP_LEVEL_88, 'master-shi-fu-group'),
     )
     id = models.AutoField(primary_key=True)
-    user_first_name = models.CharField(_('first name'), max_length=50,blank=False, null=False)
+    user_first_name = models.CharField(_('first name'),
+                                       max_length=50, blank=False, null=False)
     user_middle_name = models.CharField(
         _('middle name'), max_length=50, null=True)
     user_last_name = models.CharField(_('last name'), max_length=50)
-    # to allow user to enter the full name in one field 
-    user_name_alternative = models.CharField(max_length=100, null=True, blank=True)
-    email = models.EmailField(verbose_name='email address (same as in your employee file)', unique=True)
+    # to allow user to enter the full name in one field
+    user_name_alternative = models.CharField(
+        max_length=100, null=True, blank=True)
+    email = models.EmailField(
+        verbose_name='email address (same as in your employee file)', unique=True)
     password = models.CharField(max_length=128, blank=False, null=False)
 
     # 2023-05-31 An existing conflict that talent_created_by_user is linked a user profile (InternalUser model); it is
@@ -117,7 +122,7 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     user_discharge_date = models.DateTimeField(null=True, blank=True)
 
     user_is_active = models.BooleanField(_('active'), default=True,
-                    help_text=_('Designates whether this user should be treated as active. if the value is False; it means the account has been deactivated.'))
+                                         help_text=_('Designates whether this user should be treated as active. if the value is False; it means the account has been deactivated.'))
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     user_is_admin = models.BooleanField(default=False)
@@ -137,14 +142,16 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
 
         return self.get_user_full_name
-    # 2024-02-09: added the following methods to support the user authentication middleware. 
+
+    # 2024-02-09: added the following methods to support the user authentication middleware.
     # The middleware will add one field "user_type" in the request.user.
+
     def is_internaluser(self):
         return True
-    
+
     def is_customeruser(self):
         return False
-    
+
     @property
     def get_user_full_name(self):
         first_name = self.user_first_name.capitalize(
@@ -156,8 +163,6 @@ class InternalUser(AbstractBaseUser, PermissionsMixin):
         full_name = ' '.join(
             [field for field in name_fields if field is not None])
         return full_name.strip() if full_name.strip() else "User's full name is not available."
-    
-
 
     class Meta:
         db_table = 'internalusers_new_03'

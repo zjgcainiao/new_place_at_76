@@ -1,5 +1,5 @@
 from .base import models, InternalUser, CustomerUser, RepairOrder, FormattedPhoneNumberField, gettext_lazy as _, uuid
-
+import re
 APPT_STATUS_NOT_SUBMITTED = 0
 APPT_STATUS_SUBMITTED = 1
 APPT_STATUS_CONFIRMED = 2
@@ -36,9 +36,10 @@ class AppointmentRequest(models.Model):
     appointment_confirmed_datetime = models.DateTimeField(
         null=True, blank=True, verbose_name='Confirmed Appointment Time')
     appointment_reason_for_visit = models.PositiveSmallIntegerField(
-        choices=REASON_CHOICES, default=0, verbose_name='Reason for visit?')
+        choices=REASON_CHOICES, default=APPT_STATUS_NOT_SUBMITTED,
+        verbose_name='Reason for Visit?')
     appointment_customer_user = models.ForeignKey(
-        CustomerUser, on_delete=models.SET_NULL, null=True, verbose_name='your linked user account')
+        CustomerUser, on_delete=models.SET_NULL, null=True, verbose_name='Your Linked Account')
     appointment_first_name = models.CharField(
         max_length=50, null=True, blank=True)
     appointment_last_name = models.CharField(
@@ -64,39 +65,53 @@ class AppointmentRequest(models.Model):
     appointment_vehilce_vin_number = models.CharField(
         max_length=30, null=True, blank=True)
     appointment_vehicle_detail = models.TextField()
-    appointment_vehicle_detail_in_json = models.CharField(
-        max_length=4000, null=True)  # {'year': 2003, 'model': VW, ...}
+    appointment_vehicle_detail_in_json = models.JSONField(
+        null=True, blank=True)  # {'year': 2003, 'model': VW, ...}
     appointment_concern_description = models.TextField(blank=True)
 
     # check the status of the appointment
     appointment_status = models.SmallIntegerField(
-        choices=STATUS_CHOICES, default=APPT_STATUS_NOT_SUBMITTED, verbose_name='Appointment Status')
+        choices=STATUS_CHOICES, default=APPT_STATUS_NOT_SUBMITTED,
+        verbose_name='Appointment Status')
     appointment_status_comments = models.CharField(
         max_length=4000, null=True, blank=True)
     appointment_is_active = models.BooleanField(default=True)
     appointment_preferred_contact_method = models.CharField(
         max_length=100, blank=True, null=True)
     appointment_repair_order = models.ForeignKey(
-        RepairOrder, on_delete=models.SET_NULL, null=True, related_name='appointment_repair_order')
+        RepairOrder, on_delete=models.DO_NOTHING, null=True, related_name='appointment_repair_order')
     appointment_is_converted_to_ro = models.BooleanField(default=False)
     appointment_confirmation_id = models.UUIDField(
-        default=uuid.uuid4, editable=False,  verbose_name='Appointment confirmation ID')  # unique=True,
+        default=uuid.uuid4, editable=False,  verbose_name='Appointment Confirmation ID')  # unique=True,
     # appointment can either be created by anoymous user, a signed-in customer_user or created by an internal_user when a customer shows up on the physical store.
     created_by = models.ForeignKey(
-        InternalUser, on_delete=models.SET_NULL, null=True, related_name='appointment_created_by')  # when null, it means its created by customer user
+        # when null, it means its created by customer user
+        InternalUser, on_delete=models.DO_NOTHING, null=True, related_name='appointment_created_by')
     updated_by = models.ForeignKey(
-        InternalUser, on_delete=models.SET_NULL, null=True, related_name='appointment_updated_by')  # when null, it means its created by customer user
+        # when null, it means its created by customer user
+        InternalUser, on_delete=models.DO_NOTHING, null=True, related_name='appointment_updated_by')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def get_appointment_phone_number_digits(self):
+        return re.sub(r'\D', '', self.appointment_phone_number)
 
     @property
     def appointment_full_name(self):
         return f"{self.appointment_first_name} {self.appointment_last_name}"
 
-    class Meta:
-        db_table = 'appointments'
-        ordering = ['-appointment_id']
+    def save(self, *args, **kwargs):
+        # Strip non-numeric characters from the phone number before saving
+        self.appointment_phone_number_digits_only = \
+            self.get_appointment_phone_number_digits
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Name: {self.appointment_first_name} {self.appointment_last_name} -Time: {self.appointment_requested_datetime}"
 
+    class Meta:
+        db_table = 'appointments'
+        ordering = ['-appointment_id']
+        verbose_name = 'Appointment Request'
+        verbose_name_plural = 'Appointment Requests'

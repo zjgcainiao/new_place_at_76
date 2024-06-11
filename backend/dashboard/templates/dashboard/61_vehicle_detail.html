@@ -38,19 +38,19 @@
         <div class='card-body text-dark'>
             <h4 class="card-title fw-bold ">ID:{{vehicle.vehicle_id}}--Vehicle: {{vehicle.vehicle_year}}
                 {{vehicle.vehicle_make.make_name}}--Customer: {{vehicle.vehicle_cust.get_customer_full_name}}</h4>
-            <div class="accordin" id="vehicleAccordion">
+            <div class="accordion" id="vehicleAccordion">
 
                 <!-- Basic Info Section -->
                 <div class="accordion-item">
                     <h2 class="accordion-header " id="headingBasic">
-                        <button class="accordion-button  collapsed" type="button" data-bs-toggle="collapse"
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapseBasic" aria-expanded="false" aria-controls="collapseBasic">
                             <h5 class="card-text">I.Basic Info</h5>
                             <p class='card-text small text-left'> &nbsp;&nbsp;<em><u>Updated on:
                                         {{vehicle.vehicle_last_updated_at|date}}</u></em></p>
                         </button>
                     </h2>
-                    <div id="collapseBasic" class="accordion-collapse collapse shown" aria-labelledby="headingBasic">
+                    <div id="collapseBasic" class="accordion-collapse  shown" aria-labelledby="headingBasic">
                         <div class="accordion-body my-1 px-1">
                             <!-- Your Basic Information Fields Here -->
                             <div class="row ">
@@ -160,8 +160,7 @@
                         </button>
                     </h2>
                     <!-- omit the element data-bs-parent="#vehicleAccordion" to display all accordion items-->
-                    <div id="collapseVehicleNotes" class="accordion-collapse collapse "
-                        aria-labelledby="headingVehicleNotes">
+                    <div id="collapseVehicleNotes" class="accordion-collapse " aria-labelledby="headingVehicleNotes">
                         <div class="accordion-body my-1 px-1">
                             <!-- Your Customer Specification Fields Here -->
                             <div class="row">
@@ -178,7 +177,7 @@
                 </div>
                 <!-- end of accordion item 4  -->
             </div>
-            <!-- end of accordin  -->
+            <!-- end of accordion  -->
 
             <div class="row my-1 px-1">
                 <div class="col text-left"><a href="{% url 'dashboard:vehicle_update' pk=vehicle.vehicle_id %}"

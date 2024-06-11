@@ -15,6 +15,6 @@ class TaxesModel(models.Model):
     class Meta:
         db_table = 'taxes_new_03'
         ordering = ["-tax_id"]
-        verbose_name = 'tax'
-        verbose_name_plural = 'taxes'
+        verbose_name = 'Tax'
+        verbose_name_plural = 'Taxes'
 

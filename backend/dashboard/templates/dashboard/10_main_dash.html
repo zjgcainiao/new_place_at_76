@@ -20,6 +20,7 @@
   .portal-card:hover {
     /* Scale effect on hover */
     transform: scale(1.05);
+    background: #f6f0f0;
   }
 
   .portal-icon {
@@ -27,7 +28,7 @@
     font-size: 3rem;
     padding: 20px 20px;
     /* Adjust size as needed */
-    color: #007bff;
+    color: #4f5153;
     /* Icon color */
   }
 
@@ -36,8 +37,8 @@
     font-weight: bold;
   }
 
-  /* 2023-12-25 added user-info-bar custom styling */
-  .user-info-bar {
+  /* 2023-12-25 added main-dash-section custom styling */
+  .main-dash-section {
     background: transparent;
     /* border-bottom: 1px solid #a1a1a1; */
     padding: 5px 5px;
@@ -48,7 +49,7 @@
   .user-greeting {
     color: #495057;
     /* Dark font color */
-    font-family: 'Arial', sans-serif;
+    font-family: 'Exo2', sans-serif;
     /* Choose a readable font */
   }
 
@@ -69,7 +70,7 @@
 </style>
 
 
-<div class="user-info-bar">
+<div class="main-dash-section">
 
   <div class="container m-2">
     <!-- Breadcrumb-->
@@ -97,12 +98,12 @@
 
 <!-- The main content with 8 app portals -->
 <div class="container m-2">
-  <div class="row my-1 px-1 justify-content-center">
+  <div class="row my-1 px-1 align-items-center">
 
     <!-- Each col represents a portal -->
 
     <!-- Portal 1: Repair Orders -->
-    <div class="col-6 col-md-4 col-lg-3 mb-4">
+    <div class="col-md-4 col-lg-3 mb-4">
       <div class="card portal-card text-center">
         <a href="{% url 'dashboard:repair_order_dash' %}">
           <div class="card-img-top">
@@ -119,7 +120,7 @@
     <!-- end of column  -->
 
     <!-- Portal 2: Vehicles -->
-    <div class="col-6 col-md-4 col-lg-3 mb-4">
+    <div class=" col-md-4 col-lg-3 mb-4">
       <div class="card portal-card text-center">
         <a href="{% url 'dashboard:vehicle_dash' %}">
           <div class="card-img-top">
@@ -137,7 +138,7 @@
 
 
     <!-- Portal 3: Customers -->
-    <div class="col-6 col-md-4 col-lg-3 mb-4">
+    <div class=" col-md-4 col-lg-3 mb-4">
       <div class="card portal-card text-center">
         <a href="{% url 'dashboard:customer_dash' %}">
           <div class="card-img-top">
@@ -152,7 +153,7 @@
     </div>
 
     <!-- Portal 4: Customers -->
-    <div class="col-6 col-md-4 col-lg-3 mb-4">
+    <div class=" col-md-4 col-lg-3 mb-4">
       <div class="card portal-card text-center">
         <a href="{% url 'appointments:appointment_list' %}">
           <div class="card-img-top">
@@ -163,61 +164,101 @@
 
       </div>
     </div>
+
+
+    <!-- end of row  -->
+
+    <!-- start of 2nd row  -->
+    <div class="row my-1 px-1 justify-content-center  justify-content-between">
+
+      <!-- Portal 5: Talent Managements -->
+      <div class=" col-md-4 col-lg-3 mb-4">
+        <div class="card portal-card text-center">
+          <a href="{% url 'talent_management:talent_list' %}">
+            <div class="card-img-top">
+              <i class="fas fa-dice-five portal-icon"></i>
+            </div>
+          </a>
+
+          <div class="card-body">5. Talent Managements</div>
+        </div>
+      </div>
+
+      <!-- portal 6: Payments  -->
+      <div class="col-md-4 col-lg-3 mb-4">
+        <div class="card portal-card text-center">
+          <a href="{% url 'dashboard:vehicle_dash' %}">
+            <div class="card-img-top">
+              <i class="fas fa-credit-card portal-icon"></i>
+            </div>
+          </a>
+          <div class="card-body">6. Payments</div>
+
+        </div>
+      </div>
+
+      <div class="col-md-4 col-lg-3 mb-4">
+        <div class="card portal-card text-center">
+          <a href="{% url 'we_handle_money_stuff:gl_account_dash' %}">
+            <div class="card-img-top">
+              <i class="fas fa-coins portal-icon"></i>
+            </div>
+          </a>
+
+          <div class="card-body">7. Accounting and Finance</div>
+        </div>
+      </div>
+
+      <!-- Portal 8: Inventory Management (temp direected to Personal Item Dash) -->
+      <div class="col-md-4 col-lg-3 mb-4">
+        <!-- card  -->
+        <div class="card portal-card text-center">
+          <a href="{% url 'dashboard:personal_item_dash' %}">
+            <div class="card-img-top">
+              <i class="fas fa-users-gear portal-icon"></i>
+            </div>
+          </a>
+          <div class="card-body">8. Inventory Mangement</div>
+        </div>
+      </div>
+
+    </div>
+    <!-- end of 2nd row  -->
+
+    <!-- the start of 3rd row  -->
+    <div class=" row my-1 px-1 justify-content-center">
+      <!-- Portal 9: Time Management (clock in/outs,) -->
+      <div class="col-md-4 col-lg-3 mb-4">
+        <!-- card  -->
+        <div class="card portal-card text-center">
+          <a href="{% url 'dashboard:personal_item_dash' %}">
+            <div class="card-img-top">
+              <i class="fas fa-users-gear portal-icon"></i>
+            </div>
+          </a>
+          <div class="card-body">9. Time Management </div>
+        </div>
+      </div>
+
+      <!-- Portal 10: Vehicle Rental -->
+      <div class="col-md-4 col-lg-3 mb-4">
+        <!-- card  -->
+        <div class="card portal-card text-center">
+          <a href="{% url 'dashboard:moving_request_dash' %}">
+            <div class="card-img-top">
+              <i class="fas fa-users-gear portal-icon"></i>
+            </div>
+          </a>
+          <div class="card-body"> 10. Vehicle Rental (Phase 2&3) </div>
+        </div>
+      </div>
+      <!-- end of Portal 10 -->
+    </div>
+    <!-- end of 3rd row  -->
   </div>
-  <!-- end of row  -->
+</div>
+<!-- end of container  -->
 
-  <!-- Portal 5: Talent Managements -->
-  <div class="row my-1 px-1 justify-content-center">
-    <div class="col-6 col-md-4 col-lg-3 mb-4">
-      <div class="card portal-card text-center">
-        <a href="{% url 'talent_management:talent_list' %}">
-          <div class="card-img-top">
-            <i class="fas fa-dice-five portal-icon"></i>
-          </div>
-        </a>
-
-        <div class="card-body">5. Talent Managements</div>
-      </div>
-    </div>
-
-    <div class="col-6 col-md-4 col-lg-3 mb-4">
-      <div class="card portal-card text-center">
-        <a href="{% url 'dashboard:vehicle_dash' %}">
-          <div class="card-img-top">
-            <i class="fas fa-credit-card portal-icon"></i>
-          </div>
-        </a>
-        <div class="card-body">6. Payments</div>
-
-      </div>
-    </div>
-
-    <div class="col-6 col-md-4 col-lg-3 mb-4">
-      <div class="card portal-card text-center">
-        <a href="{% url 'dashboard:vehicle_dash' %}">
-          <div class="card-img-top">
-            <i class="fas fa-coins portal-icon"></i>
-          </div>
-        </a>
-
-        <div class="card-body">7. Accounting and Finance</div>
-      </div>
-    </div>
-
-    <div class="col-6 col-md-4 col-lg-3 mb-4">
-      <div class="card portal-card text-center">
-        <a href="{% url 'dashboard:vehicle_dash' %}">
-          <div class="card-img-top">
-            <i class="fas fa-users-gear portal-icon"></i>
-          </div>
-        </a>
-        <div class="card-body">APIs</div>
-      </div>
-      <!-- card  -->
-    </div>
-
-  </div>
-  <!-- end of second row  -->
 </div>
 
 {% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load humanize %}
+{% load core_operations.common_filters %}
+{% load crispy_forms_tags %}
+
+{% block content-main %}
+<div class="container-fluid my-1">
+  <!-- Breadcrumb-->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark">
+      <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+      <li class="breadcrumb-item "><a href="{% url 'dashboard:vehicle_dash' %}">Moving Requests</a></li>
+      <li class="breadcrumb-item active" area-current="page">Create</li>
+    </ol>
+  </nav>
+</div>
+
+{% include 'dashboard/02_dashboard_messages_sector.html' %}
+
+
+<div class="container-fluid my-1">
+  <div class="card card-hover border border-secondary">
+    <form method="post" class="card-body ">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <h3>Moving Request</h3>
+
+
+      {{ formset.management_form }}
+      {% for form in formset %}
+      <div class="formset-form">
+        {% crispy form form.helper %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-outline-primary">Save</button>
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

@@ -31,8 +31,8 @@ class SubmodelsModel(models.Model):
     class Meta:
         db_table = 'submodels_new_03'
         ordering = ["-submodel_id"]
-        verbose_name = 'submodel'
-        verbose_name_plural = 'submodels'
+        verbose_name = 'Submodel'
+        verbose_name_plural = 'Submodels'
 
     def __str__(self):
         return self.get_sub_model_feature

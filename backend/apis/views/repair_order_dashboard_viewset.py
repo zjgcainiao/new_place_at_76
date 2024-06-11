@@ -1,9 +1,11 @@
-from .base import viewsets, IsAuthenticated, IsInternalUser,api_view, action, Response
+from .base import viewsets, IsAuthenticated, IsInternalUser, api_view, action, Response
 from homepageapp.models import RepairOrdersNewSQL02Model
 from apis.serializers import RepairOrderSerializer
-from core_operations.models import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
+from core_operations.constants import CURRENT_TIME_SHOW_DATE_WITH_TIMEZONE
 
 # added on 2023-11-06
+
+
 class WIPDashboardViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated, IsInternalUser]
     serializer_class = RepairOrderSerializer

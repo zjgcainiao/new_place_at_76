@@ -1,0 +1,145 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load static %}
+{% block content-main %}
+
+
+<div class="container-fluid">
+    <!-- Breadcrumb-->
+    <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb breadcrumb-dark">
+            <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+            <li class="breadcrumb-item active">Stephen Wang's Personal Items</li>
+        </ol>
+    </nav>
+</div>
+
+{% if messages %}
+<div class=" container-fluid ">
+    {% for message in messages %}
+    <li{% if message.tags %}
+        class="alert alert-{{ message.tags }} alert-dismissible fade show justify-content-center justify-content-between"
+        {% endif %} role="alert">
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </li>
+        {% endfor %}
+</div>
+{% endif %}
+
+<div class="container-fluid my-1">
+    <div class="row">
+        <h2>Personal Items </h2>
+        <p>Stephen Wang's personal items are listed here.</p>
+
+    </div>
+
+
+    <div class='row'>
+        <div class=" btn-group my-1">
+            <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:personal_item_dash' %}"> <i
+                    class="uil-home-alt"></i>Stephen Wang's Personal Item Dash</a>
+            <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:personal_item_create' %}"><i
+                    class='mdi mdi-barcode'></i>Create Personal Item Record</a>
+            <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search_single_vin_via_nhtsa' %}"><i
+                    class='uil-file-plus-alt' disabled></i>Reserved</a>
+        </div>
+    </div>
+    <!-- end of an row of function buttons -->
+    {% if page_obj %}
+    <table class="table table-light table-hover mb-1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Item Category</th>
+                <th>Barcode(6-digit)</th>
+                <th>Location</th>
+                <th>Updated at</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in page_obj %}
+            <tr>
+                <td><a href="{% url 'dashboard:personal_item_detail' pk=item.id %} ">{{item.id}}</a>
+                </td>
+                <td>{{item.name}}</td>
+                <td>{{item.description}}</td>
+                <td>{{item.item_category}}</td>
+
+
+                <td>
+                    <a href="{{ item.barcode_image.url }}" target="_blank">
+                        {{ item.barcode_full_code }}
+                    </a>
+                </td>
+                <td>
+
+                    {{item.location|truncatechars:30 }}
+
+                </td>
+                <td>{{ item.updated_at }}</td>
+                <td class="table-action"><a class="action-icon"><i class="uil uil-edit"></i></a><a><i
+                            class="uil uil-trash-alt"></i></a></td>
+
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4"><strong>NO</strong> Pesonal Item Found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<div class='row'>
+    <div class='col-md-12'>
+        <ul class="pagination justify-content-center m-1">
+            <li class="page-item mx-1">
+                {% if page_obj.has_previous %}
+                <a class="page-link" href="?page=1">
+                    <span class='step-links' aria-hidden="True">&laquo; First (1) </span>
+                </a>
+            </li>
+            <li class="page-item mx-1">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1">
+                    <span class='step-links'>Previous ({{ page_obj.previous_page_number }})</span>
+                </a>
+                {% endif %}
+            </li>
+            <li class="page-item active mx-1">
+                <a class="page-link" href="?page={{ page_obj.number }}">
+                    <span>
+                        Current ({{ page_obj.number }})
+                    </span>
+                </a>
+            </li>
+            <li class="page-item">
+                {% if page_obj.has_next %}
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                    <span>Next ({{ page_obj.next_page_number }})</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                    <span aria-hidden="true">Last ({{ page_obj.paginator.num_pages }}) &raquo;</span>
+                </a>
+                {% endif %}
+
+            </li>
+        </ul>
+
+    </div>
+</div>
+
+{% else %}
+<p>There are NO matched personal items found here.</p>
+{% endif %}
+
+{% endblock %}

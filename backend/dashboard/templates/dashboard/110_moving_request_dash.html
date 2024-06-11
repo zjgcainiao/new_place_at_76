@@ -1,0 +1,138 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load static %}
+{% block content-main %}
+
+
+<div class="container-fluid">
+    <!-- Breadcrumb-->
+    <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb breadcrumb-dark">
+            <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+            <li class="breadcrumb-item active">Moving Requests</li>
+        </ol>
+    </nav>
+</div>
+
+{% if messages %}
+<div class=" container-fluid my-1">
+    {% for message in messages %}
+    <li{% if message.tags %}
+        class="alert alert-{{ message.tags }} alert-dismissible fade show justify-content-center justify-content-between"
+        {% endif %} role="alert">
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </li>
+        {% endfor %}
+</div>
+{% endif %}
+
+<div class="container-fluid my-1">
+    <div class="row">
+        <h2>Moving Requests </h2>
+        <p> A request to move personal items .</p>
+
+    </div>
+
+
+    <div class='row'>
+        <div class=" btn-group my-1">
+            <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:main_dash' %}"> <i
+                    class="uil-home-alt"></i>Main Dash</a>
+            <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:moving_request_create' %}"><i
+                    class='uil-file-plus-alt'></i>Create Moving Request</a>
+            <!-- <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search_single_vin_via_nhtsa' %}"><i
+                    class='mdi mdi-barcode'></i>Vin Search</a>
+            <a type="button" class="btn btn-outline-dark"
+                href="{% url 'dashboard:search_single_plate_via_plate2vin' %}"><i class='mdi mdi-car-info'></i>License
+                Plate Search</a> -->
+        </div>
+    </div>
+    <!-- end of an row of function buttons -->
+    {% if page_obj %}
+    <table class="table table-light table-hover mb-1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Inventory Item</th>
+                <th>container</th>
+                <th>Moving Date</th>
+                <th>Move By</th>
+                <th>Location</th>
+                <th>Updated at</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for moving in page_obj %}
+            <tr>
+                <td><a href="{% url 'dashboard:moving_personal_item_detail' pk=moving.id %} ">{{moving.id}}</a>
+                </td>
+                <td>{{moving.inventory_item}}</td>
+                <td>{{moving.container.name}}</td>
+                <td>{{moving.move_date}}</td>
+                <td>{{moving.move_by}}</td>
+                <td>
+                    {{moving.location|truncatechars:30 }}
+                </td>
+
+                <td>{{ moving.updated_at }}</td>
+                <td class="table-action"><a class="action-icon"><i class="uil uil-edit"></i></a><a><i
+                            class="uil uil-trash-alt"></i></a></td>
+
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<div class='row'>
+    <div class='col-md-12'>
+        <ul class="pagination justify-content-center m-1">
+            <li class="page-item mx-1">
+                {% if page_obj.has_previous %}
+                <a class="page-link" href="?page=1">
+                    <span class='step-links' aria-hidden="True">&laquo; First (1) </span>
+                </a>
+            </li>
+            <li class="page-item mx-1">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1">
+                    <span class='step-links'>Previous ({{ page_obj.previous_page_number }})</span>
+                </a>
+                {% endif %}
+            </li>
+            <li class="page-item active mx-1">
+                <a class="page-link" href="?page={{ page_obj.number }}">
+                    <span>
+                        Current ({{ page_obj.number }})
+                    </span>
+                </a>
+            </li>
+            <li class="page-item">
+                {% if page_obj.has_next %}
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                    <span>Next ({{ page_obj.next_page_number }})</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                    <span aria-hidden="true">Last ({{ page_obj.paginator.num_pages }}) &raquo;</span>
+                </a>
+                {% endif %}
+
+            </li>
+        </ul>
+
+    </div>
+</div>
+
+{% else %}
+<p>There are <strong>NO</strong> Records of Any Moving Requests Found Here.</p>
+{% endif %}
+
+{% endblock %}

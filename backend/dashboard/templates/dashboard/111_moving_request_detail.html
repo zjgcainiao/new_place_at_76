@@ -1,0 +1,131 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load humanize %}
+{% load core_operations.common_filters %}
+{% load crispy_forms_tags %}
+{% block content-main %}
+
+<div class="container-fluid p-1 my-1">
+    <!-- Breadcrumb-->
+    <nav aria-label="breadcrumb p-1 my-1">
+        <ol class="breadcrumb breadcrumb-dark">
+            <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+            <li class="breadcrumb-item "><a href="{% url 'dashboard:vehicle_dash' %}">Stephen Wang's Personal Items</a>
+            </li>
+            <li class="breadcrumb-item active">Personal Item Detail</a></li>
+        </ol>
+    </nav>
+</div>
+
+{% if messages %}
+<div class="container-fluid p-1 my-1">
+    {% for message in messages %}
+    <li{% if message.tags %}
+        class="alert alert-{{ message.tags }} alert-dismissible fade show justify-content-center justify-content-between"
+        {% endif %} role="alert">
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </li>
+        {% endfor %}
+</div>
+{% endif %}
+
+<div class="container-fluid p-1 my-1" id='personal-item-detail-container'>
+    <div class="card card-hover border border-secondary">
+
+        <div class='card-body text-dark'>
+            <h4 class="card-title fw-bold ">ID:{{id}}--Vehicle: {{item.vehicle_year}}
+                {{item.vehicle_make.make_name}}--Customer: {{item.vehicle_cust.get_customer_full_name}}</h4>
+            <div class="accordin" id="vehicleAccordion">
+
+                <!-- Basic Info Section -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header " id="headingBasic">
+                        <button class="accordion-button  collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseBasic" aria-expanded="false" aria-controls="collapseBasic">
+                            <h5 class="card-text">I.Basic Info</h5>
+                            <p class='card-text small text-left'> &nbsp;&nbsp;<em><u>Updated on:
+                                        {{item.updated_at|date}}</u></em></p>
+                        </button>
+                    </h2>
+                    <div id="collapseBasic" class="accordion-collapse collapse shown" aria-labelledby="headingBasic">
+                        <div class="accordion-body my-1 px-1">
+                            <!-- Your Basic Information Fields Here -->
+                            <div class="row ">
+                                <div class="card-text col">Vehicle ID: {{item.id}} </div>
+                                <div class='card-text col'> Name
+                                    {{item.name}}
+                                </div>
+                                <div class="card-text col"> Description: {{item.description}}</div>
+                            </div>
+                            <div class="row">
+                                <div class="'card-text">Location: {{item.location}}</div>
+                            </div>
+                        </div>
+                        <!-- end of accordion body  -->
+                    </div>
+                </div>
+                <!-- end of accordion-item  1-->
+
+                <!-- Technical Info Section -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTechnical">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTechnical" aria-expanded="true" aria-controls="collapseTechnical">
+                            <h5>II.PERSONAL ITEM DETAILED SPECIFICATIONS</h5>
+                        </button>
+                    </h2>
+                    <div id="collapseTechnical" class="accordion-collapse collapse show"
+                        aria-labelledby="headingTechnical">
+                        <div class="accordion-body my-1 px-1">
+                            <!-- Your Technical Specification Fields Here -->
+                            <div class="row ">
+                                <div class="card-text col-md-6">VIN: {{item.VIN_number|bold_last_six_digit_in_vin}}
+                                </div>
+                                <!-- <div class="card-text col-3"> License Plate Number:
+                                    {{item.vehicle_license_plate_nbr}}</div>
+                                <div class="card-text col-3"> State: {{item.vehicle_license_state}}</div>
+                                <div class="card-text col-2"> Year: {{item.vehicle_year}} </div>
+                                <div class="card-text col-2"> Make: {{item.vehicle_make.make_name}} </div>
+                                <div class="card-text col-2"> Sub-model: {{item.vehicle_sub_model.submodel_name}}
+                                </div>
+                                <div class="card-text col-2"> Body style: {{item.vehicle_body_style.body_style_name}}
+                                </div>
+                                <div class="card-text col-2"> Brake : {{item.vehicle_brake.brake_system_type}} </div>
+                                <div class="card-text col-2"> Transmission Control Type
+                                    {{item.vehicle_transmission.transmission_control_type}} </div>
+                                <div class="card-text col-2"> Brake :
+                                    {{item.vehicle_brake.transmission_manufacturer_code}} </div>
+                                <div class="card-text col-2"> Gross Weight (lbs):
+                                    {{item.vehicle_gvw.gvw_text|intcomma}} </div>
+                                <div class="card-text col-2">Engine Hours In: {{item.vehicle_engine_hour_in}}</div>
+                                <div class="card-text col-md-5 col-12"> Memo: {{item.vehicle_memo_1}} </div> -->
+                            </div>
+                        </div>
+                        <!-- end of accordion body  -->
+                    </div>
+                </div>
+                <!-- end of accordion-item  2-->
+
+
+            </div>
+            <!-- end of accordin  -->
+
+            <div class="row my-1 px-1">
+                <div class="col text-left"><a href="{% url 'dashboard:vehicle_update' pk=item.vehicle_id %}"
+                        class="btn btn-outline-info btn-sm">Edit</a></div>
+            </div>
+            <!-- end of row  -->
+        </div>
+        <!-- end of card body  -->
+    </div>
+    <!-- end of card  -->
+
+</div>
+
+<br>
+
+{% endblock %}

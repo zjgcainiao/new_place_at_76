@@ -1,0 +1,37 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load humanize %}
+{% load core_operations.common_filters %}
+{% load crispy_forms_tags %}
+
+{% block content-main %}
+<div class="container container-fluid my-1">
+  <!-- Breadcrumb-->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark">
+      <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+      <li class="breadcrumb-item "><a href="{% url 'dashboard:vehicle_dash' %}">Vehicles</a></li>
+      <li class="breadcrumb-item "><a href="{% url 'dashboard:vehicle_detail' pk=object.vehicle_id %}">Detail</a></li>
+      <li class="breadcrumb-item active" area-current="page">Moving Request Update</li>
+    </ol>
+  </nav>
+</div>
+
+{% include 'dashboard/02_dashboard_messages_sector.html' %}
+
+<div class="container container-fluid my-1">
+  <h3>Update Vehicle {{vehicle.pk}}</h3>
+  <p class="text-muted font-13">Last Updated on: {{vehicle.vehicle_last_updated_at|date:"m/d/y"}}</p>
+  <!-- <a class="btn btn-outline-dark" id="go-back-btn" >Go Back</a> -->
+
+  <div class="card card-hover border border-secondary ">
+    <form method="post" class="card-body my-1">
+      {% csrf_token %}
+      {% crispy form form.helper %}
+      <!-- <button class='btn btn-outline-primary' type="submit">Update</button> -->
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

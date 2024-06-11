@@ -31,9 +31,9 @@
   <h2>Active Repair Orders</h2>
   <!-- the button group  -->
   <div class='row'>
-    <div class="col-12 btn-group my-1">
-      <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search_active_appts_and_wips' %}"> <i
-          class="uil-focus-add"></i> New Repair Order</a>
+    <div class="col-md-12 btn-group my-1">
+      <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search_active_appts_and_repair_orders' %}">
+        <i class="uil-focus-add"></i> New Repair Order</a>
       <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:customer_dash' %}"><i
           class='uil-users-alt'></i> Customer Dash</a>
       <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:vehicle_dash' %}"> <i
@@ -79,14 +79,14 @@
 </style>
 
 <div class='container-fluid'>
-  <div class="table-responsive">
+  <div class="table table-responsive">
     <table class='table table-hover table-centered'>
       <thead>
         <tr>
           <th>Order ID</th>
           <th>Order Status</th>
           <th>Name</th>
-          <th class="d-none d-md-table-cell">Phone </th>
+          <th class="d-none d-md-table-cell">Phone</th>
           <th class="d-none d-md-table-cell">Email</th>
           <th>Labor</th>
           <th>Part</th>

@@ -11,11 +11,15 @@ class NoteItemsNewSQL02Model(models.Model):
     note_item_is_printed_on_order = models.BooleanField(default=True)
     note_item_tech_observation = models.TextField(null=True, blank=True)
 
-    note_item_created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
-        InternalUser, related_name='note_item_created', on_delete=models.SET_NULL, null=True, blank=True)
+        InternalUser, related_name='note_item_created',
+        on_delete=models.SET_NULL,
+        null=True, blank=True)
     modified_by = models.ForeignKey(
-        InternalUser, related_name='note_item_modified', on_delete=models.SET_NULL, null=True, blank=True)
+        InternalUser,
+        related_name='note_item_modified',
+        on_delete=models.SET_NULL, null=True, blank=True)
+    note_item_created_at = models.DateTimeField(auto_now_add=True)
     note_item_last_updated_at = models.DateTimeField(
         null=True, auto_now=True)
 

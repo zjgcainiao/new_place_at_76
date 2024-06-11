@@ -4,9 +4,8 @@ from .email import EmailsNewSQL02Model
 from .phone import PhonesNewSQL02Model
 from .tax import TaxesModel
 
+
 class CustomersNewSQL02Model(models.Model):
-    # customer_new_uid_v01 = models.CharField(editable=False, auto_created=True, primary_key=True, max_length=36)
-    # primary key = True
     customer_id = models.AutoField(primary_key=True)
     customer_title_id = models.CharField(max_length=20, null=True, blank=True)
     customer_first_name = models.CharField(
@@ -32,7 +31,8 @@ class CustomersNewSQL02Model(models.Model):
     customer_is_deleted = models.BooleanField(
         default=False, null=True, blank=True)
     customer_is_active = models.BooleanField(
-        default=True, null=True, blank=True)  # flip the original 'deleted' field in the old database.
+        # flip the original 'deleted' field in the old database.
+        default=True, null=True, blank=True)
     customer_memebership_nbr = models.CharField(
         max_length=20, null=True, blank=True)
     customer_does_allow_SMS = models.BooleanField(default=True)
@@ -82,8 +82,8 @@ class CustomersNewSQL02Model(models.Model):
     class Meta:
         db_table = 'customers_new_03'   # prolube76DBSTG01.dbo.customers_new_01
         ordering = ["-customer_id"]
-        verbose_name = 'customer'
-        verbose_name_plural = 'customers'
+        verbose_name = 'Customer'
+        verbose_name_plural = 'Customers'
 
     def __str__(self):
         return self.get_customer_full_name

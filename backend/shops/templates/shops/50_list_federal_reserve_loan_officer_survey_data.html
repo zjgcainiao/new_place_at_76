@@ -1,0 +1,93 @@
+{% extends 'homepageapp/10_homepageapp_base.html' %}
+
+{% block content1-main %}
+<style>
+  .utility-icon {
+    cursor: pointer;
+    font-size: 24px;
+    margin-right: 10px;
+    /* Spacing between utility icons/buttons */
+  }
+</style>
+
+
+<div class="container" style="padding-top: 95px;">
+  <h3>Federal Reserve Quarterly Senior Loan Officer Survey (SLOOS) Reports
+    <i class="fas fa-info-circle" data-bs-toggle="tooltip" data-bs-placement="right"
+      title="Visit the official website for more details: https://www.federalreserve.gov/data/sloos.htm"></i>
+  </h3>
+
+  <div class="row">
+    <div class="col text-left">
+      <!-- Utility Icons/Buttons Start Here -->
+      <i id="fetchSloosPdfsIcon" class="fas fa-sync-alt utility-icon" data-bs-toggle="tooltip"
+        data-bs-placement="bottom" title="Fetch Latest Reports"></i>
+      <!-- You can add more utility icons/buttons here -->
+      <span id="loadingSpinner" class="spinner-border spinner-border-sm ms-2" role="status"
+        style="display: none;"></span>
+      <!-- Utility Icons/Buttons End Here -->
+    </div>
+    <div id="fetchFeedback" class="alert" style="display: none;"></div>
+  </div>
+
+  <div class="row">
+    {% for pdf in pdf_files %}
+    <div class="col-md-4 my-2">
+      <div class="card card-hover ">
+        <!-- You can add a static image or a generated thumbnail image here -->
+        <!-- <img src="thumbnail.png" class="card-img-top" alt="..."> -->
+        <div class="card-body">
+          <h5 class="card-title">{{ pdf.name }}</h5> <!-- slice the first 67 charcaters of the url link -->
+          <a href="{{ pdf.url }}" class="btn btn-outline-primary">View PDF</a>
+          <!-- <button type="button" class="btn btn-outline-secondary" disabled>AI Analysis (Soon)</button> -->
+          <button type="button" class="btn btn-outline-dark" disabled>AI Analysis (Soon)</button>
+
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <p>No pdfs found.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<script>
+  let manualFetchEndpoint = `{% url 'shops:manual_fetch_sloos_pdfs' %}`;
+
+  $(document).ready(function () {
+    $('[data-bs-toggle="tooltip"]').tooltip();
+
+    let timeoutPeriod = 60000;  // 60 seconds
+
+    $('#fetchSloosPdfsButton').click(function () {
+      $(this).prop('disabled', true);
+      $('#loadingSpinner').show();
+      $('#fetchFeedback').hide().removeClass('alert-success alert-danger');
+
+      let fetchTimeout = setTimeout(() => {
+        $('#fetchSloosPdfsButton').prop('disabled', false);
+        $('#loadingSpinner').hide();
+        $('#fetchFeedback').addClass('alert-danger').text('The request timed out. Please try again.').show();
+      }, timeoutPeriod);
+
+      $.ajax({
+        url: manualFetchEndpoint,
+        type: 'GET',
+        success: function (data) {
+          clearTimeout(fetchTimeout);
+          $('#fetchFeedback').addClass('alert-success').text(data.status).show();
+        },
+        error: function () {
+          clearTimeout(fetchTimeout);
+          $('#fetchFeedback').addClass('alert-danger').text('Error fetching PDFs.').show();
+        },
+        complete: function () {
+          $('#fetchSloosPdfsButton').prop('disabled', false);
+          $('#loadingSpinner').hide();
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

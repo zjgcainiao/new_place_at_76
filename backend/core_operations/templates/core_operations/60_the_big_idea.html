@@ -1,0 +1,78 @@
+{% extends 'homepageapp/10_homepageapp_base.html' %}
+
+{% block content1-main %}
+{% load static %}
+
+<style>
+
+.nav-tabs .nav-link {
+        justify-content: center;
+        border: 2px solid #555a5e;
+        /* Slightly darker metallic border */
+        border-top-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
+        background-color: #303538;
+        /* Darker metallic for unselected tab */
+        margin: 10px;
+        padding: 10px;
+        color: #ddd;
+        font-family: "Orbitron", sans-serif;
+        /* Light text on the tabs */
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #f5f1f0;
+        /* Almost black text on selected tab */
+        background-color: #656a6e;
+        /* Slightly brighter for selected tab */
+        border-color: #bc715c;
+        font-weight: 600;
+        /* Border matches selected tab background */
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+        /* Subtle shadow underneath */
+    }
+
+    /* Specific hover styles for readability on dark background */
+    .nav-tabs .nav-link:hover {
+        color: #f0f0f0;
+        /* Very light, near white color */
+        background-color: #454a4e;
+        font-weight: 600;
+        /* Slightly darker on hover for contrast */
+    }
+
+    .nav-tabs.nav-fill {
+        justify-content: center;
+        /* Center the tab items horizontally */
+    }
+</style>
+<div class="container mt-5 pt-5">
+    <h1> <strong><em>Capsule Repair Shop </em></strong>Model</h1>
+    <p> An data-driven, scalable solution for 21st automotive servicing.</p>
+    <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
+        <li class="nav-item " role="presentation">
+            <button class="nav-link active" id="presentation-tab" data-bs-toggle="tab" data-bs-target="#presentation" type="button" role="tab" aria-controls="presentation" aria-selected="false">Presentation</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link " id="business-tab" data-bs-toggle="tab" data-bs-target="#business" type="button" role="tab" aria-controls="business" aria-selected="true">Proposal</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="financial-tab" data-bs-toggle="tab" data-bs-target="#financial" type="button" role="tab" aria-controls="financial" aria-selected="false">Financial Projections</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+
+        <div class="tab-pane show active" id="presentation" role="tabpanel" aria-labelledby="presentation-tab">
+            <iframe src="{% static 'business_proposal/Capsule-Repair-Shop-Presentation.pdf' %}" style="width:100%; height:1000px;" frameborder="0"></iframe>
+        </div>
+        <div class="tab-pane fade" id="business" role="tabpanel" aria-labelledby="business-tab">
+            <!-- Embed PDF Viewer -->
+            <iframe src="{% static 'business_proposal/Capsule-Repair-Shop-Business-Plan-Proposal.pdf' %}" style="width:100%; height:1000px;" frameborder="0"></iframe>
+        </div>
+        <div class="tab-pane fade" id="financial" role="tabpanel" aria-labelledby="financial-tab">
+            <iframe src="{% static 'business_proposal/Capsule-Repair-Shop-Financial-Projections.pdf' %}"  style="width:100%; height:1000px;" frameborder="0"></iframe>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

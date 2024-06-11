@@ -1,0 +1,74 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load humanize %}
+{% load core_operations.common_filters %}
+{% load crispy_forms_tags %}
+{% block content-main %}
+
+<div class=" container-fluid mb-0">
+  <!-- Breadcrumb-->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark mb-0">
+      <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+      <li class="breadcrumb-item active">Technican Dash</a></li>
+    </ol>
+  </nav>
+
+  <!-- Display the date and logged in user -->
+  <div class="row">
+    <div class="col">
+      Welcome, {{ user.user_first_name }}. You are logged in as {{user.email}}
+    </div>
+  </div>
+</div>
+<!-- end of container  -->
+
+<div class="container-fluid mb-0">
+  <h2>Your Active Work Item Queue</h2>
+  <p class="text-muted fw-semibold"> This queue lists all incomplete work items that are grouped by an repair order's
+    ID
+    by default. All incompleted work items are required to comlete or dimiss. When the queue is clear, you can assign
+    new work ite to yourself by using the assing button below.</p>
+
+  <div class='row'>
+    <div class="col-md-12 btn-group my-1">
+      <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:search_active_appts_and_repair_orders' %}">
+        <i class="uil-focus-add"></i>
+        Add new work item to Queue</a>
+      <a type="button" class="btn btn-outline-dark" href="{% url 'dashboard:vehicle_dash' %}"> <i
+          class="uil-car-sideview"></i> Vehicle Dash</a>
+      <a type="button" class="btn btn-outline-dark" href="{% url 'appointments:appointment_list' %}"> <i
+          class="uil-calendar-alt"></i>Appointments Dash</a>
+    </div>
+  </div>
+  <!-- end of row  -->
+
+</div>
+<!-- end of container -->
+
+<div class='container-fluid my-1'>
+  <form method="post">
+    {% csrf_token %}
+    <table class='table table-light table-hover table-centered'>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Order Status</th>
+          <th>Name</th>
+          <th>Labor</th>
+          <th>Part</th>
+          <th>Discounts</th>
+          <th>Total</th>
+          <th>Phone </th>
+          <th>Email</th>
+          <th>Customer Address</th>
+          <th>Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+  </form>
+</div>
+{% endblock %}

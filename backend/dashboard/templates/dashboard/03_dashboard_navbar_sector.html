@@ -1,6 +1,6 @@
 {% load static %}
 <!-- ========== Topbar Start ========== -->
-<div class="navbar-custom" style="background: linear-gradient(0deg, rgba(235,235,235,1) 0%, rgba(245,245,245,1) 100%);">
+<div class="navbar-custom" style="background: linear-gradient(30deg, rgb(246, 246, 246) 20%, rgb(194, 195, 196) 100%);">
     <div class="topbar container-fluid">
         <div class="d-flex align-items-center gap-lg-2 gap-1">
             <!-- Topbar Brand Logo -->
@@ -32,10 +32,11 @@
                             class="rounded-circle">
                     </span>
 
-                    <span class="d-lg-flex flex-column gap-1 d-none">
-                        <p class="my-0 fw-normal">Hi {{user.user_first_name}} (Email: {{user.email |truncatechars:15}})
+                    <span class="d-lg-flex flex-column gap-1 d-none" styling="font-family:'Exo2',sans-serif;">
+                        <p class="my-0">Hi {{user.user_first_name}} (Email: {{user.email |truncatechars:15}})
                         </p>
-                        <h6 class="my-0 fw-normal">Auth Group: {{user.user_auth_group}}</h6>
+                        <h6 class="my-0 ">Auth Group:
+                            {{user.get_user_auth_group_display}}</h6>
                     </span>
 
                 </a>

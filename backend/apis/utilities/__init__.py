@@ -15,3 +15,4 @@ from .validate_field_mappings import validate_field_mappings
 from .fetch_and_save_nhtsa_recalls import fetch_and_save_nhtsa_recalls
 from .create_or_update_vin_record import create_or_update_vin_record
 from .trigger_vin_or_license_plate_fetch_tasks import trigger_vin_or_license_plate_fetch_tasks
+from .fetch_vin_aggregated_data import fetch_vin_aggregated_data

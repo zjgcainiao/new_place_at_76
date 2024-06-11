@@ -1,5 +1,6 @@
 from .base import models, InternalUser
 
+
 class MakesNewSQL02Model(models.Model):
     make_id = models.AutoField(primary_key=True)
     make_name = models.CharField(max_length=30, null=True)
@@ -17,8 +18,12 @@ class MakesNewSQL02Model(models.Model):
     class Meta:
         db_table = 'makes_new_03'
         ordering = ["-make_id"]
-        verbose_name = 'make'
-        verbose_name_plural = 'makes'
+        verbose_name = 'Make'
+        verbose_name_plural = 'Makes'
 
     def __str__(self):
-        return f'{self.make_name.strip()}'
+        if self.make_name:
+            name = self.make_name.strip()
+        else:
+            name = 'No make name found.'
+        return f'{name}'

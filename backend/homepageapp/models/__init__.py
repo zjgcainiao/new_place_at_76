@@ -1,5 +1,10 @@
 
 from .automan_inventory import AutomanInventory
+from .automan_inventory_item import AutomanInventoryItem
+from .automan_inventory_item_image import AutomanInventoryItemImage
+from .automan_purchase_order import AutomanPurchaseOrder
+from .automan_purchase_order_item import AutomanPurchaseOrderItem
+# from .automan_part import AutomanPart
 from .address import AddressesNewSQL02Model
 from .alert import Alerts
 from .account_class import AccountClassModel
@@ -44,7 +49,7 @@ from .labor_item import LaborItemModel
 from .part_desc import PartDescription
 from .part import PartsModel
 from .part_item import PartItemModel
-from .inventory import Inventories
+from .inventory import Inventory
 from .repair_order import RepairOrdersNewSQL02Model
 from .order_revision import OrderRevisionNewSQL02Model
 from .line_item_assigned_technican import LineItemAssignedTechnicanModel
@@ -63,3 +68,9 @@ from .nhtsa_make import NhtsaMake
 from .nhtsa_model import NhtsaModel
 from .nhtsa_decoded_vin import NhtsaDecodedVin
 from .nhtsa_vehicle_id import NhtsaVehicleId
+
+from .personal_item import PersonalItem
+from .personal_item_image import PersonalItemImage
+from .moving_item import MovingItem
+from .moving_request import MovingRequest
+from .moving_request_containerize_moving_item import MovingRequestContainerizeMovingItem

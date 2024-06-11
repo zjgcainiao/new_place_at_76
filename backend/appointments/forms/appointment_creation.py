@@ -1,18 +1,20 @@
 
 from .base import forms, Q, \
-      ValidationError, FileExtensionValidator, validate_file_size,  \
-        ReCaptchaField, ReCaptchaV2Checkbox, ReCaptchaV2Invisible, ReCaptchaV3, \
-        get_latest_vehicle_make_list, get_latest_vehicle_model_list,validate_phone_number,validate_vehicle_year, \
-        format_phone_number_to_shop_standard, deformat_phone_number, APPT_STATUS_PORGRESSING, APPT_STATUS_CONFIRMED, APPT_STATUS_SUBMITTED, \
-        FormHelper, Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div, Button
+    ValidationError, FileExtensionValidator, validate_file_size,  \
+    ReCaptchaField, ReCaptchaV2Checkbox, ReCaptchaV2Invisible, ReCaptchaV3, \
+    get_latest_vehicle_make_list, get_latest_vehicle_model_list, validate_phone_number, validate_vehicle_year, \
+    format_phone_number_to_shop_standard, deformat_phone_number, APPT_STATUS_PORGRESSING, APPT_STATUS_CONFIRMED, APPT_STATUS_SUBMITTED, \
+    FormHelper, Layout, Fieldset, Submit, Field, ButtonHolder, HTML, Reset, Column, Row, Div, Button
 from appointments.models import AppointmentRequest, AppointmentImages
 from django.utils.translation import gettext_lazy as _
 
 
 class AppointmentCreationForm(forms.ModelForm):
-    
-    appointment_requested_datetime = forms.DateTimeField(required=False, 
-                                                         widget=forms.DateTimeInput(attrs={ }), # 'type': 'datetime-local',
+
+    appointment_requested_datetime = forms.DateTimeField(required=False,
+                                                         # 'type': 'datetime-local',
+                                                         widget=forms.DateTimeInput(
+                                                             attrs={}),
                                                          label=_('Time Requested'))
 
     appointment_email = forms.EmailField(
@@ -57,11 +59,12 @@ class AppointmentCreationForm(forms.ModelForm):
         label=_("Images"),
         widget=forms.ClearableFileInput(),
         validators=[FileExtensionValidator(['png', 'jpg', 'jpeg']),
-            validate_file_size],
+                    validate_file_size],
         help_text="Up to 5 images(png, jpg, jpeg, etc). 8MB each"
     )
-    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(), 
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(),
                              label='please check the box below to verify you are not a robot.')
+
     class Meta:
         model = AppointmentRequest
         exclude = ('created_at', 'updated_at',)
@@ -122,7 +125,7 @@ class AppointmentCreationForm(forms.ModelForm):
     def save(self, commit=True):
         # Save the appointment instance
         # Make sure to save the appointment first
-        appointment = super().save(commit=commit)
+        appointment = super().save(commit=False)
 
         if commit:  # If we are committing the save to the database
             # If image data exists, save them
@@ -192,15 +195,17 @@ class AppointmentCreationForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Fieldset(_('Time and Contact Info'),
-                Row(Column(Field('appointment_email', css_class='form-control',style="background-color: #cfe2f3"),
-                           css_class='col-md-6 mb-0',),
-                    Column(Field('appointment_phone_number', css_class='form-control', ),
-                           css_class='col-md-6 mb-0',),
-                    css_class='form-row p-1 m-1'),
-                Row(
-                    Column(Field('appointment_first_name', css_class='form-control'),css='col-md-6' ),
-                    Column(Field('appointment_last_name', css_class='form-control'),css='col-md-6 ' ),
-                    css_class='form-row p-1 m-1'),
+                     Row(Column(Field('appointment_email', css_class='form-control', style="background-color: #cfe2f3"),
+                                css_class='col-md-6 mb-0',),
+                         Column(Field('appointment_phone_number', css_class='form-control', ),
+                                css_class='col-md-6 mb-0',),
+                         css_class='form-row p-1 m-1'),
+                     Row(
+                Column(Field('appointment_first_name',
+                             css_class='form-control'), css='col-md-6'),
+                Column(Field('appointment_last_name',
+                             css_class='form-control'), css='col-md-6 '),
+                css_class='form-row p-1 m-1'),
                 Row(
                     # Column(Field('appointment_requested_date', css_class='form-control'),
                     #     css_class='col-md-6',),
@@ -251,8 +256,8 @@ class AppointmentCreationForm(forms.ModelForm):
             # no longer needs this "upload" button
             # Row(Column(Button('upload', 'Upload', css_class='btn-outline-dark', css_id='appt-img-upload-btn'), css_class='col'),
             #     css_class='m-1 p-1'),
-            
-            Row(Field('captcha',wrapper_class='form-group'),
+
+            Row(Field('captcha', wrapper_class='form-group'),
                 css_class=' p-1 m-1'),
 
             ButtonHolder(

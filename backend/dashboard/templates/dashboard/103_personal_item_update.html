@@ -1,0 +1,208 @@
+{% extends 'dashboard/00_dashboard_base.html' %}
+{% load humanize %}
+{% load core_operations.common_filters %}
+{% load crispy_forms_tags %}
+
+{% block content-main %}
+<div class="container-fluid my-1">
+  <!-- Breadcrumb-->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-dark">
+      <li class="breadcrumb-item"><a href="{% url 'homepageapp:homepage' %}">Homepage</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'dashboard:main_dash' %}">Main Dash</a></li>
+      <li class="breadcrumb-item "><a href="{% url 'dashboard:personal_item_dash' %}">Personal Items</a></li>
+      <li class="breadcrumb-item "><a href="{% url 'dashboard:personal_item_detail' pk=object.id %}">Detail</a></li>
+      <li class="breadcrumb-item active" area-current="page">Personal Item Update</li>
+    </ol>
+  </nav>
+</div>
+
+{% include 'dashboard/02_dashboard_messages_sector.html' %}
+
+<div class="container-fluid my-1">
+  <h3>Update Personal Item {{item.pk}}</h3>
+  <p class="text-muted font-13">Updated on: {{item.updated_at|date:"m/d/y"}}</p>
+  <!-- <a class="btn btn-outline-dark" id="go-back-btn" >Go Back</a> -->
+
+  <div class="card card-hover border border-secondary shadow-sm">
+    <form method="post" class="card-body my-1" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% crispy form form.helper %}
+
+      <!-- This will be the container for the item_image previews -->
+      <div id="image-preview-container" class="d-flex flex-wrap">
+      </div>
+
+      <!-- Template for an individual image preview -->
+      <script type="text/template" id="image-preview-template">
+              <div class="image-preview position-relative m-2">
+                  <img src="" alt="Preview" class="img-thumbnail" />
+                  <button class="btn btn-danger btn-sm position-absolute top-0 end-0" onclick="removeImage(this)">
+                      &times;
+                  </button>
+              </div>
+        </script>
+    </form>
+  </div>
+  <!-- end of card  -->
+</div>
+<!-- end of container-fluid -->
+
+
+<!-- copied the same style from appointment_create html template  -->
+<style>
+  /* This container will hold all your image previews and will be a flex container */
+  .image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    /* This creates space between your thumbnails */
+    justify-content: center;
+    /* This centers the thumbnails horizontally */
+    align-items: center;
+    /* This centers the thumbnails vertically */
+    padding: 10px;
+  }
+
+  /* The individual image preview item */
+  .image-preview {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    /* Ensures nothing spills out of the border-radius */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    /* Center the image in the div horizontally */
+    align-items: center;
+    /* Center the image in the div vertically */
+  }
+
+  .image-preview img {
+    width: auto;
+    /* Auto width allows the image to scale proportionally */
+    max-width: 100%;
+    /* Ensures the image doesn't overflow its container */
+    height: auto;
+    /* Auto height allows the image to scale proportionally */
+    max-height: 150px;
+    /* Adjust this value based on your preference */
+  }
+
+  /* The delete button on the top right corner of the image preview */
+  .image-preview .delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    border: none;
+    background: rgba(117, 101, 92, 0.7);
+    /* Semi-transparent red background */
+    color: white;
+    border-radius: 50%;
+    /* Circular button */
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  /* Media Queries for responsiveness */
+  @media (max-width: 768px) {
+
+    /* For tablets */
+    .image-preview {
+      max-width: calc(50% - 10px);
+      /* Show two images per row, adjust the percentage as needed */
+      margin-bottom: 10px;
+    }
+  }
+
+  @media (max-width: 480px) {
+
+    /* For mobile phones */
+    .image-preview {
+      max-width: 100%;
+      /* Each image takes full width of the container */
+      margin-bottom: 10px;
+    }
+  }
+</style>
+<script>
+  // Listen for the "Enter" key press on the id_item_original_barcode field in the PersonalItemUpdateForm
+  document.getElementById("id_item_original_barcode").addEventListener("keydown", function (event) {
+    if (event.keyCode === 13) {
+      // Prevent form submission by suppressing the Enter key
+      event.preventDefault();
+    }
+  });
+
+</script>
+
+<script>
+  $(function () {
+    // this script is added to automatically format the phone number input field 2023-08-01
+    // $('#id_appointment_phone_number').on('input', function () {
+    //   let x = $(this).val().replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+    //   $(this).val(!x[2] ? x[1] : `(${x[1]}) ${x[2]}` + (x[3] ? `-${x[3]}` : ''));
+    // });
+
+    var fileInput = $('#id_item_images');
+    var imagePreviewContainer = $('#image-preview-container');
+    var imagePreviewTemplate = $('#image-preview-template').html();
+
+    function updateImagePreview() {
+      imagePreviewContainer.empty();
+      var fileList = fileInput.prop('files');
+
+      // Enforce the 5 images maximum restriction
+      if (fileList.length > 5) {
+        alert('You can only upload a maximum of 5 images.');
+        fileInput.val(''); // Clear the file input
+        return;
+      }
+
+      for (var i = 0, len = fileList.length; i < len; i++) {
+        var file = fileList[i];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+          var newImagePreview = $(imagePreviewTemplate);
+          newImagePreview.find('img').attr('src', e.target.result);
+          imagePreviewContainer.append(newImagePreview);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Update the image preview when files are chosen
+    fileInput.change(updateImagePreview);
+
+
+    // Function to remove an image from the preview.
+    function removeImage(button) {
+      var imagePreviewDiv = $(button).closest('.image-preview');
+      var imageIndex = imagePreviewDiv.index();
+      var fileList = Array.from($('#id_item_images').prop('files'));
+
+      // Remove the file at the index
+      fileList.splice(imageIndex, 1);
+
+      // Create a new DataTransfer object and populate with the updated file list
+      var newFileList = new DataTransfer();
+      fileList.forEach(function (file) {
+        newFileList.items.add(file);
+      });
+
+      // Update the file input with the new file list
+      $('#id_item_images').prop('files', newFileList.files);
+
+      // Remove the image preview div
+      imagePreviewDiv.remove();
+    }
+
+  });
+</script>
+{% endblock %}

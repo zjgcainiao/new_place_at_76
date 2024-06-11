@@ -4,21 +4,25 @@ from .account_class import AccountClassModel
 from .category import CategoryModel
 from decimal import Decimal
 
+
 class AutomanPart(models.Model):
     id = models.AutoField(primary_key=True)
     is_tax_exempt = models.BooleanField(default=False)
     part_category = models.ForeignKey(
-        CategoryModel, on_delete=models.SET_NULL, null=True)
+        CategoryModel, on_delete=models.SET_NULL, null=True, related_name='automan_part_category')
     part_account_class = models.ForeignKey(
-        AccountClassModel, on_delete=models.SET_NULL, null=True, related_name='parts_accountclasses')
+        AccountClassModel, on_delete=models.SET_NULL, null=True, related_name='automan_part_accountclasses')
     description = models.CharField(max_length=500, null=True, blank=True)
     is_tire = models.BooleanField(default=False)
-    tire_info = models.JSONField(null=True, blank=True) # new field to store tire info. is_tire can be integrated in the tire_info
+    # new field to store tire info. is_tire can be integrated in the tire_info
+    tire_info = models.JSONField(null=True, blank=True)
     comments = models.JSONField(null=True, blank=True)
     manufacturer_info = models.JSONField(null=True, blank=True)
 
-    cost = models.DecimalField(max_digits=12, decimal_places=2,default=Decimal(0.00))
-    price = models.DecimalField(max_digits=12, decimal_places=2,default=Decimal(0.00))
+    cost = models.DecimalField(
+        max_digits=12, decimal_places=2, default=Decimal(0.00))
+    price = models.DecimalField(
+        max_digits=12, decimal_places=2, default=Decimal(0.00))
     list_price = models.DecimalField(max_digits=12, decimal_places=2)
     part_is_user_entered_price = models.DecimalField(
         max_digits=12, decimal_places=2)
@@ -34,9 +38,9 @@ class AutomanPart(models.Model):
 
     part_created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
-        InternalUser, related_name='part_created', on_delete=models.SET_NULL, null=True, blank=True)
+        InternalUser, related_name='automan_part_created', on_delete=models.SET_NULL, null=True, blank=True)
     modified_by = models.ForeignKey(
-        InternalUser, related_name='part_modified', on_delete=models.SET_NULL, null=True, blank=True)
+        InternalUser, related_name='automan_part_modified', on_delete=models.SET_NULL, null=True, blank=True)
     part_last_updated_at = models.DateTimeField(auto_now=True, null=True,)
 
     def save(self, *args, **kwargs):
@@ -46,5 +50,6 @@ class AutomanPart(models.Model):
 
     class Meta:
         db_table = 'parts_new_03'
-        ordering = ["-part_id"]
-
+        ordering = ["-created_at"]
+        verbose_name = 'Automan Part'
+        verbose_name_plural = 'Automan Parts'
