@@ -252,6 +252,8 @@ STRIPE_LIVE_MODE = False  # Change to True in production
 STRIPE_WEBHOOK_TEST_SECRET = config("STRIPE_WEBHOOK_TEST_SECRET", default=None)
 STRIPE_WEBHOOK_SECRET_LOCAL = config(
     "STRIPE_WEBHOOK_SECRET_LOCAL", default=None)
+STRIPE_WEBHOOK_SECRET_LIVE = config(
+    'STRIPE_WEBHOOK_SECRET_LIVE', default=None)
 
 # assign the local webhook secret to DJSTRIPE_WEBHOOK_SECRET. The local webhook secret is used for testing and can be generated
 # via the following Stripe Cli command: stripe listen --forward-to localhost:8000/stripe_webhook/

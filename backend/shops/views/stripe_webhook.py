@@ -1,4 +1,4 @@
-from .base import csrf_exempt, HttpResponse, stripe, settings
+from .base import csrf_exempt, HttpResponse, stripe, settings, logger
 from stripe.error import SignatureVerificationError
 from django.http import JsonResponse, HttpResponseBadRequest
 
@@ -12,7 +12,10 @@ def stripe_webhook(request, environment='test'):
     environment = environment.lower()
 
     # Determine the endpoint secret based on the environment and configuration
+    
     if settings.DEBUG and not settings.DJANGO_PROD_ENV:
+        # Local development environment
+        environment = 'test' # Force the environment to be 'test' in local development
         endpoint_secret = settings.STRIPE_WEBHOOK_SECRET_LOCAL
     elif environment == 'test' and not settings.STRIPE_LIVE_MODE_ON:
         # Staging environment
@@ -40,7 +43,6 @@ def stripe_webhook(request, environment='test'):
     except Exception as e:
         # Other unexpected errors
         return JsonResponse({'error': str(e)}, status=500)
-    
 
     # Passed signature verification
     # Response for successful processing
